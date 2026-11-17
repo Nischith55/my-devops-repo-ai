@@ -1,0 +1,22 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "VirtualserviceDenyDuplicate",
+  "metadata": {
+    "name": "virtualservicedenyduplicate"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            "networking.istio.io"
+          ],
+          "kinds": [
+            "VirtualService"
+          ]
+        }
+      ]
+    }
+  }
+}

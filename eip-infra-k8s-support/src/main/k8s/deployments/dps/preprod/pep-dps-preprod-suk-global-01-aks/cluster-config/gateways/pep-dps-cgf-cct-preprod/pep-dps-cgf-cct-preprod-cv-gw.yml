@@ -1,0 +1,138 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-cct-preprod-cv-gw
+  namespace: pep-dps-cgf-cct-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-cct-preprod.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-cct-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-cgf-cct-preprod-443.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-bff.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-preprod.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - temporal-ui-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-bff-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-executions.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-cct-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-suk-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-cgf-cct-preprod-80.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-bff.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-preprod.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - temporal-ui-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - cct-eu.preprod.mypepsico.com
+    - customer-communication-tool-bff-preprod.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-executions.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-cct-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - cct-eu.preprod.mypepsico.com
+    name: pep-dps-cgf-cct-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-cct-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: cct-eu.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

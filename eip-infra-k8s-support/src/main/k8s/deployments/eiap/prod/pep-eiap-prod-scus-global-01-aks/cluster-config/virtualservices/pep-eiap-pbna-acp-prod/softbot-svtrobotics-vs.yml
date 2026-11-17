@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: svt-robotics-1822
+  name: softbot-svtrobotics-pbna-vs
+  namespace: pep-eiap-pbna-acp-prod
+spec:
+  gateways:
+  - pep-eiap-pbna-acp-prod/pep-eiap-pbna-acp-prod-cv-gw
+  hosts:
+  - softbot-svtrobotics-pbna.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: svt-robotics-1822.pep-eiap-pbna-acp-prod.svc.cluster.local
+        port:
+          number: 80

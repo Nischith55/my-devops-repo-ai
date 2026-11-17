@@ -1,0 +1,113 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+
+variables:
+  - group: repo_access_token
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: cmp_dmz_variables
+  - name: env_convert
+    value: NONPROD
+  # - name: cluster
+  #   value: pep-cmp-nonprod-dmz-eus-01-aks
+
+stages:
+  - stage: namespace_list
+    displayName: namespace_list
+    pool: 
+      name: $(agent)
+    jobs:
+    - job: list_ns
+      displayName: list_ns
+      steps:
+      - template: templates/set_config.yml  # Template reference 
+        parameters:
+          cluster: $(cluster)
+
+      - task: Bash@3
+        displayName: 'list_namespace'
+        name: list_namespace
+        inputs:
+          targetType: 'inline'
+          script: |
+            namespaces=$(kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.creationTimestamp}{"\n"}{end}' | while read -r name timestamp; do  echo "$name" | awk -v current_time=$(date +%s) -v three_days_back=$(date +%s -d "6 day ago") -v ns_time=$(date --date="${timestamp}" +%s) '(current_time - ns_time) <(current_time - three_days_back){print $0}';done)
+            if [[ -z "${namespaces}" ]]; then
+              echo "Namespace list is empty"
+              echo "##vso[task.setvariable variable=is_empty;isoutput=true]true"
+            else
+              arr=($namespaces)
+              echo "##vso[task.setvariable variable=is_empty;isoutput=true]false"
+              for i in "${arr[@]}"
+              do
+                  echo  "$i"
+                  if [[ "$i" == "pep-cmp-cmp-certa-dev" || "$i" == "pep-cmp-cmp-april30c-dev" || "$i" == "pep-cmp-cmp-pimctfb-qa" ]]; then
+                    echo "skipping $i"
+                  else
+                    arr2+=($i)
+                  fi
+              done
+              echo "##vso[task.setvariable variable=ns_value;isoutput=true]${arr2[@]}"
+            fi
+        env:
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+
+  
+  # approval -
+  - stage: checkforapproval
+    displayName: check-for-approval
+    dependsOn: namespace_list
+    condition: and(succeeded(), eq(dependencies.namespace_list.outputs['list_ns.list_namespace.is_empty'], 'false'))
+    pool: 
+      name: $(agent)
+    jobs:
+    - job: approval
+      pool: server
+      timeoutInMinutes: 4320 # job times out in 3 days
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 1440 # task times out in 1 day
+        inputs:
+          notifyUsers: |
+            NarendraReddy.Bommireddy@pepsico.com
+            Maheshashok.Nalavade.Contractor@pepsico.com
+            Vishwanath.Ganesh.Contractor@pepsico.com
+          instructions: 'Approval required for Namespace deletion'
+
+
+  - stage: namespace_delete
+    displayName: namespace_delete
+    dependsOn: 
+      - checkforapproval
+      - namespace_list
+    condition: and(succeeded('checkforapproval'), eq(dependencies.namespace_list.outputs['list_ns.list_namespace.is_empty'], 'false'))
+    pool: 
+      name: $(agent)
+    variables: 
+      namespace_value: $[ stageDependencies.namespace_list.list_ns.outputs['list_namespace.ns_value'] ]
+    jobs:
+    - job: delete_ns
+      displayName: delete_ns
+      steps:
+      - template: templates/set_config.yml  # Template reference 
+        parameters:
+          cluster: $(cluster)
+
+      - task: Bash@3
+        displayName: 'delete_namespace'
+        name: delete_namespace
+        inputs:
+          targetType: 'inline'
+          script: |
+            arr=($(namespace_value))
+            for i in "${arr[@]}"
+            do
+                echo  "$i"
+                kubectl delete ns $i
+            done
+        env:
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

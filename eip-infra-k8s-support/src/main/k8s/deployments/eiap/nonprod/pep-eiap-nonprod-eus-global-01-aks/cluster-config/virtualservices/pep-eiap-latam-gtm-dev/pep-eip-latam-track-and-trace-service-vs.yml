@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-latam-track-and-trace-service
+  name: pep-eip-latam-track-and-trace-service-vs
+  namespace: pep-eiap-latam-gtm-dev
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-dev/pep-eiap-latam-gtm-dev-cv-gw
+  hosts:
+  - pep-eip-latam-track-and-trace-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-track-and-trace-service.pep-eiap-latam-gtm-dev.svc.cluster.local
+        port:
+          number: 80

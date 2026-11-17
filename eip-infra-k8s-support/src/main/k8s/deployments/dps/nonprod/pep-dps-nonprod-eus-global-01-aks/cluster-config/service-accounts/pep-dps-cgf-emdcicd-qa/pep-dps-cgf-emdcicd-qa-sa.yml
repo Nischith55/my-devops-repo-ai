@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-cgf-emdcicd-qa-sa
+  namespace: pep-dps-cgf-emdcicd-qa

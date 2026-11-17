@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dopui-cep-rewards
+  name: dopui-cep-rewards-vs
+  namespace: pep-eiap-global-cep-qa
+spec:
+  gateways:
+  - pep-eiap-global-cep-qa/pep-eiap-global-cep-qa-cv-gw
+  hosts:
+  - pepcepb11.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopui-cep-rewards.pep-eiap-global-cep-qa.svc.cluster.local
+        port:
+          number: 80

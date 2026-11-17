@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: bdr-admin-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for bdr-admin-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/bdr-admin-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-bdradm-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: bdr-admin-dev-admin
+    description: Admin privileges to bdr-admin-dev
+    policies:
+    - p, proj:bdr-admin-dev:bdr-admin-dev-admin, applications, *, bdr-admin-dev/*, allow
+    - p, proj:bdr-admin-dev:bdr-admin-dev-admin, repositories, *, bdr-admin-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: bdr-admin-dev-user
+    description: Read-only privileges to bdr-admin-dev
+    policies:
+    - p, proj:bdr-admin-dev:bdr-admin-dev-user, applications, get, bdr-admin-dev/*, allow
+    - p, proj:bdr-admin-dev:bdr-admin-dev-user, applications, sync, bdr-admin-dev/*, allow
+    - p, proj:bdr-admin-dev:bdr-admin-dev-user, repositories, get, bdr-admin-dev/*, allow
+    - p, proj:bdr-admin-dev:bdr-admin-dev-user, applications, action/apps/Deployment/restart, bdr-admin-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.BDRAdm"
+    - "Team.Support.EIAP.READ"

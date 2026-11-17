@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    pep-cmdb-app-service-id: 79808cac834c42942bb0bad6feaad370
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Preprod
+    project: bffmxbcp
+    sector: cgf
+    servicename_aks: pepsiconnectb2bportalmexicodelamanonon-prod
+    team: cgf-bffmxbcp
+  name: pep-dps-cgf-bffmxbcp-preprod

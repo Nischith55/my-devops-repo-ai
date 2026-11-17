@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtv-should-cost-ui
+    app.kubernetes.io/instance: dtv-should-cost-ui-qa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: dtv-should-cost-ui
+  namespace: pep-dps-dps-scm-qa
+spec:
+  gateways:
+  - pep-dps-dps-scm-qa/pep-dps-dps-scm-qa-cv-gw
+  hosts:
+  - dtv-should-cost-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - scm.qa.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtv-should-cost-ui.pep-dps-dps-scm-qa.svc.cluster.local
+        port:
+          number: 8080

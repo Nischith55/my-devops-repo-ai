@@ -1,0 +1,33 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PFNA
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_pfna_e2eorder_prod:
+  
+  name: pep-eiap-pfna-e2eorder-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pfna-e2eorder
+    sector: pfna
+    project: e2eorder
+    istio-injection: enabled
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_couchbase'] }}"
+
+

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-global-anm-backend-v2
+  name: pep-eip-global-anm-backend-v2-vs
+  namespace: pep-eiap-europe-anm-dev
+spec:
+  gateways:
+  - pep-eiap-europe-anm-dev/pep-eiap-europe-anm-dev-cv-gw
+  hosts:
+  - pep-eip-global-anm-backend-v2.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-global-anm-backend-v2.pep-eiap-europe-anm-dev.svc.cluster.local
+        port:
+          number: 80

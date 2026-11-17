@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-dcs-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for rd-dcs-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-dcs-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-dcs-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: rd-dcs-qa-admin
+    description: Admin privileges to rd-dcs-qa
+    policies:
+    - p, proj:rd-dcs-qa:rd-dcs-qa-admin, applications, *, rd-dcs-qa/*, allow
+    - p, proj:rd-dcs-qa:rd-dcs-qa-admin, repositories, *, rd-dcs-qa/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-dcs-qa-user
+    description: Read-only privileges to rd-dcs-qa
+    policies:
+    - p, proj:rd-dcs-qa:rd-dcs-qa-user, applications, get, rd-dcs-qa/*, allow
+    - p, proj:rd-dcs-qa:rd-dcs-qa-user, applications, sync, rd-dcs-qa/*, allow
+    - p, proj:rd-dcs-qa:rd-dcs-qa-user, repositories, get, rd-dcs-qa/*, allow
+    - p, proj:rd-dcs-qa:rd-dcs-qa-user, applications, action/apps/Deployment/restart, rd-dcs-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.DCS"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

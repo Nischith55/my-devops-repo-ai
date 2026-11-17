@@ -1,0 +1,9 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  name: pepeiapprodcommonacr
+  namespace: pep-pbna-ops-admin
+spec:
+  acrServer: pepeiapprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/5f9ba971-f3d4-4706-8d5c-2aae550f9cb4/resourcegroups/pep-pbna-prod-eus-global-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-pbna-prod-eus-global-01-aks-agentpool

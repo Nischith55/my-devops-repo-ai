@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-gtmdsld-preprod
+  labels:
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    project: gtmdsld
+    sector: pfna
+    team: pfna-gtmdsld

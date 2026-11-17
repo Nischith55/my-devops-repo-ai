@@ -1,0 +1,36 @@
+---
+ns_pep_dps_cgf_pepconnprt_preprod:
+  
+  name: pep-dps-cgf-pepconnprt-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-pepconnprt
+    sector: cgf
+    project: pepconnprt
+    crosscharge_aks: direct
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-pepconnprt-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_pepconnprt'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-pepconnprt-preprod-sa-token
+    namespace: pep-dps-cgf-pepconnprt-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-pepconnprt-preprod-sa"

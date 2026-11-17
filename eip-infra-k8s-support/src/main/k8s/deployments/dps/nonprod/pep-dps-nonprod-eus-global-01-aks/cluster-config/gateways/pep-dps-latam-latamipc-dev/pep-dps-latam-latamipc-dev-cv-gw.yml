@@ -1,0 +1,74 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-latamipc-dev-cv-gw
+  namespace: pep-dps-latam-latamipc-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-latamipc-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-latamipc-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-latamipc-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-latam-latamipc-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-kpi.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-mono.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot-datasim.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot-mqttbroker.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-latamipc-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-latamipc-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-dps-latam-latamipc-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-kpi.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-mono.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot-datasim.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-manufacturing-ipc-iot-mqttbroker.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-latamipc-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-latamipc-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

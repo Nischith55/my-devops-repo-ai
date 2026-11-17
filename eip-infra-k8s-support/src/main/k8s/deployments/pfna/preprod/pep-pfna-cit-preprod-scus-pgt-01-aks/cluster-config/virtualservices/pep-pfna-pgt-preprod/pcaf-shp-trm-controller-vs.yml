@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pcaf-shp-trm-controller-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pcaf-shp-trm-controller-genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com","pcaf-shp-trm-controller.genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pcaf-shp-trm-controller.pep-pfna-pgt-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pcaf-shp-trm-controller
+  name: pcaf-shp-trm-controller-vs
+  namespace: pep-pfna-pgt-preprod
+spec:
+  gateways:
+  - pep-pfna-pgt-preprod/pep-pfna-pgt-preprod-cv-gw
+  hosts:
+  - pcaf-shp-trm-controller-genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - pcaf-shp-trm-controller.genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-trm-controller.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80

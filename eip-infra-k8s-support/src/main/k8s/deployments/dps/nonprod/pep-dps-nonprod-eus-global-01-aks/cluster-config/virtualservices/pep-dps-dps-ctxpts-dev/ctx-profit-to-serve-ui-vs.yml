@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: ctx-profit-to-serve-ui-dev:networking.istio.io/VirtualService:pep-dps-dps-ctxpts-dev/ctx-profit-to-serve-ui-vs
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"ctx-profit-to-serve-ui-dev:networking.istio.io/VirtualService:pep-dps-dps-ctxpts-dev/ctx-profit-to-serve-ui-vs"},"labels":{"app":"ctx-profit-to-serve-ui","app.kubernetes.io/instance":"ctx-profit-to-serve-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"ctx-profit-to-serve-ui-vs","namespace":"pep-dps-dps-ctxpts-dev"},"spec":{"gateways":["pep-dps-dps-ctxpts-dev/pep-dps-dps-ctxpts-dev-cv-gw"],"hosts":["pep-dps-dps-ctxpts-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"ctx-profit-to-serve-ui.pep-dps-dps-ctxpts-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: ctx-profit-to-serve-ui
+        app.kubernetes.io/instance: ctx-profit-to-serve-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: ctx-profit-to-serve-ui-vs
+    namespace: pep-dps-dps-ctxpts-dev
+spec:
+    gateways:
+    - pep-dps-dps-ctxpts-dev/pep-dps-dps-ctxpts-dev-cv-gw
+    hosts:
+    - pep-dps-dps-ctxpts-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: ctx-profit-to-serve-ui.pep-dps-dps-ctxpts-dev.svc.cluster.local
+                port:
+                    number: 8080

@@ -1,0 +1,28 @@
+---
+# ##
+# Convenient Cluster Specific lookup via ini for GW02 TLS
+# ##
+# ALways take the first since we are giving only 1 section
+_gw02_suf: -gw02-tls
+_lookup_pep_eiap_ae_global_01_aks_gw02: |-
+  {{
+    q('ini_helper', cluster_name + _gw02_suf,
+    keys_map=k8s_tls_section_keys_map, file=secrets_ini_file)
+    |
+    first
+  }}
+
+gw02_tls_ini_lookup_data:
+
+  # name:
+  name: "{{ cluster_name + _gw02_suf }}"
+
+  tls_key: |-
+    {{ _lookup_pep_eiap_ae_global_01_aks_gw02['tls_key'] }}
+
+  tls_crt: |
+    {{ _lookup_pep_eiap_ae_global_01_aks_gw02['tls_crt'] }}
+
+  # always add pepsico-ca-chain
+  ca_crt: |
+    {{ pep_ca_chain_pem | string | b64encode }}

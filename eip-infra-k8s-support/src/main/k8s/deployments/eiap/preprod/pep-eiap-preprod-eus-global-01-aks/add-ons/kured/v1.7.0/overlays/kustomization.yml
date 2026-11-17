@@ -1,0 +1,12 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: pep-eiap-ops-admin
+resources:
+  - ../../../../../../add-ons/kured/kustomize/v1.7.0/base
+# All strategic merge patches
+# only filename not full path
+ 

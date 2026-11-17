@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-gscafso-prod-cv-gw
+  namespace: pep-dps-cgf-gscafso-prod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-gscafso-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-gscafso-prod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-gscafso-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-gscaf-global-producer.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-gscaf-latam-consumer.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-gscaf-salesforce-connector-prod.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - dsx-growthbook-webhooks-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - b2b-backend-fallback-service-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-global-data-caf-write-back-v1-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-gscafso-prod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-gscafso-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-gscaf-global-producer.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-gscaf-latam-consumer.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-gscaf-salesforce-connector-prod.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - dsx-growthbook-webhooks-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - b2b-backend-fallback-service-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-global-data-caf-write-back-v1-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-gscafso-prod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-gscafso-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

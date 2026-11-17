@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: d09ba07987d8b9d04f62fe28dabb3527
+    pep-cmdb-bus-app-id: d49b607987d8b9d04f62fe28dabb35d4
+    pep-environment: Production
+    project: udfna
+    sector: latam
+    servicename_aks: directtostoredeliveryvisibility
+    team: latam-udfna
+  name: pep-dps-latam-udfna-prod

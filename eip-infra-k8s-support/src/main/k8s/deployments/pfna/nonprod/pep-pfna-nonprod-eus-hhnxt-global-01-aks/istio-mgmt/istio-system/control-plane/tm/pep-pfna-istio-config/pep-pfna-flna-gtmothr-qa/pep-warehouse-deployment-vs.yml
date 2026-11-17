@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-warehouse-deployment-qa-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-warehouse-deployment-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/warehouse/deployment
+    route:
+    - destination:
+        host: pep-warehouse-deployment.pep-pfna-flna-gtmothr-qa.svc.cluster.local
+        port:
+          number: 80
+        

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-transp-dvrapp-actltrip-tmap-to-trip-cosmos-kafconsumer
+  name: pep-pfna-transp-dvrapp-actltrip-tmap-to-trip-cosmos-kafconsumer-vs
+  namespace: pep-pfna-flna-transp-dev
+spec:
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  hosts:
+  - pep-pfna-transp-dvrapp-actltrip-tmap-to-trip-cosmos-kafconsumer.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/dvrapp-actltrip-tmap-to-trip-cosmos-kafconsumer
+    route:
+    - destination:
+        host: pep-pfna-transp-dvrapp-actltrip-tmap-to-trip-cosmos-kafconsumer.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80

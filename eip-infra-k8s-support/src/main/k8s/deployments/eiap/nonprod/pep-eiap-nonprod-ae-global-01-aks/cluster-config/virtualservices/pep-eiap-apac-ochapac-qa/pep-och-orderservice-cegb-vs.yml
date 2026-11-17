@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-orderservice-cegb-vs
+  namespace: pep-eiap-apac-ochapac-qa
+  labels:
+      app: pep-och-orderservice
+spec:
+  hosts:
+  - pep-och-orderservice-qa.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-qa/pep-eiap-apac-ochapac-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-orderservice.pep-eiap-apac-ochapac-qa.svc.cluster.local
+        port:
+          number: 80
+  

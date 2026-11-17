@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_latam_tctgps_prod:
+  
+  name: pep-pfna-latam-tctgps-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-tctgps
+    sector: latam
+    project: tctgps
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: supplychainhub
+    pep-cmdb-app-service-id: "1f4542cc97b52d504bb8326e6253af8b"
+    pep-cmdb-bus-app-id: "ba4502cc97b52d504bb8326e6253af48"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-pfna-latam-tctgps-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_tctgps'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-pfna-latam-tctgps-prod-sa-token
+    namespace: pep-pfna-latam-tctgps-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-latam-tctgps-prod-sa"

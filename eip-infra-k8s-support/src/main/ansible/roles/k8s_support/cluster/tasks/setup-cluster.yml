@@ -1,0 +1,30 @@
+---
+# Common post provisioning tasks
+
+- name: K8S_CLUSTER_AKS_PROVISION_ACTION_BLOCK
+  block:
+
+    # Save the role path so we can call from another role
+    - name: K8S_SUP_CLUSTER_SET_ROLE_PATH
+      set_fact:
+        k8s_sup_cluster_role_path: "{{ role_path }}"
+
+    - name: K8S_CLUSTER_AKS_POST_INSTALL_COMMON
+      include_role:
+        name: k8s_support/kubectl
+      vars:
+        mode: execute
+        kctl_action: "{{ kctl_setup_action }}"
+        # do all in the directory
+        kctl_action_args: >-
+          -f {{ k8s_sup_cluster_role_path }}/files/post-install/common
+
+    - name: K8S_CLUSTER_AKS_POST_INSTALL_AAD_POD_IDENTITY
+      include_role:
+        name: k8s_support/kubectl
+      vars:
+        mode: execute
+        kctl_action: "{{ kctl_setup_action }}"
+        # do all in the directory
+        kctl_action_args: >-
+          -f {{ k8s_sup_cluster_role_path }}/files/post-install/aad-pod-identity

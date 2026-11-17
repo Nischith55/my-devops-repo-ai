@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-eip-amesa-nonprod-agro-webapp-dr
+  namespace: pep-eiap-istio-config
+spec:
+  host: pep-eip-amesa-nonprod-agro-webapp.pep-eiap-amesa-ksaeinvc-qa.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: IstioSessionAffinity
+          ttl: 0s

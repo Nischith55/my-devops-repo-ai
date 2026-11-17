@@ -1,0 +1,36 @@
+---
+ns_pep_dps_cgf_gscafso_prod:
+  
+  name: pep-dps-cgf-gscafso-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-gscafso
+    sector: cgf
+    project: gscafso
+    crosscharge_aks: direct
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-gscafso-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_gscafso'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-gscafso-prod-sa-token
+    namespace: pep-dps-cgf-gscafso-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-gscafso-prod-sa"

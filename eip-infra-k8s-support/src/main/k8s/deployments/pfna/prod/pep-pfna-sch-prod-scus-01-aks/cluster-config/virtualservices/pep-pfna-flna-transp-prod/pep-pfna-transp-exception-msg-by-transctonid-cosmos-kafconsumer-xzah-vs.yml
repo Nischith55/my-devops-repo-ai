@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-exception-msg-by-transctonid-cosmos-kafconsumer-xzah-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-exception-msg-by-transctonid-cosmos-kafconsumer
+spec:
+  hosts:
+  - pep-pfna-transp-exception-msg-by-transctonid-cosmos-kafconsumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/exception-message-by-trancaction-id
+    route:
+    - destination:
+        host: pep-pfna-transp-exception-msg-by-transctonid-cosmos-kafconsumer.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

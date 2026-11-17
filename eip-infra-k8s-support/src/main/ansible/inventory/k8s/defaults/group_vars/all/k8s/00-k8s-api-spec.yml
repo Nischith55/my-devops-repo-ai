@@ -1,0 +1,160 @@
+---
+# NOTE: This is deprecated when cluster-setup-lifecycle playbook is fully implemented.
+# When all old cluster config playbooks are removed remove this file too.
+#
+# API spec for configuring the lookup plugin
+# Defaults:
+# - namespaced: True
+#
+__k8s_api_specification_help__: |
+  # ###########################################################################
+  # specification doc
+  - All resources that need to be configured should have meta information so
+   the task parser can appropriately build the resource definition.
+  ~~~~~~~~~~~~~~~~~
+  k8s_resource_meta: A Map of abbreviated resource kinds (note: the
+  abbreviation is our convention)
+  <key>: <string>: resource abbreviation
+    e.g:
+      - ns: namespace
+  <value>: [type: object] [specification for each supported k8s resource]
+    api_def: [type: map] [required]
+      group: <k8s api group> [type: str] [required]
+      version: <k8s api version> [type: str] [required]
+    namespaced: [True|False] [optional] [default: True]
+    config_merge_stratgy: [values: list-append (default) | list-override] [type:str] [optional]
+    resources_subdir: <subdir name for manifests> [type: str] [required]
+    resc_def_required_keys: [type: list of objects] manadatory keys that should be present in the k8s resource definitions.
+
+  # ###########################################################################
+# default template to use relative to templates directory of the
+# playbook.. <playbook_dir>/<templates>
+k8s_template_default_path: k8s-resource.yml.j2
+
+api_resources_default_basedir: cluster-config
+
+api_v1_default_group: &v1_default
+  group: ''
+  version: v1
+
+api_v1_rbac_group: &v1_rbac
+  group: rbac.authorization.k8s.io
+  version: v1
+
+api_v1_storage_group: &v1_storage
+  group: storage.k8s.io
+  version: v1
+
+##
+# IMPORTANT NOTES:
+# defaults:
+#   - namespaced: true
+# varnames: The variable names global to incorporate for a cluster
+##
+k8s_resource_meta:
+
+  cr:
+    api_def:
+      <<: *v1_rbac
+      kind: ClusterRole
+    cluster_config_varname_patterns:
+      - "^pep_eiap_.*_cr_cfg$"
+    namespaced: False
+    resources_subdir: cluster-roles
+    resc_def_required_keys:
+      - name: rules
+        config_path: rules
+
+  cm:
+    api_def:
+      <<: *v1_default
+      kind: ConfigMap
+    cluster_config_varname_patterns:
+      - ".*_cm_cfg$"
+    resources_subdir: config-maps
+
+  crb:
+    api_def:
+      <<: *v1_rbac
+      kind: ClusterRoleBinding
+    cluster_config_varname_patterns:
+      - "^pep_eiap_.*_crb_cfg"
+      #TODO: deprecated
+      - "^pep-eiap-.*-crb"
+    resources_subdir: cluster-role-bindings
+    # this is not namespaced
+    namespaced: false
+    extract_subjects: true
+    resc_def_required_keys:
+      - name: roleRef
+        config_path: roleRef
+      - name: subjects
+        config_path: subjects
+
+  ns:
+    api_def:
+      <<: *v1_default
+      kind: Namespace
+    namespaced: False
+    resources_subdir: namespaces
+    cluster_config_varnames:
+      - k8s_namespaces
+    cluster_config_varname_patterns:
+      - "^.*_ns_cfg$"
+      # Deprecated remove
+      - "^ns_.*$"
+
+  rb:
+    api_def:
+      <<: *v1_rbac
+      kind: RoleBinding
+    # cluster_config_varname_patterns:
+    #   - "^pep_eiap_.*_rb_cfg$"
+    # role bindings are embedded in namespace config
+    # namespace_config_paths:
+    #   - "role_bindings[]"
+    #   - "{name: service_accounts[].role_bindings[].name}"
+    extract_subjects: true
+    resources_subdir: role-bindings
+    resc_def_required_keys:
+      - name: roleRef
+        config_path: roleRef
+
+  role:
+    api_def:
+      <<: *v1_rbac
+      kind: Role
+    resources_subdir: roles
+    config_required_keys:
+      rules: rules
+
+  sa:
+    api_def:
+      <<: *v1_default
+      kind: ServiceAccount
+    resources_subdir: service-accounts
+    # Service Accounts are embedded in namespace config
+    namespace_config_paths:
+      - service_accounts
+
+  sc:
+    api_def:
+      <<: *v1_storage
+      kind: StorageClass
+    namespaced: False
+    resources_subdir: storage-classes
+    cluster_config_varname_patterns:
+      - "^pep_eiap_.*_sc_cfg$"
+
+  # Generic secret type : Opaque
+  # IMPORTANT NOTE:
+  #  - secret type is just used for validation on the server side.
+  scrt:
+    api_def:
+      <<: *v1_default
+      kind: Secret
+      type: Opaque
+    namespaced: False
+    resources_subdir: secrets
+    cluster_config_varname_patterns:
+      - "^pep_eiap_.*_scrt_cfg$"

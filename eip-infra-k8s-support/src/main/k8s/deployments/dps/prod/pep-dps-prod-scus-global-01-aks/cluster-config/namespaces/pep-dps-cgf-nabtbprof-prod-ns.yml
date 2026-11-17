@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: b969b93ac30d7a98d721b353e4013124
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: nabtbprof
+    sector: cgf
+    servicename_aks: b2bpepsiconnectportalprofilesamericasprod
+    team: cgf-nabtbprof
+  name: pep-dps-cgf-nabtbprof-prod

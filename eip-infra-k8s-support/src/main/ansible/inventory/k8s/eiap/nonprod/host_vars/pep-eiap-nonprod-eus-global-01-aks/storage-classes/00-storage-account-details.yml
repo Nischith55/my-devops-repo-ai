@@ -1,0 +1,26 @@
+---
+# Storage Account to use for PV
+# IMPORTANT:
+# - Each Cluster should have a dedicated one do NOT copy and paste or
+#   if copying and pasting please DOUBLE CHECK.
+
+
+_rg_storage: &rgn001 pep-eiap-nonprod-eus-k8s-01-rg
+_storage_acct: &sa001 pe1003global01aks01sa
+# premium tier
+_storage_acct_premium_file: &sapf001 pe1003global01aksfp02sa
+
+# Disk does not require storageAccount
+__sc_storage_disk_01:
+  resourceGroup: *rgn001
+
+# File does require SA
+__sc_storage_file_01:
+  resourceGroup: *rgn001
+  # MAKE SURE WE HAVE DEDICATED SA for EACH CLUSTER
+  storageAccount:  *sa001
+
+# azure file premium NOTE: we need different SA
+__sc_storage_file_premium_02:
+  resourceGroup: *rgn001
+  storageAccount:  "{{ _storage_acct_premium_file }}"

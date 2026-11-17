@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-dps-appsupport-rb
+  namespace: pep-dps-dps-supplier-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-dps-appsupport-clusterrole
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: c57401de-974c-49bc-b9e7-069e04256665

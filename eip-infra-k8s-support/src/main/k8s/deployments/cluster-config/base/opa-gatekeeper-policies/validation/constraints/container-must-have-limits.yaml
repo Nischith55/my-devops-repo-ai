@@ -1,0 +1,50 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: container-must-have-limits
+spec:
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+    - PATCH
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    scope: '*'
+  parameters:
+    cpu: "2"
+    memory: "4Gi"
+    exemptImages:
+    - <PATCH>
+    # - cyberark/secrets-provider-for-k8s*
+    # - docker.io/istio/*
+    # - docker.elastic.co/observability/*
+    # - appdynamics/*
+    # - docker.io/appdynamics/*
+    # OPA Exception RITM4348977 Pricingai-dev
+    # - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-ds-logic*
+    # - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-event-manager*
+    # # OPA Exception SCTASK5028734 Label Right Application
+    # - myartifactory.mypepsico.com/aks-iai-cv-plt-docker-dev/pep/eiap/labelright/labelright-backend-ml-api-2022*
+    # # OPA Exception RITM4425383 Pricingai-dev
+    # - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-manual-scenarios-api*
+    # - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pep/eip/pep-eip-gnrm-pricingai-pricing-api*
+    # # OPA Exception RITM4296288 SVT-Robotics
+    # - 31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*
+    # # OPA Exception RITM4600706 pep-och-amazon-flna-mop
+    # - pepeiapnonprodglobalcommonacr.azurecr.io/omnichannelecommercehub_docker_local/pep/och/essa/edt/pep-och-amazon-flna-mop*
+    #  # OPA Exception RITM5155318
+    # - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*
+    # # OPA Exception RITM5184029
+    # - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*
+    # # OPA Exception RITM5179832
+    # - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/vct-pyservices-persistence*
+    # # OPA Exception RITM5230731
+    # - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*
+    # # OPA Exception - Dedicated nodepool - VCT - npvctu1z1
+    # - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/tm1-spot-dsi-pbna*
+    # - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/tm1-spot-dsi-flus*
+    # # OPA Exception - RITM5456883 pep-eiap-pfna-vct-dev
+    # - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/dsi-caching-testing*
+    # # OPA Exception - INC08630347 for pep-eiap-cgf-rmispecs-dev and pep-eiap-cgf-rmispecs-qa
+    # - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/specification-digitization-api*

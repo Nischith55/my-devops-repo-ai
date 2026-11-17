@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: och-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for och-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+      - peppfnanonprodhhnextacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-pcaf-qa
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: och-qa-admin
+        description: Admin privileges to och-qa
+        policies:
+        - p, proj:och-qa:och-qa-admin, applications, *, och-qa/*, allow
+        - p, proj:och-qa:och-qa-admin, repositories, *, och-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: och-qa-user
+        description: Read-only privileges to och-qa
+        policies:
+        - p, proj:och-qa:och-qa-user, applications, get, och-qa/*, allow
+        - p, proj:och-qa:och-qa-user, applications, sync, och-qa/*, allow
+        - p, proj:och-qa:och-qa-user, repositories, get, och-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:och-qa:och-qa-user, applications, action/apps/Deployment/restart, och-qa/*, allow
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+        - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    

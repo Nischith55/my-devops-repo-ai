@@ -1,0 +1,152 @@
+---
+# ##
+# Kustomize Build Settings. NOTE: this uses common jinja2 templates to 
+# generate the neccessary overlay IF kustomization is needed.
+# IMPORTANT:
+# - Follow the protocol so the Ansible Play and jinja2 protocols work
+#   seamlessly
+# - MUST have a global variable the ends with 
+#    <app_abbrev|app_name>_<component_name>_.+_comopnent_setting$
+# 
+# ##
+_es_filebeat_component_name: filebeat
+
+# ##
+#   All Directory variables internal to this Component. If Copy and Pasting
+#   Please be Careful and change.
+#  - es_deploy_app_root_dir: should be global in app_setting
+# ##
+
+# where the overlays dir is for kustomize build e.g.
+_es_filebeat_component_dest_root_dir: |-
+  {{ (es_deploy_app_root_dir, _es_filebeat_component_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_es_filebeat_manifests_dest_dir: |-
+  {{ (_es_filebeat_component_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_es_filebeat_overlays_dest_dir: &dest001 |-
+  {{ (_es_filebeat_component_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_es_filebeat_manifest_path: |-
+  {{ 
+    (_es_filebeat_manifests_dest_dir,  _es_filebeat_component_name + '.yml') 
+    | path_join 
+  }}
+
+_es_filebeat_kustomize_resource_base_dir: |-
+  {{ (es_source_app_root_dir, 'kustomize'
+    , _es_filebeat_component_name, 'base') | path_join 
+  }}
+
+# -- meta parameters
+_es_filebeat_meta_params:
+
+  # component name
+  name: "{{ _es_filebeat_component_name }}"
+
+  # app name
+  app_name: "{{ es_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ es_target_namespace }}"
+
+
+# -- build parameters
+
+_es_filebeat_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _es_filebeat_overlays_dest_dir }}"
+    output_path: "{{ _es_filebeat_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_es_filebeat_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _es_filebeat_kustomize_resource_base_dir 
+            | relpath(_es_filebeat_manifests_dest_dir) 
+        }}
+
+    images:
+      - name: &img001 docker.elastic.co/beats/filebeat
+        newName: *img001
+        newTag: |-
+          {{ es_filebeat_image_tag | default(es_beats_image_tag) }}
+
+  patches:
+    # patch configmap: filebeat-config
+    - name: patch-configmap-filebeat-config
+      template_merge_src: "{{ kct_config_map_merge_yaml_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_es_filebeat_overlays_dest_dir, 
+            'patch-merge-configmap-filebeat-config.yml')
+          |
+          path_join
+        }}
+      target:
+        group: ""
+        version: v1
+        kind: ConfigMap
+        name: filebeat-config
+        namespace: "{{ es_src_namespace }}"
+      merge:
+        # replace filebeat.yml
+        - key: filebeat.yml
+          value: "{{ es_filebeat_yml_value_config_map }}"
+
+    # patch both strategic merge and json6902
+    - name: patch-filebeat-daemonset
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_es_filebeat_overlays_dest_dir, 'patch-merge-daemonset.yml')
+          |
+          path_join
+        }}
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ 
+          (_es_filebeat_overlays_dest_dir, 'patch-json-daemonset.yml')
+          |
+          path_join
+        }}
+
+      target:
+        group: apps
+        version: v1
+        kind: DaemonSet
+        name: filebeat
+        namespace: "{{ es_src_namespace }}"
+      # this is the merge patch.
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_daemonset_spec }}"
+          
+      # this is daemonset common patch env remove or add
+      json6902: |-
+        {{ es_common_daemonset_json_patch }}
+
+# ##
+# Make the final settings
+# ##
+es_filebeat_component_setting: |-
+  {{
+    _es_filebeat_meta_params
+    |
+    combine(_es_filebeat_build_params, recursive=True)
+  }}
+

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-location-insights-services-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-location-insights-services-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-location-insights-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pcaf-dev
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-location-insights-services-dev-admin
+    description: Admin privileges to pep-pfna-location-insights-services-dev
+    policies:
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-admin, applications, *, pep-pfna-location-insights-services-dev/*, allow
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-admin, repositories, *, pep-pfna-location-insights-services-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-location-insights-services-dev-user
+    description: Read-only privileges to pep-pfna-location-insights-services-dev
+    policies:
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-user, applications, get, pep-pfna-location-insights-services-dev/*, allow
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-user, applications, sync, pep-pfna-location-insights-services-dev/*, allow
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-user, repositories, get, pep-pfna-location-insights-services-dev/*, allow
+    - p, proj:pep-pfna-location-insights-services-dev:pep-pfna-location-insights-services-dev-user, applications, action/apps/Deployment/restart, pep-pfna-location-insights-services-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

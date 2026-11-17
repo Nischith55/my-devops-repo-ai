@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pcaf-och-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pcaf-och-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/eCommerce_D2C_PFNA/_git/pep-pcaf-och-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-pcaf-prod
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pcaf-och-prod-admin
+    description: Admin privileges to pep-pcaf-och-prod
+    policies:
+    - p, proj:pep-pcaf-och-prod:pep-pcaf-och-prod-admin, applications, *, pep-pcaf-och-prod/*, allow
+    - p, proj:pep-pcaf-och-prod:pep-pcaf-och-prod-admin, repositories, *, pep-pcaf-och-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pcaf-och-prod-user
+    description: Read-only privileges to pep-pcaf-och-prod
+    policies:
+    - p, proj:pep-pcaf-och-prod:pep-pcaf-och-prod-user, applications, get, pep-pcaf-och-prod/*, allow
+    - p, proj:pep-pcaf-och-prod:pep-pcaf-och-prod-user, applications, sync, pep-pcaf-och-prod/*, allow
+    - p, proj:pep-pcaf-och-prod:pep-pcaf-och-prod-user, repositories, get, pep-pcaf-och-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.PFNA.RG.AKS.PROD.Contributor"
+    - "Team.Support.EIAP.READ"

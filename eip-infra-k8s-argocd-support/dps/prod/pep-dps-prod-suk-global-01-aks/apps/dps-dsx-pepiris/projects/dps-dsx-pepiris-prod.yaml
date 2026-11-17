@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dps-dsx-pepiris-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app     
+spec:
+  description: Project for dps-dsx-pepiris-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pepiris-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-dps-optmereu-prod
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dps-dsx-pepiris-prod-admin
+    description: Admin privileges to dps-dsx-pepiris-prod
+    policies:
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-admin, applications, *, dps-dsx-pepiris-prod/*, allow
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-admin, applications, get, argocd/*, allow
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-admin, repositories, *, dps-dsx-pepiris-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dps-dsx-pepiris-prod-user
+    description: Read-only privileges to dps-dsx-pepiris-prod
+    policies:
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-user, applications, get, dps-dsx-pepiris-prod/*, allow
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-user, applications, sync, dps-dsx-pepiris-prod/*, allow
+    - p, proj:dps-dsx-pepiris-prod:dps-dsx-pepiris-prod-user, repositories, get, dps-dsx-pepiris-prod/*, allow
+    groups:
+    - "Team.App.DSX.OptimalMerchandizing.Admins"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

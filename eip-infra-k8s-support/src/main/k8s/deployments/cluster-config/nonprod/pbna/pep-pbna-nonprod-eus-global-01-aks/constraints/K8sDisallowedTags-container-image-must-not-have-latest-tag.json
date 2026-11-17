@@ -1,0 +1,37 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sDisallowedTags",
+  "metadata": {
+    "annotations": {},
+    "labels": {
+      "app.kubernetes.io/instance": "opa-constraints-pep-pbna-nonprod-eus-global-01-aks-dev"
+    },
+    "name": "container-image-must-not-have-latest-tag"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "exemptImages": [
+        "openpolicyagent/opa-exp:latest",
+        "openpolicyagent/opa-exp2:latest",
+        "busybox:latest"
+      ],
+      "tags": [
+        "latest"
+      ]
+    }
+  }
+}

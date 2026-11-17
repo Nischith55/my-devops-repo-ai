@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-dtv-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-dtv-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-dtv-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-dtvapp-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-dtv-prod-admin
+    description: Admin privileges to pep-dtv-prod
+    policies:
+    - p, proj:pep-dtv-prod:pep-dtv-prod-admin, applications, *, pep-dtv-prod/*, allow
+    - p, proj:pep-dtv-prod:pep-dtv-prod-admin, repositories, *, pep-dtv-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-dtv-prod-user
+    description: Read-only privileges to pep-dtv-prod
+    policies:
+    - p, proj:pep-dtv-prod:pep-dtv-prod-user, applications, get, pep-dtv-prod/*, allow
+    - p, proj:pep-dtv-prod:pep-dtv-prod-user, applications, sync, pep-dtv-prod/*, allow
+    - p, proj:pep-dtv-prod:pep-dtv-prod-user, repositories, get, pep-dtv-prod/*, allow
+    groups:
+    - "Team.Support.DPS.Prod.dtvapp"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

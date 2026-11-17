@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dopapp-b2b-eg-zyeu-vs
+  namespace: pep-dps-europe-btblylty-qa
+  labels:
+      app: dopapp-b2b-eg
+spec:
+  hosts:
+  - admin-cep-eg.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - admin-cep-eg.qa.pepsico.com
+  gateways:
+  - pep-dps-europe-btblylty-qa/pep-dps-europe-btblylty-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopapp-b2b-eg.pep-dps-europe-btblylty-qa.svc.cluster.local
+        port:
+          number: 80
+  

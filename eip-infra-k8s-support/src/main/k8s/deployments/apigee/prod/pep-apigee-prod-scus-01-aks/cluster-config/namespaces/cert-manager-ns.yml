@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-h5jcr
+    kubernetes.io/metadata.name: cert-manager
+    servicename_aks: apigee
+  name: cert-manager

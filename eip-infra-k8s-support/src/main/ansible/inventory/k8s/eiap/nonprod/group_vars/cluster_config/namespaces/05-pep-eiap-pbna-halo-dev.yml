@@ -1,0 +1,56 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PBNA HALO
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_pbna_halo_dev:
+  
+  name: pep-eiap-pbna-halo-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-halo
+    sector: pbna
+    project: halo
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-pbna-halo-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_halo'] }}"
+        - "{{ k8s_sup_subjects['pbna_halo_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _pbna_halo_spn_name }}"
+      registries: 
+        - pepeiapnonprodpbnahaloacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _pbna_halo_spn_name }}"
+      # Any contents apart from what is in secret        
+

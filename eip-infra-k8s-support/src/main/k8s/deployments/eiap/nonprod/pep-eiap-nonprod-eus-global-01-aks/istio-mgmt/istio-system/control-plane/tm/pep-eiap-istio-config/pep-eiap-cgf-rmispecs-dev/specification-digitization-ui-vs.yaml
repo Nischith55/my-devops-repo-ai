@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: specification-digitization-ui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - specification-digitization-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - digispec.dev.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: specification-digitization-ui.pep-eiap-cgf-rmispecs-dev.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pepwap18308.corp.pep.pvt/odata/Queues/
+      - exact: https://pepwap18050.corp.pep.pvt
+      - exact: https://specification-digitization-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin 
+      exposeHeaders:
+      - x-total-count
+      - x-source          

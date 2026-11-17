@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nv-ingest-embedqa-jmqc-vs
+  namespace: pep-eiap-cgf-nvingest-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-aisp-pepgenx-nv-ingest-embedqa.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-nvingest-dev/pep-eiap-cgf-nvingest-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: nv-ingest-embedqa.pep-eiap-cgf-nvingest-dev.svc.cluster.local
+        port:
+          number: 8000
+  

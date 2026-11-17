@@ -1,0 +1,32 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ genclassesvariables_file[item] }}
+parameters:
+{% if genclassesvariables_file[item] == "managed-stdssd-zoned" or genclassesvariables_file[item] == "managed-premium-zoned" %}
+  fsType: xfs
+{% endif %}
+{% if genclassesvariables_file[item] == "managed-premium" %}
+  cachingmode: ReadOnly
+{% endif %}
+  kind: Managed
+  resourceGroup: {{ var['rg'] }}
+{% if genclassesvariables_file[item] == "managed-premium-zoned" or genclassesvariables_file[item] == "managed-premium" %}
+  skuName: Premium_LRS
+{% elif genclassesvariables_file[item] == "managed-stdssd-zoned" or genclassesvariables_file[item] == "managed-stdssd" %}
+  skuName: StandardSSD_LRS
+{% elif genclassesvariables_file[item] == "managed-ultra"  %}
+  skuName: UltraSSD_LRS
+{% else %}
+{% endif %}
+{% if genclassesvariables_file[item] == "managed-premium-zoned" or genclassesvariables_file[item] == "managed-premium" or genclassesvariables_file[item] == "managed-stdssd-zoned" %}
+  zoned: 'true'
+{% elif genclassesvariables_file[item] == "managed-ultra" or genclassesvariables_file[item] == "managed-stdssd" %}
+  zoned: 'false'
+{% else %}
+{% endif %}
+provisioner: disk.csi.azure.com
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

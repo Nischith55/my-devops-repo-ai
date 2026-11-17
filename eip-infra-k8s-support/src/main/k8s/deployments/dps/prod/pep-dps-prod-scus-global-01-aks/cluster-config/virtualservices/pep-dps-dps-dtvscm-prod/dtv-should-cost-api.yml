@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"dtv-should-cost-api-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"dtv-should-cost-api","namespace":"pep-dps-dps-dtvscm-prod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["dtv-should-cost-api.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"dtv-should-cost-api.pep-dps-dps-dtvscm-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: dtv-should-cost-api
+    app.kubernetes.io/instance: dtv-should-cost-api-prod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: dtv-should-cost-api
+  namespace: pep-dps-dps-dtvscm-prod
+spec:
+  gateways:
+  - pep-dps-dps-dtvscm-prod/pep-dps-dps-dtvscm-prod-cv-gw
+  hosts:
+  - dtv-should-cost-api.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtv-should-cost-api.pep-dps-dps-dtvscm-prod.svc.cluster.local
+        port:
+          number: 8080

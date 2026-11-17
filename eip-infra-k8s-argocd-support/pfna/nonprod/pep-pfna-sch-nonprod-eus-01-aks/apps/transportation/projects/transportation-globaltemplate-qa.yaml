@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: transportation-globaltemplate-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for transportation-globaltemplate-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/pep-pfna-transp-global-template-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-midmile-qa
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: transportation-globaltemplate-qa-admin
+    description: Admin privileges to transportation-globaltemplate-qa
+    policies:
+    - p, proj:transportation-qa:transportation-globaltemplate-qa-admin, applications, *, transportation-globaltemplate-qa/*, allow
+    - p, proj:transportation-qa:transportation-globaltemplate-qa-admin, repositories, *, transportation-globaltemplate-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: transportation-globaltemplate-qa-user
+    description: Read-only privileges to transportation-globaltemplate-qa
+    policies:
+    - p, proj:transportation-globaltemplate-qa:transportation-globaltemplate-qa-user, applications, get, transportation-globaltemplate-qa/*, allow
+    - p, proj:transportation-globaltemplate-qa:transportation-globaltemplate-qa-user, applications, sync, transportation-globaltemplate-qa/*, allow
+    - p, proj:transportation-globaltemplate-qa:transportation-globaltemplate-qa-user, repositories, get, transportation-globaltemplate-qa/*, allow
+    - p, proj:transportation-dev:transportation-dev-user, applications, action/apps/Deployment/restart, transportation-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.Fleet.Developer"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.Prod.dsxdevop"

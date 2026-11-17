@@ -1,0 +1,40 @@
+---
+# ########
+# IMPORTANT:
+# - This file can be copied to ALL clusters that have nodepools AZ enabled
+# - Currently ALL regions support that.
+# - For SCUS -- we have some old pool that do NOT use AZ.
+# ########
+
+# 0) aks "default" built-in
+sc_aks_default_params: |-
+  {{
+    pep_eiap_aks_default_parameters_zoned
+    |
+    combine(__sc_storage_disk_01, recursive=True)
+  }}
+
+# 1) managed-premium built-in
+sc_aks_managed_premium_params: |-
+  {{
+    pep_eiap_aks_managed_premium_parameters_zoned
+    |
+    combine(__sc_storage_disk_01, recursive=True)
+  }}
+
+# 3) azurefile built-in
+
+sc_aks_azurefile_params: |-
+  {{
+    pep_eiap_aks_azurefile_parameters
+    |
+    combine(__sc_storage_file_01, recursive=True)
+  }}
+
+# 4) Premium FileStorage -- needs a different storage account
+sc_aks_azurefile_premium_params: |-
+  {{
+    pep_eiap_aks_azurefile_premium_parameters
+    |
+    combine(__sc_storage_file_premium_02, recursive=True)
+  }}

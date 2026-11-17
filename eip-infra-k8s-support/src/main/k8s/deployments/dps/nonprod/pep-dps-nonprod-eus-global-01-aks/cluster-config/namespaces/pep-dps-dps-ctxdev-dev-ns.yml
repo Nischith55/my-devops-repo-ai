@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-ctxdev-dev
+  labels:
+    env-nonprod: "true"
+    project: ctxdev
+    sector: dps
+    team: dps-ctxdev
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: ctxportal
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: eca39b5347d1f614a527dc41516d43a4
+    pep-cmdb-app-service-id: 92a3539347d1f614a527dc41516d4358
+    pep-environment: Development
+    

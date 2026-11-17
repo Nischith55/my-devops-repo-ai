@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-consumer-receipt-kaz-qa
+  name: dtcsrv-joy-runtime-consumer-receipt-kaz-qa-vs
+  namespace: pep-eiap-europe-isalesteru-qa
+spec:
+  gateways:
+  - pep-eiap-europe-cep-qa/pep-eiap-europe-cep-qa-cv-gw
+  hosts:
+  - pep-joy-dtcruntimeconsumerreceiptkaz-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-consumer-receipt-kaz-qa.pep-eiap-europe-isalesteru-qa.svc.cluster.local
+        port:
+          number: 80

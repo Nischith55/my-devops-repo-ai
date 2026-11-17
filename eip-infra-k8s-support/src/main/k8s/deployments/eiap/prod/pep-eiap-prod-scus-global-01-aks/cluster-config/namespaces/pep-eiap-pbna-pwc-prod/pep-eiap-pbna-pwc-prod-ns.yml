@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-prod: "true"
+    environment: prod
+    istio-injection: enabled
+    project: pwc
+    sector: pbna
+    team: pbna-pwc
+  name: pep-eiap-pbna-pwc-prod

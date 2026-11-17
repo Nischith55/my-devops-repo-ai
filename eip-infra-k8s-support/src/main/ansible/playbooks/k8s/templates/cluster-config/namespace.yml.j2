@@ -1,0 +1,26 @@
+#jinja2: lstrip_blocks: "True"
+{# 
+  INPUTS:
+    params_tmpl:
+      name:
+      labels:
+      annotations:
+#}
+{% set _p = params_tmpl %}
+{% set _pl = _p['labels'] | default({}) %}
+{% set _pa = _p['annotations'] | default({}) %}
+---
+# Generated File do not edit manually -- try to regenerate  
+# {{ ansible_managed }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ _p['name'] }}
+  {% if (_pl | length > 0) %}
+  labels:
+    {{ _pl | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+  {% if (_pa | length > 0) %}
+  annotations:
+    {{ _pa | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}

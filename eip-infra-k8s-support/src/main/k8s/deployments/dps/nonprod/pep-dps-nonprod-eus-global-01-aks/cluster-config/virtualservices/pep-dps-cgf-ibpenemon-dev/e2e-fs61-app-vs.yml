@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: e2e-fs61-app
+  name: e2e-fs61-app-vs
+  namespace: pep-dps-cgf-ibpenemon-dev
+spec:
+  gateways:
+  - pep-dps-cgf-ibpenemon-dev/pep-dps-cgf-ibpenemon-dev-cv-gw
+  hosts:
+  - e2e-fs61-app.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /e2emonitoring-ibp
+    route:
+    - destination:
+        host: e2e-fs61-app.pep-dps-cgf-ibpenemon-dev.svc.cluster.local
+        port:
+          number: 8080

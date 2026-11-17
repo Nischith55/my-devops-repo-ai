@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mfgproplus-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/pep-pfna-mfgpro-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-pfna-mfgpropl-prod
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-prod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: mfgproplus-prod-admin
+    description: Admin privileges to mfgproplus-prod
+    policies:
+    - p, proj:mfgproplus-prod:mfgproplus-prod-admin, applications, *, mfgproplus-prod/*, allow
+    - p, proj:mfgproplus-prod:mfgproplus-prod-admin, repositories, *, mfgproplus-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: mfgproplus-prod-user
+    description: Read-only privileges to mfgproplus-prod
+    policies:
+    - p, proj:mfgproplus-prod:mfgproplus-prod-user, applications, get, mfgproplus-prod/*, allow
+    - p, proj:mfgproplus-prod:mfgproplus-prod-user, applications, sync, mfgproplus-prod/*, allow
+    - p, proj:mfgproplus-prod:mfgproplus-prod-user, repositories, get, mfgproplus-prod/*, allow
+    groups:
+    - "Team.Support.PFNA.Mfgpro.Developer"
+    - "Team.Support.PFNA.Fleet.Developer"

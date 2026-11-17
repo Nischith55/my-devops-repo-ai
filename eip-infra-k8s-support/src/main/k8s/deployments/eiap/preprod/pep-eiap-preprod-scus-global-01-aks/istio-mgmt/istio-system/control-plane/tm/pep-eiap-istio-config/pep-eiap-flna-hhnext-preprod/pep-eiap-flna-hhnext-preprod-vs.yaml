@@ -1,0 +1,67 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-flna-hhnext-preprod-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pep-eiap-flna-hhnext.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /asnadjsvc/
+      ignoreUriCase: true
+    - uri:
+        prefix: /asnadjsvc
+      ignoreUriCase: true
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: advancedshipmentnotice.pep-eiap-flna-hhnext-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /azureblobwoopa/
+      ignoreUriCase: true
+    - uri:
+        prefix: /azureblobwoopa
+      ignoreUriCase: true
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: pep-eip-pfna-hhnext-filestore.pep-eiap-flna-hhnext-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /azureblob/
+      ignoreUriCase: true
+    - uri:
+        prefix: /azureblob
+      ignoreUriCase: true
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: filestore.pep-eiap-flna-hhnext-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /sfproxy/
+      ignoreUriCase: true
+    - uri:
+        prefix: /sfproxy
+      ignoreUriCase: true
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: peppcafapisfproxy.pep-eiap-flna-hhnext-preprod.svc.cluster.local
+        port:
+          number: 80

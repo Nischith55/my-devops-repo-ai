@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-api-cblite-qa-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pep-pfna-api-cblite-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pfna-api-cblite.pep-eiap-flna-hhnext-qa.svc.cluster.local
+        port:
+          number: 80

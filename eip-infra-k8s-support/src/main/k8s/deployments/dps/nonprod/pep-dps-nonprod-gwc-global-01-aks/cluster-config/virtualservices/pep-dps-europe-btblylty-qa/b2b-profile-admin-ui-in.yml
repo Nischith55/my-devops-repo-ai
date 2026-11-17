@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-profile-admin-ui-in-qa:networking.istio.io/VirtualService:pep-dps-europe-btblylty-qa/b2b-profile-admin-ui-in
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-profile-admin-ui-in-qa:networking.istio.io/VirtualService:pep-dps-europe-btblylty-qa/b2b-profile-admin-ui-in"},"labels":{"app":"b2b-profile-admin-ui-in","app.kubernetes.io/instance":"b2b-profile-admin-ui-in","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","country":"india","env":"uat","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-profile-admin-ui-in","namespace":"pep-dps-europe-btblylty-qa"},"spec":{"gateways":["pep-dps-europe-btblylty-qa/pep-dps-europe-btblylty-qa-cv-gw"],"hosts":["b2b-profile-admin-ui-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-profile-admin-ui-in.pep-dps-europe-btblylty-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-profile-admin-ui-in
+        app.kubernetes.io/instance: b2b-profile-admin-ui-in
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        country: india
+        env: uat
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-profile-admin-ui-in
+    namespace: pep-dps-europe-btblylty-qa
+spec:
+    gateways:
+    - pep-dps-europe-btblylty-qa/pep-dps-europe-btblylty-qa-cv-gw
+    hosts:
+    - b2b-profile-admin-ui-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-in-uat.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-profile-admin-ui-in.pep-dps-europe-btblylty-qa.svc.cluster.local
+                port:
+                    number: 8080

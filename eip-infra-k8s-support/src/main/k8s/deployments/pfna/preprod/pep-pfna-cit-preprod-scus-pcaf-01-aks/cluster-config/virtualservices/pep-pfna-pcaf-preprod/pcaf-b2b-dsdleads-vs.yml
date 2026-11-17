@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-b2b-dsdleads
+  name: pcaf-b2b-dsdleads-vs
+  namespace: pep-pfna-pcaf-preprod
+spec:
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  hosts:
+  - pcaf-b2b-dsdleads.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://q1.pfnaweb.mypepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-b2b-dsdleads.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80

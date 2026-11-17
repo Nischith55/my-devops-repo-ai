@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-pfna-smartform-dev
+    project: smartform
+    sector: pfna
+    servicename_aks: pgtproject-sapanalyticsdata-digitalpfna
+    team: pfna-smartform
+  name: pep-eiap-pfna-smartform-dev

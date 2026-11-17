@@ -1,0 +1,58 @@
+---
+
+# Execute arbitrary istioctl command (note: can be dangerous)
+- name: ISTIOCTL_EXEC_BLOCK
+  block:
+
+    - name: |-
+        ISTIOCTL_EXEC_PRE_CONDITIONS ({{ ____kube_context }})
+      assert:
+        that:
+          - ____kube_context is defined
+
+    - name: |-
+        ISTIOCTL_EXEC ({{ ____ictl_action }} {{ ____ictl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      shell: |
+        set -eou pipefail
+        {{ istioctl_cmd }} {{ ____ictl_options }} \
+          --context="{{ ____kube_context }}" \
+        {% if ____kube_config is defined and ____kube_config != '' %}
+         --kubeconfig={{ ____kube_config | expanduser | expandvars | realpath }} \
+        {% endif %}
+          {{ ____ictl_action }} \
+          {{ ____ictl_action_args }}
+      args:
+        executable: /bin/bash
+      register: istioctl_exec_result
+      changed_when: 
+        - istioctl_exec_result.rc == 0
+        - istioctl_exec_result.stdout is defined
+      failed_when: false
+
+    - name: |-
+        ISTIOCTL_EXEC_MSG ({{ ____ictl_action }} {{ ____ictl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      debug:
+        msg: "{{ istioctl_exec_result.stdout }}"
+      when: >-
+        (istioctl_exec_result.stdout is defined)
+        and
+        (print_resp | default('true') | bool)
+
+    - name: |-
+        ISTIOCTL_EXEC_ASSERT ({{ ____ictl_action }} {{ ____ictl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      assert:
+        that:
+          - istioctl_exec_result.rc == 0
+        # MUST be a string
+        fail_msg: "{{ istioctl_exec_result | to_nice_yaml }}"
+      when: >-
+        (istioctl_exec_assert_ovrd | default('true') | bool)
+  
+  vars:
+    ____ictl_action: "{{ istioctl_action }}"
+    ____ictl_action_args: "{{ istioctl_action_args }}"
+    ____ictl_options: "{{ istioctl_options | default('') }}"
+    ____kube_config: "{{ kube_config | default('') }}"
+    ____kube_context: "{{ kube_context }}"
+  # always delegate to controller
+  delegate_to: localhost

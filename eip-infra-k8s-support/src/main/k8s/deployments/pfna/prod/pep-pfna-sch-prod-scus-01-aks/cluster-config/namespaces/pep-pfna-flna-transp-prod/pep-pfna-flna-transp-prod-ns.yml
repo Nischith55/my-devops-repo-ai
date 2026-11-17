@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-flna-transp-prod
+    project: transp
+    sector: flna
+    team: flna-transp
+  name: pep-pfna-flna-transp-prod

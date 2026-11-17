@@ -1,0 +1,12 @@
+---
+
+pep_eiap_servicenow_crb_cfg:
+  name: pep-eiap-servicenow-crb
+  kind: ClusterRoleBinding
+  role: pep-eiap-servicenow-clusterrole
+  role_kind: ClusterRole
+
+  # Only cluster role binding have subjects.
+  # Do not add service accounts
+  subjects: []
+

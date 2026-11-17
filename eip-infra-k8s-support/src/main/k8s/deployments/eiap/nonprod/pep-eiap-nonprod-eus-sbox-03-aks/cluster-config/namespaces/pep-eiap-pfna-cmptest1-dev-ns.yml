@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: cmptest1
+    sector: pfna
+    team: pfna-cmptest1
+  name: pep-eiap-pfna-cmptest1-dev

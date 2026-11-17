@@ -1,0 +1,26 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockLoadBalancer",
+  "metadata": {
+    "annotations": {},
+    "name": "block-load-balancer"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "excludedNamespaces": [
+        "istio-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ]
+    }
+  }
+}

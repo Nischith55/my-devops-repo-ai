@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-batchjobmonitoringservice
+  name: pep-och-batchjobmonitoringservice-vs
+  namespace: pep-eiap-och-na-prod
+spec:
+  gateways:
+  - pep-eiap-och-na-prod/pep-eiap-och-na-prod-cv-gw
+  hosts:
+  - pep-och-batchjobmonitoringservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api/batchJobs
+    - ignoreUriCase: true
+      uri:
+        prefix: /management/               
+    route:
+    - destination:
+        host: pep-och-batchjobmonitoringservice.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80

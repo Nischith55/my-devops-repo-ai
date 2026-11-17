@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-sfproxy-v4-upvi-vs
+  namespace: pep-pfna-pgt-qa
+  labels:
+      app: pcaf-shp-sfproxy-v4
+spec:
+  hosts:
+  - pcaf-shp-sfproxy-v4-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-qa/pep-pfna-pgt-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-sfproxy-v4.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 8080
+  

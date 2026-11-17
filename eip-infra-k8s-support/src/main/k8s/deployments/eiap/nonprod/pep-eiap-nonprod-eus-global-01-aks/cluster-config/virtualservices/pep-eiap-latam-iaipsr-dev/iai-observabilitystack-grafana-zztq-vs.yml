@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: iai-observabilitystack-grafana-zztq-vs
+  namespace: pep-eiap-latam-iaipsr-dev
+  labels:
+      app: iai-observabilitystack-grafana
+spec:
+  hosts:
+  - iai-observabilitystack-grafana.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-iaipsr-dev/pep-eiap-latam-iaipsr-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: iai-observabilitystack-grafana.pep-eiap-latam-iaipsr-dev.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,95 @@
+---
+# pep-eiap-nginx :: default (aka no component as such)
+# ABBREVIATIONS:
+#  _pe_aks_init_ubuntu_18_04: _pe_u1804
+
+_pe_u1804_name: ubuntu-18.04
+
+_pe_u1804_main_img_name: |-
+  {{ pe_aks_init_image_name | default('pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx') }}
+
+_pe_u1804_main_img_tag: |-
+  {{ pe_aks_init_image_tag | default('ubuntu-18.04-2021.02.27') }}
+
+# where the overlays dir is for kustomize build e.g.
+_pe_u1804_dest_root_dir: |-
+  {{ (pe_aks_init_deploy_app_root_dir, _pe_u1804_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_pe_u1804_manifests_dest_dir: |-
+  {{ (_pe_u1804_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_pe_u1804_overlays_dest_dir: |-
+  {{ (_pe_u1804_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_pe_u1804_manifest_path: |-
+  {{ (_pe_u1804_manifests_dest_dir, 
+      pe_aks_init_app_name + '-' + _pe_u1804_name + '.yml') | path_join 
+  }}
+
+# can be shared
+_pe_u1804_kustomize_resource_base_dir: |-
+  {{ (pe_aks_init_source_app_root_dir, 'kustomize', _pe_u1804_name, 'base') 
+      | path_join 
+  }}
+
+# -- meta parameters
+_pe_u1804_meta_params:
+
+  # component name
+  name: "{{ _pe_u1804_name }}"
+
+  # app name
+  app_name: "{{ pe_aks_init_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ pe_aks_init_target_namespace }}"
+
+
+# -- build parameters
+
+_pe_u1804_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _pe_u1804_overlays_dest_dir }}"
+    output_path: "{{ _pe_u1804_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_pe_u1804_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # override namespace
+    namespace:  "{{ _pe_u1804_meta_params['namespace'] }}"
+    
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _pe_u1804_kustomize_resource_base_dir 
+            | relpath(_pe_u1804_manifests_dest_dir) 
+        }}
+
+    # Images
+    images:
+      - name: ubuntu:18.04
+        newName: "{{ _pe_u1804_main_img_name }}"
+        newTag: "{{ _pe_u1804_main_img_tag }}"
+
+  # no patches currently
+  patches: []
+ 
+# ##
+# Make the final settings
+# ##
+pe_aks_init_ubuntu_18_04_component_setting: |-
+  {{
+    _pe_u1804_meta_params
+    |
+    combine(_pe_u1804_build_params, recursive=True)
+  }}
+

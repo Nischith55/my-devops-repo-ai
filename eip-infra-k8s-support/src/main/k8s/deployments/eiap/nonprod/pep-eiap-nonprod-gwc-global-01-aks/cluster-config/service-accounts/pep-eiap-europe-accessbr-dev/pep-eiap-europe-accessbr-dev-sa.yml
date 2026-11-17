@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c6fcb79f-72cc-4fb9-b111-2ef8f529875e
+  name: pep-eiap-europe-accessbr-dev-sa
+  namespace: pep-eiap-europe-accessbr-dev

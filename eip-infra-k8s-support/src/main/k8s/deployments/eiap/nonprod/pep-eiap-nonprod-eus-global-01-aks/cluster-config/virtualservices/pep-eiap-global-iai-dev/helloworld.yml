@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: helloworld
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /hello
+    route:
+    - destination:
+        host: helloworld.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 5000

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: fca454d3-742e-4a7d-935f-cac1d15d3faf
+  name: pep-cmp-cmp-testgmzu-dev-sa
+  namespace: pep-cmp-cmp-testgmzu-dev

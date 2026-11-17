@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-rgmpeaai-dev
+  labels:
+    env-nonprod: "true"
+    project: rgmpeaai
+    sector: flna
+    team: flna-rgmpeaai
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: rgm-pea-ai-agent
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 226ae20688f383dcb03e6a079d334e1f
+    pep-cmdb-app-service-id: 207aaa0688f383dcb03e6a079d334ed1
+    pep-environment: Development
+    

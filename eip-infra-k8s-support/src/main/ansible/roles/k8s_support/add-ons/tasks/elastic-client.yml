@@ -1,0 +1,114 @@
+---
+- name: create temp directory for filebeat
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat"
+    state: directory
+
+- template:
+    src: ca-cert-configmap.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat/002-pep-ca-certs-configmap.yml"
+
+- name: Create ca certificate by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat/002-pep-ca-certs-configmap.yml"
+  no_log: true
+  register: init4
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- set_fact:
+    metricbeat_list: "{{ metricbeat.split(',') }}"
+
+- template:
+    src: filebeat.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat/015-cluster-01-logs-filebeat_phase2.yml"
+
+- name: Create filebeat by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat/015-cluster-01-logs-filebeat_phase2.yml"
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/filebeat/cluster/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/filebeat/015-cluster-01-logs-filebeat_phase2.yml"
+    force: true
+  register: copy_op
+
+#__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________filebeat__________
+
+- name: create temp directory for metricbeat
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat"
+    state: directory
+
+- template:
+    src: metricbeatk8s.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/015-cluster-01-{{ env }}-{{ region }}-k8s-metricbeat_phase2.yml"
+
+
+- name: Create metric beat by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/015-cluster-01-{{ env }}-{{ region }}-k8s-metricbeat_phase2.yml"
+  register: init5
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- template:
+    src: metricbeatnode.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/016-cluster-01-{{ env }}-{{ region }}-node-metricbeat_phase2.yml"
+
+
+- name: Create metric beat node by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/016-cluster-01-{{ env }}-{{ region }}-node-metricbeat_phase2.yml"
+  register: init6
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/metricbeat/cluster/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/"
+    force: true
+  register: copy_op3
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/metricbeat/cluster/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/metricbeat/"
+    force: true
+
+
+- name: Rollout restart for the deployment
+  shell: /bin/bash -c "kubectl rollout restart deployment -n {{ prefix }}-elastic-client-01"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Rollout restart for the deployment
+  shell: /bin/bash -c "kubectl rollout restart deployment -n {{ prefix }}-{{ infrans }}"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Rollout restart for the daemonset
+  shell: /bin/bash -c "kubectl rollout restart daemonset -n {{ prefix }}-elastic-client-01"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"

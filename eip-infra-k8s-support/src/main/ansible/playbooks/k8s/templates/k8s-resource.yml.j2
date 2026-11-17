@@ -1,0 +1,68 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Generate arbitrary k8s resources VERY Generic
+  INPUTS:
+    - params_tmpl:
+        name:
+        apiVersion: [required]
+        metadata: [optional]
+          labels:
+      [depends on kind]
+#}
+{% set _p = params_tmpl %}
+{% set _kind = _p['kind'] %}
+{# key metadata  #}
+{% set _pm = _p['metadata'] | default({}) %}
+{% set _pm_l = _pm['labels'] | default({}) %}
+{% set _pm_a = _pm['annotations'] | default({}) %}
+{% set _ps = _p['spec'] | default({}) %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+apiVersion: {{ _p['apiVersion'] }}
+kind: {{ _kind }}
+
+metadata:
+  name: {{ _p['name'] }}
+  {% if _p['namespace'] is defined %}
+  namespace: {{ _p['namespace'] }}
+  {% endif %}
+  {% if _pm_l is defined and (_pm_l | length) > 0 %}
+  labels:
+    {{ _pm_l | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+  {% if _pm_a is defined and (_pm_a | length > 0) %}
+  annotations:
+    {{ _pm_a | to_nice_yaml(indent=2, width=1337) 
+      | trim | indent(4) }}
+  {% endif %}
+{% if _kind in ('ClusterRoleBinding', 'RoleBinding') %}
+roleRef:
+  {{ _p['roleRef'] | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% if params_tmpl['subjects'] is defined %}
+subjects:
+  {% for subject in _p['subjects'] %}
+  {% if subject['kind'] == 'ServiceAccount' %}
+  - apiGroup: ""
+  {% else %}
+  - apiGroup: rbac.authorization.k8s.io
+  {% endif %}
+    {% for key, value in subject.iteritems() %}
+    {% if key in ['kind', 'namespace', 'name'] %}
+    {% if subject['alias'] is defined and key == 'name' %}
+    # {{ subject['alias'] }}
+    {% endif %}
+    {{ key }}: {{ value }}
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+{% endif %}
+{% if _kind in ('Role', 'ClusterRole') %}
+rules:
+  {{ _p['rules'] | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% endif %}
+{% if _ps is defined and (_ps | length) > 0 %}
+spec:
+  {{ _ps | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% endif %}

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dpa-argocd-configs-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dpa-argocd-configs-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/AzDev_GT_Test/_git/dpa-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-devsol-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dpa-argocd-configs-dev-admin
+    description: Admin privileges to dpa-argocd-configs-dev
+    policies:
+    - p, proj:dpa-argocd-configs-dev:dpa-argocd-configs-dev-admin, applications, *, dpa-argocd-configs-dev/*, allow
+    - p, proj:dpa-argocd-configs-dev:dpa-argocd-configs-dev-admin, repositories, *, dpa-argocd-configs-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dpa-argocd-configs-dev-user
+    description: Read-only privileges to dpa-argocd-configs-dev
+    policies:
+    - p, proj:dpa-argocd-configs-dev:dpa-argocd-configs-dev-user, applications, get, dpa-argocd-configs-dev/*, allow
+    - p, proj:dpa-argocd-configs-dev:dpa-argocd-configs-dev-user, applications, sync, dpa-argocd-configs-dev/*, allow
+    - p, proj:dpa-argocd-configs-dev:dpa-argocd-configs-dev-user, repositories, get, dpa-argocd-configs-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.AzureDevOps.Org.Admins"
+    - "Team.Support.EIAP.READ"

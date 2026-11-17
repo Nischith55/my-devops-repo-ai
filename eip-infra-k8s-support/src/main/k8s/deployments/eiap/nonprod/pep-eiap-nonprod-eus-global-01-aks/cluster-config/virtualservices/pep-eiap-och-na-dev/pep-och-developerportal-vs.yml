@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-developerportal
+  name: pep-och-developerportal-vs
+  namespace: pep-eiap-och-na-dev
+spec:
+  gateways:
+  - pep-eiap-och-na-dev/pep-eiap-och-na-dev-cv-gw
+  hosts:
+  - pep-och-developerportal.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      allowOrigins:
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    - ignoreUriCase: true
+      uri:
+        prefix: /management/
+    route:
+    - destination:
+        host: pep-och-developerportal.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80

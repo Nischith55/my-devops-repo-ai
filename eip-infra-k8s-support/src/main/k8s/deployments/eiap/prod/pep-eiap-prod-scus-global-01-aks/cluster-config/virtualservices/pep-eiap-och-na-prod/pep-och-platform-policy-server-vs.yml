@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-platform-policy-server-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-platform-policy-server.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/v1/api"}}],"route":[{"destination":{"host":"pep-och-platform-policy-server.pep-eiap-och-na-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-platform-policy-server
+  name: pep-och-platform-policy-server-vs
+  namespace: pep-eiap-och-na-prod
+spec:
+  gateways:
+  - pep-eiap-och-na-prod/pep-eiap-och-na-prod-cv-gw
+  hosts:
+  - pep-och-platform-policy-server.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-platform-policy-server.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80

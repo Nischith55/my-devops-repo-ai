@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: forecast
+    sector: flna
+    team: flna-forecast
+  name: pep-pfna-flna-forecast-dev

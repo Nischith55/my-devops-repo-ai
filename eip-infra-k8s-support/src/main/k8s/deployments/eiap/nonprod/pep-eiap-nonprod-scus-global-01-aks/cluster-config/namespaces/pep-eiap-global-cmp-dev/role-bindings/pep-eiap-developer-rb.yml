@@ -1,0 +1,21 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-global-cmp-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.CMP.Developer
+    name: 470d23ce-10b5-4038-975d-70160619df87
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-global-cmp-sp
+    name: 2e23c725-e1e0-4a61-9b45-f79eb6ea22bf

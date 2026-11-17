@@ -1,0 +1,61 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+# Namespace for eiap administrative service accounts
+
+ns_pep_eiap_ops_admin:
+  name: pep-eiap-ops-admin
+
+  labels:
+    team: eiap-admins
+    istio-injection: disabled
+   # service discovery required label 'pep-cmdb-app-service' for service mapping
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    # service now required label cluster_name should be always available
+    cluster-name: "{{ cluster_name }}"
+
+  generic_secrets: |-
+    {{ ops_admin_generic_secrets_names | default([]) }}
+
+  registry_secrets: |-
+    {{ ops_admin_registry_secrets_names | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ ops_admin_tls_secrets_names | default([]) }}
+
+  service_accounts:
+
+    # NOTE: we give the default SA servicenow-clusterrole so we can
+    # use it in daemonsets to access the api server with priveleges to
+    # read cluster data
+    - name: default
+      role_bindings:
+        - name: pep-eiap-servicenow-rb
+
+    # Should have cluster_admin access
+    - name: pep-eiap-admin-sa
+      cluster_role_bindings:
+        # name of the cluster role binding must exist
+        - name: pep-eiap-cluster-admin-crb
+
+    # Should only have service now cluster role
+    - name: pep-eiap-servicenow-sa
+      cluster_role_bindings:
+        # name of the cluster role binding must exist
+        - name: pep-eiap-servicenow-crb
+
+    # Should only have DevSecOps Continuous Deployment cluster role
+    - name: pep-eiap-devsecops-cd-sa
+      cluster_role_bindings:
+        # name of the cluster role binding must exist
+        - name: pep-eiap-devsecops-cd-crb
+
+

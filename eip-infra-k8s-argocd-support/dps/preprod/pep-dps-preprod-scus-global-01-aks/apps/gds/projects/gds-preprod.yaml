@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gds-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for gds-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gds-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-gds-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gds-preprod-admin
+    description: Admin privileges to gds-preprod
+    policies:
+    - p, proj:gds-preprod:gds-preprod-admin, applications, *, gds-preprod/*, allow
+    - p, proj:gds-preprod:gds-preprod-admin, repositories, *, gds-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gds-preprod-user
+    description: Read-only privileges to gds-preprod
+    policies:
+    - p, proj:gds-preprod:gds-preprod-user, applications, get, gds-preprod/*, allow
+    - p, proj:gds-preprod:gds-preprod-user, applications, sync, gds-preprod/*, allow
+    - p, proj:gds-preprod:gds-preprod-user, repositories, get, gds-preprod/*, allow
+    - p, proj:gds-preprod:gds-preprod-user, applications, action/apps/Deployment/restart, gds-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.GDS"
+    - "Team.Support.EIAP.READ"

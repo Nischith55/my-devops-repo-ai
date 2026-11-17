@@ -1,0 +1,32 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAllowPrivilegeEscalationContainer
+metadata:
+  name: psp-allow-privilege-escalation-container
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+      - argocd
+      - gatekeeper-system
+      - default
+      - istio-ingress
+      - istio-system
+      - keda
+      - kube-node-lease
+      - kube-public
+      - kube-system
+      - kubecost
+      - monitoring
+      - pep-pepgenx-elastic-client-01
+      - pep-pepgenx-elastic-askadaa-01
+      - pep-pepgenx-global-devsecops-dev
+      - pep-pepgenx-global-dev
+      - pep-pepgenx-snowdiscovery-nonprod
+      - pep-pepgenx-cgf-lyzr-dev
+      - pep-pepgenx-cgf-pepvigilotel-dev
+      - pep-pepgenx-ops-admin
+  # parameters:
+  #   allowPrivilegeEscalation: false

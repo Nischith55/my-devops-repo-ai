@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 2c5c1f3d83884210e43247747daad333
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Development
+    project: fspoc
+    sector: sntdps
+    servicename_aks: retail360-aksclusternon-prod
+    team: sntdps-fspoc
+  name: pep-dps-sntdps-fspoc-dev

@@ -1,0 +1,322 @@
+# ##
+# PEP NOTES:
+# - IMPORTANT: This beat should run ONLY As Deployment.
+# - IMPORTANT: This beat should NOT concern itself with NODE level metrics
+#              that should be handled by node metricbeat DaemonSet.
+# ##
+---
+# ##
+# - Setup metricbeat configuration
+# ##
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-cluster-config
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: &app_name metricbeat-cluster
+    app: *app_name
+
+data:
+
+  K8S_CLUSTER_NAME: pep-eiap-nonprod-scus-global-01-aks
+
+  metricbeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+    
+    processors:
+    
+    # ~~
+    # Add EIAP fields
+    # ~~
+    - add_fields:
+        target: eiap
+        fields:
+          cluster_name: ${K8S_CLUSTER_NAME}
+    
+    - add_fields:
+        fields:
+          ls-destination: "SCUS"
+          pep-aks-cluster: ${K8S_CLUSTER_NAME}
+
+    - add_tags:
+        tags: ["NonProd-SCUS-Shared", "retain-logs"]
+
+    - script:
+        lang: javascript
+        source: >
+          function process(event) {
+            event.Put("fields.legacy-index", "mb-aks-" + event.Get("fields.pep-aks-cluster"));
+            return event;
+          }
+
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  metricbeat.yml: |-
+
+    # #####################################################################
+    # Setup metricbeat configuration
+    # #####################################################################
+    metricbeat:
+
+      # ~~
+      # Autodiscover kubernetes
+      # ~~
+      autodiscover:
+        providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          resource: pod
+          # always cluster scope
+          scope: cluster
+          # This should only be true for cluster scope
+          unique: true
+          templates:
+          - config:
+            # add metrics from kube-state-metrics
+            - module: istio
+              enabled: true
+              period: 30s
+              timeout: 90s
+              metricsets: ["istiod"]
+              hosts:
+              # standard install, if different change it
+              - istiod.istio-system.svc.cluster.local:15014    
+            
+            #Istio proxy metrics 
+            - module: istio
+              metricsets: ["proxy"]
+              hosts: "${data.host}:15090"
+
+            - module: kubernetes
+              add_metadata: true
+              hosts:
+              - kube-state-metrics.${KUBE_STATE_METRICS_NAMESPACE}:${KUBE_STATE_METRICS_PORT}
+              metricsets:
+              - state_node
+              - state_deployment
+              - state_daemonset
+              - state_replicaset
+              - state_pod
+              - state_container
+              - state_cronjob
+              - state_resourcequota
+              - state_statefulset
+              - state_service
+              - state_persistentvolume
+              - state_persistentvolumeclaim
+              - state_storageclass
+              # k8s events
+              - event
+              period: 10s
+            # add metrics from apiserver
+            - module: kubernetes
+              period: 30s
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              hosts:
+              - https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}
+              metricsets:
+              - apiserver
+              ssl:
+                certificate_authorities:
+                - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+    output.logstash:
+      hosts: ["pepwap22237.corp.pep.pvt:5045", "pepwap22238.corp.pep.pvt:5045"]
+      loadbalance: true
+      worker: 1
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-beat-metricbeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "extensions"
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app_name metricbeat-cluster
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: *app_name
+spec:
+
+  selector:
+    matchLabels:
+      k8s-app: *app_name
+
+  template:
+
+    metadata:
+      labels:
+        k8s-app: *app_name
+        app: *app_name
+        version: 8.10.2
+
+    spec:
+      # PEP: 
+      # - Deployment run only on system node pool taints
+      # - also lock down the node selector
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+      serviceAccountName: metricbeat
+      # some older Beat versions are depending on this settings presence 
+      # in k8s context
+      automountServiceAccountToken: true 
+      dnsPolicy: ClusterFirstWithHostNet
+      # Allows to provide richer host metadata
+      hostNetwork: true 
+      securityContext:
+        runAsUser: 0
+      terminationGracePeriodSeconds: 30
+      # All volumes
+      volumes:
+
+      # os-release
+      - name: os-release
+        hostPath:
+          path: /etc/os-release
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+          # beats-entrypoint-config
+          - configMap:
+              name: beats-entrypoint-config
+              optional: false
+              items:
+                - key: entrypoint.sh
+                  # must be relative
+                  path: bin/entrypoint.sh
+                  # 0755 -> 493
+                  mode: 493
+
+          # metricbeat-node-config
+          - configMap:
+              name: metricbeat-cluster-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      containers:
+      # PEP: args removed sysfs its in daemonset
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:8.10.2
+        command:
+        args:
+        - metricbeat
+        - -c 
+        - /projected/etc/beat-processor-config.yml
+        - -c 
+        - /projected/etc/beat.yml
+        - "-d"
+        - "*"
+        env:
+
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: &beats_shared_env beats-shared-env-config
+              key: K8S_CLUSTER_NAME
+
+   
+        # PEP: change
+        - name: KUBE_STATE_METRICS_NAMESPACE
+          value: monitoring
+        # PEP: change
+        - name: KUBE_STATE_METRICS_PORT
+          value: "8080"
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        volumeMounts:
+
+        # PEP: 
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true
+
+        # PEP: we need this mount to setup some environment variables
+        - name: os-release
+          mountPath: /tmp/etc/os-release
+          readOnly: true

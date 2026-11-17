@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-shcomo-qa-cv-web-vs
+  namespace: pep-eiap-cgf-shcomo-qa
+  labels:
+    app: pep-eiap-cgf-shcomo-qa-cv-web
+spec:
+  hosts:
+    - procurementai.qa.pepsico.com
+    - pep-eiap-cgf-shcomo-qa-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-shcomo-qa/pep-eiap-cgf-shcomo-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-shcomo-qa-cv-web.pep-eiap-cgf-shcomo-qa.svc.cluster.local
+        port:
+          number: 80

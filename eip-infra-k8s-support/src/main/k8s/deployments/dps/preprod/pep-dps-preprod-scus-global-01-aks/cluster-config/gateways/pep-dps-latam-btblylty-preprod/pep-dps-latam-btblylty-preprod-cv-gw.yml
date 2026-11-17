@@ -1,0 +1,488 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-btblylty-preprod-cv-gw
+  namespace: pep-dps-latam-btblylty-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-btblylty-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-btblylty-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-latam-btblylty-preprod-443.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-prospective-customer-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-btblylty-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-latam-btblylty-preprod-80.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - rewards-b2b.preprod.mypepsico.com
+    - profile-b2b.preprod.mypepsico.com
+    - b2b-profile-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - profile-b2b.preprod.pepsico.com
+    - b2b-loyalty-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - rewards-b2b-ta.preprod.mypepsico.com
+    - b2b-lylty-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - rewards-b2b-glo.preprod.mypepsico.com
+    - profile-b2b-glo.preprod.pepsico.com
+    - b2b-loyalty-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - profile-b2b-co.preprod.pepsico.com
+    - rewards-b2b-co.preprod.mypepsico.com
+    - b2b-profile-admin-bff.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - rewards-b2b-glob-hf.preprod.mypepsico.com
+    - rewards-b2b-co-hf.preprod.mypepsico.com
+    - b2b-profile-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - rewards-b2b-na.preprod.mypepsico.com
+    - profile-b2b-na.preprod.pepsico.com
+    - rewards-b2b-na-hf.preprod.mypepsico.com
+    - profile-b2b-na-hf.preprod.pepsico.com
+    - profile-b2b-mx-hf.preprod.pepsico.com
+    - b2b-profile-admin-bff-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - profile-b2b-co-hf.preprod.pepsico.com
+    - b2b-loyalty-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-loyalty-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-prospective-customer-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-btblylty-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - rewards-b2b.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-4-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-5-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-ta.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-6-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-glo.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-7-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-glo.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-glo.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-8-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-8-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-glo.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-co.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-9-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-9-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-co.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-co.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-10-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-10-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-co.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-glob-hf.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-11-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-11-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-glob-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-co-hf.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-12-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-12-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-co-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-na.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-13-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-13-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-na.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-na.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-14-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-14-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-na.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-na-hf.preprod.mypepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-15-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-15-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-na-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-na-hf.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-16-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-16-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-na-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-mx-hf.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-17-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-17-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-mx-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-co-hf.preprod.pepsico.com
+    name: pep-dps-latam-btblylty-preprod-cv-gw-18-https-443
+    port:
+      name: pep-dps-latam-btblylty-preprod-cv-gw-18-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-co-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

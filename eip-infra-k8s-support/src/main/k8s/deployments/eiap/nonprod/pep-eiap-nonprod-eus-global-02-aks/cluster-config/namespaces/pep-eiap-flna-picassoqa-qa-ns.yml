@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 836c41a987a841504c6e0e97cebb3527
+    pep-cmdb-bus-app-id: cf6c41a987a841504c6e0e97cebb3523
+    pep-environment: QA
+    project: picassoqa
+    sector: flna
+    servicename_aks: demandacceleratorpicassoprod
+    team: flna-picassoqa
+  name: pep-eiap-flna-picassoqa-qa

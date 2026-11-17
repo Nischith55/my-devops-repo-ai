@@ -1,0 +1,57 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"swaggerhub-vs","namespace":"pep-infratools-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["swaggerhub.infratools.gw01.aks01.scus.prod.azure.intra.pepsico.com","swaggerhub.mypepsico.com"],"http":[{"match":[{"uri":{"prefix":"/ws"}}],"route":[{"destination":{"host":"swaggerhub-notifications.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"uri":{"prefix":"/v1/"}}],"route":[{"destination":{"host":"haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"uri":{"prefix":"/virts/"}}],"route":[{"destination":{"host":"haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"uri":{"prefix":"/api/"}}],"route":[{"destination":{"host":"haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"swaggerhub-frontend.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: swaggerhub-vs
+  namespace: pep-infratools-cgf-swaggerhub-prod
+spec:
+  gateways:
+  - pep-infratools-cgf-swaggerhub-prod/pep-infratools-cgf-swaggerhub-prod-cv-gw
+  hosts:
+  - swaggerhub.infratools.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - swaggerhub.mypepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /ws
+    route:
+    - destination:
+        host: swaggerhub-notifications.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /virts/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: swaggerhub-frontend.pep-infratools-cgf-swaggerhub-prod.svc.cluster.local
+        port:
+          number: 80

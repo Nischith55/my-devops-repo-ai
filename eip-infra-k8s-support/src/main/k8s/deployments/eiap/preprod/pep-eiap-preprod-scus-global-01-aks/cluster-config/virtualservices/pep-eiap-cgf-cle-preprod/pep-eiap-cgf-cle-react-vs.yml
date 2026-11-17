@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-cgf-cle-react-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-cgf-cle-react.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com","cle.preprod.mypepsico.com","cle.preprod.scus.mypepsico.com"],"tls":[{"match":[{"port":443,"sniHosts":["cle.preprod.mypepsico.com","cle.preprod.scus.mypepsico.com","pep-eiap-cgf-cle-react.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"]}],"route":[{"destination":{"host":"pep-eiap-cgf-cle-react.pep-eiap-cgf-cle-preprod.svc.cluster.local","port":{"number":443}}}]}]}}
+  labels:
+    app: pep-eiap-cgf-cle-react
+  name: pep-eiap-cgf-cle-react-vs
+  namespace: pep-eiap-cgf-cle-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-cle-preprod/pep-eiap-cgf-cle-preprod-cv-gw
+  hosts:
+  - pep-eiap-cgf-cle-react.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - cle.preprod.mypepsico.com
+  - cle.preprod.scus.mypepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - cle.preprod.mypepsico.com
+      - cle.preprod.scus.mypepsico.com
+      - pep-eiap-cgf-cle-react.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-react.pep-eiap-cgf-cle-preprod.svc.cluster.local
+        port:
+          number: 443

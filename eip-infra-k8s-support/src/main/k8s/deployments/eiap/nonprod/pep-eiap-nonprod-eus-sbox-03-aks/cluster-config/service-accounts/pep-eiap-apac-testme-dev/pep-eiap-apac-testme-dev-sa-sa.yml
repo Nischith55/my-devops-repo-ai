@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-apac-testme-dev-sa
+  namespace: pep-eiap-apac-testme-dev

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dpa-workintake-webapp-dhio-vs
+  namespace: pep-pfna-pcaf-dev
+  labels:
+      app: pep-dpa-workintake-webapp
+spec:
+  hosts:
+  - pep-dpa-workintake-webapp.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dpa-workintake-webapp.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 8080
+  

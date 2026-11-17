@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: kafka-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app      
+spec:
+  description: Project for kafka-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Kafka_Infrastructure/_git/pep-eiap-kafka-argocd-configs
+  - pepkafkanonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: pep-infratools-cgf-operator-dev
+    server: https://kubernetes.default.svc
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: pep-infratools-cgf-shared-dev
+    server: https://kubernetes.default.svc
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: pep-infratools-*
+    server: https://kubernetes.default.svc
+  - name: pep-kafka-nonprod-scus-01-aks
+    server: https://kubernetes.default.svc
+    namespace: pep-kafka-ops-admin
+  clusterResourceWhitelist:
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole  
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition  
+  roles:
+  - name: kafka-dev-admin
+    description: Admin privileges to kafka-dev
+    policies:
+    - p, proj:kafka-dev:kafka-dev-admin, applications, *, kafka-dev/*, allow
+    - p, proj:kafka-dev:kafka-dev-admin, repositories, *, kafka-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Kafka.Build.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: kafka-dev-user
+    description: Read-only privileges to kafka-dev
+    policies:
+    - p, proj:kafka-dev:kafka-dev-user, applications, get, kafka-dev/*, allow
+    - p, proj:kafka-dev:kafka-dev-user, applications, sync, kafka-dev/*, allow
+    - p, proj:kafka-dev:kafka-dev-user, repositories, get, kafka-dev/*, allow
+    - p, proj:kafka-dev:kafka-dev-user, applications, action/apps/Deployment/restart, kafka-dev/*, allow
+    groups: 
+    - "Team.Support.EIAP.Kafka.Admin" 
+    - "Team.Support.EIAP.READ"

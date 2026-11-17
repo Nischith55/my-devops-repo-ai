@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-03-23 12:17:26
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-opsbridge-rb
+  namespace: pep-latam-opsbridge-global-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-latam-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.Azure.LATAM.OBS
+    name: f0b07401-2f07-4122-a5a5-4b0e743fffa6

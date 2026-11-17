@@ -1,0 +1,25 @@
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    pep-eiap-global-cmp-dev
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    pep-eiap-global-cmp-qa
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    pep-eiap-cgf-swaggerhub-dev
+    
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    pep-eiap-cgf-cvopa-dev 
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    gpu-operator 
+

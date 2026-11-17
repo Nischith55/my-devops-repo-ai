@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-cgf-afhblue-qa
+  labels:
+    env-nonprod: "true"
+    project: afhblue
+    sector: cgf
+    team: cgf-afhblue
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: afhmenuprod-non-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 7db533d4834042d4613030226daad3f4
+    pep-cmdb-app-service-id: aae9042c9798c710fb3c3fd3a253afb7
+    pep-environment: QA
+    

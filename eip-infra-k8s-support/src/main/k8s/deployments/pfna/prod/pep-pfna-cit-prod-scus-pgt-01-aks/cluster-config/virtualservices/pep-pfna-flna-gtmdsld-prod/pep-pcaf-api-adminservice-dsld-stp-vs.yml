@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pcaf-api-adminservice-dsld-stp
+  name: pep-pcaf-api-adminservice-dsld-stp-vs
+  namespace: pep-pfna-flna-gtmdsld-prod
+spec:
+  gateways:
+  - pep-pfna-flna-gtmdsld-prod/pep-pfna-flna-gtmdsld-prod-cv-gw
+  hosts:
+  - pep-pcaf-api-adminservice-dsld-stp.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/dsld/stp/admin
+    route:
+    - destination:
+        host: pep-pcaf-api-adminservice-dsld-stp.pep-pfna-flna-gtmdsld-prod.svc.cluster.local
+        port:
+          number: 80

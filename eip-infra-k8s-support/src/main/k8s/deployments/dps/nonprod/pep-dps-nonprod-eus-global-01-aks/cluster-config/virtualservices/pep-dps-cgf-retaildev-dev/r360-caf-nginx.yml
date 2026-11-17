@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"r360-caf-nginx","app.kubernetes.io/instance":"r360-caf-nginx-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.1"},"name":"r360-caf-nginx","namespace":"pep-dps-cgf-retaildev-dev"},"spec":{"gateways":["pep-dps-cgf-retaildev-dev/pep-dps-cgf-retaildev-dev-cv-gw"],"hosts":["r360-caf-nginx.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"r360-caf-nginx.pep-dps-cgf-retaildev-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: r360-caf-nginx
+        app.kubernetes.io/instance: r360-caf-nginx-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.1
+    name: r360-caf-nginx
+    namespace: pep-dps-cgf-retaildev-dev
+spec:
+    gateways:
+    - pep-dps-cgf-retaildev-dev/pep-dps-cgf-retaildev-dev-cv-gw
+    hosts:
+    - r360-caf-nginx.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360assets.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: r360-caf-nginx.pep-dps-cgf-retaildev-dev.svc.cluster.local
+                port:
+                    number: 8080

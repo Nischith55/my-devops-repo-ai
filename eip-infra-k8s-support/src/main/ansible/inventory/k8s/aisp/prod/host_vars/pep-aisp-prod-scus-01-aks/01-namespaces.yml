@@ -1,0 +1,12 @@
+####### BEGIN Added recently --pep-aisp-prod-scus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_aisp_cgf_edocs_prod
+  - ns_pep_aisp_cgf_hcmfar_prod
+  - ns_pep_aisp_cgf_pepsar_prod
+  - ns_pep_aisp_cgf_fss_prod
+  - ns_pep_aisp_cgf_ckptgpt_prod
+  - ns_pep_aisp_cgf_aisp_prod
+####### END Added recently --pep-aisp-prod-scus-01-aks######

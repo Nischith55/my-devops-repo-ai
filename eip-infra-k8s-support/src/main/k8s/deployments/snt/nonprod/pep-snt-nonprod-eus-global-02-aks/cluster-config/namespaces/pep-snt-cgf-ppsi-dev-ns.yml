@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 29e7773d-ed93-4dfe-9426-76be102605f0
+    pep-cmdb-bus-app-id: 9dfd70d493cd2a545161bd0b6aba10de
+    pep-environment: Development
+    project: ppsi
+    sector: cgf
+    servicename_aks: productportfolio-sustainabilityinsights
+    team: cgf-ppsi
+  name: pep-snt-cgf-ppsi-dev

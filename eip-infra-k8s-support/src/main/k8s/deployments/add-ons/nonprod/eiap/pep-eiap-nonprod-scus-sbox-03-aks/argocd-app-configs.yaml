@@ -1,0 +1,75 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-eiap-nonprod-scus-sbox-03-aks
+
+
+argoCDApplications:  
+  add-ons-elastic-client-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: true
+    path: src/main/k8s/deployments/add-ons/nonprod/eiap/pep-eiap-nonprod-scus-sbox-03-aks/elastic-client
+
+  addonskubestatemetricspepeiapnonprodscus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: true
+    chart: kube-state-metrics    
+    revision: 5.16.1 
+    namespace: monitoring
+    recursive: false
+    path: src/main/k8s/deployments/add-ons/base/kube-state-metrics/2.7.0/manifests
+  
+  addonskubecostpdbs-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: false
+    recursive: false
+    path: src/main/k8s/deployments/add-ons/base/kubecost/pdbs
+  
+  addonskubecost-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: false
+    autoSync: false
+    helm: true
+    recursive: false
+    chart: cost-analyzer
+    revision: 1.106.2
+    namespace: kubecost
+    additionalHelmValueFiles:
+    - src/main/k8s/deployments/add-ons/nonprod/eiap/pep-eiap-nonprod-scus-sbox-03-aks/kubecost/values-azure-secondary.yaml
+    path: src/main/k8s/deployments/add-ons/base/kubecost/manifests
+  
+  add-ons-msi-acrpull-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/add-ons/base/msi-acrpull/default/manifests
+    
+  # add-ons-istio-pep-eiap-nonprod-scus-sbox-03-aks:  
+  #   enabled: true
+  #   autoSync: false
+  #   helm: false    
+  #   recursive: false
+  #   path: src/main/k8s/deployments/add-ons/nonprod/eiap/pep-eiap-nonprod-scus-sbox-03-aks/rancher-istio/istio
+  add-ons-rancher-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: false
+    helm: true
+    recursive: false
+    chart: rancher-istio
+    revision: 102.3.1+up1.18.2
+    namespace: istio-system
+    additionalHelmValueFiles:
+    - src/main/k8s/deployments/add-ons/nonprod/eiap/pep-eiap-nonprod-scus-sbox-03-aks/rancher-istio/overlay.yaml
+    path: src/main/k8s/deployments/add-ons/nonprod/eiap/base/rancher-istio/
+  
+  add-ons-prometheus-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/add-ons/base/prometheus/server/manifests

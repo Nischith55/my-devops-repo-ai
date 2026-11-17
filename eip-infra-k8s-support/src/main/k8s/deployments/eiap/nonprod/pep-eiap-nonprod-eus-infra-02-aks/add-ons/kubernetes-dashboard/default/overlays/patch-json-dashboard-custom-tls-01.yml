@@ -1,0 +1,34 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-19 11:27:36
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: tls-01-certs
+    projected:
+      defaultMode: 256
+      sources:
+      - secret:
+          items:
+          - key: tls.crt
+            path: tls01.crt
+          - key: tls.key
+            path: tls01.key
+          name: pep-eiap-nonprod-eus-infra-02-aks-gw01-tls
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    mountPath: /secrets
+    name: tls-01-certs
+    readOnly: true
+- op: remove
+  path: /spec/template/spec/containers/0/args/0
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --default-cert-dir=/secrets
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --tls-cert-file=tls01.crt
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --tls-key-file=tls01.key

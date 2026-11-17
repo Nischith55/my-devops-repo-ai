@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: afh-mobi-technical-vs
+  namespace: pep-dps-dps-afhmenup-dev
+spec:
+  gateways:
+  - pep-dps-dps-afhmenup-dev/pep-dps-dps-afhmenup-dev-cv-gw
+  hosts:
+  - afh-mobi-technical.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-mobi-technical.pep-dps-dps-afhmenup-dev.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,78 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "annotations": {},
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "tigera-operator",
+        "snyk-monitor",
+        "policy-system",
+        "internal-services",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "pepdpsprodcommonacr.azurecr.io/",
+        "pepdpsnonprodglobalcommonacr.azurecr.io/",
+        "pepdpseusnonprodaispacr.azurecr.io/",
+        "pepeiapprodcommonacr.azurecr.io/",
+        "docker.io/istio/",
+        "nvcr.io/nvidia",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "nvcr.io/nvidia",
+        "otel/",
+        "rancher/",
+        "docker.io/rancher/",
+        "wiziopublic.azurecr.io/wiz-app/",
+        "wizio.azurecr.io/",
+        "registry.k8s.io/nfd",
+        "vllm/",
+        "mcr.microsoft.com/azuredocs",
+        "mcr.microsoft.com/cbl-mariner",
+        "nvcr.io/nim/meta",
+        "ghcr.io/huggingface",
+        "us-docker.pkg.dev/gloo-mesh/",
+        "akeyless/"
+      ]
+    }
+  }
+}

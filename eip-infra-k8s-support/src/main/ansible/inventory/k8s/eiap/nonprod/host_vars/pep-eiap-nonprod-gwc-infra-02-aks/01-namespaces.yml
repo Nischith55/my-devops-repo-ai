@@ -1,0 +1,6 @@
+####### BEGIN Added recently --pep-eiap-nonprod-gwc-infra-02-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+####### END Added recently --pep-eiap-nonprod-gwc-infra-02-aks######

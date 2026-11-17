@@ -1,0 +1,48 @@
+#        KUBERNETES JOB TEMPLATE              #
+######################################################
+
+# Placeholders enclosed inside double braces {{PLACEHOLDERS}} - Replace this with actual values during implementation
+
+# Job Resource
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dummy
+  namespace: pep-eiap-global-devsecops-prod     # Kubernetes Namespace in which the deployment will be perfomed. Example: pep-eip-latam-akv-dev-ns
+spec:
+  completions: 1  # Number of fixed completion count
+  parallelism: 1  # Number of Parallel Jobs
+  template:
+    spec:
+      containers:
+      - name: pepsico-eip-global-devsecops-agent
+        image: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20230315.16
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "16Gi"
+            cpu: "8000m"
+        envFrom:
+        - secretRef:
+            name: pep-eiap-infra-backend-support
+        - secretRef:
+            name: pep-eiap-svc-global-devsecops-azdevops
+        volumeMounts:
+        - mountPath: "/mnt/azure"
+          name: volume
+      serviceAccountName: pep-eiap-buildagent
+      nodeSelector:        # Agent pool restriction
+        balance-group: BuildAgentPools
+      tolerations:
+      - key: "BuildAgentPool"
+        operator: "Exists"
+        effect: "NoSchedule"
+      restartPolicy: "OnFailure"
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops

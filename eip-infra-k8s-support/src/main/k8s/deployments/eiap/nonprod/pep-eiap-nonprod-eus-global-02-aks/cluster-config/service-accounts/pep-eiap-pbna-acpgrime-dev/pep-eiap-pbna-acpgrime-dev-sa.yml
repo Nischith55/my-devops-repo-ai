@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: de32d480-3f2c-4242-9950-a54c8cc62505
+  name: pep-eiap-pbna-acpgrime-dev-sa
+  namespace: pep-eiap-pbna-acpgrime-dev

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: dopadmin-latamhr
+  name: dopadmin-latamhr-vs
+  namespace: pep-eiap-global-cep-prod
+spec:
+  gateways:
+  - pep-eiap-global-cep-prod/pep-eiap-global-cep-prod-cv-gw
+  hosts:
+  - pepcepa05.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopadmin-latamhr.pep-eiap-global-cep-prod.svc.cluster.local
+        port:
+          number: 80

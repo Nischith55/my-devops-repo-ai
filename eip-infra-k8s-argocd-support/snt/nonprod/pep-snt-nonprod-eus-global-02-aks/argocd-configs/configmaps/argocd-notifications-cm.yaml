@@ -1,0 +1,125 @@
+apiVersion: v1
+data:
+  context: 'argocdUrl: https://argocd.snt.gw01.aks02.eus.nonprod.azure.intra.pepsico.com'
+  service.teams: |
+    recipientUrls:
+      argo-notification: $argo-notification-url
+      argocd-test: $argocd-test-url       
+  service.email.pepsico: |
+    host: planrr.corp.pep.pvt
+    port: 25
+    from: $email-username
+    html: true
+  service.webhook.ado: |
+    url: https://dev.azure.com
+    headers:
+    - name: Content-Type
+      value: application/json
+    basicAuth:
+      username: $adouser
+      password: $adopat
+  template.teams-app-sync-succeeded: |
+    teams:
+      facts: |
+        [{
+          "name": "Sync Status",
+          "value": "{{.app.status.operationState.phase}}"
+        },
+        {
+          "name": "Repository",
+          "value": "{{(index .app.spec.sources 0).repoURL}}"
+        },
+        {
+          "name": "Revision",
+          "value": "{{ index .app.status.operationState.syncResult.revisions 0 }}"
+        }
+        {{range $index, $c := .app.status.conditions}}
+          {{if not $index}},{{end}}
+          {{if $index}},{{end}}
+          {
+            "name": "{{$c.type}}",
+            "value": "{{$c.message}}",
+          }
+        {{end}}
+        ]
+      potentialAction: |-
+        [{
+          "@type":"OpenUri",
+          "name":"Operation Application",
+          "targets":[{
+            "os":"default",
+            "uri":"{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          }]
+        },
+        {
+          "@type":"OpenUri",
+          "name":"Open Repository",
+          "targets":[{
+            "os":"default",
+            "uri":"{{(index .app.spec.sources 0).repoURL | call .repo.RepoURLToHTTPS}}"
+          }]
+        }]
+      title: New version of an application {{.app.metadata.name}} is up and running.
+      text: Application {{.app.metadata.name}} has been successfully synced at {{.app.status.operationState.finishedAt}}.
+      summary: "{{.app.metadata.name}} sync succeeded"
+
+  template.email-sync-succeeded: |
+    email:
+      subject: Application {{.app.metadata.name}} sync status succeeded
+    message: | 
+    
+      Argo application: <b> <a href="{{.context.argocdUrl}}/applications/{{.app.metadata.name}}?operation=true"> {{.app.metadata.name}} </a> </b> <br>
+      Status: <b>{{.app.status.health.status}}</b> <br>
+      Sync status: <b>{{.app.status.operationState.phase}}</b> <br>
+      Commit: <b>{{ index .app.status.operationState.syncResult.revisions 0 }}</b> <br>
+  
+  template.email-sync-degraded: |
+    email:
+      subject: Application {{.app.metadata.name}} sync status degraded
+    message: | 
+    
+      Argo application: <b> <a href="{{.context.argocdUrl}}/applications/{{.app.metadata.name}}?operation=true"> {{.app.metadata.name}} </a> </b> <br>
+      Status: <b>{{.app.status.health.status}}</b> <br>
+      Sync status: <b>{{.app.status.operationState.phase}}</b> <br>
+      Commit: <b>{{ index .app.status.operationState.syncResult.revisions 0 }}</b> <br>
+      
+  template.github-commit-status: |
+    webhook:
+      ado:
+        method: POST
+        path: /{{call .repo.FullNameByRepoURL (index .app.spec.sources 0).repoURL }}/_apis/git/repositories/{{.app.metadata.labels.repoName}}/commits/{{ index .app.status.operationState.syncResult.revisions 0 }}/statuses?api-version=5.0
+        body: |
+          {
+            {{if eq .app.status.health.status "Degraded"}} "state": "error"{{end}}
+            {{if eq .app.status.health.status "Healthy"}} "state": "succeeded"{{end}},
+            "description": "ARGO CD: Sync status - {{.app.status.operationState.phase}} health status - {{.app.status.health.status}}",
+            "targetUrl": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+            "context" :{"name":"{{.app.metadata.name}}","genre":"continuous-integration"}
+          }
+  # trigger.argo-tr-notify-mail: |
+  #   - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'"
+  #     oncePer: "app.status?.operationState?.syncResult?.revisions == nil ? \"\" : len(app.status?.operationState?.syncResult?.revisions)>0 ? app.status?.operationState?.syncResult?.revisions[0] : \"\""
+  #     send: [email-sync-succeeded]
+  #   - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.health.status == 'Degraded'"
+  #     oncePer: "app.status?.operationState?.syncResult?.revisions == nil ? \"\" : len(app.status?.operationState?.syncResult?.revisions)>0 ? app.status?.operationState?.syncResult?.revisions[0] : \"\""
+  #     send: [email-sync-degraded]
+  trigger.argo-tr-notify: |
+    - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'"
+      oncePer: "app.status?.operationState?.syncResult?.revisions == nil ? \"\" : len(app.status?.operationState?.syncResult?.revisions)>0 ? app.status?.operationState?.syncResult?.revisions[0] : \"\""
+      send: [github-commit-status]
+    - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.health.status == 'Degraded'"
+      send: [github-commit-status]
+  trigger.argo-tr-notify-teams: |
+    - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'"
+      oncePer: "app.status?.operationState?.syncResult?.revisions == nil ? \"\" : len(app.status?.operationState?.syncResult?.revisions)>0 ? app.status?.operationState?.syncResult?.revisions[0] : \"\""
+      send: [teams-app-sync-succeeded]
+    - when: "app.spec.sources !=null and app.status.operationState != nil and app.status.operationState.syncResult != nil and app.status.health.status == 'Degraded'"
+      send: [teams-app-sync-succeeded]
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: notifications-controller
+    app.kubernetes.io/name: argocd-notifications-controller
+    app.kubernetes.io/part-of: argocd
+  name: argocd-notifications-cm
+  namespace: argocd

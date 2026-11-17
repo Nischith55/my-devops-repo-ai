@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cmp-cmp-tgyt-qa
+  labels:
+    env-nonprod: "true"
+    project: tgyt
+    sector: cmp
+    team: cmp-tgyt
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: cloudmarketplace-cmp-non-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 7b16ee101b6cb410fa1cb99f034bcb87
+    pep-cmdb-app-service-id: dc4d9d7c4726151052293238436d4327
+    pep-environment: QA
+    

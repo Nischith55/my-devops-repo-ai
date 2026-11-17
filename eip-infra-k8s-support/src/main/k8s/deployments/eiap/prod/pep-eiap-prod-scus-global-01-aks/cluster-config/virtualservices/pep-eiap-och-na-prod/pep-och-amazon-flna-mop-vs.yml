@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-amazon-flna-mop-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-amazon-flna-mop.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Link","Content-Type"],"allowMethods":["POST","GET","PUT","DELETE"],"allowOrigins":[{"exact":"https://pep-och-amazonflnamop-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"}],"exposeHeaders":["x-total-count"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-och-amazon-flna-mop.pep-eiap-och-na-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-amazon-flna-mop
+  name: pep-och-amazon-flna-mop-vs
+  namespace: pep-eiap-och-na-prod
+spec:
+  gateways:
+  - pep-eiap-och-na-prod/pep-eiap-och-na-prod-cv-gw
+  hosts:
+  - pep-och-amazon-flna-mop.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      allowOrigins:
+      - exact: https://pep-och-amazonflnamop-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-amazon-flna-mop.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80

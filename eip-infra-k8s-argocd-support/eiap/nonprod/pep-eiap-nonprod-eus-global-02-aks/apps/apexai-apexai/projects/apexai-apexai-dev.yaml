@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apexai-apexai-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for apexai-apexai-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_APEXAI/_git/apexai-apexai-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-snt-apexai-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: apexai-apexai-dev-admin
+    description: Admin privileges to apexai-apexai-dev
+    policies:
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-admin, applications, *, apexai-apexai-dev/*, allow
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-admin, repositories, *, apexai-apexai-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: apexai-apexai-dev-user
+    description: Read-only privileges to apexai-apexai-dev
+    policies:
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-user, applications, get, apexai-apexai-dev/*, allow
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-user, applications, sync, apexai-apexai-dev/*, allow
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-user, repositories, get, apexai-apexai-dev/*, allow
+    - p, proj:apexai-apexai-dev:apexai-apexai-dev-user, *, delete, *, deny
+    groups:
+    - "Role.App.AZURE.APEXAI.NonProd.PrivilegedContributor"
+    - "Team.Support.EIAP.READ"

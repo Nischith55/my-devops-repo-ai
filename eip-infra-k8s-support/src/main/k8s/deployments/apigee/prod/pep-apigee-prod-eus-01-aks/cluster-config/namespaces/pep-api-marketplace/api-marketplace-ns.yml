@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api-marketplace
+  labels:
+    environment: prod
+    cluster-name: pep-apigee-prod-eus-01-aks
+    pep-cmdb-app-service: APIGEE-API-GATEWAY-NA-PROD
+    namespace: api-marketplace
+    region: eus
+    costcenter: PR00002831
+    hcode: H009288
+    program: API-Marketplace
+    business-group: CTO
+    crosscharge_aks: "no"
+    Servicename_aks: H009288
+
+

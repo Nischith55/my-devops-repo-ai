@@ -1,0 +1,81 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  DESCRIPTION:
+    - Common template to generate kustomization.yml file for *any* add-on or
+      app. NOTE: Follow the convention!!
+  CONVENTION:
+    - json patches should always be abstracted to a file.
+    - strategic merge patches should also ALWAYS be a file.
+  INPUTS:
+    - params_tmpl:
+        kustomization:
+          images:
+            <list>
+          resources:
+            <list>
+          commonLabels:
+            <map>
+        k8s_resources: [list]
+        patches: [list]
+#}
+{% set _p = params_tmpl %}
+{# all children of params_tmpl - level 1 #}
+{% set _pp = _p['patches'] | default([]) %}
+{% set _pk = _p['kustomization'] %}
+{% set _pk_k8sr = _p['k8s_resources'] | default([]) %}
+{# all children of kustomization - level 2 #}
+{% set _pki = _pk['images'] | default([]) %}
+{% set _pkc = _pk['commonLabels'] | default({}) %}
+{% set _pkr = _pk['resources'] | default([]) %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: {{ _p['namespace'] }}
+{% if (_pkc | length) > 0 %}
+commonLabels:
+  {{ _pkc | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% endif %}
+{% if (_pkr | length) > 0 or (_pk_k8sr | length) > 0 %}
+resources:
+  {% if (_pkr | length) > 0 %}
+  {{ _pkr | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+  {% endif %}
+  {% if (_pk_k8sr | length) > 0 %}
+  {# since we will always generate in overlays do basename #}
+  {% for _r_ in _pk_k8sr %}
+  - {{ _r_['template_k8s_dest'] | basename }}
+  {% endfor %}
+  {% endif %}
+{% endif %}
+{% if (_pki | length) > 0 %}
+images:
+  {{ _pki | to_nice_yaml(indent=2, width=1337) 
+    | trim | indent(2) }}
+{% endif %}
+# All strategic merge patches
+# only filename not full path
+{% if (_pp | length) > 0 %}
+patchesStrategicMerge:
+  {% for _pp_p in _pp %}
+  {% if 'template_merge_dest' in _pp_p %}
+  - {{ _pp_p['template_merge_dest'] | basename }}
+  {% endif %}
+  {% endfor %}
+# All json6902 patches
+# only filename not full path
+patches:
+  {% for _pp_p in _pp %}
+    {% set enable_patch = _pp_p['enable_patch'] | default('true') | bool %}
+  {% if 'template_json_dest' in _pp_p and enable_patch %}
+  - path: {{ _pp_p['template_json_dest'] | basename }}
+    target:
+      {{ _pp_p['target'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+  {% endif %}
+  {% endfor %}
+{% endif %} {# end _pp|length #}
+
+

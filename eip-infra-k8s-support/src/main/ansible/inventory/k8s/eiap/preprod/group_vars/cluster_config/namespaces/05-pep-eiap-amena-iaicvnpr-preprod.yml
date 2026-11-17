@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace IAI-CV-Platform-NPR
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa, prod or preprod etc}
+
+ns_pep_eiap_amena_iaicvnpr_preprod:
+
+  name: pep-eiap-amena-iaicvnpr-preprod
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: amena-iaicvnpr
+    sector: amena
+    project: iaicvnpr
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['iacoe_nprdcntb'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-amena-iaicvnpr-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb

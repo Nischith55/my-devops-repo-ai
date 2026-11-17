@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-pep-pfna-app-services-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-pep-pfna-app-services-prod  
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-pep-pfna-app-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-pcaf-prod
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: tsep-pep-pfna-app-services-prod-admin
+        description: Admin privileges to tsep-pep-pfna-app-services-prod
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-prod:tsep-pep-pfna-app-services-prod-admin, applications, *, tsep-pep-pfna-app-services-prod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-prod:tsep-pep-pfna-app-services-prod-admin, repositories, *, tsep-pep-pfna-app-services-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-pep-pfna-app-services-prod-user
+        description: Read-only privileges to tsep-pep-pfna-app-services-prod
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-prod:tsep-pep-pfna-app-services-prod-user, applications, get, tsep-pep-pfna-app-services-prod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-prod:tsep-pep-pfna-app-services-prod-user, applications, sync, tsep-pep-pfna-app-services-prod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-prod:tsep-pep-pfna-app-services-prod-user, repositories, get, tsep-pep-pfna-app-services-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

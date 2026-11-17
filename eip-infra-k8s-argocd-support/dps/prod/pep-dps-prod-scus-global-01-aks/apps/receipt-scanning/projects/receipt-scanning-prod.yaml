@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: receipt-scanning-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for receipt-scanning-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsadmin-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsmaster-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsruleng-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-extractor-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsvalidati-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rsrewards-prod
+    server: https://kubernetes.default.svc
+    
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-rstemporal-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: receipt-scanning-prod-admin
+    description: Admin privileges to receipt-scanning-prod
+    policies:
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-admin, applications, *, receipt-scanning-prod/*, allow
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-admin, applications, get, argocd/*, allow
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-admin, repositories, *, receipt-scanning-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: receipt-scanning-prod-user
+    description: Read-only privileges to receipt-scanning-prod
+    policies:
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-user, applications, get, receipt-scanning-prod/*, allow
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-user, applications, sync, receipt-scanning-prod/*, allow
+    - p, proj:receipt-scanning-prod:receipt-scanning-prod-user, repositories, get, receipt-scanning-prod/*, allow
+    groups:
+    - "Team.App.DPS.DSSRS.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

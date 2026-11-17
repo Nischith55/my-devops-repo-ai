@@ -1,0 +1,39 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for nginx app
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support 
+  - https://myartifactory.mypepsico.com/artifactory/eiapplatform-helm-prod-virtual
+  destinations:
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-global-infra
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: default
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: pep-pfna-global-prod
+    server: https://172.25.240.132:443
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: default
+    server: https://172.25.240.132:443
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: arc-systems
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-global-devsecops-prod
+    server: https://kubernetes.default.svc

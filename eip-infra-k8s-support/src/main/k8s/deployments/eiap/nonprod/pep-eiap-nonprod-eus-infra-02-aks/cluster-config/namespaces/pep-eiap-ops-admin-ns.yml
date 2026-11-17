@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-eiap-nonprod-eus-infra-02-aks
+    crosscharge_aks: crosscharge
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-eiap-ops-admin
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Development
+    servicename_aks: sharedaks
+    team: eiap-admins
+  name: pep-eiap-ops-admin

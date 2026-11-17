@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pfna-pcaf-webapps-services-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pfna-pcaf-webapps-services-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pcaf-webapps-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-pcaf-pgt-prod
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pfna-pcaf-webapps-services-prod-admin
+        description: Admin privileges to pfna-pcaf-webapps-services-prod
+        policies:
+        - p, proj:pfna-pcaf-webapps-services-prod:pfna-pcaf-webapps-services-prod-admin, applications, *, pfna-pcaf-webapps-services-prod/*, allow
+        - p, proj:pfna-pcaf-webapps-services-prod:pfna-pcaf-webapps-services-prod-admin, repositories, *, pfna-pcaf-webapps-services-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pfna-pcaf-webapps-services-prod-user
+        description: Read-only privileges to pfna-pcaf-webapps-services-prod
+        policies:
+        - p, proj:pfna-pcaf-webapps-services-prod:pfna-pcaf-webapps-services-prod-user, applications, get, pfna-pcaf-webapps-services-prod/*, allow
+        - p, proj:pfna-pcaf-webapps-services-prod:pfna-pcaf-webapps-services-prod-user, applications, sync, pfna-pcaf-webapps-services-prod/*, allow
+        - p, proj:pfna-pcaf-webapps-services-prod:pfna-pcaf-webapps-services-prod-user, repositories, get, pfna-pcaf-webapps-services-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.RG.AKS.PROD.Contributor"
+        - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    

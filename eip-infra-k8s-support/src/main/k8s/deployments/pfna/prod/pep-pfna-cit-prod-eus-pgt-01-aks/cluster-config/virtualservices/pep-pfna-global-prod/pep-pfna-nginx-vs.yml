@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-nginx
+  name: pep-pfna-nginx-vs
+  namespace: pep-pfna-global-prod
+spec:
+  gateways:
+  - pep-pfna-global-prod/pep-pfna-global-prod-cv-gw
+  hosts:
+  - pep-pfna-nginx.pfnapgt.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-nginx.pep-pfna-global-prod.svc.cluster.local
+        port:
+          number: 8080

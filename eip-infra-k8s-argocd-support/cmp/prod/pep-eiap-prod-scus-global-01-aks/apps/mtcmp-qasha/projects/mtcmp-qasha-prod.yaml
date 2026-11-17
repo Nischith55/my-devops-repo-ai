@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mtcmp-qasha-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for mtcmp-qasha-prod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/mtcmp-qasha-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-cgf-devx-prod
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: mtcmp-qasha-prod-admin
+    description: Admin privileges to mtcmp-qasha-prod
+    policies:
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-admin, applications, *, mtcmp-qasha-prod/*, allow
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-admin, repositories, *, mtcmp-qasha-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: mtcmp-qasha-prod-user
+    description: Read-only privileges to mtcmp-qasha-prod
+    policies:
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-user, applications, get, mtcmp-qasha-prod/*, allow
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-user, applications, sync, mtcmp-qasha-prod/*, allow
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-user, repositories, get, mtcmp-qasha-prod/*, allow
+    - p, proj:mtcmp-qasha-prod:mtcmp-qasha-prod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.Prod.devX"
+    - "Team.Support.EIAP.READ"

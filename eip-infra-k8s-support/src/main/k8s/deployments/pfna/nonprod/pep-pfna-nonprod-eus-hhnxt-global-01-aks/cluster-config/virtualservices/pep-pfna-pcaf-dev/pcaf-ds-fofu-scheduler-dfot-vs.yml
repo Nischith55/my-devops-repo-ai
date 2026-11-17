@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-ds-fofu-scheduler-dfot-vs
+  namespace: pep-pfna-pcaf-dev
+  labels:
+      app: pcaf-ds-fofu-scheduler
+spec:
+  hosts:
+  - pcaf-ds-fofu-scheduler.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-ds-fofu-scheduler.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 8080
+  

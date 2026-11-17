@@ -1,0 +1,10 @@
+####### BEGIN Added recently --pep-arize-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_infratools_cgf_sprak_dev
+  - ns_pep_infratools_cgf_spark_dev
+  - ns_pep_infratools_cgf_arize_dev
+  - ns_pep_infratools_cgf_operator_dev
+####### END Added recently --pep-arize-nonprod-eus-01-aks######

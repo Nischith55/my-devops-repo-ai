@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-transp-trpstop-tmap-to-auto-schd-cosmos-kafconsumer
+  name: pep-pfna-transp-trpstop-tmap-to-auto-schd-cosmos-kafconsumer-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-trpstop-tmap-to-auto-schd-cosmos-kafconsumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/trpstop/auto-schd
+    route:
+    - destination:
+        host: pep-pfna-transp-trpstop-tmap-to-auto-schd-cosmos-kafconsumer.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

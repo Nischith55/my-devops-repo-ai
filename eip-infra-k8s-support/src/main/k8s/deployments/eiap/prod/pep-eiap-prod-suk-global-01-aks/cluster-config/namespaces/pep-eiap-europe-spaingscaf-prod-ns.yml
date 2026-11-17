@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-prod: 'true'
+    environment: prod
+    istio.io/rev: prod-stable
+    project: spaingscaf
+    sector: europe
+    team: europe-spaingscaf
+  name: pep-eiap-europe-spaingscaf-prod

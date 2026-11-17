@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-aopgroupingadjustmentservice-sp-zfm-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-aopgroupingadjustmentservice-sp-zfm.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http: 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/aopgroupingadjustment
+    route:
+    - destination:
+        host: pep-pcaf-api-aopgroupingadjustmentservice-sp-zfm.pep-pfna-flna-gtmsp-prod.svc.cluster.local
+        port:
+          number: 80  

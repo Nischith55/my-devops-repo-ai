@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 49381c4b-746d-4731-9dd4-fb5b938d18b6
+  name: pep-cmp-cmp-testvlor-dev-sa
+  namespace: pep-cmp-cmp-testvlor-dev

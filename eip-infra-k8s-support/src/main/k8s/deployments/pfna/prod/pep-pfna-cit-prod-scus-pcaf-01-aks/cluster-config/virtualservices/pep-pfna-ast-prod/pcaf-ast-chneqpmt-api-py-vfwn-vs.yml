@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-ast-chneqpmt-api-py-vfwn-vs
+  namespace: pep-pfna-ast-prod
+  labels:
+      app: pcaf-ast-chneqpmt-api-py
+spec:
+  hosts:
+  - pcaf-ast-chneqpmt-api-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-ast-prod/pep-pfna-ast-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-ast-chneqpmt-api-py.pep-pfna-ast-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - OPTIONS
+  
+      allowCredentials: true
+       
+  

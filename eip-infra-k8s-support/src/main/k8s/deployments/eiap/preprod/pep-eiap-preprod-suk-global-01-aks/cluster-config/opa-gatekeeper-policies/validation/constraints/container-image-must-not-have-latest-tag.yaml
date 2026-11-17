@@ -1,0 +1,55 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowedTags
+metadata:
+  name: container-image-must-not-have-latest-tag
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlockpp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-infra
+    - pep-eiap-istio-config
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-preprod
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    - pep-eiap-gremlin
+    - argocd
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    scope: '*'
+  parameters:
+    exemptImages:
+    - openpolicyagent/opa-exp:latest
+    - openpolicyagent/opa-exp2:latest
+    - appdynamics/dl-proxy:latest
+    - docker.io/appdynamics/java-agent:latest
+    - busybox:latest
+    tags:
+    - latest

@@ -1,0 +1,15 @@
+---
+- name: read_file 
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - /azp/agent/_work/1/s/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml
+  tasks:
+    - name: Include AKS init data from variable file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml"
+        name: init
+  
+    - name: import AKS init creation role
+      import_role:
+        name: create_aks_init

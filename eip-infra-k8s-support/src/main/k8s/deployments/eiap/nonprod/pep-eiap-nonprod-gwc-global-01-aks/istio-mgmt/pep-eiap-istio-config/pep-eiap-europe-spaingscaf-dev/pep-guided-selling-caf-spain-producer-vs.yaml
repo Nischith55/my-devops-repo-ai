@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-guided-selling-caf-spain-producer-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-guided-selling-caf-spain-producer.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-guided-selling-caf-spain-producer.pep-eiap-europe-spaingscaf-dev.svc.cluster.local

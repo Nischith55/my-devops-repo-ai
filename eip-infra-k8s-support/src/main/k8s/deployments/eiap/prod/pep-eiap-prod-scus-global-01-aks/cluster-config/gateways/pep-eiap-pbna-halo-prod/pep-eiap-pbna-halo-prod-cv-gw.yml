@@ -1,0 +1,110 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-pbna-halo-prod-cv-gw
+  namespace: pep-eiap-pbna-halo-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-pbna-halo-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-halo-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-pbna-halo-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pbna-wmt.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-customer-metrics.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-orders.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-pog.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-inventory-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-inventory-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-order-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-order-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-shipment-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-shipment-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-workorders-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-activealerts.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-suggestedorders.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer-notes.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - serviceordercreation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-producttrend-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-suggestedorders-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-pog-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-activealerts-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-orders-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer-notes-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-tmpmerch-inventory-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-halo-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-pbna-halo-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pbna-wmt.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-customer-metrics.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-orders.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-pog.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-inventory-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-inventory-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-order-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-order-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-shipment-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-smartr-shipment-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-workorders-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-activealerts.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-suggestedorders.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer-notes.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - serviceordercreation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-producttrend-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-suggestedorders-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-pog-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-activealerts-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-orders-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-customer-notes-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eip-pbna-savvy-tmpmerch-inventory-helm.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-halo-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-pbna-halo-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

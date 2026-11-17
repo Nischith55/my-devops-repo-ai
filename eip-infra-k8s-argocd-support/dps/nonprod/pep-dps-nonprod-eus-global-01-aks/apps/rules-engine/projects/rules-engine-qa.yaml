@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rules-engine-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for rules-engine-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/rules-engine-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-ruleng-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: rules-engine-qa-admin
+    description: Admin privileges to rules-engine-qa
+    policies:
+    - p, proj:rules-engine-qa:rules-engine-qa-admin, applications, *, rules-engine-qa/*, allow
+    - p, proj:rules-engine-qa:rules-engine-qa-admin, applications, get, argocd/*, allow
+    - p, proj:rules-engine-qa:rules-engine-qa-admin, repositories, *, rules-engine-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rules-engine-qa-user
+    description: Read-only privileges to rules-engine-qa
+    policies:
+    - p, proj:rules-engine-qa:rules-engine-qa-user, applications, get, rules-engine-qa/*, allow
+    - p, proj:rules-engine-qa:rules-engine-qa-user, applications, sync, rules-engine-qa/*, allow
+    - p, proj:rules-engine-qa:rules-engine-qa-user, repositories, get, rules-engine-qa/*, allow
+    - p, proj:rules-engine-qa:rules-engine-qa-user, applications, action/apps/Deployment/restart, rules-engine-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.RulEng"
+    - "Team.Support.EIAP.READ"

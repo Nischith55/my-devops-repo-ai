@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: huggingface-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for huggingface-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-huggingface-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-hfcolqwen-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: huggingface-dev-admin
+        description: Admin privileges to huggingface-dev
+        policies:
+        - p, proj:huggingface-dev:huggingface-dev-admin, applications, *, huggingface-dev/*, allow
+        - p, proj:huggingface-dev:huggingface-dev-admin, repositories, *, huggingface-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: huggingface-dev-user
+        description: Read-only privileges to huggingface-dev
+        policies:
+        - p, proj:huggingface-dev:huggingface-dev-user, applications, get, huggingface-dev/*, allow
+        - p, proj:huggingface-dev:huggingface-dev-user, applications, sync, huggingface-dev/*, allow
+        - p, proj:huggingface-dev:huggingface-dev-user, repositories, get, huggingface-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:huggingface-dev:huggingface-dev-user, applications, action/apps/Deployment/restart, huggingface-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+    

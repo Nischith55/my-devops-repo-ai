@@ -1,0 +1,190 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: rancher-overlay
+spec:
+  meshConfig:
+    proxyListenPort: 15001
+    connectTimeout: 10s
+    protocolDetectionTimeout: 5s
+    ingressService: pep-apigee-ingress-gw01
+    ingressSelector: pep-apigee-ingress-gw01
+    accessLogFile: /dev/stdout
+    accessLogEncoding: TEXT
+    enableAutoMtls: true
+    defaultServiceExportTo:
+      - "*"
+    defaultVirtualServiceExportTo:
+      - "*"
+    defaultDestinationRuleExportTo:
+      - "*"
+    rootNamespace: istio-system
+    h2UpgradePolicy: DO_NOT_UPGRADE
+    enablePrometheusMerge: true
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY
+
+    defaultConfig:
+      statusPort: 15020
+      drainDuration: 45s
+      #parentShutdownDuration: 60s
+      terminationDrainDuration: 5s
+      proxyAdminPort: 15000
+      controlPlaneAuthPolicy: MUTUAL_TLS
+      holdApplicationUntilProxyStarts: true
+  
+  values:
+    cni:
+      image: rancher/mirrored-istio-install-cni:1.22.1
+      excludeNamespaces:
+        - istio-system
+        - kube-system
+      logLevel: info
+      cniBinDir: /opt/cni/bin
+      cniConfDir: /etc/cni/net.d
+
+  components:
+    base:
+      enabled: true
+
+    cni:
+      enabled: true
+      k8s:
+        tolerations:
+        - operator: Exists
+        overlays:
+        - apiVersion: "apps/v1"
+          kind: "DaemonSet"
+          name: "istio-cni-node"
+          patches:
+          - path: spec.template.spec.containers.[name:install-cni].securityContext.privileged
+            value: true
+
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 6
+        nodeSelector:
+          kubernetes.azure.com/mode: system
+          kubernetes.io/os: linux
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        overlays:
+        - kind: Deployment
+          name: istiod
+          patches:
+          - path: spec.template.spec.topologySpreadConstraints
+            value:
+            - labelSelector:
+                matchLabels:
+                  operator.istio.io/component: Pilot
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: false
+      - name: pep-apigee-ingress-gw01
+        enabled: true
+        k8s:
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 6
+          serviceAnnotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+            service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+          overlays:
+          - kind: HorizontalPodAutoscaler
+            name: pep-apigee-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.scaleTargetRef.name
+              value: pep-apigee-ingress-gw01
+          - kind: Deployment
+            name: pep-apigee-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.matchLabels.app
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.matchLabels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.template.metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: spec.template.metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.template.spec.topologySpreadConstraints
+              value:
+              - labelSelector:
+                  matchLabels:
+                    app: pep-apigee-ingress-gw01
+                maxSkew: 1
+                topologyKey: topology.kubernetes.io/zone
+                whenUnsatisfiable: DoNotSchedule
+            - path: spec.template.metadata.labels.azure\.workload\.identity/use
+              value: "true"
+            - path: spec.template.spec.containers[0].volumeMounts[-1]
+              value:
+                name: spc-volume
+                mountPath: /secretpath
+            - path: spec.template.spec.volumes[-1]
+              value:
+               name: spc-volume
+               csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: pe1001-apigee-preprod-eus-01-kv-spc                  
+          - apiVersion: v1
+            kind: Service
+            name: pep-apigee-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.app
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.loadBalancerIP
+              value: 172.26.1.250
+            - path: spec.ports.[port:15021]
+              value: ~
+            - path: spec.type
+              value: LoadBalancer
+          - kind: ServiceAccount
+            name: pep-apigee-ingress-gw01-service-account
+            patches:
+            - path: metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: metadata.annotations.azure\.workload\.identity/client-id
+              value: e701949e-2099-4bc0-9a2b-8d434a96d03e                 
+          - kind: PodDisruptionBudget
+            name: pep-apigee-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: pep-apigee-ingress-gw01
+            - path: metadata.labels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.matchLabels.istio
+              value: pep-apigee-ingress-gw01
+            - path: spec.selector.matchLabels.app
+              value: pep-apigee-ingress-gw01

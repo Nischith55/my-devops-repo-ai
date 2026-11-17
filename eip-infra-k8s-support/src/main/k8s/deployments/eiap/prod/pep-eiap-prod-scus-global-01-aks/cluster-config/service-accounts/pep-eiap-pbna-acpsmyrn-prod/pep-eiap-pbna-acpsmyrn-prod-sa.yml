@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: de99800c-0cef-49be-b4e2-ea4464ec4c43
+  name: pep-eiap-pbna-acpsmyrn-prod-sa
+  namespace: pep-eiap-pbna-acpsmyrn-prod

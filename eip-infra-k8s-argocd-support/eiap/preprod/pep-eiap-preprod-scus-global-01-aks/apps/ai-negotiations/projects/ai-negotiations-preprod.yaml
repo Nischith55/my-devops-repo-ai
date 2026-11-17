@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ai-negotiations-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ai-negotiations-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SnT_AI_Negotiations/_git/ai-negotiations-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-ainego-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ai-negotiations-preprod-admin
+        description: Admin privileges to ai-negotiations-preprod
+        policies:
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-admin, applications, *, ai-negotiations-preprod/*, allow
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-admin, repositories, *, ai-negotiations-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: ai-negotiations-preprod-user
+        description: Read-only privileges to ai-negotiations-preprod
+        policies:
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-user, applications, get, ai-negotiations-preprod/*, allow
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-user, applications, sync, ai-negotiations-preprod/*, allow
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-user, repositories, get, ai-negotiations-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:ai-negotiations-preprod:ai-negotiations-preprod-user, applications, action/apps/Deployment/restart, ai-negotiations-preprod/*, allow
+        groups:
+        - "Team.App.AINegotiation.admins"
+        - "Team.Support.EIAP.READ"
+    

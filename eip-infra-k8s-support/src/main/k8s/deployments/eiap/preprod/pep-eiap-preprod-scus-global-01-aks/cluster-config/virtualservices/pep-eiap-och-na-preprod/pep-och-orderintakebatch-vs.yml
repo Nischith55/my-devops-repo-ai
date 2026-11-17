@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-orderintakebatch
+  name: pep-och-orderintakebatch-vs
+  namespace: pep-eiap-och-na-preprod
+spec:
+  gateways:
+  - pep-eiap-och-na-preprod/pep-eiap-och-na-preprod-cv-gw
+  hosts:
+  - pep-och-orderintakebatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /management
+    route:
+    - destination:
+        host: pep-och-orderintakebatch.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80

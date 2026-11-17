@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-pbna-nginx-vs","namespace":"pep-pbna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-pbna-nginx.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-pbna-nginx.pep-pbna-infra-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: pep-pbna-nginx
+  name: pep-pbna-nginx-vs
+  namespace: pep-pbna-infra-preprod
+spec:
+  gateways:
+  - pep-pbna-infra-preprod/pep-pbna-infra-preprod-cv-gw
+  hosts:
+  - pep-pbna-nginx.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pbna-nginx.pep-pbna-infra-preprod.svc.cluster.local
+        port:
+          number: 8080

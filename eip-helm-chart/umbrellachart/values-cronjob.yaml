@@ -1,0 +1,480 @@
+global:
+  # fullnameoverride sets the name of the deployment and service and prefix of other k8s objects
+  fullnameOverride: "pep-eip-pbna-savvy-cronjobtest"
+  # targetted namespace to which the chart objects get deployed
+  namespace: test
+  labels:
+    # app label is manadatory which is internally used by the cronjob 
+    app: pep-eip-pbna-savvy-metrics-test
+    name: test-cronjob
+    env: dev
+
+  # deployment - configuration to toggle the creation of deployment  
+  deployment:
+    # enabled - default value is true and creates deployment
+    # when turned off, turns off the creation of VS,DR,PDB and HPA
+    enabled: false
+  # service - configuration to toggle the creation of service  
+  service:
+    # enabled - default value is true and creates service
+    enabled: false
+
+# Application chart - overrides to create and manage cronjob
+app-chart:
+  # CronJob Configuration - Multiple CronJobs
+  cronjobs:
+  # ==================== CRONJOB 1 ====================
+  - name: appsflyer-ingest
+    # enabled - default value is false, set it to true to create cronjob
+    enabled: true
+    # cronjob to schedule {MM HH DD MM WKD -- Minutes, Hour, Day, Month, Weekday (eg. Sun, Mon)}
+    schedule: "*/4 * * * *"
+    # concurrencyPolicy- help avoiding job execution overlap
+    concurrencyPolicy: Forbid
+    # Limit the time for which a Job can continue to run - 230s corresponds to the limit for Azure Function time trigger execution
+    activeDeadlineSeconds: 3600
+    #timeZone: "Asia/Kolkata"
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 2
+    startingDeadlineSeconds: 300
+    suspend: false
+    backoffLimit: 3
+    # Policy to restart the deployment
+    restartPolicy: Never
+
+    # Parallelism configuration for better job execution control
+    parallelism:
+      # Enable parallelism for the CronJob
+      enabled: false
+      # Maximum number of pods that can run simultaneously (default: 1)
+      maxParallel: 5
+      # Completion mode: NonIndexed or Indexed
+      completionMode: NonIndexed
+      # Number of successful completions required
+      completions: 1
+
+    # image section - mentioning the image to use by the deployment   
+    image:
+      # repository to use - NonProd ACR in lower and Prod ACR in higher env   
+      repository: myartifactory.mypepsico.com/enterprisesolutions_eip_docker_local/pep/eip/pbna/halo/pep-eip-pbna-scronjobtest
+      # image tag to use
+      tag: "20230621.12"
+      pullPolicy: IfNotPresent
+    # image pull secret to be used to pull the image from image repository
+    imagePullSecrets:
+    - name: "pep-eiap-pbna-halo-dev-cronjobtest"
+    # image section ends
+
+    # Security contexts
+    podSecurityContext:
+      runAsNonRoot: true
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 10000
+
+    # resource section - to specify limits and requests
+    resources:
+      # limits - the maximum amount of resource to be used by the container
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      # requests - the minimum amount of resource required for the container
+      requests:
+        cpu: "2"
+        memory: "1400Mi"
+    # resurce section ends
+
+    # Pass arguments starts
+    args:
+    - /bin/sh
+    - -c
+    - >
+      date +%s > /tmp/start_time; echo "start time"; cat /tmp/start_time;             cd /etc/ssl/certs; openssl s_client -showcerts -servername  pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com -connect pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com:443 > cacert.pem; chmod 775 cacert.pem; get_date=$(date -d "yesterday" '+%Y-%m-%d'); echo "fetching inappevents data for date: $get_date"; result=$(curl --cacert cacert.pem -m 600 -s  -w "%{http_code}" "https://pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com/appsflyer/inappevents?fromDate=${get_date}&toDate=${get_date}&type=organicios,nonorganicios,organicandroid,nonorganicandroid" -s -o /dev/nv/null);  echo "status code: $result";
+    # Pass arguments ends
+
+    # Pass command starts
+    command:
+    - /bin/sh
+    - -c
+    - date; echo Hello from the Kubernetes cluster
+    # Pass command ends
+
+    # tolerations starts
+    tolerations:
+    - key: "BuildAgentPool"
+      operator: "Exists"
+      effect: "NoSchedule"
+    # tolerations ends
+
+    # liveness and readiness probes configuration - supports both http probe and command probe
+    probes:
+      # enabled - default value is false, set it to true to add the probes configuration to the deployment
+      enabled: true
+      # liveness probe to be included under liveness section
+      liveness:
+        # http probes require path and port configuration
+        path: /actuator/health/liveness
+        # name of the port (matching to the contianer ports configuration) to be used for probes
+        port: app-port
+        # wait period in sec, before the performing the first liveness probe 
+        initialDelaySeconds: 120
+        # interval with which the probes are performed
+        periodSeconds: 5
+        # Number of seconds after which the probe times out
+        timeoutSeconds: 15
+        # success threshold
+        successThreshold: 1
+        # failure threshold
+        failureThreshold: 1
+      # readiness probe to be included under readiness section
+      readiness:
+        # command to execute for the probe
+        command:
+        - cat
+        - /tmp/healthy
+        # wait period in sec, before the performing the first liveness probe 
+        initialDelaySeconds: 120
+        # interval with which the probes are performed
+        periodSeconds: 5
+        # Number of seconds after which the probe times out
+        timeoutSeconds: 15
+        # success threshold
+        successThreshold: 1
+        # failure threshold
+        failureThreshold: 1
+      # startup probe (optional) - only rendered when this section is present; delays liveness/readiness until startup completes
+      startup:
+        # http probes require path and port configuration; alternatively use a command probe (see readiness above)
+        path: /actuator/health/liveness
+        port: app-port
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 15
+        successThreshold: 1
+        # failure threshold - the app has (failureThreshold * periodSeconds) to finish starting up
+        failureThreshold: 30
+      # liveness, readiness and startup probe section ends
+
+    env:
+    # name of the env variable
+    - name: APP_CONFIGURATION_ENDPOINT
+      # value to be assigned 
+      value: APP_CONFIGURATION_ENDPOINT_VALUE
+    # ENV Section
+    # ENV from Secrets - to be used for setting env from couple of keys from multiple secrets
+    envFromSecrets:
+    # name of the env variable
+    - name: TERADATA_USER
+      # secret to refer to extract the value and set to env variable
+      secret:
+        # name of the secret
+        name: pep-eip-pbna-savvy-customer-secret
+        # key in the secret to refer, whose value is extracted and assigned to env variable
+        key: TERADATA_USER
+    # name of the env variable
+    - name: TERADATA_PASSWORD
+      #  secret to refer to extract the value and set to env variable
+      secret:
+        # name of the secret
+        name: pep-eip-pbna-savvy-customer-secret
+        # key in the secret to refer, whose value is extracted and assigned to env variable
+        key: TERADATA_PASSWORD
+    # ENV from Secret Ref - to be used when all the keys in a secret are to be created as env variables
+    envFromSecretRef:
+    # secret reference to extract all the keys and values and set as env variables in the container
+    - secretRef:
+        # name of the secret
+        name: test-secret
+    # secret reference to extract all the keys and values and set as env variables in the container
+    - secretRef:
+        # name of the secret
+        name: test-secret2
+    # ENV from Configmap Ref - to be used when all the keys in a configmap are to be created as env variables
+    envFromConfigMapRef:
+    # configmap reference to extract all the keys and values and set as env variables in the container
+    - configMapRef:
+        # name of the configmap
+        name: pepsico-test-configmap
+    envFromFieldRef:
+    - name: POD_NAME
+      fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      fieldPath: metadata.namespace
+    # list of any volumes to mount on the cronjob
+    volumes:
+    # name of the volume
+    - name: testvolume1
+      # path to mount on the container
+      mountPath: /addVol/test1.yaml
+      # subpath - to facilitate multiple mounts on same path
+      subPath: test1.yaml
+      # readonly set to true if we want the mout to be readonly
+      readOnly: true
+      # source of the volume - configmap / secret etc
+      type:
+        # source of the volume and settings
+        configMap:
+          # name of the source of volume
+          name: application-configmap
+          # items to mount
+          items:
+          - key: application.yml
+            path: test1.yaml
+
+  # ==================== CRONJOB 2 ====================
+  - name: data-cleanup
+    enabled: true
+    schedule: "0 2 * * *"
+    concurrencyPolicy: Forbid
+    activeDeadlineSeconds: 1800
+    timeZone: "UTC"
+    successfulJobsHistoryLimit: 2
+    failedJobsHistoryLimit: 2
+    startingDeadlineSeconds: 300
+    suspend: false
+    backoffLimit: 2
+    restartPolicy: OnFailure
+
+    parallelism:
+      enabled: false
+      maxParallel: 1
+      completionMode: NonIndexed
+      completions: 1
+
+    image:
+      repository: myartifactory.mypepsico.com/enterprisesolutions_eip_docker_local/pep/eip/pbna/halo/pep-eip-pbna-cleanup
+      tag: "latest"
+      pullPolicy: IfNotPresent
+    imagePullSecrets:
+    - name: "pep-eiap-pbna-halo-dev-cronjobtest"
+
+    podSecurityContext:
+      runAsNonRoot: true
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 10000
+
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1Gi"
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+
+    args: []
+    command:
+    - /bin/sh
+    - -c
+    - echo "Running data cleanup job"
+
+    tolerations: []
+
+    probes:
+      enabled: false
+      liveness:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      readiness:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      # startup probe (optional) - only rendered when this section is present; delays liveness/readiness until startup completes
+      startup:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 30
+
+    env:
+    - name: CLEANUP_DAYS
+      value: "30"
+
+    envFromSecrets: []
+    envFromSecretRef: []
+    envFromConfigMapRef: []
+    volumes: []
+
+  # ==================== CRONJOB 3 ====================
+  - name: metrics-export
+    enabled: true
+    schedule: "*/15 * * * *"
+    concurrencyPolicy: Replace
+    activeDeadlineSeconds: 900
+    timeZone: "UTC"
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 1
+    startingDeadlineSeconds: 200
+    suspend: false
+    backoffLimit: 1
+    restartPolicy: Never
+
+    parallelism:
+      enabled: false
+      maxParallel: 1
+      completionMode: NonIndexed
+      completions: 1
+
+    image:
+      repository: myartifactory.mypepsico.com/enterprisesolutions_eip_docker_local/pep/eip/pbna/halo/pep-eip-pbna-metrics
+      tag: "latest"
+      pullPolicy: IfNotPresent
+    imagePullSecrets:
+    - name: "pep-eiap-pbna-halo-dev-cronjobtest"
+
+    podSecurityContext:
+      runAsNonRoot: true
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 10000
+
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+
+    args: []
+    command:
+    - /bin/sh
+    - -c
+    - echo "Exporting metrics"
+
+    tolerations: []
+
+    probes:
+      enabled: false
+      liveness:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      readiness:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      # startup probe (optional) - only rendered when this section is present; delays liveness/readiness until startup completes
+      startup:
+        path: ""
+        port: 8080
+        command: []
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 30
+
+    env:
+    - name: METRICS_ENDPOINT
+      value: "https://metrics.example.com"
+
+    envFromSecrets: []
+    envFromSecretRef: []
+    envFromConfigMapRef: []
+    volumes: []
+
+  #CronJob Configuration section ends
+
+  ### apm section ####
+  # Enables Elastic APM env vars and agent initContainer/volumes when turned on.
+  apm:
+    enabled: true
+    env:
+    - name: ELASTIC_APM_SERVER_URL
+      valueFrom:
+        secretKeyRef:
+          name: apm-server-token
+          key: apm-url
+    - name: ELASTIC_APM_SERVICE_NAME
+      value: sample
+    - name: ELASTIC_APM_APPLICATION_PACKAGES
+      value: sample
+    - name: ELASTIC_APM_ENVIRONMENT
+      value: test
+    - name: ELASTIC_APM_LOG_LEVEL
+      value: sample
+    - name: ELASTIC_APM_SECRET_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: apm-server-token
+          key: secret-token
+    - name: JAVA_TOOL_OPTIONS
+      value: sample
+    resources:
+      limits:
+        cpu: 200m
+        memory: 100M
+      requests:
+        cpu: 100m
+        memory: 50M
+
+  ### appd section ####
+  # Enables AppDynamics agent injection for the CronJob Pod.
+  # NOTE: This chart mounts the agent at /opt/appdynamics via an initContainer.
+  # Your application image still needs to start the app with the AppD agent enabled (Java: javaagent / Python: agent bootstrap).
+  appD:
+    enabled: true
+    # Java agent image used by the initContainer to copy the agent into an emptyDir.
+    # Override if your org pins a specific version.
+    image: docker.io/appdynamics/java-agent:23.10.0.35234
+    env:
+    - name: APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          key: controller-key
+          name: cluster-agent-secret
+    - name: APPDYNAMICS_AGENT_APPLICATION_NAME
+      value: sample
+    - name: APPDYNAMICS_AGENT_TIER_NAME
+      value: sample
+    # Optional: pull controller/account settings from a configmap.
+    envFrom:
+    - configMapRef:
+        name: appd-agent-settings-configmap
+    resources:
+      limits:
+        cpu: 200m
+        memory: 100M
+      requests:
+        cpu: 100m
+        memory: 50M
+
+  # Optional helper configmap creation for AppD controller settings.
+  # If you already manage this configmap outside Helm, keep this disabled.
+  configmaps:
+    configurations:
+    - name: appd-agent-settings
+      config:
+        APPDYNAMICS_AGENT_ACCOUNT_NAME: pepsi-test
+        APPDYNAMICS_CONTROLLER_HOST_NAME: pepsi-test.saas.appdynamics.com
+        APPDYNAMICS_CONTROLLER_PORT: "443"
+        APPDYNAMICS_CONTROLLER_SSL_ENABLED: "false"
+        APPDYNAMICS_JAVA_AGENT_REUSE_NODE_NAME: "true"
+        JAVA_TOOL_OPTIONS: -Dappdynamics.agent.accountAccessKey=$(APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY) -Dappdynamics.socket.collection.bci.enable=true -Dorg.osgi.framework.bootdelegation=com.singularity.* -javaagent:/opt/appdynamics/javaagent.jar
+  ### appd section ends####

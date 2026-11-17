@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dialogue-with-data-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dialogue-with-data-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/dialogue-with-data-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-pgcs-aibidwd-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: dialogue-with-data-dev-admin
+        description: Admin privileges to dialogue-with-data-dev
+        policies:
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-admin, applications, *, dialogue-with-data-dev/*, allow
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-admin, repositories, *, dialogue-with-data-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dialogue-with-data-dev-user
+        description: Read-only privileges to dialogue-with-data-dev
+        policies:
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-user, applications, get, dialogue-with-data-dev/*, allow
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-user, applications, sync, dialogue-with-data-dev/*, allow
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-user, repositories, get, dialogue-with-data-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dialogue-with-data-dev:dialogue-with-data-dev-user, applications, action/apps/Deployment/restart, dialogue-with-data-dev/*, allow
+        groups:
+        - "Team.Support.DWD.Users"
+        - "Team.Support.EIAP.READ"
+    

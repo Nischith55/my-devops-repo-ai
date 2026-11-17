@@ -1,0 +1,33 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace GLOBAL WSP
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_global_wsp_prod:
+  
+  name: pep-eiap-global-wsp-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-wsp
+    sector: global
+    project: wsp
+    istio-injection: enabled
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_wsp'] }}"
+
+

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testregion02-testrepo001-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testregion02-testrepo001-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testregion02-testrepo001-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testregion02-testrepo001-dev-admin
+    description: Admin privileges to testregion02-testrepo001-dev
+    policies:
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-admin, applications, *, testregion02-testrepo001-dev/*, allow
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-admin, repositories, *, testregion02-testrepo001-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testregion02-testrepo001-dev-user
+    description: Read-only privileges to testregion02-testrepo001-dev
+    policies:
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-user, applications, get, testregion02-testrepo001-dev/*, allow
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-user, applications, sync, testregion02-testrepo001-dev/*, allow
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-user, repositories, get, testregion02-testrepo001-dev/*, allow
+    - p, proj:testregion02-testrepo001-dev:testregion02-testrepo001-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

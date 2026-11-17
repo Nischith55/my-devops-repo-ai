@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c00f306c-b08d-49e1-a4d3-c0a5066e42d7
+  name: pep-dps-dps-abts-qa-sa
+  namespace: pep-dps-dps-abts-qa

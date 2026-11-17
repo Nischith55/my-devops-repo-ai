@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pfna-ngpwm-dev
+  labels:
+    env-nonprod: "true"
+    project: ngpwm
+    sector: pfna
+    team: pfna-ngpwm
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: pwm-pick-work-manager-pfna
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

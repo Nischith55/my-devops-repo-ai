@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-pbna-svt-runtime-prod-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-pbna-svt-runtime-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eiap-pbna-svt-runtime-prod.pep-eiap-pbna-svtbot-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eiap-pbna-svt-runtime-prod
+  name: pep-eiap-pbna-svt-runtime-prod-vs
+  namespace: pep-eiap-pbna-svtbot-prod
+spec:
+  gateways:
+  - pep-eiap-pbna-svtbot-prod/pep-eiap-pbna-svtbot-prod-cv-gw
+  hosts:
+  - pep-eiap-pbna-svt-runtime-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-pbna-svt-runtime-prod.pep-eiap-pbna-svtbot-prod.svc.cluster.local
+        port:
+          number: 80

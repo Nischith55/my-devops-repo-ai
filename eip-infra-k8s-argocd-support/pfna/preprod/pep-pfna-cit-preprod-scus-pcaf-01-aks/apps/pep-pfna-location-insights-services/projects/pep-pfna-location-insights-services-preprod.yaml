@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-location-insights-services-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-location-insights-services-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-location-insights-services-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+    namespace: pep-pfna-pcaf-preprod
+  - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+    namespace: pep-pfna-flna-lipfnan-preprod
+  - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+    namespace: pep-pfna-ops-admin
+  
+  roles:
+  - name: pep-pfna-location-insights-services-preprod-admin
+    description: Admin privileges to pep-pfna-location-insights-services-preprod
+    policies:
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-admin, applications, *, pep-pfna-location-insights-services-preprod/*, allow
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-admin, repositories, *, pep-pfna-location-insights-services-preprod/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-location-insights-services-preprod-user
+    description: Read-only privileges to pep-pfna-location-insights-services-preprod
+    policies:
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-user, applications, get, pep-pfna-location-insights-services-preprod/*, allow
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-user, applications, sync, pep-pfna-location-insights-services-preprod/*, allow
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-user, repositories, get, pep-pfna-location-insights-services-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-pfna-location-insights-services-preprod:pep-pfna-location-insights-services-preprod-user, applications, action/apps/Deployment/restart, pep-pfna-location-insights-services-preprod/*, allow
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.PFNA.RG.AKS.PREPROD.Reader"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"

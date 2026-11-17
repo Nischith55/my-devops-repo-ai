@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: iwmsomni-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_Warehouse_Automation/_git/pepsico-iwms-quick-report-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-iwms-dev  
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: iwmsomni-dev-admin
+    description: Admin privileges to iwmsomni-dev
+    policies:
+    - p, proj:iwmsomni-dev:iwmsomni-dev-admin, applications, *, iwmsomni-dev/*, allow
+    - p, proj:iwmsomni-dev:iwmsomni-dev-admin, repositories, *, iwmsomni-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: iwmsomni-dev-user
+    description: Read-only privileges to iwmsomni-dev
+    policies:
+    - p, proj:iwmsomni-dev:iwmsomni-dev-user, applications, get, iwmsomni-dev/*, allow
+    - p, proj:iwmsomni-dev:iwmsomni-dev-user, applications, sync, iwmsomni-dev/*, allow
+    - p, proj:iwmsomni-dev:iwmsomni-dev-user, repositories, get, iwmsomni-dev/*, allow
+    - p, proj:iwmsomni-dev:iwmsomni-dev-user, applications, action/apps/Deployment/restart, iwmsomni-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.PFNA.WHAutomation.Developer"
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.PFNA.whseas.Developer"
+    - "Team.Support.NGPWM.Admins"

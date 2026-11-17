@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-clib-ui
+  name: pep-och-clib-ui-vs
+  namespace: pep-eiap-och-na-dev
+spec:
+  gateways:
+  - pep-eiap-och-na-dev/pep-eiap-och-na-dev-cv-gw
+  hosts:
+  - pep-och-clib-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-clib-ui.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80

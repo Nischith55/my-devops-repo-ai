@@ -1,0 +1,161 @@
+---
+# ##
+# kubernetes_dashboard : default -- version agnostic
+# ABBREVIATION:
+# - kd_d -> kubernetes_dadshboard_default
+# ##
+
+# component name : also should match exactly the directory name in
+# add-ons/<app_name/<this name>
+kd_d_name: default
+
+#: image tag (dashboard)
+_kd_d_tag: "{{ kd_d_image_tag | default('v2.0.5') }}"
+# image tag scraper different
+_kd_d_s_tag: "{{ kd_d_s_image_tag | default('v1.0.6') }}"
+
+# ##
+# component meta information
+# ##
+kd_d_meta:
+
+  # component_name
+  name: "{{ kd_d_name }}"
+
+  # namespace where this component will be targeted
+  namespace: "{{ kubernetes_dashboard_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+
+_kd_d_kustomize_resource_base_dir: |-
+  {{ (kd_source_app_root_dir, 'kustomize', kd_d_meta['name'], 'base') 
+    | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+__kd_d_dest_root_dir: "{{ (kd_deploy_app_root_dir, kd_d_name) | path_join }}"
+# general template out directory and kustomize build-in dir
+__kd_d_overlays_dest_dir: |-
+  {{ (__kd_d_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+__kd_d_manifests_dest_dir: |-
+  {{ (__kd_d_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_kd_d_manifest_path: |-
+  {{ (__kd_d_manifests_dest_dir, 
+      kubernetes_dashboard_app_name + '-' + kd_d_name + '.yml') 
+      | path_join 
+  }}
+
+# re-usable patch target (dashboard)
+__kd_d_target:
+  group: apps
+  version: v1
+  kind: Deployment
+  # IMPORTANT: name is app_name not component name
+  name: "{{ kubernetes_dashboard_app_name }}"
+  # IMPORTANT: should be src namespace in base resource
+  namespace: "{{ kubernetes_dashboard_src_namespace }}"
+
+# target for scraper!
+__kd_d_s_target:
+  group: apps
+  version: v1
+  kind: Deployment
+  # IMPORTANT: name is app_name not component name
+  name: dashboard-metrics-scraper
+  # IMPORTANT: should be src namespace in base resource
+  namespace: "{{ kubernetes_dashboard_src_namespace }}"
+
+# build params
+_kd_d_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ __kd_d_overlays_dest_dir }}"
+    output_path: "{{ _kd_d_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (__kd_d_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _kd_d_kustomize_resource_base_dir 
+            | relpath(__kd_d_manifests_dest_dir) }}
+
+    images:
+      - name: &img001 kubernetesui/dashboard
+        newName: *img001
+        newTag: "{{ _kd_d_tag }}"
+      # scraper
+      - name: &img002 kubernetesui/metrics-scraper
+        newName: *img002
+        newTag: "{{ _kd_d_s_tag }}"
+
+  patches:
+
+    - name: patch-merge-dashboard-ui
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ (__kd_d_overlays_dest_dir, 'patch-merge-dashboard-deployment.yml')
+          | path_join }}
+      target: "{{ __kd_d_target }}"
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+
+    # patch scraper
+    - name: patch-merge-dashboard-metrics-scraper
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ (__kd_d_overlays_dest_dir, 'patch-merge-scraper-deployment.yml')
+          | path_join }}
+      target: "{{ __kd_d_s_target }}"
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+
+    # note: this is an overridable patch is a no op is merge/json patch is
+    # not set. Only dashboard deployment target
+    - name: patch-json-dashboard-custom-tls-01
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ (__kd_d_overlays_dest_dir,
+            'patch-merge-dashboard-custom-tls-01.yml')| path_join }}
+      target: "{{ __kd_d_target }}"
+      merge: |-
+        {{ k8s_dashboard_merge_custom_tls_01_patch | default({}) }}
+
+      # json patch same target
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ 
+          (__kd_d_overlays_dest_dir, 'patch-json-dashboard-custom-tls-01.yml')
+          | path_join }}
+      json6902: |-
+        {{ k8s_dashboard_json_custom_tls_01_patch | default([]) }}
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+kd_d_component_setting: |-
+  {{
+    kd_d_meta
+    |
+    combine(_kd_d_build_params, recursive=True)
+  }}
+

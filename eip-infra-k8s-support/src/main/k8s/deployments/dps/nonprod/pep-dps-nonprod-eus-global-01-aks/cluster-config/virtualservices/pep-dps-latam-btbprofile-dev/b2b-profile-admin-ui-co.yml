@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-profile-admin-ui-co-dev:networking.istio.io/VirtualService:pep-dps-latam-btbprofile-dev/b2b-profile-admin-ui-co
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-profile-admin-ui-co-dev:networking.istio.io/VirtualService:pep-dps-latam-btbprofile-dev/b2b-profile-admin-ui-co"},"labels":{"app":"b2b-profile-admin-ui-co","app.kubernetes.io/instance":"b2b-profile-admin-ui-co","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.9"},"name":"b2b-profile-admin-ui-co","namespace":"pep-dps-latam-btbprofile-dev"},"spec":{"gateways":["pep-dps-latam-btbprofile-dev/pep-dps-latam-btbprofile-dev-cv-gw"],"hosts":["b2b-profile-admin-ui-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"b2b-profile-admin-ui-co.pep-dps-latam-btbprofile-dev.svc.cluster.local","port":{"number":8080},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: b2b-profile-admin-ui-co
+        app.kubernetes.io/instance: b2b-profile-admin-ui-co
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.9
+    name: b2b-profile-admin-ui-co
+    namespace: pep-dps-latam-btbprofile-dev
+spec:
+    gateways:
+    - pep-dps-latam-btbprofile-dev/pep-dps-latam-btbprofile-dev-cv-gw
+    hosts:
+    - b2b-profile-admin-ui-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - profile-b2b-co.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-profile-admin-ui-co.pep-dps-latam-btbprofile-dev.svc.cluster.local
+                port:
+                    number: 8080

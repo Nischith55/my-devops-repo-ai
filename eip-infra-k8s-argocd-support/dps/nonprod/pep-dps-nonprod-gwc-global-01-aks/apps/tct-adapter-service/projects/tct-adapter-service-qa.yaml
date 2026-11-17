@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tct-adapter-service-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for tct-adapter-service-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/tct-adapter-service-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-amesatct-qa
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: tct-adapter-service-qa-admin
+    description: Admin privileges to tct-adapter-service-qa
+    policies:
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-admin, applications, *, tct-adapter-service-qa/*, allow
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-admin, repositories, *, tct-adapter-service-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: tct-adapter-service-qa-user
+    description: Read-only privileges to tct-adapter-service-qa
+    policies:
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-user, applications, get, tct-adapter-service-qa/*, allow
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-user, applications, sync, tct-adapter-service-qa/*, allow
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-user, repositories, get, tct-adapter-service-qa/*, allow
+    - p, proj:tct-adapter-service-qa:tct-adapter-service-qa-user, applications, action/apps/Deployment/restart, tct-adapter-service-qa/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.AMESATCT"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

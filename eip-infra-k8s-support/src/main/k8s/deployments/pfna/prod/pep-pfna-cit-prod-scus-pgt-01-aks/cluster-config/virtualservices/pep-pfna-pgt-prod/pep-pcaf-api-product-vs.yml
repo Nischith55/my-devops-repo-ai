@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pcaf-api-product
+  name: pep-pcaf-api-product-vs
+  namespace: pep-pfna-pgt-prod
+spec:
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  hosts:
+  - pep-pcaf-api-product.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-api-product.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80

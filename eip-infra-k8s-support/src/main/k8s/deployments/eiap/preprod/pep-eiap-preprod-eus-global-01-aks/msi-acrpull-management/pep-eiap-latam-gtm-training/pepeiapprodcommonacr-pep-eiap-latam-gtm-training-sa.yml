@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapprodcommonacr-pep-eiap-latam-gtm-training-sa
+  namespace: pep-eiap-latam-gtm-training
+spec:
+  acrServer: pepeiapprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/8a22bd18-1080-472c-a8af-da15be88b076/resourceGroups/pep-eiap-preprod-eus-global-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-eiap-preprod-eus-global-01-aks-agentpool
+  serviceAccountName: pep-eiap-latam-gtm-training-sa

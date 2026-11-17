@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_flna_app_dev:
+  
+  name: pep-pfna-flna-app-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-app
+    sector: flna
+    project: app
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: handheldnext
+    pep-cmdb-app-service-id: "9b1245cf8706455001ee400d0ebb3552"
+    pep-cmdb-bus-app-id: "778c25ff1b6334504d6e64e1604bcb8e"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-app-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_app'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-app-dev-sa-token
+    namespace: pep-pfna-flna-app-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-app-dev-sa"

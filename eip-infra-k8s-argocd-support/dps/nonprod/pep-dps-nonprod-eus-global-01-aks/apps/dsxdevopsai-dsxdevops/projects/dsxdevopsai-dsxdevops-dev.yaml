@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxdevopsai-dsxdevops-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dsxdevopsai-dsxdevops-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxdevopsai-dsxdevops-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-dsxdevops-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-dsxets-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-agdvops-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxdevopsai-dsxdevops-dev-admin
+    description: Admin privileges to dsxdevopsai-dsxdevops-dev
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-admin, applications, *, dsxdevopsai-dsxdevops-dev/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-admin, repositories, *, dsxdevopsai-dsxdevops-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dsxdevopsai-dsxdevops-dev-user
+    description: Read-only privileges to dsxdevopsai-dsxdevops-dev
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-user, applications, get, dsxdevopsai-dsxdevops-dev/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-user, applications, sync, dsxdevopsai-dsxdevops-dev/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-user, repositories, get, dsxdevopsai-dsxdevops-dev/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-dev:dsxdevopsai-dsxdevops-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.READ"
+    - "Team.App.DPS.DevOps.NonProd"

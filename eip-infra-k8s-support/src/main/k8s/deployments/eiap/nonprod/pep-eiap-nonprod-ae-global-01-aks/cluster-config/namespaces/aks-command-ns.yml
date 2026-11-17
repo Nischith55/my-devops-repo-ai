@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    kubernetes.io/metadata.name: aks-command
+  name: aks-command

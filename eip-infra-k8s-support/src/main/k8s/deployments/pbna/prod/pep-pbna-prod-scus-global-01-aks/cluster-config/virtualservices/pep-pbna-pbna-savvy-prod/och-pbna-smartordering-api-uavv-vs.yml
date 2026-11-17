@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: och-pbna-smartordering-api-uavv-vs
+  namespace: pep-pbna-pbna-savvy-prod
+  labels:
+      app: och-pbna-smartordering-api
+spec:
+  hosts:
+  - och-pbna-smartordering-api.pbna.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pbna-pbna-savvy-prod/pep-pbna-pbna-savvy-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: och-pbna-smartordering-api.pep-pbna-pbna-savvy-prod.svc.cluster.local
+        port:
+          number: 80
+  

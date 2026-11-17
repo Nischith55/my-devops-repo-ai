@@ -1,0 +1,101 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-infratools-cmponboard-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - namespaces
+    - serviceaccounts
+    verbs:
+    - create
+    - list
+    - get
+    - delete
+-   apiGroups:
+    - 'rbac.authorization.k8s.io'
+    resources:
+    - rolebindings
+    verbs:
+    - create
+    - list
+    - get
+    - delete
+-   apiGroups:
+    - 'rbac.authorization.k8s.io'
+    resources:
+    - clusterroles
+    verbs:
+    - bind
+    resourceNames:
+    - pep-infratools-appsupport-clusterrole
+    - pep-infratools-springcloudk8s-clusterrole 
+-   apiGroups:
+    - ''
+    resources:
+    - pods
+    verbs:
+    - create
+    - list
+    - get
+    - patch
+    - update
+    - watch
+-   apiGroups:
+    - 'apps'
+    resources:
+    - deployments
+    verbs:
+    - create
+    - list
+    - get
+    - patch
+    - update
+    - delete
+-   apiGroups:
+    - ''
+    resources:
+    - services
+    verbs:
+    - create
+    - list
+    - get
+    - patch
+    - update
+    - delete
+-   apiGroups:
+    - 'networking.istio.io'
+    resources:
+    - virtualservices
+    - gateways
+    verbs:
+    - create
+    - list
+    - get
+    - patch
+    - update
+    - delete
+-   apiGroups:
+    - ''
+    resources:
+    - secrets
+    verbs:
+    - create
+    - list
+    - get
+    - patch
+    - update
+    - watch
+    - delete
+-   apiGroups:
+    - 'secrets-store.csi.x-k8s.io'
+    resources:
+    - secretproviderclasses
+    verbs:
+    - get
+    - list
+    - watch
+    - patch
+    - update

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-buyerconsole-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-buyerconsole-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Procurement/_git/pepsico-buyerconsole-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-buycon-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-buyerconsole-prod-admin
+    description: Admin privileges to pepsico-buyerconsole-prod
+    policies:
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-admin, applications, *, pepsico-buyerconsole-prod/*, allow
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-admin, applications, get, argocd/*, allow
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-admin, repositories, *, pepsico-buyerconsole-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-buyerconsole-prod-user
+    description: Read-only privileges to pepsico-buyerconsole-prod
+    policies:
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-user, applications, get, pepsico-buyerconsole-prod/*, allow
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-user, applications, sync, pepsico-buyerconsole-prod/*, allow
+    - p, proj:pepsico-buyerconsole-prod:pepsico-buyerconsole-prod-user, repositories, get, pepsico-buyerconsole-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.Prod.BUYCON"
+    - "Team.Support.EIAP.READ"

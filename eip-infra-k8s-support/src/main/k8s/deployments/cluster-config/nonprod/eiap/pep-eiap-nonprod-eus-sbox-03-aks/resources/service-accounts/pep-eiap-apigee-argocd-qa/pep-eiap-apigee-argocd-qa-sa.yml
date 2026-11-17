@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: fd627db5-1196-4e8e-a63b-1a026ddd5c57
+  name: pep-eiap-apigee-argocd-qa-sa
+  namespace: pep-eiap-apigee-argocd-qa

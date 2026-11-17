@@ -1,0 +1,52 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "ContainerDenyEmptyDirNoSizeLimit",
+  "metadata": {
+    "annotations": {},
+    "name": "containerdenyemptydirnosizelimit"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "default",
+        "istio-operator",
+        "istio-system",
+        "keda",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "local",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "pep-dps-ops-admin",
+        "pep-dps-istio-config",
+        "pep-dps-elastic-client-01"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            "apps",
+            ""
+          ],
+          "kinds": [
+            "DaemonSet",
+            "Deployment",
+            "StatefulSet",
+            "Pod"
+          ]
+        }
+      ]
+    }
+  }
+}

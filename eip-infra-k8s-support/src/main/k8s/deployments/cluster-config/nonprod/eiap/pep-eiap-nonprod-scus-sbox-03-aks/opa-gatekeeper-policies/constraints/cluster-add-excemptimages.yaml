@@ -1,0 +1,54 @@
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-ds-logic*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-event-manager*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/aks-iai-cv-plt-docker-dev/pep/eiap/labelright/labelright-backend-ml-api-2022*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-manual-scenarios-api*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pep/eip/pep-eip-gnrm-pricingai-pricing-api*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     pepeiapnonprodglobalcommonacr.azurecr.io/omnichannelecommercehub_docker_local/pep/och/essa/edt/pep-och-amazon-flna-mop*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/vct-pyservices-persistence*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*

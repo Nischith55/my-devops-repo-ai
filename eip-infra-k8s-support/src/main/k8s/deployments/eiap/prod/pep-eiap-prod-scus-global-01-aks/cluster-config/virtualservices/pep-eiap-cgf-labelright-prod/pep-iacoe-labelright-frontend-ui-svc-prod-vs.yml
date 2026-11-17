@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-iacoe-labelright-frontend-ui-svc-prod-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-iacoe-labelright-frontend-ui-svc-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","labelright.pepsico.com","labelrightglobal.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-iacoe-labelright-frontend-ui-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local","port":{"number":8000}}}]}]}}
+  labels:
+    app: pep-iacoe-labelright-frontend-ui-prod
+  name: pep-iacoe-labelright-frontend-ui-svc-prod-vs
+  namespace: pep-eiap-cgf-labelright-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-labelright-prod/pep-eiap-cgf-labelright-prod-cv-gw
+  hosts:
+  - pep-iacoe-labelright-frontend-ui-svc-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - labelright.pepsico.com
+  - labelrightglobal.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-labelright-frontend-ui-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local
+        port:
+          number: 8000

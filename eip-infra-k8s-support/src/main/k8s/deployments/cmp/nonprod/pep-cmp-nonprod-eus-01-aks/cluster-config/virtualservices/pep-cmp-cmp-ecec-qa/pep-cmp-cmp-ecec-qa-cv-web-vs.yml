@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-ecec-qa-cv-web-vs
+  namespace: pep-cmp-cmp-ecec-qa
+  labels:
+    app: pep-cmp-cmp-ecec-qa-cv-web
+spec:
+  hosts:
+    - efcrewfced.qa.mypepsico.com
+    - pep-cmp-cmp-ecec-qa-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-ecec-qa/pep-cmp-cmp-ecec-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cmp-cmp-ecec-qa-cv-web.pep-cmp-cmp-ecec-qa.svc.cluster.local
+        port:
+          number: 80

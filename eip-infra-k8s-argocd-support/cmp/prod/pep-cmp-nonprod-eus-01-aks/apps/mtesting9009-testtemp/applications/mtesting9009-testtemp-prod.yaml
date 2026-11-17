@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mtesting9009-testtemp-prod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/mtesting9009-testtemp-argocd-configs
+    targetRevision: main 
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm 
+    targetRevision: "0.2.6"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: mtesting9009-testtemp-prod
+      valueFiles:
+      - $values/prod/pep-cmp-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: prod
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/helm 
+            chart: umbrellachart
+            revision: 2.2.1
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent
+                  jobNS: eiap-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: mtesting9009-testtemp-prod 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/mtesting9009-testtemp-argocd-configs 
+              repoName: mtesting9009-testtemp-argocd-configs # appruntime-argocd-configs
+              targetRevision: main
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: None

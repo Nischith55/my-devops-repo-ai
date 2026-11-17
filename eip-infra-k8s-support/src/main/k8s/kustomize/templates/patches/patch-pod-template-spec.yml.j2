@@ -1,0 +1,90 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  INPUT:
+  - template_params: [object]
+      name: required
+      namespace: optional
+      kind: required
+---
+# ###
+# patch pod template bits works for Deployments/DaemonSets/StatefulSets
+# ###
+#}
+{% set _p = template_params %}
+{% set _pm = _p['metadata'] | default({}) %}
+{% set _pm_l = _pm['labels'] | default({}) %}
+{% set _pm_a = _pm['annotations'] | default({}) %}
+apiVersion: {{ _p['api_version'] }}
+kind: {{ _p['kind'] }}
+metadata:
+  # NOTE: if used in patches, then name is not required but element must be
+  # present
+  name: {{ _p['name'] | default('not-used') }}
+  {% if _p['namespace'] is defined %}
+  namespace: {{ _p['namespace'] }}
+  {% endif %}
+  {% if _pm_l is defined and (_pm_l | length) > 0 %}
+  labels:
+    {{ _pm_l | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+  {% if _pm_a is defined and (_pm_a | length > 0) %}
+  annotations:
+    {{ _pm_a | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+{% if _p['spec'] is defined and (_p['spec'] | length) > 0 %}
+{% set _ps = _p['spec'] %}
+spec:
+  {% if _ps['replicas'] is defined %}
+  replicas: {{ _ps['replicas'] }}
+  {% endif %}
+  {% if _ps['selector'] is defined and (_ps['selector'] | length) > 0 %}
+  {% set _pss = _ps['selector'] %}
+  {% if _pss['matchLabels'] is defined and (_pss['matchLabels'] | length) > 0 %}
+  selector:
+    matchLabels:
+      {{ _pss['matchLabels'] | to_nice_yaml(indent=2, width=1337) | trim | indent(6) }}
+  {% endif %}
+  {% endif %}
+  {% if _ps['template'] is defined and (_ps['template'] | length) > 0 %}
+  {% set _pst = _ps['template'] %}
+  template:
+    {% if _pst['metadata'] is defined and (_pst['metadata'] | length) > 0 %}
+    metadata:
+      {{ _pst['metadata'] | to_nice_yaml(indent=2, width=1337) | trim | indent(6) }}
+    {% endif %}
+    {% if _pst['spec'] is defined and (_pst['spec'] | length) > 0 %}
+    {% set _psts = _pst['spec'] %}
+    spec:
+      {% if _psts['affinity'] is defined and (_psts['affinity'] | length) > 0 %}
+      affinity:
+        {{ _psts['affinity'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['imagePullSecrets'] is defined and (_psts['imagePullSecrets'] | length) > 0 %}
+      imagePullSecrets:
+        {{ _psts['imagePullSecrets'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['nodeSelector'] is defined and (_psts['nodeSelector'] | length) > 0 %}
+      nodeSelector:
+        {{ _psts['nodeSelector'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['tolerations'] is defined and (_psts['tolerations'] | length) > 0 %}
+      tolerations:
+        {{ _psts['tolerations'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['topologySpreadConstraints'] is defined and (_psts['topologySpreadConstraints'] | length) > 0 %}
+      topologySpreadConstraints:
+        {{ _psts['topologySpreadConstraints'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['initContainers'] is defined and (_psts['initContainers'] | length) > 0 %}
+      initContainers:
+        {{ _psts['initContainers'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+      {% if _psts['containers'] is defined and (_psts['containers'] | length) > 0 %}
+      containers:
+        {{ _psts['containers'] | to_nice_yaml(indent=2, width=1337) | trim | indent(8) }}
+      {% endif %}
+    # end: template/spec
+    {% endif %}
+  # end: template
+  {% endif %}
+{% endif %}

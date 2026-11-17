@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-falloutmanagement
+  name: pep-och-falloutmanagement-vs
+  namespace: pep-eiap-och-edt-dev
+spec:
+  gateways:
+  - pep-eiap-och-edt-dev/pep-eiap-och-edt-dev-cv-gw
+  hosts:
+  - pep-och-falloutmanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-falloutmanagement.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 80

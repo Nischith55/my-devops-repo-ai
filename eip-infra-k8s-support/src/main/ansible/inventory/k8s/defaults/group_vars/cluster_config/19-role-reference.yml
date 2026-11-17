@@ -1,0 +1,35 @@
+---
+k8s_role_ref:
+  developer_rb:
+    name: pep-{{ dept }}-developer-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  cluster_admin:
+    name: cluster-admin
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  appsupprt_rb:
+    name: pep-{{ dept }}-appsupport-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  devsecops_cd_rb:
+    name: pep-{{ dept }}-devsecops-cd-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  devsecops_rb:
+    name: pep-{{ dept }}-devsecops-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  scaler_rb:
+    name: pep-{{ dept }}-scaler-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  servicenow_rb:
+    name: pep-{{ dept }}-servicenow-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+  springcloudk8s_rb:
+    name: pep-{{ dept }}-springcloudk8s-clusterrole
+    kind: ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+    

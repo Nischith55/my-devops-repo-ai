@@ -1,0 +1,6 @@
+- op: remove #action 
+  path: /spec/volumes/volumeName
+  value: all-gw-secrets
+- op: remove
+  path: /spec/containers/0/volumeMounts/name
+  value: all-gw-secrets

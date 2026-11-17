@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: e5d9a57d-4172-402d-908b-9cb6c47fa354
+  name: pep-eiap-cgf-vglpoc-dev-sa
+  namespace: pep-eiap-cgf-vglpoc-dev

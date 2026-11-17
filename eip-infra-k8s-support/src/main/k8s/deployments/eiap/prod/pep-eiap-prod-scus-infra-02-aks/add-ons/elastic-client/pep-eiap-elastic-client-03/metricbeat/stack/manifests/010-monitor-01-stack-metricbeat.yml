@@ -1,0 +1,462 @@
+---
+# ##
+# - Setup metricbeat configuration (note: This is a Deployment) so only
+#   cluster wide metrics are applicable
+# ##
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # NOTE: change this for instance of elastic running
+  name: monitor-01-stack-metricbeat-config
+  namespace: pep-eiap-elastic-client-03
+
+data:
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat environment variables change here
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  K8S_CLUSTER_NAME: pep-eiap-prod-scus-infra-02-aks
+  # Important we are using inCluster URL (change to gw url if remote)
+  # please make sure the scheme is correct
+  # We are sending it to the monitoring cluster K8S cluster wide stats
+  ELASTICSEARCH_OUTPUT_URL: https://monitor-01-prod-scus-es-http.pep-eiap-elastic-monitor-01.svc.cluster.local:9200
+  # sending data to our monitoring cluster
+  # please make sure the scheme is correct
+  MONITORING_CLUSTER_URL: https://monitor-01-prod-scus-es-http.pep-eiap-elastic-monitor-01.svc.cluster.local:9200
+  # Change the template name appropriately if required
+  TEMPLATE_NAME: metricbeat-aks-cluster
+  INDEX_PATTERN_PREFIX: mb-aks
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat processor stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  metricbeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+
+    processors:
+
+    # ~~
+    # Add EIAP fields
+    # ~~
+    - add_fields:
+        target: eiap
+        fields:
+          cluster_name: ${K8S_CLUSTER_NAME}
+
+    - add_fields:
+        target: ""
+        fields:
+          index_name_add: ${K8S_CLUSTER_NAME}
+
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat standard k8s stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  metricbeat.yml: |
+
+    # --------------------
+    # All outputs
+    # IMPORTANT:
+    # - This is for stack monitoring gather all ES, Beats etc.
+    # - By default they go to monitoring-* index CANNOT configure it
+    # --------------------
+    output:
+      elasticsearch:
+        hosts:
+          - ${ELASTICSEARCH_OUTPUT_URL}
+        username: ${ELASTICSEARCH_USERNAME}
+        password: ${ELASTICSEARCH_PASSWORD}
+        # should equal to number of ingest nodes
+        workers: 3
+        ssl: &pep_ca_ssl
+          enabled: true
+          # The following 2 must be mounted at paths shown below from
+          # pep-ca-certs-config ConfigMap
+          certificate_authorities:
+            - /projected/etc/certs/PepsiCoCA01.pem
+            - /projected/etc/certs/PepsiCoRootCA.pem
+          supported_protocols:
+            - TLSv1.2
+            - TLSv1.3
+          verification_mode: certificate
+
+    # --------------------
+    # send metricbeat metrics itself to our monitoring cluster
+    # --------------------
+    monitoring:
+      enabled: true
+      elasticsearch:
+        hosts:
+          - ${MONITORING_CLUSTER_URL}
+        # IMPORTANT we are re-using the usernae and password
+        username: ${MONITORING_CLUSTER_USERNAME}
+        password: ${MONITORING_CLUSTER_PASSWORD}
+        ssl: *pep_ca_ssl
+
+    # ---------------------------------------------------------------------
+    # Setup metricbeat configuration (Common K8S stuff)
+    # ---------------------------------------------------------------------
+    metricbeat:
+
+      # ~~
+      # modules
+      # ~~
+      modules:
+
+      # Since this is a cluster wide scoped metricbeat disable the system
+      # module which is enabled by default
+      - module: system
+        enabled: false
+
+      # ~~
+      # Autodiscover kubernetes
+      # ~~
+      autodiscover:
+        providers:
+        # stack monitoring
+        - type: kubernetes
+          scope: cluster
+          resource: pod
+          node: ${NODE_NAME}
+          hints:
+            enabled: true
+          templates:
+            - condition:
+                equals:
+                  # IMPORTANT: The label must be present on the ES pods
+                  kubernetes.labels.stack-monitoring_elastic_co/type: es-monitor-01-prod-scus
+              config:
+                - module: elasticsearch
+                  xpack:
+                    enabled: true
+                  period: 30s
+                  # undocumented seems to work for slow system
+                  timeout: 90s
+                  # If scope is set to cluster, each entry in the hosts list
+                  # indicates a single endpoint for a distinct Elasticsearch
+                  # cluster (for example, a load-balancing proxy fronting the
+                  # cluster).
+                  scope: cluster
+                  # we monitor all elastic cluster instances in this cluster
+                  # each entry in the host(s) is a elastic cluster instance
+                  # IMPORTANT:
+                  # - we use the same username and password.
+                  hosts:
+                  - https://monitor-01-prod-scus-es-http.pep-eiap-elastic-monitor-01.svc.cluster.local:9200
+                  # IMPORTANT: we have to share the username and password
+                  # across all clusters in hosts
+                  username: ${MONITOR_USERNAME}
+                  password: ${MONITOR_PASSWORD}
+                  ssl: *pep_ca_ssl
+            # - condition:
+            #     equals:
+            #       # IMPORTANT: The label must be present on the ES pods
+            #       kubernetes.labels.stack-monitoring_elastic_co/type: es-cluster-02
+            #   config:
+            #     - module: elasticsearch
+            #       xpack:
+            #         enabled: true
+            #       period: 30s
+            #       # undocumented seems to work for slow system
+            #       timeout: 90s
+            #       scope: cluster
+            #       hosts:
+            #       - https://pep-eiap-elastic-02.pep-eiap-elastic-cluster-02.svc.cluster.local:9200
+            #       username: ${MONITOR_USERNAME}
+            #       password: ${MONITOR_PASSWORD}
+            #       ssl: *pep_ca_ssl
+            - condition:
+                equals:
+                  kubernetes.labels.stack-monitoring_elastic_co/type: es-cluster-03-prod-scus
+              config:
+                - module: elasticsearch
+                  xpack:
+                    enabled: true
+                  period: 30s
+                  scope: cluster
+                  # undocumented seems to work for slow system
+                  timeout: 90s
+                  hosts:
+                  - https://pep-eiap-elastic-03.pep-eiap-elastic-cluster-03.svc.cluster.local:9200
+                  # IMPORTANT: we have to share the username and password
+                  # across all clusters in hosts
+                  username: ${MONITOR_USERNAME}
+                  password: ${MONITOR_PASSWORD}
+                  ssl: *pep_ca_ssl
+            # ~~~~~~~~~~~~~~~~~~~~~
+            # Kibana instances
+            # ~~~~~~~~~~~~~~~~~~~~~
+            # monitor-01
+            - condition:
+                equals:
+                  kubernetes.labels.stack-monitoring_elastic_co/type: kb-monitor-01-prod-scus
+              config:
+                - module: kibana
+                  xpack: &kb_xpack
+                    enabled: true
+                  metricsets: &kb_metricsets
+                    - stats
+                    - status
+                  period: 30s
+                  # undocumented seems to work for slow system
+                  timeout: 90s
+                  basepath: ""
+                  hosts:
+                  - https://monitor-01-prod-scus-kb-http.pep-eiap-elastic-monitor-01.svc.cluster.local:5601
+                  username: ${MONITOR_USERNAME}
+                  password: ${MONITOR_PASSWORD}
+                  ssl: *pep_ca_ssl
+
+            # # cluster-02
+            # - condition:
+            #     equals:
+            #       kubernetes.labels.stack-monitoring_elastic_co/type: kb-cluster-02
+            #   config:
+            #     - module: kibana
+            #       xpack: *kb_xpack
+            #       metricsets: *kb_metricsets
+            #       period: 30s
+            #       # undocumented seems to work for slow system
+            #       timeout: 90s
+            #       basepath: ""
+            #       hosts:
+            #       - https://kibana-02-kb-http.pep-eiap-elastic-cluster-02.svc.cluster.local:5601
+            #       username: ${MONITOR_USERNAME}
+            #       password: ${MONITOR_PASSWORD}
+            #       ssl: *pep_ca_ssl
+
+            # cluster-03
+            - condition:
+                equals:
+                  kubernetes.labels.stack-monitoring_elastic_co/type: kb-cluster-03-prod-scus
+              config:
+                - module: kibana
+                  xpack: *kb_xpack
+                  metricsets: *kb_metricsets
+                  period: 30s
+                  # undocumented seems to work for slow system
+                  timeout: 90s
+                  basepath: ""
+                  hosts:
+                  - https://cluster-03-prod-scus-kb-http.pep-eiap-elastic-cluster-03.svc.cluster.local:5601
+                  username: ${MONITOR_USERNAME}
+                  password: ${MONITOR_PASSWORD}
+                  ssl: *pep_ca_ssl
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # name format: <output-eck-cluster>-k8s
+  name: &app_name monitor-01-stack-metricbeat
+  namespace: pep-eiap-elastic-client-03
+  labels:
+    k8s-app: *app_name
+    app: *app_name
+    # match the  ES server version (beats is not backward compatible)
+    version: &vers 7.14.0
+spec:
+
+  # For cluster wide metricbeat we use recreate, so we don't run into locks
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app: *app_name
+      version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app: *app_name
+        version: *vers
+
+    spec:
+      # PEP:
+      # - Deployment run only on system node pool taints
+      # - also lock down the node selector
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: metricbeat
+      # some older Beat versions are depending on this settings presence
+      # in k8s context
+      automountServiceAccountToken: true
+      # need this to read beats.yml
+      securityContext:
+        runAsUser: 0
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # All volumes
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      volumes:
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+          - configMap:
+              name: &beats_config monitor-01-stack-metricbeat-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      containers:
+      # PEP: args removed sysfs it's a deployment
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:7.14.0
+        args:
+        - -environment
+        - container
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+        # - -d
+        # - "monitoring"
+        # - index-management,processors
+
+        resources:
+          # limits:
+          #   cpu: 100m
+          #   memory: 200Mi
+          requests:
+            # cpu: 200m
+            memory: 512Mi
+        env:
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: K8S_CLUSTER_NAME
+
+        - name: TEMPLATE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: TEMPLATE_NAME
+
+        - name: INDEX_PATTERN_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: INDEX_PATTERN_PREFIX
+
+        - name: ELASTICSEARCH_OUTPUT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: ELASTICSEARCH_OUTPUT_URL
+
+        # All secrets from elastic-client-shared
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: &shared_sec elastic-client-shared
+              key: BEATS_INGEST_USER_01
+
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: BEATS_INGEST_PASSWORD_01
+
+        - name: MONITORING_CLUSTER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: MONITORING_CLUSTER_URL
+
+        - name: MONITORING_CLUSTER_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              # re-use
+              key: BEATS_MONITOR_INGEST_USER_01
+
+        - name: MONITORING_CLUSTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              # re-use
+              key: BEATS_MONITOR_INGEST_PASSWORD_01
+
+        - name: MONITOR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: MONITOR_COMMON_USER_01
+
+        - name: MONITOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: MONITOR_COMMON_PASSWORD_01
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_NAMESPACE
+          value: monitoring
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_PORT
+          value: "8080"
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
+        # ~~
+        # volumemounts
+        # ~~
+        volumeMounts:
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-br-vansalesorder-och-dispatch
+  name: pepsico-eip-latam-br-vansalesorder-och-dispatch-qa-vs
+  namespace: pep-eiap-latam-gtm-qa
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-qa/pep-eiap-latam-gtm-qa-cv-gw
+  hosts:
+  - pepsico-eip-latam-br-vansalesorder-och-dispatch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-latam-br-vansalesorder-och-dispatch.pep-eiap-latam-gtm-qa.svc.cluster.local
+        port:
+          number: 80

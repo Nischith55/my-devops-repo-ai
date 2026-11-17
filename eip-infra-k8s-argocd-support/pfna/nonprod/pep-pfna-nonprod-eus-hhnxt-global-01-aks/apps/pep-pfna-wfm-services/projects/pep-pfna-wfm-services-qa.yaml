@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-wfm-services-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-wfm-services-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-wfm-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pcaf-qa
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-flna-wfm-qa
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-wfm-services-qa-admin
+    description: Admin privileges to pep-pfna-wfm-services-qa
+    policies:
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-admin, applications, *, pep-pfna-wfm-services-qa/*, allow
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-admin, repositories, *, pep-pfna-wfm-services-qa/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-wfm-services-qa-user
+    description: Read-only privileges to pep-pfna-wfm-services-qa
+    policies:
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-user, applications, get, pep-pfna-wfm-services-qa/*, allow
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-user, applications, sync, pep-pfna-wfm-services-qa/*, allow
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-user, repositories, get, pep-pfna-wfm-services-qa/*, allow
+    - p, proj:pep-pfna-wfm-services-qa:pep-pfna-wfm-services-qa-user, applications, action/apps/Deployment/restart, pep-pfna-wfm-services-qa/*, allow    
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

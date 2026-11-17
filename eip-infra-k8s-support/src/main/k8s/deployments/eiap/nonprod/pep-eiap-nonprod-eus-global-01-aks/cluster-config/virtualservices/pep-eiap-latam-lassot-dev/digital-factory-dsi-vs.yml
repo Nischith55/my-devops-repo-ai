@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: digital-factory-dsi
+  name: digital-factory-dsi-vs
+  namespace: pep-eiap-latam-lassot-dev
+spec:
+  gateways:
+  - pep-eiap-latam-lassot-dev/pep-eiap-latam-lassot-dev-cv-gw
+  hosts:
+  - digital-factory-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: digital-factory-dsi.pep-eiap-latam-lassot-dev.svc.cluster.local
+        port:
+          number: 80

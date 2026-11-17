@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-dss-fmcs
+    app.kubernetes.io/instance: fmcs-services-qa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: pep-dss-fmcs
+  namespace: pep-dps-cgf-fmcs-qa
+spec:
+  gateways:
+  - pep-dps-cgf-fmcs-qa/pep-dps-cgf-fmcs-qa-cv-gw
+  hosts:
+  - pep-dss-fmcs-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dss-fmcs.pep-dps-cgf-fmcs-qa.svc.cluster.local
+        port:
+          number: 8080

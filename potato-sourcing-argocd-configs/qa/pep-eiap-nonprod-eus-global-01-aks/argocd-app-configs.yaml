@@ -1,0 +1,28 @@
+global:
+  spec:
+    destination:
+      clusterName: pep-eiap-nonprod-eus-global-01-aks
+      namespace: pep-eiap-cgf-psm-qa
+
+argoCDApplications:  
+  potato-sourcing-matrix-api-repo:  
+    enabled: true
+    autoSync: true
+    helm: true
+    path: qa/pep-eiap-nonprod-eus-global-01-aks/potato-sourcing-matrix-api-repo
+    ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+      - /spec/replicas
+  genai-devops-starter:
+    enabled: true
+    autoSync: true
+    helm: true
+    path: qa/pep-eiap-nonprod-eus-global-01-aks/genai-devops-starter
+    ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+      - /spec/replicas
+    

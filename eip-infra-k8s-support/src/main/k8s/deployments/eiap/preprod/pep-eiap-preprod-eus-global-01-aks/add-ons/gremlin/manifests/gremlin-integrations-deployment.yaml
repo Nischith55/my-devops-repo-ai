@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gremlin-integrations-deployment
+  namespace: pep-eiap-gremlin
+  labels:
+    app: gremlin-integrations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gremlin-integrations
+  template:
+    metadata:
+      labels:
+        app: gremlin-integrations
+    spec:
+      containers:
+      - name: gremlin-integrations
+        image: gremlin/gremlin-integrations:latest
+        env:
+          - name: GREMLIN_TEAM_ID
+            valueFrom:
+              secretKeyRef:
+                name:  gremlin-secret
+                key: GREMLIN_TEAM_ID
+          - name: GREMLIN_CLUSTER_ID
+            valueFrom:
+              secretKeyRef:
+                name:  gremlin-secret
+                key: GREMLIN_CLUSTER_ID
+          - name: GREMLIN_TEAM_SECRET 
+            valueFrom:
+              secretKeyRef:
+                name: gremlin-secret
+                key: GREMLIN_TEAM_SECRET
+          - name: GREMLIN_INTEGRATION_AGENT_ALLOW_LIST
+            value: "https://customer.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com/actuator/health"
+      volumes:
+      - name: gremlin-cert
+        secret:
+          secretName: gremlin-team-cert

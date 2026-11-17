@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-hnanhws-qa-cv-vs
+  namespace: pep-cmp-cmp-hnanhws-qa
+spec:
+  hosts:
+    - pep-cmp-cmp-hnanhws-qa-cv.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - "istio-system/istio-in-gateway-01"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-cmp-cmp-hnanhws-qa-cv-webdeploy.pep-cmp-cmp-hnanhws-qa.svc.cluster.local"
+        port:
+          number: 80

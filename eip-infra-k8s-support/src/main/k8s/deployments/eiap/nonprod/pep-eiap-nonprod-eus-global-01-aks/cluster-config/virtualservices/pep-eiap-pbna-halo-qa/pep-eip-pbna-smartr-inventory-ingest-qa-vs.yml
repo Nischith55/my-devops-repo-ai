@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-pbna-smartr-inventory-ingest
+  name: pep-eip-pbna-smartr-inventory-ingest-qa-vs
+  namespace: pep-eiap-pbna-halo-qa
+spec:
+  gateways:
+  - pep-eiap-pbna-halo-qa/pep-eiap-pbna-halo-qa-cv-gw
+  hosts:
+  - pep-eip-pbna-smartr-inventory-ingest-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-smartr-inventory-ingest.pep-eiap-pbna-halo-qa.svc.cluster.local
+        port:
+          number: 80

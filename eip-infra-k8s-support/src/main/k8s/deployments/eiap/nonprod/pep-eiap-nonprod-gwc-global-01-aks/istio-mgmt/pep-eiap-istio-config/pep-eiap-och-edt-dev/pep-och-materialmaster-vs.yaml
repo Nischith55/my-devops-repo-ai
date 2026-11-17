@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-materialmaster-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-materialmaster.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    - ignoreUriCase: true
+      uri:
+        prefix: /api
+    route:
+    - destination:
+        host: pep-och-materialmaster.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 80

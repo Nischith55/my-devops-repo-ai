@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepgafs-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepgafs-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepgafs-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepgafs-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepgafs-prod-admin
+        description: Admin privileges to pepgafs-prod
+        policies:
+        - p, proj:pepgafs-prod:pepgafs-prod-admin, applications, *, pepgafs-prod/*, allow
+        - p, proj:pepgafs-prod:pepgafs-prod-admin, repositories, *, pepgafs-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepgafs-prod-user
+        description: Read-only privileges to pepgafs-prod
+        policies:
+        - p, proj:pepgafs-prod:pepgafs-prod-user, applications, get, pepgafs-prod/*, allow
+        - p, proj:pepgafs-prod:pepgafs-prod-user, applications, sync, pepgafs-prod/*, allow
+        - p, proj:pepgafs-prod:pepgafs-prod-user, repositories, get, pepgafs-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.AI.PepGpt.Admin"
+        - "Team.Support.EIAP.READ"
+    

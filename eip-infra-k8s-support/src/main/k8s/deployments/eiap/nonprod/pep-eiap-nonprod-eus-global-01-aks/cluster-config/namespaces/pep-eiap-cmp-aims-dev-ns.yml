@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cmp-aims-dev
+  labels:
+    env-nonprod: "true"
+    project: aims
+    sector: cmp
+    team: cmp-aims
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: cmp
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

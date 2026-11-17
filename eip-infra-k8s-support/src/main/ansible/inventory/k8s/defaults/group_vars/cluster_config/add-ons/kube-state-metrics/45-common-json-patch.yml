@@ -1,0 +1,19 @@
+---
+# ##
+# Common json patch to add for this app all components
+# ##
+
+ksm_common_cluster_role_json_patch:
+
+  # append cluster role ingresses to the list (NOTE: orig missing extensions)
+  - op: add
+    path: /rules/-
+    value:
+      apiGroups:
+        - extensions
+        - networking.k8s.io
+      resources:
+        - ingresses
+      verbs:
+        - list
+        - watch

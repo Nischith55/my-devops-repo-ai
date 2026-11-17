@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: walmart-model-app
+  name: pep-eiap-flna-iacoe-walmart-model-vs
+  namespace: pep-eiap-flna-iacoe-dev
+spec:
+  gateways:
+  - pep-eiap-flna-iacoe-dev/pep-eiap-flna-iacoe-dev-cv-gw
+  hosts:
+  - pepsico-flna-iacoe-walmart-model.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /score
+    route:
+    - destination:
+        host: walmart-model-app-svc.pep-eiap-flna-iacoe-dev.svc.cluster.local
+        port:
+          number: 80

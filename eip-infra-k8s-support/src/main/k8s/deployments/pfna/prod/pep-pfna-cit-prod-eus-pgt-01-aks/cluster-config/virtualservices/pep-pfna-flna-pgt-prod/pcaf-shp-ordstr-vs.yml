@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-shp-ordstr
+  name: pcaf-shp-ordstr-vs
+  namespace: pep-pfna-flna-pgt-prod
+spec:
+  gateways:
+  - pep-pfna-flna-pgt-prod/pep-pfna-flna-pgt-prod-cv-gw
+  hosts:
+  - pcaf-shp-ordstr.pfnapgt.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-ordstr.pep-pfna-flna-pgt-prod.svc.cluster.local
+        port:
+          number: 80

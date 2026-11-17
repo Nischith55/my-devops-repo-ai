@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dps-dsx-pepiris-services
+  name: pep-dps-dps-optmerch-dev-cv-cdn-vs
+  namespace: pep-dps-dps-optmerch-dev
+spec:
+  gateways:
+  - pep-dps-dps-optmerch-dev/pep-dps-dps-optmerch-dev-cv-gw
+  hosts:
+  - optimalmerch.dev.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dps-dsx-pepiris-services.pep-dps-dps-optmerch-dev.svc.cluster.local
+        port:
+          number: 8080

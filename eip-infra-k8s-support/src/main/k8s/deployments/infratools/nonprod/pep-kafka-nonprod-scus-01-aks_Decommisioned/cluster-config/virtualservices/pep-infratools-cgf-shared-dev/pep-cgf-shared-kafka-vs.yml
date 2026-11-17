@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: kafka
+  name: pep-cgf-shared-kafka-vs
+  namespace: pep-infratools-cgf-shared-dev
+spec:
+  gateways:
+  - pep-infratools-cgf-shared-dev/pep-infratools-cgf-shared-dev-cv-gw
+  hosts:
+  - kafka.shared.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - kafka.shared.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: kafka.pep-infratools-cgf-shared-dev.svc.cluster.local
+        port:
+          number: 9092

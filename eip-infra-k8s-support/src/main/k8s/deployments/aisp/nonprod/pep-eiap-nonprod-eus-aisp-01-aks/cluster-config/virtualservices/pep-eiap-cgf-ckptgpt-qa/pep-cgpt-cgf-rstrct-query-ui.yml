@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pep-fpa-cockpit-genai-rstrct-query-ui-qa:networking.istio.io/VirtualService:pep-eiap-cgf-ckptgpt-qa/pep-cgpt-cgf-rstrct-query-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pep-fpa-cockpit-genai-rstrct-query-ui-qa:networking.istio.io/VirtualService:pep-eiap-cgf-ckptgpt-qa/pep-cgpt-cgf-rstrct-query-ui"},"labels":{"app":"pep-cgpt-cgf-rstrct-query-ui","app.kubernetes.io/instance":"pep-fpa-cockpit-genai-rstrct-query-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","environment":"qa","helm.sh/chart":"platform-chart-1.2.9"},"name":"pep-cgpt-cgf-rstrct-query-ui","namespace":"pep-eiap-cgf-ckptgpt-qa"},"spec":{"gateways":["pep-eiap-cgf-ckptgpt-qa/pep-eiap-cgf-ckptgpt-qa-cv-gw"],"hosts":["pep-cgpt-cgf-rstrct-query-ui-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","cockpitgpt2.qa.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"pep-cgpt-cgf-rstrct-query-ui.pep-eiap-cgf-ckptgpt-qa.svc.cluster.local","port":{"number":3000},"subset":null},"weight":null}]}]}}
+
+'
+        meta.helm.sh/release-name: pep-fpa-cockpit-genai-rstrct-query-ui
+        meta.helm.sh/release-namespace: pep-eiap-cgf-ckptgpt-qa
+    labels:
+        app: pep-cgpt-cgf-rstrct-query-ui
+        app.kubernetes.io/instance: pep-fpa-cockpit-genai-rstrct-query-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        environment: qa
+        helm.sh/chart: platform-chart-1.2.9
+    name: pep-cgpt-cgf-rstrct-query-ui
+    namespace: pep-eiap-cgf-ckptgpt-qa
+spec:
+    gateways:
+    - pep-eiap-cgf-ckptgpt-qa/pep-eiap-cgf-ckptgpt-qa-cv-gw
+    hosts:
+    - pep-cgpt-cgf-rstrct-query-ui-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cockpitgpt2.qa.azure.intra.pepsico.com
+    - cockpitai.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-cgpt-cgf-rstrct-query-ui.pep-eiap-cgf-ckptgpt-qa.svc.cluster.local
+                port:
+                    number: 3000

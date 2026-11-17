@@ -1,0 +1,6 @@
+jobs:
+- job: AKS_Deploy 
+  steps:
+  - template: deploy-aks.yaml@templates 
+    parameters:
+      endpoint: '${{ parameters.endpoint }}'

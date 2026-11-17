@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reportingservice-sp-tgt-gtmspdev02-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - reportingservice-sp-tgt-gtmspdev02.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgt/reports
+    route:
+    - destination:
+        host: pep-pcaf-api-reportingservice-sp-tgt.pep-eiap-flna-gtmsp-02-dev.svc.cluster.local
+        port:
+          number: 80

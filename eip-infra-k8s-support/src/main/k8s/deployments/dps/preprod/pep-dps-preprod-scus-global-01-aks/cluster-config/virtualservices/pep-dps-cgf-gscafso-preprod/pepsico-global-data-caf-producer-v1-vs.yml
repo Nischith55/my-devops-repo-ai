@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-global-data-caf-producer-v1
+  name: pepsico-global-data-caf-producer-v1-vs
+  namespace: pep-dps-cgf-gscafso-preprod
+spec:
+  gateways:
+  - pep-dps-cgf-gscafso-preprod/pep-dps-cgf-gscafso-preprod-cv-gw
+  hosts:
+  - pepsico-global-data-caf-producer-v1.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-global-data-caf-producer-v1.pep-dps-cgf-gscafso-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-pbna-developer-rb
+  namespace: pep-pbna-pbna-senfsv-qa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pbna-developer-clusterrole
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: 9b9a622f-f171-47f5-bf94-ac180c40d164

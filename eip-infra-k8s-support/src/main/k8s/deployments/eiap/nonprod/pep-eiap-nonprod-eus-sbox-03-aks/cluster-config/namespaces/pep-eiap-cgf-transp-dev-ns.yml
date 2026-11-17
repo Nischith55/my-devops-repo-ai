@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: a01f934bdbabdf008a0e138b4b9619d7
+    pep-cmdb-bus-app-id: 8cbe08f9db3e8c10c2b5f3813996194d
+    pep-environment: Dev
+    project: transp
+    sector: cgf
+    servicename_aks: flirlatitudeprod
+    team: cgf-transp
+  name: pep-eiap-cgf-transp-dev

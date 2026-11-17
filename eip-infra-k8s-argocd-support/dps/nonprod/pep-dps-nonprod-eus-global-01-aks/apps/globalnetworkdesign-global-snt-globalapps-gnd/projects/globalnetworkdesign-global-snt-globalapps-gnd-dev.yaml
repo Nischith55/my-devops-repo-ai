@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: globalnetworkdesign-global-snt-globalapps-gnd-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for globalnetworkdesign-global-snt-globalapps-gnd-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_GlobalApps_GND/_git/globalnetworkdesign-global-snt-globalapps-gnd-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-gnddata-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: globalnetworkdesign-global-snt-globalapps-gnd-dev-admin
+    description: Admin privileges to globalnetworkdesign-global-snt-globalapps-gnd-dev
+    policies:
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-admin, applications, *, globalnetworkdesign-global-snt-globalapps-gnd-dev/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-admin, repositories, *, globalnetworkdesign-global-snt-globalapps-gnd-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: globalnetworkdesign-global-snt-globalapps-gnd-dev-user
+    description: Read-only privileges to globalnetworkdesign-global-snt-globalapps-gnd-dev
+    policies:
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-user, applications, get, globalnetworkdesign-global-snt-globalapps-gnd-dev/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-user, applications, sync, globalnetworkdesign-global-snt-globalapps-gnd-dev/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-user, repositories, get, globalnetworkdesign-global-snt-globalapps-gnd-dev/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-dev:globalnetworkdesign-global-snt-globalapps-gnd-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.DPS.NonProd.GNDDATA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

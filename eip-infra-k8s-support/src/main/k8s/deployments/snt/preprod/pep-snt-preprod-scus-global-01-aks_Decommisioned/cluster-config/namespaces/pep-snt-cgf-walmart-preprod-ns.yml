@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-snt-cgf-walmart-preprod
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Preprod
+    project: dps-walmart
+    sector: cgf
+    servicename_aks: retail360-aksclusterprod
+    team: cgf-walmart
+  name: pep-snt-cgf-walmart-preprod

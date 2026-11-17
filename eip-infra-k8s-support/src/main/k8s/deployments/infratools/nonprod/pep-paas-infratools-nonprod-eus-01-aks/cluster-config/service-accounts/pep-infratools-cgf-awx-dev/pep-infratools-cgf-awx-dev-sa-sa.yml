@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-cgf-awx-dev-sa
+  namespace: pep-infratools-cgf-awx-dev

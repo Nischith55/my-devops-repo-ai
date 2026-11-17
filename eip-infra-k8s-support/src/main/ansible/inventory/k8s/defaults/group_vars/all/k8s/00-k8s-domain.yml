@@ -1,0 +1,4 @@
+---
+
+# Default kubernetes service domain
+k8s_svc_domain: "svc.cluster.local"

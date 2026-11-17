@@ -1,0 +1,33 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredResources
+metadata:
+  name: container-must-have-limits-and-requests
+spec:
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+    - PATCH
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+    scope: '*'
+  parameters:
+    exemptImages:
+    - <PATCH>
+    # - cyberark/secrets-provider-for-k8s*
+    # - docker.io/istio/*
+    # - docker.elastic.co/observability/*
+    # - appdynamics/*
+    # - docker.io/appdynamics/*
+    - mcr.microsoft.com/
+    - mcr.microsoft.com/aks/fundamental/base-ubuntu*
+    # OPA Exception RITM4296288 SVT-Robotics
+    # - 31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*
+    limits:
+    - cpu
+    - memory
+    requests:
+    - cpu
+    - memory

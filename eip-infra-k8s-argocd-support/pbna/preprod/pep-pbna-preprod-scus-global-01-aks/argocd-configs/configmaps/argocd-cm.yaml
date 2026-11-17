@@ -1,0 +1,199 @@
+apiVersion: v1
+data:
+  exec.enabled: "true"
+  url: https://argocd.pbna.scus.nonprod.intra.pepsico.com # Replace with the external base URL of your Argo CD
+  dex.config: |
+    connectors:
+    - type: microsoft
+      id: microsoft
+      name: Microsoft
+      config:
+        clientID: 1e5a5d2c-a9d4-42dc-93ca-c15462dad122
+        clientSecret: $oidc.azure.clientSecret
+        redirectURI: https://argocd.pbna.scus.nonprod.intra.pepsico.com/api/dex/callback
+        tenant: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+        emailToLowercase: true
+        scopes:
+         - profile
+         - email
+         - openid  
+  globalProjects: |-
+    - labelSelector:
+        matchExpressions:
+          - key: argocd.argoproj.io/project-inherit
+            operator: In
+            values:
+              - global-app
+      projectName: global-app
+    - labelSelector:
+        matchExpressions:
+          - key: argocd.argoproj.io/project-inherit
+            operator: In
+            values:
+              - global-platform
+      projectName: global-platform
+  resource.inclusions: |
+    - apiGroups:
+      - ''
+      kinds: 
+      - ConfigMap
+      - PersistentVolume
+      - PersistentVolumeClaim
+      - Secret
+      - Service
+      - ServiceAccount
+      - Pod
+      - Namespace
+      clusters:
+      - "*"    
+    - apiGroups:
+      - apiextensions.k8s.io
+      kinds: 
+      - CustomResourceDefinition     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - networking.k8s.io
+      kinds:
+      - NetworkPolicy
+      clusters:
+      - "*"
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - DestinationRule
+      - VirtualService
+      - Gateway
+      clusters:
+      - "*"
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
+      - DaemonSet
+      - ReplicaSet
+      - StatefulSet
+      clusters:
+      - "*"
+    - apiGroups:
+      - batch
+      kinds:
+      - CronJob
+      - Job
+      clusters:
+      - "*"
+    - apiGroups:
+      - autoscaling
+      kinds:
+      - HorizontalPodAutoscaler
+      clusters:
+      - "*"
+    - apiGroups:
+      - policy
+      kinds:
+      - PodDisruptionBudget
+      clusters:
+      - "*"
+    - apiGroups:
+      - secrets-store.csi.x-k8s.io
+      kinds:
+      - SecretProviderClass
+      - SecretProviderClassPodStatus
+      clusters:
+      - "*"  
+    - apiGroups:
+      - storage.k8s.io
+      kinds:
+      - StorageClass
+      clusters:
+      - "*"    
+    - apiGroups:
+      - argoproj.io
+      kinds:
+      - Application
+      - ApplicationSet
+      - AppProject  
+      - Rollout
+      - Rollout/scale
+      - Rollout/status
+      - Experiment
+      - AnalysisTemplate
+      - ClusterAnalysisTemplate
+      - analysisrun
+      clusters:
+      - "*"  
+    - apiGroups:
+      - rbac.authorization.k8s.io
+      kinds: 
+      - ClusterRole
+      - ClusterRoleBinding
+      - Role
+      - RoleBinding      
+      clusters:
+      - "*"  
+    - apiGroups:
+      - networking.istio.io
+      kinds: 
+      - Sidecar     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - msi-acrpull.microsoft.com
+      kinds: 
+      - AcrPullBinding     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - ''
+      kinds: 
+      - ResourceQuota    
+      clusters:
+      - "*" 
+    - apiGroups:
+      - admissionregistration.k8s.io
+      kinds: 
+      - MutatingWebhookConfiguration 
+      - ValidatingWebhookConfiguration
+      clusters:
+      - "*" 
+    - apiGroups:
+      - templates.gatekeeper.sh 
+      kinds: 
+      - ConstraintTemplate 
+      clusters:
+      - "*" 
+    - apiGroups:
+      - config.gatekeeper.sh
+      kinds: 
+      - Config 
+      clusters:
+      - "*" 
+    - apiGroups:
+      - constraints.gatekeeper.sh
+      kinds: 
+      - ContainerDenyEmptyDirNoSizeLimit
+      - K8sAllowedRepos
+      - K8sBlockLoadBalancer
+      - K8sBlockNodePort
+      - K8sContainerLimits
+      - K8sContainerRequests
+      - K8sDisallowedTags
+      - K8sHorizontalPodAutoscaler
+      - K8sPSPAllowPrivilegeEscalationContainer
+      - K8sPSPPrivilegedContainer
+      - K8sPodDisruptionBudget
+      - K8sReplicaLimits
+      - K8sRequiredProbes
+      - K8sRequiredResources
+      - VerifyDeprecatedAPI
+      - VirtualserviceDenyDuplicate
+      clusters:
+      - "*"
+
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd 
+  name: argocd-cm
+  namespace: argocd 

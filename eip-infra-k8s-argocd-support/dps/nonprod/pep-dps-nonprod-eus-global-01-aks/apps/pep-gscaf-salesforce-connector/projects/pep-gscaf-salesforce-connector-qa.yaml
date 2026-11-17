@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-gscaf-salesforce-connector-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pep-gscaf-salesforce-connector-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/salesforce-connector-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-gscafso-qa
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-gscaf-salesforce-connector-qa-admin
+    description: Admin privileges to pep-gscaf-salesforce-connector-qa
+    policies:
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-admin, applications, *, pep-gscaf-salesforce-connector-qa/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-admin, applications, get, argocd/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-admin, repositories, *, pep-gscaf-salesforce-connector-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-gscaf-salesforce-connector-qa-user
+    description: Read-only privileges to pep-gscaf-salesforce-connector-qa
+    policies:
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-user, applications, get, pep-gscaf-salesforce-connector-qa/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-user, applications, sync, pep-gscaf-salesforce-connector-qa/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-user, repositories, get, pep-gscaf-salesforce-connector-qa/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-qa:pep-gscaf-salesforce-connector-qa-user, applications, action/apps/Deployment/restart, pep-gscaf-salesforce-connector-qa/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

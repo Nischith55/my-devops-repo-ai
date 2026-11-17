@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: devx-aisp-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for devx-aisp-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-aisp-01-aks
+        namespace: pep-eiap-cgf-devxai-qa
+      - name: pep-eiap-nonprod-eus-aisp-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: devx-aisp-qa-admin
+        description: Admin privileges to devx-aisp-qa
+        policies:
+        - p, proj:devx-aisp-qa:devx-aisp-qa-admin, applications, *, devx-aisp-qa/*, allow
+        - p, proj:devx-aisp-qa:devx-aisp-qa-admin, repositories, *, devx-aisp-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: devx-aisp-qa-user
+        description: Read-only privileges to devx-aisp-qa
+        policies:
+        - p, proj:devx-aisp-qa:devx-aisp-qa-user, applications, get, devx-aisp-qa/*, allow
+        - p, proj:devx-aisp-qa:devx-aisp-qa-user, applications, sync, devx-aisp-qa/*, allow
+        - p, proj:devx-aisp-qa:devx-aisp-qa-user, repositories, get, devx-aisp-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:devx-aisp-qa:devx-aisp-qa-user, applications, action/apps/Deployment/restart, devx-aisp-qa/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devX"
+        - "Team.Support.EIAP.READ"
+    

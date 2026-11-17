@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    field.cattle.io/projectId: p-p8xhh
+    kubernetes.io/metadata.name: default
+    servicename_aks: fortify
+  name: default

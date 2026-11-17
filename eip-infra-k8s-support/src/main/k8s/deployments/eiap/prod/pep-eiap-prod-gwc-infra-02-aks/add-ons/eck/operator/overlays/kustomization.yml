@@ -1,0 +1,30 @@
+---
+# generated file please do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: elastic-system
+resources:
+  - ../../../../../../add-ons/eck/kustomize/operator/base
+images:
+  - name: docker.elastic.co/eck/eck-operator
+    newName: docker.elastic.co/eck/eck-operator
+    newTag: 1.4.0
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-elastic-operator-cm.yml
+  - patch-merge-pod-template.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-validating-webhook-patch.yml
+    target:
+      group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: elastic-webhook.k8s.elastic.co
+      version: v1beta1
+ 
+ 
+
+

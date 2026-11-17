@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cmp-oauth-poc-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - cmp-oauth-poc.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cmp-oauth-poc.pep-eiap-global-cmp-dev.svc.cluster.local
+        port:
+          number: 8080        
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-eiap-cmp-oauth-poc-dr
+  namespace: pep-eiap-istio-config
+spec:
+  host: cmp-oauth-poc.pep-eiap-global-cmp-dev.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

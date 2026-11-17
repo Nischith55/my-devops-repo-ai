@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-flna-hhnext-advshpmntnotice-qa-vs
+  namespace: pep-eiap-flna-hhnext-qa
+spec:
+  gateways:
+  - pep-eiap-flna-hhnext-qa/pep-eiap-flna-hhnext-qa-cv-gw
+  hosts:
+  - pep-eiap-flna-hhnext-advshpmntnotice-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /asnadjsvc/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: advancedshipmentnotice.pep-eiap-flna-hhnext-qa.svc.cluster.local

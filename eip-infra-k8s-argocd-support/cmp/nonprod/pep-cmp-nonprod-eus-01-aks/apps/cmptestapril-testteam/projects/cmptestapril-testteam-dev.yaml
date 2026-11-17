@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmptestapril-testteam-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmptestapril-testteam-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmptestapril-testteam-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: cmptestapril-testteam-dev-admin
+    description: Admin privileges to cmptestapril-testteam-dev
+    policies:
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-admin, applications, *, cmptestapril-testteam-dev/*, allow
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-admin, repositories, *, cmptestapril-testteam-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: cmptestapril-testteam-dev-user
+    description: Read-only privileges to cmptestapril-testteam-dev
+    policies:
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-user, applications, get, cmptestapril-testteam-dev/*, allow
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-user, applications, sync, cmptestapril-testteam-dev/*, allow
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-user, repositories, get, cmptestapril-testteam-dev/*, allow
+    - p, proj:cmptestapril-testteam-dev:cmptestapril-testteam-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

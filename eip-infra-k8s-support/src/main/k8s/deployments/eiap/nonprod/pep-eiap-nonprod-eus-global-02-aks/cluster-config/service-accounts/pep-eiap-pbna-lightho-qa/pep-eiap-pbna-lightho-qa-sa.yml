@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 64b6836c-dc7c-4cd0-b8a5-272911b1dcf8
+  name: pep-eiap-pbna-lightho-qa-sa
+  namespace: pep-eiap-pbna-lightho-qa

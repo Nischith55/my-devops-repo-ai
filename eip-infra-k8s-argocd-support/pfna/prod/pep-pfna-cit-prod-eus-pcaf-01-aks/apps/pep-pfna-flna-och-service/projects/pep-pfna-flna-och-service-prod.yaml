@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pfna-flna-och-service-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pfna-flna-och-service-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/eCommerce_D2C_PFNA/_git/pep-pcaf-och-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+        namespace: pep-pfna-flna-pcaf-prod
+      - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pfna-flna-och-service-prod-admin
+        description: Admin privileges to pep-pfna-flna-och-service-prod
+        policies:
+        - p, proj:pep-pfna-flna-och-service-prod:pep-pfna-flna-och-service-prod-admin, applications, *, pep-pfna-flna-och-service-prod/*, allow
+        - p, proj:pep-pfna-flna-och-service-prod:pep-pfna-flna-och-service-prod-admin, repositories, *, pep-pfna-flna-och-service-prod/*, allow
+        groups:
+        - "Team.Support.PFNA.RG.AKS.PROD.Admin"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pfna-flna-och-service-prod-user
+        description: Read-only privileges to pep-pfna-flna-och-service-prod
+        policies:
+        - p, proj:pep-pfna-flna-och-service-prod:pep-pfna-flna-och-service-prod-user, applications, get, pep-pfna-flna-och-service-prod/*, allow
+        - p, proj:pep-pfna-flna-och-service-prod:pep-pfna-flna-och-service-prod-user, applications, sync, pep-pfna-flna-och-service-prod/*, allow
+        - p, proj:pep-pfna-flna-och-service-prod:pep-pfna-flna-och-service-prod-user, repositories, get, pep-pfna-flna-och-service-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+        - "Team.Support.EIAP.READ"
+    

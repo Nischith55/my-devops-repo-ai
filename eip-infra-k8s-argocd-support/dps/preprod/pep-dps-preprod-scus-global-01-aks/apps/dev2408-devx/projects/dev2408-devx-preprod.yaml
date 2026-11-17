@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev2408-devx-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dev2408-devx-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dev2408-devx-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-devx-test-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dev2408-devx-preprod-admin
+    description: Admin privileges to dev2408-devx-preprod
+    policies:
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-admin, applications, *, dev2408-devx-preprod/*, allow
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-admin, repositories, *, dev2408-devx-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dev2408-devx-preprod-user
+    description: Read-only privileges to dev2408-devx-preprod
+    policies:
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-user, applications, get, dev2408-devx-preprod/*, allow
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-user, applications, sync, dev2408-devx-preprod/*, allow
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-user, repositories, get, dev2408-devx-preprod/*, allow
+    - p, proj:dev2408-devx-preprod:dev2408-devx-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.READ"

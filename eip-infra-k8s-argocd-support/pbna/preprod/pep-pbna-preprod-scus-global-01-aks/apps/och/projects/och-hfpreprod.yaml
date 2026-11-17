@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: och-hfpreprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for och-hfpreprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace: pep-pbna-pbna-savvyochn-preprod
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace: pep-pbna-ops-admin
+      roles:
+      - name: och-hfpreprod-admin
+        description: Admin privileges to och-hfpreprod
+        policies:
+        - p, proj:och-hfpreprod:och-hfpreprod-admin, applications, *, och-hfpreprod/*, allow
+        - p, proj:och-hfpreprod:och-hfpreprod-admin, repositories, *, och-hfpreprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: och-hfpreprod-user
+        description: Read-only privileges to och-hfpreprod
+        policies:
+        - p, proj:och-hfpreprod:och-hfpreprod-user, applications, get, och-hfpreprod/*, allow
+        - p, proj:och-hfpreprod:och-hfpreprod-user, applications, sync, och-hfpreprod/*, allow
+        - p, proj:och-hfpreprod:och-hfpreprod-user, repositories, get, och-hfpreprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:och-hfpreprod:och-hfpreprod-user, applications, action/apps/Deployment/restart, och-hfpreprod/*, allow
+        groups:
+        - "Team.Support.OCH.NA.DigitalSales.Developer"
+        - "Team.Support.EIAP.READ"
+    

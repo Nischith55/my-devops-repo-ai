@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pfna-transportation-driver-events-vs
+  namespace: pep-pfna-sch-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pfna-transportation-driver-events.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/driverevents
+    route:
+    - destination:
+        host: pepsico-pfna-transportation-driver-events.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80

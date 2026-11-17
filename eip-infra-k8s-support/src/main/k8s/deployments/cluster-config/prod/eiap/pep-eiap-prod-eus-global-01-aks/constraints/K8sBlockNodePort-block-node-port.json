@@ -1,0 +1,23 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockNodePort",
+  "metadata": {
+    "annotations": {},
+    "name": "block-node-port"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ]
+    }
+  }
+}

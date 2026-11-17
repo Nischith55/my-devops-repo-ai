@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-och-essa-poland-orderprocess-vs
+  namespace: pep-eiap-och-edt-preprod
+spec:
+  gateways:
+  - pep-eiap-och-edt-preprod/pep-eiap-och-edt-preprod-cv-gw
+  hosts:
+  - pep-och-essa-poland-orderprocess.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-essa-poland-orderprocess.pep-eiap-och-edt-preprod.svc.cluster.local
+        port:
+          number: 8080

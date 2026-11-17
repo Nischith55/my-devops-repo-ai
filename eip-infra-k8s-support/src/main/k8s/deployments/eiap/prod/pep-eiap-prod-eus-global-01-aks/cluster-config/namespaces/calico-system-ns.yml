@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: 'true'
+    crosscharge_aks: crosscharge
+    field.cattle.io/projectId: p-kb55s
+    kubernetes.io/metadata.name: calico-system
+    name: calico-system
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+    servicename_aks: sharedaks
+  name: calico-system

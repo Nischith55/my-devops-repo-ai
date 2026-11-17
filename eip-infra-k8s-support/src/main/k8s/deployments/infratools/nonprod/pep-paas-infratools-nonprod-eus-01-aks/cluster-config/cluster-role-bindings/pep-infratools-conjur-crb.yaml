@@ -1,0 +1,13 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pep-infratools-conjur-crb
+roleRef:
+  kind: ClusterRole
+  name: pep-infratools-conjur-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: pep-paas-infratools-conjur-sa
+  namespace: pep-paas-infratools-ops-admin

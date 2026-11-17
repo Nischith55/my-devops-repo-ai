@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-europe-gpgeu-preprod-sa
+  namespace: pep-dps-europe-gpgeu-preprod

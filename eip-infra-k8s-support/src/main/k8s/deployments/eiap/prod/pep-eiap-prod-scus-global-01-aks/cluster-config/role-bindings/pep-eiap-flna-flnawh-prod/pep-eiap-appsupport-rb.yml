@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-eiap-appsupport-rb
+  namespace: pep-eiap-flna-flnawh-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-appsupport-clusterrole
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: 38bd99c0-ed4b-4208-befc-c58f68a22170

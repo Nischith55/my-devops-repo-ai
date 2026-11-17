@@ -1,0 +1,37 @@
+---
+ns_pep_eiap_pbna_quikpick_qa:
+  
+  name: pep-eiap-pbna-quikpick-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-quikpick
+    sector: pbna
+    project: quikpick
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: quikpickbypepsicocommercializationprod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-quikpick-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_quikpick'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-pbna-quikpick-qa-sa-token
+    namespace: pep-eiap-pbna-quikpick-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pbna-quikpick-qa-sa"

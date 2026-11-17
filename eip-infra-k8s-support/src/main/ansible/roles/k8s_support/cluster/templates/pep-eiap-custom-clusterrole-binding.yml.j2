@@ -1,0 +1,30 @@
+#jinja2: lstrip_blocks: "True"
+{# 
+  inputs:
+    - k8s_ns_name: name of the namespace
+    - k8s_ns_params: parameters for namespace 
+#}
+---
+# Bind the above role (default namespace)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ k8s_role }}-binding
+  namespace: {{ k8s_ns_name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ k8s_role }}
+{% if k8s_subjects is defined %}
+subjects:
+  {% for subject in k8s_subjects %}
+  {% if subject['kind'] == 'ServiceAccount' %}
+  - apiGroup: ""
+  {% else %}
+  - apiGroup: rbac.authorization.k8s.io
+  {% endif %}
+    {% for key, value in subject.iteritems() %}
+    {{ key }}: {{ value }}
+    {% endfor %}
+  {% endfor %}
+{% endif %}

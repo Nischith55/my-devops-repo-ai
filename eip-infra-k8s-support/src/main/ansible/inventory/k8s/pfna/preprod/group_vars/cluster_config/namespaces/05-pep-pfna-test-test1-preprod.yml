@@ -1,0 +1,29 @@
+---
+ns_pep_pfna_test_test1_preprod:
+  
+  name: pep-pfna-test-test1-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: test-test1
+    sector: test
+    project: test1
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-pfna-test-test1-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['test_test1'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

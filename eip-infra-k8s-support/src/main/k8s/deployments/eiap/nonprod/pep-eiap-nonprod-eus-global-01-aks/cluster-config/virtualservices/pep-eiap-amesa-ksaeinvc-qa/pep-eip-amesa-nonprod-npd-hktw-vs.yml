@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-amesa-nonprod-npd-hktw-vs
+  namespace: pep-eiap-amesa-ksaeinvc-qa
+  labels:
+      app: pep-eip-amesa-nonprod-npd
+spec:
+  hosts:
+  - pep-eip-amesa-nonprod-npd.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-amesa-ksaeinvc-qa/pep-eiap-amesa-ksaeinvc-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /sap
+    route:
+    - destination:
+        host: pep-eip-amesa-nonprod-npd.pep-eiap-amesa-ksaeinvc-qa.svc.cluster.local
+        port:
+          number: 80
+  

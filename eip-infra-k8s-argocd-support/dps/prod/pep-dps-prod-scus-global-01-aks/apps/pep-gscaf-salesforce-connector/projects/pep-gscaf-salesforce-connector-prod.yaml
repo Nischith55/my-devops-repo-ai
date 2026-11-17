@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-gscaf-salesforce-connector-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pep-gscaf-salesforce-connector-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/salesforce-connector-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-gscafso-prod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-gscaf-salesforce-connector-prod-admin
+    description: Admin privileges to pep-gscaf-salesforce-connector-prod
+    policies:
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-admin, applications, *, pep-gscaf-salesforce-connector-prod/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-admin, applications, get, argocd/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-admin, repositories, *, pep-gscaf-salesforce-connector-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-gscaf-salesforce-connector-prod-user
+    description: Read-only privileges to pep-gscaf-salesforce-connector-prod
+    policies:
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-user, applications, get, pep-gscaf-salesforce-connector-prod/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-user, applications, sync, pep-gscaf-salesforce-connector-prod/*, allow
+    - p, proj:pep-gscaf-salesforce-connector-prod:pep-gscaf-salesforce-connector-prod-user, repositories, get, pep-gscaf-salesforce-connector-prod/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

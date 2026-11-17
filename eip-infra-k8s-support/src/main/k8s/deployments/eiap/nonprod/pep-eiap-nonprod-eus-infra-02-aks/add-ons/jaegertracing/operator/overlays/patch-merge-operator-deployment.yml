@@ -1,0 +1,15 @@
+---
+# generated file please do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger-operator
+spec:
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

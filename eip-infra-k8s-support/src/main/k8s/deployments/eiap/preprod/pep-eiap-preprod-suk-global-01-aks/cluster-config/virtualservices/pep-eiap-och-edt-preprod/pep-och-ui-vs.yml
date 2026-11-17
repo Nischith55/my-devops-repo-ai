@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-ui
+  name: pep-och-ui-vs
+  namespace: pep-eiap-och-edt-preprod
+spec:
+  gateways:
+  - pep-eiap-och-edt-preprod/pep-eiap-och-edt-preprod-cv-gw
+  hosts:
+  - pep-och-ui.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-ui.pep-eiap-och-edt-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmptest-testtemp-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmptest-testtemp-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_IT2_Org_Test_Release/_git/cmptest-testtemp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: cmptest-testtemp-dev-admin
+    description: Admin privileges to cmptest-testtemp-dev
+    policies:
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-admin, applications, *, cmptest-testtemp-dev/*, allow
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-admin, repositories, *, cmptest-testtemp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: cmptest-testtemp-dev-user
+    description: Read-only privileges to cmptest-testtemp-dev
+    policies:
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-user, applications, get, cmptest-testtemp-dev/*, allow
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-user, applications, sync, cmptest-testtemp-dev/*, allow
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-user, repositories, get, cmptest-testtemp-dev/*, allow
+    - p, proj:cmptest-testtemp-dev:cmptest-testtemp-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

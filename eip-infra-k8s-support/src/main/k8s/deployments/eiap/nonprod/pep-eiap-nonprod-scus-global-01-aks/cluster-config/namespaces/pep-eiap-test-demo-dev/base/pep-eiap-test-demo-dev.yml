@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-test-demo-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: eiap
+    sector: Global
+    team: eiap-developers

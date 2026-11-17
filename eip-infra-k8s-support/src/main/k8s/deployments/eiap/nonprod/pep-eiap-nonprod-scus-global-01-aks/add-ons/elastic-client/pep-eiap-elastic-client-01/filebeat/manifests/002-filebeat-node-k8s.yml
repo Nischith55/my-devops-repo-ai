@@ -1,0 +1,290 @@
+# ##
+# Non-ECK deployment.
+# IMPORTANT:
+# - This runs as a daemonset on each k8s node: Hence name is filebeat-node
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-node-config
+  namespace: pep-eiap-elastic-client-01
+data:
+  filebeat.yml: |-
+
+    # #####################################################################
+    # Setup filebeat configuration
+    # #####################################################################
+    filebeat:
+
+      # ~~
+      # All enabled modules. NOTE: This requires an ingest-node to be
+      # available OTHERWISE it will fail!!!
+      # ~~
+      modules:
+      - module: system
+        syslog:
+          enabled: true
+          # Default: Configured paths: [/var/log/messages* /var/log/syslog*]
+          var:
+            paths:
+            - /var/log/syslog
+            - /var/log/messages
+            - /var/log/waagent.log
+            - /var/log/azure/*.log
+        auth:
+          enabled: true
+          # Default: Configured paths: [/var/log/auth.log* /var/log/secure*]
+          var:
+            paths:
+            - /var/log/auth.log
+      # ~~
+      # autodiscover settings
+      # ~~
+      autodiscover:
+        providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          paths:
+          - /var/log/containers/*.log
+          processors:
+          # IMPORTANT:
+          # - autodiscover will not work without the matcher currently, 
+          # report bug to es support. It is looking at 
+          # '/var/lib/docker/containers/'
+          - add_kubernetes_metadata:
+              node: ${NODE_NAME}
+              matchers:
+              - logs_path:
+                  logs_path: "/var/log/containers/"
+
+          # enable hints for pod annotations
+          hints:
+            enabled: true
+            # default_config 
+            default_config:
+              type: container
+              paths:
+                # CRI path
+              - /var/log/containers/*-${data.container.id}.log
+                # output
+              multiline:
+                type: pattern
+                pattern: '^(\[|[0-9]{4}-[0-9]{2}-[0-9]{2} )'
+                negate: true
+                match: after                
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat-node
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: &app_name filebeat-node
+spec:
+
+  selector:
+    matchLabels:
+      k8s-app: *app_name
+
+  template:
+
+    metadata:
+      labels:
+        k8s-app: *app_name
+        app: *app_name
+        version: 7.13.1
+
+    spec:
+
+      # PEP: DaemonSet we need to run it on EVERY node. so tolerate all
+      #      taints
+      tolerations:
+      - operator: Exists
+      #
+
+      serviceAccountName: filebeat
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsUser: 0
+        # If using Red Hat OpenShift uncomment this:
+        # privileged: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+
+      # ~~
+      # Please pay attention to this
+      # ~~
+      volumes:
+
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+
+      - name: varlog
+        hostPath:
+          path: /var/log
+
+      # data folder stores a registry of read status for all files, 
+      # so we don't send everything again on a Filebeat pod restart
+      - name: data
+        hostPath:
+          path: /var/lib/pep-eiap-elastic-client-01/filebeat-node/filebeat-data
+          type: DirectoryOrCreate
+
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+
+      # os-release
+      - name: os-release
+        hostPath:
+          path: /etc/os-release
+
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: filebeat-node-config
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:   
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+          # beats-entrypoint-config
+          - configMap:
+              name: beats-entrypoint-config
+              optional: false
+              items:
+                - key: entrypoint.sh
+                  # must be relative
+                  path: bin/entrypoint.sh
+                  # 0755 -> 493
+                  mode: 493
+          # beats-common-config
+          - configMap:
+              name: &beats_common_config beats-common-output-config
+              optional: false
+              items:
+                - key: beat-output-config.yml
+                  # must be relative
+                  path: etc/beat-output-config.yml
+
+          # filebeat-node-config
+          - configMap:
+              name: filebeat-node-config
+              optional: false
+              items:
+                - key: filebeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+
+      # ##
+      # All Containers
+      # ##
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.13.1
+        command:
+          - /projected/bin/entrypoint.sh
+        args:
+        - filebeat
+        - -e
+        - -c 
+        - /projected/etc/beat-output-config.yml 
+        - -c 
+        - /projected/etc/beat.yml 
+
+        env:
+
+        # All secrets from elastic-client-shared
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: &shared_sec elastic-client-shared
+              key: ELASTICSEARCH_USERNAME_01
+
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: *shared_sec
+              key: ELASTICSEARCH_PASSWORD_01
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: &beats_shared_env beats-shared-env-config
+              key: K8S_CLUSTER_NAME
+
+        - name: ELASTICSEARCH_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_shared_env
+              key: ELASTICSEARCH_HOST_01
+
+        - name: ELASTICSEARCH_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_shared_env
+              key: ELASTICSEARCH_PORT_01
+
+        - name: TEMPLATE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_shared_env
+              key: FILEBEAT_TEMPLATE_NAME
+
+        - name: INDEX_PATTERN_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_shared_env
+              key: FILEBEAT_INDEX_PATTERN_PREFIX
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        # DaemonSet Do NOT set any resource limits !!!
+        
+        volumeMounts:
+
+        - name: data
+          mountPath: /usr/share/filebeat/data
+
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+
+        # PEP: we need this mount to setup some environment variables
+        - name: os-release
+          mountPath: /tmp/etc/os-release
+          readOnly: true
+
+        # PEP: 
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

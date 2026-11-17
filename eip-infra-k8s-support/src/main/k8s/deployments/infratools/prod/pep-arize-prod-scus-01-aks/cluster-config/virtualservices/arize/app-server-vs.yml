@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"app-server-vs","namespace":"pep-arize-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["app.arize.mypepsico.com","app-server.arize.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/auth/v2/"}}],"route":[{"destination":{"host":"auth-external-service.arize.svc.cluster.local","port":{"number":443}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"app-server.arize.svc.cluster.local","port":{"number":4040}},"headers":{"response":{"remove":["X-Frame-Options"]}}}]}]}}'
+  labels:
+    app: undefined
+  name: app-server-vs
+  namespace: arize
+spec:
+  gateways:
+  - arize/arize-cv-gw
+  hosts:
+  - app.arize.mypepsico.com
+  - app-server.arize.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /auth/v2/
+    route:
+    - destination:
+        host: auth-external-service.arize.svc.cluster.local
+        port:
+          number: 443
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: app-server.arize.svc.cluster.local
+        port:
+          number: 4040
+      headers:
+        response:
+          remove:
+          - X-Frame-Options

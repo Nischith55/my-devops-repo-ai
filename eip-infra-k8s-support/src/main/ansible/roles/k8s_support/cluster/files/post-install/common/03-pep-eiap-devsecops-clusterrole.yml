@@ -1,0 +1,46 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-devsecops-clusterrole
+rules:
+  - apiGroups:
+      -  ""
+      - apps
+      - autoscaling
+      - extensions
+      - batch
+    resources:
+      - deployments
+      - deployments/rollback
+      - deployments/status
+      - deployments/scale
+      - horizontalpodautoscalers
+      - horizontalpodautoscalers/status
+      - jobs
+      - jobs/status
+      - cronjobs
+      - pods
+      - podtemplates
+      - pods/attach
+      - pods/binding
+      - pods/eviction
+      - pods/exec
+      - pods/log
+      - pods/status
+      - replicasets/scale
+      - replicasets/status
+      - replicasets
+      - services
+      - services/proxy
+      - services/status
+      - statefulsets
+      - statefulsets/scale
+      - statefulsets/status
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch

@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pep-snt-paywise-prod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pep-snt-paywise-argocd-configs
+    targetRevision: develop
+  - repoURL: pepdpsprodacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: pep-snt-paywise-prod
+      valueFiles:
+      - $values/prod/pep-dps-prod-scus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: prod
+          helm:  
+            enabled: false       
+            repo: pepdpsprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-dps-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'pep-snt-paywise-prod' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pep-snt-paywise-argocd-configs
+              repoName: pep-snt-paywise-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

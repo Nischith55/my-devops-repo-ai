@@ -1,0 +1,72 @@
+---
+# Istio Gateway 02 Config
+# ABBREVIATIONS:
+#   - icpm -> istio_control_plane_main
+#   - wc -> wildcard
+# GLOBALS:
+# - _icpm_name_: Control Plane Name (see 51-istio-gateways)
+
+_icpm_ig02: &id001 istio-in-gateway-02
+
+# wildcard for this IP
+_icpm_ig02_wc: &wc001 |-
+  *.infra.gw02.aks02.scus.nonprod.azure.intra.pepsico.com
+
+_icpm_in_02_gwy_params:
+
+  # TODO: move to filter
+  extra_dirs: "{{ _icpm_in_gwy_outdir }}"
+
+  name: *id001
+
+  namespace: "{{ _icpm_namespace_ }}"
+
+  # TODO: We wrap everything under k8s so in future we can use variables
+  # Nothing but supported values for the resource as defined in CRD should
+  # be here.
+  k8s:
+    
+
+    spec:
+      selector:
+        # TODO: we can actually source this once we parameterize the names
+        istio: pep-eiap-ingress-gw02
+
+      servers:
+
+        - name: istio-in-gateway-02-wildcard-https-443
+          hosts:
+            - *wc001
+          port:
+            name: https-wc-443
+            number: 443
+            protocol: https
+          # terminate at gwy (our default is SIMPLE)
+          tls: |-
+            {{
+              istio_default_tls_settings
+              |
+              combine({'credentialName': 'pep-eiap-nonprod-scus-infra-02-aks-gw02-tls'}, recursive=True)
+            }}
+
+        # wild-card - port 80
+        - name: istio-in-gateway-02-wildcard-http-80
+          hosts:
+            - *wc001
+          port:
+            name: http-wc-80
+            number: 80
+            protocol: http
+          tls:
+            # always redirect http traffic to https
+            httpsRedirect: true
+
+        # wild-card - port 80 (http2)
+        - name: istio-in-gateway-02-wildcard-http2-80
+          hosts:
+            - *wc001
+          port:
+            name: http2-wc-80
+            number: 80
+            protocol: http2
+          # http2 cannot have TLS

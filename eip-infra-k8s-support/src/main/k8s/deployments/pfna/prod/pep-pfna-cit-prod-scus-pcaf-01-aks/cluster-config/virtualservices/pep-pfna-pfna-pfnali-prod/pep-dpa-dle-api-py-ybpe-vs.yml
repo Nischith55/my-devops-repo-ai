@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dpa-dle-api-py-ybpe-vs
+  namespace: pep-pfna-pfna-pfnali-prod
+  labels:
+      app: pep-dpa-dle-api-py
+spec:
+  hosts:
+  - pep-dpa-dle-api-py-preprod.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pfnali-prod/pep-pfna-pfna-pfnali-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dpa-dle-api-py.pep-pfna-pfna-pfnali-prod.svc.cluster.local
+        port:
+          number: 80
+  

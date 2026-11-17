@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-snt-cgf-lighthouse-dev
+  labels:
+    env-nonprod: "true"
+    project: lighthouse
+    sector: cgf
+    team: cgf-lighthouse
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: lighthousenon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 0cce883ddb3e8c10c2b5f38139961991
+    pep-cmdb-app-service-id: c3b5c19c47496e10f0228251516d4334
+    pep-environment: Development
+    

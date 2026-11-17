@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pcaf-aks-eiv-odata-service
+  name: pep-pcaf-aks-eiv-odata-service-vs
+  namespace: pep-pfna-pcaf-dev
+spec:
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  hosts:
+  - pep-pcaf-aks-eiv-odata-service.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-aks-eiv-odata-service.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,74 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+parameters:
+  - name: cluster_name
+    type: string
+  - name: env
+    displayName: 'env'
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+  - name: department
+    displayName: 'department'
+    type: string
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - name: agent_pool
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+
+
+stages:
+- stage: VirtualService_Manifest
+  displayName: Virtual Service Manifest generation
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: get_cluster_VS
+    steps:
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+    - task: CmdLine@2
+      inputs:
+        script: |
+          pip3 install ruamel.yaml
+          ansible-playbook --version
+          pip install ansible[Azure]
+          pip install futures
+          pip show pyyaml
+          pip3 install openshift
+      displayName: 'ansible_pre_requisites'
+      name: 'ansible_pre_requisites'
+
+            
+    - task: Bash@3
+      displayName: 'kubectl'
+      inputs:
+        targetType: 'inline'
+        script: |
+          ansible-galaxy collection install kubernetes.core -p ~/.ansible/collections/
+          ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+          ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+          ansible-galaxy collection install community.general -p ~/.ansible/collections/
+    - task: Ansible@0
+      displayName: 'get_manifest'
+      name: get_manifest
+      inputs:
+        ansibleInterface: 'agentMachine'
+        playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/virtualservice-manifest-creation.yml'
+        args: '-e ''{ "env": "${{ parameters.env }}", "department": "${{ parameters.department }}", "cluster_name": "${{ parameters.cluster_name }}", "mypath": "$(system.defaultWorkingDirectory)" }'' -vvv'
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: False
+        ANSIBLE_LOCALHOST_WARNING: False
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

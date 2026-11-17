@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-aisp-cgf-fss-vs
+  namespace: pep-aisp-cgf-fss-prod
+spec:
+  hosts:
+  - pep-fss.aisp.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-aisp-cgf-fss-prod/pep-aisp-cgf-fss-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dsearchadmin
+    route:
+    - destination:
+        host: indexserver.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 9300
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /IndexAgent
+    route:
+    - destination:
+        host: indexagent.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 9200
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dfs
+    route:
+    - destination:
+        host: dfs-server.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /da
+    route:
+    - destination:
+        host: da-svc.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otdsws
+    route:
+    - destination:
+        host: otdsws.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otds-admin
+    route:
+    - destination:
+        host: otdsws.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /DmMethods/servlet/DoMethod
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /Acs/servlet
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dctm-rest.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 8080

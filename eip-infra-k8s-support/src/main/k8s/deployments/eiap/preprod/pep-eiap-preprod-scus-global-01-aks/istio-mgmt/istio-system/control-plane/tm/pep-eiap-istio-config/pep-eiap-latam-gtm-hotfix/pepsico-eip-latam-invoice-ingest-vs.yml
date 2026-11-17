@@ -1,0 +1,21 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-eip-latam-invoice-ingest-hotfix-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-eip-latam-invoice-ingest-hotfix.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/invoice
+    route:
+    - destination:
+        host: pepsico-eip-latam-invoice-ingest.pep-eiap-latam-gtm-hotfix.svc.cluster.local
+        port:
+          number: 80

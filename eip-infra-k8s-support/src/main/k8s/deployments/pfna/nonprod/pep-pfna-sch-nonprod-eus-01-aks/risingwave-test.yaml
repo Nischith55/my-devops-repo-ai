@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    risingwave.risingwavelabs.com/component: frontend
+  name: risingwave-test
+  namespace: pep-pfna-flna-trmmrw-dev
+spec:
+  ports:
+  - name: svc
+    port: 4567
+    protocol: TCP
+    targetPort: 4567
+  selector:
+    risingwave.risingwavelabs.com/component: frontend
+  type: ClusterIP

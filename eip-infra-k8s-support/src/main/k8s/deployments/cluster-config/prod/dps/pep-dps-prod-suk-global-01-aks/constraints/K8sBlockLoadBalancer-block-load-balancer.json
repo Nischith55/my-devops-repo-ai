@@ -1,0 +1,32 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockLoadBalancer",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-dps-prod-sea-global-01-aks-production:constraints.gatekeeper.sh/K8sBlockLoadBalancer:default/block-load-balancer"
+    },
+    "name": "block-load-balancer"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "excludedNamespaces": [
+        "istio-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {}
+    }
+  }
+}

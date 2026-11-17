@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-latam-idcard-authorisation-service-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-latam-idcard-authorisation-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","idcardpmf.intra.pepsico.com"],"http":[{"fault":{"abort":{"httpStatus":404,"percentage":{"value":100}}},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/actuator"}}],"route":[{"destination":{"host":"none"}}]},{"match":[{"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-latam-idcard-authorisation-service.pep-eiap-latam-idcard-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: authorisation-service
+  name: pep-eip-latam-idcard-authorisation-service-vs
+  namespace: pep-eiap-latam-idcard-prod
+spec:
+  gateways:
+  - pep-eiap-latam-idcard-prod/pep-eiap-latam-idcard-prod-cv-gw
+  hosts:
+  - pep-eip-latam-idcard-authorisation-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - idcardpmf.intra.pepsico.com
+  http:
+  - fault:
+      abort:
+        httpStatus: 404
+        percentage:
+          value: 100
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /actuator
+    route:
+    - destination:
+        host: none
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-idcard-authorisation-service.pep-eiap-latam-idcard-prod.svc.cluster.local
+        port:
+          number: 80

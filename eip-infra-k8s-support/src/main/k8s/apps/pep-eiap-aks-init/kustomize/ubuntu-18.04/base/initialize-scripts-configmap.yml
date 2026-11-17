@@ -1,0 +1,203 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eiap-node-initialize-scripts
+  namespace: pep-eiap-ops-admin
+  labels:
+    app: pep-eiap-node-setup
+data:
+  # ##
+  # IMPORTANT:
+  # - Formatting, make ABSOLUTELY sure there is no space(s) before newline
+  # - if you don't do this, when passing through kustomize, it will be a string
+  #   with quotes and escape characters.
+  # ##
+  setup-changes.sh: |
+    #!/usr/bin/env bash
+    # ##
+    # Setup the Node Changes.
+    # - involves setting up ssh into nodes
+    # - copy all necessary files.
+    # ##
+    # IMPORTANT:
+    # - Please be extremely careful since this is a daemonset and any
+    #   error will do a redeployment, so watch for duplicated.
+    # - EVERY command must be checked for errors, if you cop out using
+    #   || true, then ensure idempotency where required.
+    #: ##
+    # This should already be passed in container env else default
+    ROOT_MOUNT_DIR="${ROOT_MOUNT_DIR:-/root}"
+    # ##
+    # - setup ssh hack
+    # ##
+    #
+    # copy private key to home_dir of this pods user context
+    ssh_dir=~/.ssh
+    mkdir -p ${ssh_dir}
+    chmod 0700 ${ssh_dir}
+    cp -pf /tmp/id_rsa_0 ${ssh_dir}/id_rsa || echo "Failed to copy [id_rsa_0]"
+    cp -pf /tmp/id_rsa_0.pub ${ssh_dir}/id_rsa.pub || echo "Failed to copy [id_rsa_0.pub]"
+    #
+    # add to node admin user [NOTE: defaults to neipi002]
+    admin_user="${AKS_ADMIN_USER:-neipi002}"
+    admin_ssh_dir="${ROOT_MOUNT_DIR}/home/${admin_user}/.ssh"
+    node_auth_keys_file=${admin_ssh_dir}/authorized_keys
+    node_auth_keys_file_orig=${admin_ssh_dir}/authorized_keys.ORIG
+    if [[ ! -f "${node_auth_keys_file_orig}" ]]; then
+      cp -pn ${node_auth_keys_file} ${node_auth_keys_file_orig} || echo "Failed copy: [${node_auth_keys_file_orig}]"
+    fi
+    # append public key if not present.
+    pub_key_0=$(cat /tmp/id_rsa_0.pub)
+    # now, append authorized_keys on the node
+    if ! grep -q -F "${pub_key_0}" "${node_auth_keys_file}"; then
+      echo "Adding public key to [${node_auth_keys_file}]"
+      echo ${pub_key_0} >> "${node_auth_keys_file}"
+    fi
+
+    # ##
+    # Copy PepsiCo CA Certs
+    # IMPORTANT:
+    # - in Ubuntu bionic and lower /usr/local/share/ca-certificates will
+    #   be picked up by update-ca-certificates command
+    # ##
+    cacert_dir=${ROOT_MOUNT_DIR}/usr/local/share/ca-certificates
+    # just in case
+    mkdir -p "${cacert_dir}" || echo "Failed to create directory [${cacert_dir}]"
+    cp -pf /tmp/PepsiCoRootCA.crt "${cacert_dir}/PepsiCoRootCA.crt" || echo Failed to copy [PepsiCoRootCA.crt]
+    cp -pf /tmp/PepsiCoCA01.crt "${cacert_dir}/PepsiCoCA01.crt" || echo Failed to copy [PepsiCoCA01.crt]
+
+    # ##
+    # Copy limits
+    # ##
+    cp -pf /tmp/zz-eiap-limits.conf ${ROOT_MOUNT_DIR}/etc/security/limits.d/zz-eiap-limits.conf
+
+    ##
+    # Copy timesyncd conf
+    ##
+    timesyncd_conf=${ROOT_MOUNT_DIR}/etc/systemd/timesyncd.conf
+    backup_file=${ROOT_MOUNT_DIR}/etc/systemd/timesyncd.conf.aks-orig
+    if [[ ! -r ${backup_file} ]]; then
+      cp -p ${timesyncd_conf} ${backup_file}
+    fi
+    cp -pf /tmp/timesyncd.conf ${timesyncd_conf} || echo "Failed copy: [${timesyncd_conf}]"
+
+    ##
+    # Copy sysctl
+    ##
+    eiap_sysctl_file=zzz-sysctl-aks-eiap.conf
+    cp -pf /tmp/${eiap_sysctl_file} /root/etc/sysctl.d/${eiap_sysctl_file} || echo "Failed copy: [${eiap_sysctl_file}]"
+    # ##
+    # Now we copy the ubuntu apply changes script to the NODE
+    # ##
+    cp -pf /tmp/apply-node-changes.sh ${ROOT_MOUNT_DIR}/tmp/apply-node-changes.sh || echo "Failed copy: [${apply-node-changes.sh}]"
+    echo "Done setup for node change script"
+    exit 0
+
+  apply-node-changes.sh: |
+    #!/usr/bin/env bash
+    set -eu
+    # ##
+    # IMPORTANT:
+    # - This is designed to run on the NODE and NOT the pod make sure you can
+    #   ssh from the pod to run the script
+    # - Also, this script should be "scp'ed" OR copied by the initContainer to
+    #   the NODE filesystem
+    # - This must be run as sudo
+    # ##
+
+    DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_FRONTEND
+
+    # ##
+    # reload all sysctl settings in ubuntu
+    # ##
+    echo "---------- START: reload sysctl --------"
+    custom_sysctl_file=/etc/sysctl.d/zzz-sysctl-aks-eiap.conf
+    if [[ -r "${custom_sysctl_file}" ]]; then
+      echo "Applying [${custom_sysctl_file}]"
+      /sbin/sysctl --load="${custom_sysctl_file}" || echo "Failed sysctl load"
+    else
+      echo "WARNING: [${custom_sysctl_file}] file not found.."
+    fi
+    echo "---------- END: reload sysctl --------"
+
+    # ##
+    # Make sure /etc/ssl/certs/ca-certificates.crt is updated
+    # ##
+    echo "---------- START: configure PepsiCo CA Certs --------"
+    # Check whether pepsico cacerts are already in the bundle
+    pep_certs=$(ls /etc/ssl/certs | awk '/PepsiCoRootCA/ || /PepsiCoCA01/' | wc -l)
+    if [[ "${pep_certs}" == "2" ]]; then
+      echo "pepsico cacerts already available; Skipping cacert update block"
+    else
+      # install ca certificates
+      cacert_log=/tmp/cacert-update.log
+      echo "updating ca certificates"
+      update-ca-certificates > $cacert_log
+      # Capture the number of certs added and removed into variables
+      added_certs=$(cat $cacert_log | head -2 | tail -1 | awk '{print $1, $3}' | awk '{print $1}')
+      removed_certs=$(cat $cacert_log | head -2 | tail -1 | awk '{print $1, $3}' | awk '{print $2}')
+      # Check for cacert addition/removal and restart containerd
+      if [[ "$added_certs" > "0" || "$removed_certs" > "0" ]]; then
+        echo "$added_certs pepsico cacerts added to the bundle, $removed_certs removed; restarting containerd"
+        # restart containerd
+        systemctl restart containerd || echo "restart containerd failed"
+        echo "succesfully restarted containerd"
+      else
+        echo "no certificates added/removed; skipping containerd restart"
+      fi
+    fi
+    echo "---------- END: configure PepsiCo CA Certs --------"
+
+    # ##
+    # restart timesyncd
+    # ##
+
+    echo "---------- START: restart timesyncd --------"
+    systemctl restart systemd-timesyncd || echo "Failed to restart timesyncd"
+    echo "---------- END: restart timesyncd --------"
+
+    # ##
+    # Install and update packages...
+    # ##
+
+    echo "---------- START: apt disable autoupgrade and update --------"
+
+    # # NOTE: uncomment below if u ever get messed up with lock files
+    # if lockfile_pids=$(lsof -t /var/lib/dpkg/lock-frontend 2>/dev/null); then
+    #   echo "  ++ Appears we have lockfile in use"
+    #   for _p in $lockfile_pids; do
+    #     kill -9 ${_p} || echo "Failed to kill process [${_p}]"
+    #   done
+    # fi
+    # rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock
+    # dpkg --configure -a
+
+    pkg_mgr="apt-get -qq -y --no-install-recommends "
+
+    echo "~~ Disabling auto-update..."
+    ${pkg_mgr} purge unattended-upgrades || echo "unattended-upgrades purge failed"
+    echo "~~ Disable auto-update done ..."
+
+    echo "~~ Updating apt cache..."
+    ${pkg_mgr} update || echo "update failed.."
+    echo "~~ Done Updating apt cache.."
+
+    echo "Performing dist-upgrade"
+    dpkg_options="-o \"Dpkg::Options::=--force-confdef\" -o \"Dpkg::Options::=--forceconfold\" "
+    ${pkg_mgr} $dpkg_options dist-upgrade || echo "dist-upgrade failed"
+    echo "~~ Done Performing dist-upgrade"
+
+    echo "---------- END: apt disable autoupgrade and update --------"
+
+    # ##
+    # Cleanup motd
+    # ##
+
+    upgrade_file=/var/lib/ubuntu-release-upgrader/release-upgrade-available
+    if [[ -r "${upgrade_file}" ]]; then
+      truncate -s 0 "${upgrade_file}" || echo "Failed to truncate [${upgrade_file}]"
+    fi
+    echo "Done: applying changes"
+    exit 0

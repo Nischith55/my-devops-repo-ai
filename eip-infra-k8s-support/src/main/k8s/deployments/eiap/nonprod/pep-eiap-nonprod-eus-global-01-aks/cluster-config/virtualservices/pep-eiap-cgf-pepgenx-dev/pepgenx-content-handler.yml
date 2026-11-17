@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepgenx-content-handler
+    app.kubernetes.io/instance: pep-cto-ee-pepgenx-content-handler
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: '20240605.1'
+    helm.sh/chart: platform-chart-0.1.1
+  name: pepgenx-content-handler
+  namespace: pep-eiap-cgf-pepgenx-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pepgenx-dev/pep-eiap-cgf-pepgenx-dev-cv-gw
+  hosts:
+  - pepgenx-content-handler.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepgenx-content-handler.pep-eiap-cgf-pepgenx-dev.svc.cluster.local
+        port:
+          number: 8080

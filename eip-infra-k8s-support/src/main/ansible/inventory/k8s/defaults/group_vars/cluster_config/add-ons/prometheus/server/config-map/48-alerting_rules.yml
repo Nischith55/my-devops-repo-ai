@@ -1,0 +1,6 @@
+---
+# ##
+# Any alerting rules if needed.
+# ##
+
+prom_alerting_rules_yml_value_config_map: {}

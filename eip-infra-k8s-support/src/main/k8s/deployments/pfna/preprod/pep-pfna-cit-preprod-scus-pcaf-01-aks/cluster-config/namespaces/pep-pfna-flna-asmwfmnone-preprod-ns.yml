@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-asmwfmnone-preprod
+  labels:
+    env-preprod: "true"
+    project: asmwfmnone
+    sector: flna
+    team: flna-asmwfmnone
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: saleswfmnonprod
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 513f3e961b8c70908fd586e3604bcb60
+    pep-cmdb-app-service-id: d486d5b1c34e6a106f59afdc7a0131b6
+    pep-environment: Pre-Production
+    

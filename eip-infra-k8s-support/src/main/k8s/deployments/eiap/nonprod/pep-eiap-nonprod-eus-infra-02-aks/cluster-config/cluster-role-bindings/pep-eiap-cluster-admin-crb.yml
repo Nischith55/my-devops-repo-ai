@@ -1,0 +1,106 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-cluster-admin-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.Admins
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.K8S.Admin
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 0004fd5e-d171-49a1-9a9e-436860d16989
+    name: cgolla01@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 0004fd5e-d171-49a1-9a9e-436860d16989
+    name: mlakshm5@pepsico.com
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: pep-eiap-admin-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # c6e85e10-cf82-4fb6-a818-41a3268fe10d
+    name: pkadiyal@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 0004fd5e-d171-49a1-9a9e-436860d16989
+    name: skumar09@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 286845aa-f368-4385-840c-ec539109790d
+    name: ssulluru@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 07ec5b38-e40d-4945-90d1-40c170c8905c
+    name: byuvaraj@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # c7e9232e-db52-4283-bd13-acf2f2503cb7
+    name: kvedanth@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 34c37cfe-90f7-48db-956f-ecf5e5cf113e
+    name: sneelam4@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 788b1aee-1901-42ae-ac14-c242cbd89cc7
+    name: mramkish@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 44cc6bc0-a397-4ac0-98bd-fa70ff369d45
+    name: upareta5@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 44cc6bc0-a397-4ac0-98bd-fa70ff369d45
+    name: ygummare@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 69cd7e4e-138c-4f4e-9ce0-98af77726161
+    name: sanbaras@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # de0c9899-cc47-4da6-9916-31249e25cb9e
+    name: sprudhiv@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # aee5d499-601a-4d17-b8a7-7847db20a2f5
+    name: acrystia@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 3803c79f-6f0b-4744-8ca8-dedff915ebac
+    name: sdeepika@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 45b55f69-9a2d-4c75-9801-32bcfeb12143
+    name: ap1@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # b68e2daa-b385-44a1-8a32-973441e8631f
+    name: ks@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 41d8f6bb-ef9d-4df4-8bae-9163fcb2804a
+    name: sbosi@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: vmudhrab@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: gm@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: rjames@pepsico.com
+  

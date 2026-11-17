@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: customer-communication-tool-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for customer-communication-tool-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/customer-communication-tool-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-cct-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: customer-communication-tool-prod-admin
+    description: Admin privileges to customer-communication-tool-prod
+    policies:
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-admin, applications, *, customer-communication-tool-prod/*, allow
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-admin, applications, get, argocd/*, allow
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-admin, repositories, *, customer-communication-tool-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: customer-communication-tool-prod-user
+    description: Read-only privileges to customer-communication-tool-prod
+    policies:
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-user, applications, get, customer-communication-tool-prod/*, allow
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-user, applications, sync, customer-communication-tool-prod/*, allow
+    - p, proj:customer-communication-tool-prod:customer-communication-tool-prod-user, repositories, get, customer-communication-tool-prod/*, allow
+    groups:
+    - "Team.Support.ST.PAM.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

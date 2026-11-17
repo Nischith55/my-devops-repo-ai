@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: flna-pgt-whse-ai-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for flna-pgt-whse-ai-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/FLNA_PWM/_git/pep-flna-whse-ai-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-flna-flnawhse-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: flna-pgt-whse-ai-dev-admin
+    description: Admin privileges to flna-pgt-whse-ai-dev
+    policies:
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-admin, applications, *, flna-pgt-whse-ai-dev/*, allow
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-admin, repositories, *, flna-pgt-whse-ai-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: flna-pgt-whse-ai-dev-user
+    description: Read-only privileges to flna-pgt-whse-ai-dev
+    policies:
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-user, applications, get, flna-pgt-whse-ai-dev/*, allow
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-user, applications, sync, flna-pgt-whse-ai-dev/*, allow
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-user, repositories, get, flna-pgt-whse-ai-dev/*, allow
+    - p, proj:flna-pgt-whse-ai-dev:flna-pgt-whse-ai-dev-user, applications, action/apps/Deployment/restart, flna-pgt-whse-ai-dev/*, allow
+    groups:
+    - "Team.Support.FLNA.NonProd.WHSECC"
+    - "Team.Support.EIAP.READ"

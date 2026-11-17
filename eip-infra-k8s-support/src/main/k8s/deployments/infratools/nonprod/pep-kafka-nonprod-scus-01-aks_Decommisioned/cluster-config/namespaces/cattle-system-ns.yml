@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    field.cattle.io/projectId: p-n587j
+    kubernetes.io/metadata.name: cattle-system
+    servicename_aks: infratools
+  name: cattle-system

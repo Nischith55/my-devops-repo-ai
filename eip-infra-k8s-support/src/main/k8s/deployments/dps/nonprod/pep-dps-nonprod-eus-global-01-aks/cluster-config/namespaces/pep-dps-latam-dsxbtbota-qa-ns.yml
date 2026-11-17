@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-latam-dsxbtbota-qa
+  labels:
+    env-nonprod: "true"
+    project: dsxbtbota
+    sector: latam
+    team: latam-dsxbtbota
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: b2bpepsiconnectportalproductsguatemalanon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: db480abf836087d001deb140feaad329
+    pep-environment: QA
+    

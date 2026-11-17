@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: mypep
+  name: pep-eiap-cgf-wsp-mypep-sni-vs
+  namespace: pep-eiap-cgf-wsp-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-wsp-dev/pep-eiap-cgf-wsp-dev-cv-gw
+  hosts:
+  - mypep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - compass.dev.mypepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - mypep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - compass.dev.mypepsico.com
+    route:
+    - destination:
+        host: mypep.pep-eiap-cgf-wsp-dev.svc.cluster.local
+        port:
+          number: 443

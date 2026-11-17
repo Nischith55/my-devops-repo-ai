@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-activity-api-ptr-perf
+  name: dtcsrv-joy-runtime-activity-api-ptr-perf-vs
+  namespace: pep-eiap-latam-dtcjoyperf-qa
+spec:
+  gateways:
+  - pep-eiap-latam-dtcjoyperf-qa/pep-eiap-latam-dtcjoyperf-qa-cv-gw
+  hosts:
+  - pep-joy-runtimeactivityptr-perf.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-activity-api-ptr-perf.pep-eiap-latam-dtcjoyperf-qa.svc.cluster.local
+        port:
+          number: 80

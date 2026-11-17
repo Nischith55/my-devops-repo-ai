@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"kubernetes-dashboard-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-k8s-dashboard.infra.gw01.aks02.gwc.prod.azure.intra.pepsico.com"],"tls":[{"match":[{"port":443,"sniHosts":["pep-eiap-k8s-dashboard.infra.gw01.aks02.gwc.prod.azure.intra.pepsico.com"]}],"route":[{"destination":{"host":"kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local","port":{"number":443}}}]}]}}
+  labels:
+    app: undefined
+  name: kubernetes-dashboard-vs
+  namespace: kubernetes-dashboard
+spec:
+  gateways:
+  - kubernetes-dashboard/kubernetes-dashboard-cv-gw
+  hosts:
+  - pep-eiap-k8s-dashboard.infra.gw01.aks02.gwc.prod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-k8s-dashboard.infra.gw01.aks02.gwc.prod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local
+        port:
+          number: 443

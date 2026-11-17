@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: fmcs-support-forms
+    app.kubernetes.io/instance: fmcs-support-forms-dev
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: fmcs-support-forms
+  namespace: pep-dps-cgf-fmcs-dev
+spec:
+  gateways:
+  - pep-dps-cgf-fmcs-dev/pep-dps-cgf-fmcs-dev-cv-gw
+  hosts:
+  - fmcs-support-forms.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: fmcs-support-forms.pep-dps-cgf-fmcs-dev.svc.cluster.local
+        port:
+          number: 8080

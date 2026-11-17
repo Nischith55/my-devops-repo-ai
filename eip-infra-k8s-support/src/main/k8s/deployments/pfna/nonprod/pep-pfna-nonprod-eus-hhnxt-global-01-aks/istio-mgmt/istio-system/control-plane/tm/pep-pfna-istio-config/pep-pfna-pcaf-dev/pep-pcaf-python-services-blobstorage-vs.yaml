@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-python-services-blobstorage-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-python-services-blobstorage.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /blob/blob-storage-health
+    - ignoreUriCase: true
+      uri:
+        prefix: /blob
+    route:
+    - destination:
+        host: pep-pcaf-python-services-blobstorage.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 8080  

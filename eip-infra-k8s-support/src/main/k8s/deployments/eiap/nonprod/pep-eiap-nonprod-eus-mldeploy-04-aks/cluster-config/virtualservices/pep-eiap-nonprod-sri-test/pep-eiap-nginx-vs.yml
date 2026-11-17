@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-nginx
+  name: pep-eiap-nginx-vs
+  namespace: pep-eiap-nonprod-sri-test
+spec:
+  gateways:
+  - pep-eiap-nonprod-sri-test/pep-eiap-nonprod-sri-test-cv-gw
+  hosts:
+  - pep-eiap-nginx-sri-curl.mldeploy.gw01.aks04.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-nginx.pep-eiap-nonprod-sri-test.svc.cluster.local
+        port:
+          number: 8080

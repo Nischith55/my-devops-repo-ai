@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-b2beupricingservice
+  name: pep-och-b2beupricingservice-vs
+  namespace: pep-eiap-och-edt-dev
+spec:
+  gateways:
+  - pep-eiap-och-edt-dev/pep-eiap-och-edt-dev-cv-gw
+  hosts:
+  - pep-och-b2beupricingservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-b2beupricingservice.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 8080

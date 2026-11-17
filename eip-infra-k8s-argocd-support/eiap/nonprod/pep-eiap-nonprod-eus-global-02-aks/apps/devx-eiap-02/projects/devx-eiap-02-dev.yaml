@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: devx-eiap-02-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for devx-eiap-02-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-pepvgl-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: devx-eiap-02-dev-admin
+        description: Admin privileges to devx-eiap-02-dev
+        policies:
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-admin, applications, *, devx-eiap-02-dev/*, allow
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-admin, repositories, *, devx-eiap-02-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: devx-eiap-02-dev-user
+        description: Read-only privileges to devx-eiap-02-dev
+        policies:
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-user, applications, get, devx-eiap-02-dev/*, allow
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-user, applications, sync, devx-eiap-02-dev/*, allow
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-user, repositories, get, devx-eiap-02-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:devx-eiap-02-dev:devx-eiap-02-dev-user, applications, action/apps/Deployment/restart, devx-eiap-02-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devX"
+        - "Team.Support.EIAP.READ"
+        - "Team.app.Pepvigil.developers"

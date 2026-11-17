@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxadapter-dsxpepadapt-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dsxadapter-dsxpepadapt-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-adapt-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxadapter-dsxpepadapt-preprod-admin
+    description: Admin privileges to dsxadapter-dsxpepadapt-preprod
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-admin, applications, *, dsxadapter-dsxpepadapt-preprod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-admin, repositories, *, dsxadapter-dsxpepadapt-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dsxadapter-dsxpepadapt-preprod-user
+    description: Read-only privileges to dsxadapter-dsxpepadapt-preprod
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-user, applications, get, dsxadapter-dsxpepadapt-preprod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-user, applications, sync, dsxadapter-dsxpepadapt-preprod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-user, repositories, get, dsxadapter-dsxpepadapt-preprod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-preprod:dsxadapter-dsxpepadapt-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.DPS.NonProd.adapt"
+    - "Team.Support.EIAP.READ"

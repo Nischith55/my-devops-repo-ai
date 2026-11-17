@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-dps-ritest-qa-sa
+  namespace: pep-dps-dps-ritest-qa

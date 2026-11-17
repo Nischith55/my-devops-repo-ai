@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-aibirgm-prod
+  labels:
+    env-prod: "true"
+    project: aibirgm
+    sector: cgf
+    team: cgf-aibirgm
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: globalnetrevenuemanagementanalyticshub
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: f4de8f0a976d65904bb8326e6253af23
+    pep-cmdb-app-service-id: 8dde8f0a976d65904bb8326e6253af78
+    pep-environment: Production
+    

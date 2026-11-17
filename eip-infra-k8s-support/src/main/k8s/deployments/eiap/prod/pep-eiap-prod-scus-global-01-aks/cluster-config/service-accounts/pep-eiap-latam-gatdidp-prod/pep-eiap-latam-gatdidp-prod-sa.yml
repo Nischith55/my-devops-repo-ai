@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: fa18955c-3c7e-4c74-9413-0c12814ee17c
+  name: pep-eiap-latam-gatdidp-prod-sa
+  namespace: pep-eiap-latam-gatdidp-prod

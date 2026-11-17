@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-geotab-user-apitokafka-fknw-vs
+  namespace: pep-pfna-flna-transp-dev
+  labels:
+      app: pep-pfna-transp-geotab-user-apitokafka
+spec:
+  hosts:
+  - pep-pfna-transp-geotab-user-apitokafka-dev-0.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/geotab-user-api
+    route:
+    - destination:
+        host: pep-pfna-transp-geotab-user-apitokafka.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 8080
+  

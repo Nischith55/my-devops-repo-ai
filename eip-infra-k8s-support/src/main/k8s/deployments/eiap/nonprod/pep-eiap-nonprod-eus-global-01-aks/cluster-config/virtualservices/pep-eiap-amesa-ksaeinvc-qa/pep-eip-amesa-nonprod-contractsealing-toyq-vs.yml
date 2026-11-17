@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    labels:
+        app: pep-eip-amesa-nonprod-contractsealing
+    name: pep-eip-amesa-nonprod-contractsealing-toyq-vs
+    namespace: pep-eiap-amesa-ksaeinvc-qa
+spec:
+    gateways:
+    - pep-eiap-amesa-ksaeinvc-qa/pep-eiap-amesa-ksaeinvc-qa-cv-gw
+    hosts:
+    - pep-eip-amesa-nonprod-contractsealing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - contractsealing.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-eip-amesa-nonprod-contractsealing.pep-eiap-amesa-ksaeinvc-qa.svc.cluster.local
+                port:
+                    number: 80

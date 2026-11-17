@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-dtvtpopp-preprod
+  labels:
+    env-preprod: "true"
+    project: dtvtpopp
+    sector: dps
+    team: dps-dtvtpopp
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: design-to-value-dps
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 41d8d79cc39e7190297e853599013124
+    pep-cmdb-app-service-id: 5c41723783051a981c98d8426daad38e
+    pep-environment: Pre-Production
+    

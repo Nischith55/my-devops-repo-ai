@@ -1,0 +1,9 @@
+####### BEGIN Added recently --pep-pbna-preprod-scus-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pbna_pbna_savvyochn_preprod
+  - ns_pep_pbna_pbna_savvy_preprod
+  - ns_pep_pbna_test_test_preprod
+####### END Added recently --pep-pbna-preprod-scus-global-01-aks######

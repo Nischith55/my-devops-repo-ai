@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: appruntimeapi-vs
+  namespace: pep-eiap-cgf-appruntime-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-appruntime-dev/pep-eiap-cgf-appruntime-dev-cv-gw
+  hosts:
+  - appruntimeapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: appruntimeapi.pep-eiap-cgf-appruntime-dev.svc.cluster.local
+        port:
+          number: 80

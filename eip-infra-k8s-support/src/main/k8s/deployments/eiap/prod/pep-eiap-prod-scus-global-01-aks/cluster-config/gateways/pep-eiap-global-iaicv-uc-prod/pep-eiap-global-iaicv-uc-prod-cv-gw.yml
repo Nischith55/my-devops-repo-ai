@@ -1,0 +1,122 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-global-iaicv-uc-prod-cv-gw
+  namespace: pep-eiap-global-iaicv-uc-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-global-iaicv-uc-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-global-iaicv-uc-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-global-iaicv-uc-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - prodtempproject-tempmodel.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model5.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env4.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env3.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodelprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationmodel.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectdetectionmodelprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodeltest.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env4.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationmodelprod.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-ismodel1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectdetectionv2.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-semanticunetv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-semanticsegformerv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject3-popcornersinsclsv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject2-digitaldefectsv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectclassmultiv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectclasseffv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod5.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod6.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod4.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel6.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel8.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-global-iaicv-uc-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-global-iaicv-uc-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - prodtempproject-tempmodel.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model5.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env4.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env3.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-model7.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodelprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationmodel.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectdetectionmodelprod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodeltest.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-odmodel.env4.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegmentationmodelprod.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-ismodel1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-instancesegv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectdetectionv2.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-semanticunetv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-semanticsegformerv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject3-popcornersinsclsv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject2-digitaldefectsv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectclassmultiv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - testproject1-objectclasseffv1.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod5.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod6.env2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod4.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel6.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-testmodelprod7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel7.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - prodtestproject1-acrtestmodel8.env1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-global-iaicv-uc-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-global-iaicv-uc-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

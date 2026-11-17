@@ -1,0 +1,4 @@
+---
+- name: "K8S_SUP_CLUSTER_ROLE_INC ({{ mode }})"
+  include_tasks: 
+    file: "{{ mode }}.yml"

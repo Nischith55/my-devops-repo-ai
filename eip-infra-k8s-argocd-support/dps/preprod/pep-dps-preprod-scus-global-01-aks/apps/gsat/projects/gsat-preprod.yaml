@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gsat-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gsat-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gsat-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-gsat-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gsat-preprod-admin
+    description: Admin privileges to gsat-preprod
+    policies:
+    - p, proj:gsat-preprod:gsat-preprod-admin, applications, *, gsat-preprod/*, allow
+    - p, proj:gsat-preprod:gsat-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:gsat-preprod:gsat-preprod-admin, repositories, *, gsat-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gsat-preprod-user
+    description: Read-only privileges to gsat-preprod
+    policies:
+    - p, proj:gsat-preprod:gsat-preprod-user, applications, get, gsat-preprod/*, allow
+    - p, proj:gsat-preprod:gsat-preprod-user, applications, sync, gsat-preprod/*, allow
+    - p, proj:gsat-preprod:gsat-preprod-user, repositories, get, gsat-preprod/*, allow
+    - p, proj:gsat-preprod:gsat-preprod-user, applications, action/apps/Deployment/restart, gsat-preprod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GSAT"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

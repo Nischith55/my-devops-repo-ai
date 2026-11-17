@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: meslite-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-pfna-meslite-cloud-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-meslite-dev  
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin  
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: meslite-dev-admin
+    description: Admin privileges to meslite-dev
+    policies:
+    - p, proj:meslite-dev:meslite-dev-admin, applications, *, meslite-dev/*, allow
+    - p, proj:meslite-dev:meslite-dev-admin, repositories, *, meslite-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: meslite-dev-user
+    description: Read-only privileges to meslite-dev
+    policies:
+    - p, proj:meslite-dev:meslite-dev-user, applications, get, meslite-dev/*, allow
+    - p, proj:meslite-dev:meslite-dev-user, applications, sync, meslite-dev/*, allow
+    - p, proj:meslite-dev:meslite-dev-user, repositories, get, meslite-dev/*, allow
+    - p, proj:meslite-dev:meslite-dev-user, applications, action/apps/Deployment/restart, meslite-dev/*, allow
+    groups:
+    - "Team.App.Support.MESLite.Admins"

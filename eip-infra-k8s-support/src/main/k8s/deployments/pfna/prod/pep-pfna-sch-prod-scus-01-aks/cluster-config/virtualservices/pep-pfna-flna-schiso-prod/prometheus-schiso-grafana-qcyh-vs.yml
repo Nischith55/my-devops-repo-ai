@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: prometheus-schiso-grafana-qcyh-vs
+  namespace: pep-pfna-flna-schiso-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - prometheus-schiso-grafana.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-schiso-prod/pep-pfna-flna-schiso-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: prometheus-schiso-grafana.pep-pfna-flna-schiso-prod.svc.cluster.local
+        port:
+          number: 80
+  

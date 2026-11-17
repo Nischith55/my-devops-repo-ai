@@ -1,0 +1,30 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: istio-operator
+resources:
+  - ../../../../../../add-ons/istio/kustomize/operator/base
+images:
+  - name: docker.io/istio/operator
+    newName: docker.io/istio/operator
+    newTag: 1.7.4
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-deployment.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-deployment.yml
+    target:
+      group: apps
+      kind: Deployment
+      name: istio-operator
+      namespace: istio-operator
+      version: v1
+ 
+
+

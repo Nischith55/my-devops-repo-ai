@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mfgproplus-ai-chat-client-api-mfgproplus-preprod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/mfgproplus-ai-chat-client-api-mfgproplus-argocd-configs
+    targetRevision: develop 
+  - repoURL: peppfnaschprodacr.azurecr.io/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: mfgproplus-ai-chat-client-api-mfgproplus-preprod
+      valueFiles:
+      - $values/preprod/pep-pfna-sch-preprod-scus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: preprod
+          helm:  
+            enabled: false       
+            repo: peppfnaschprodacr.azurecr.io/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-pfna-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: mfgproplus-ai-chat-client-api-mfgproplus-preprod 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/mfgproplus-ai-chat-client-api-mfgproplus-argocd-configs 
+              repoName: mfgproplus-ai-chat-client-api-mfgproplus-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: DL-MFGProAIChat@pepsico.com

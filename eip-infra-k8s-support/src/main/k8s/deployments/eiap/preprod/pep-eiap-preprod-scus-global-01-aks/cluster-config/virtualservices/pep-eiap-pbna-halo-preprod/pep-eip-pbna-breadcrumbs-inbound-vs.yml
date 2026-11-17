@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-pbna-breadcrumbs-inbound-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-pbna-breadcrumbs-inbound.pep-eiap-pbna-halo-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eip-pbna-breadcrumbs-inbound
+  name: pep-eip-pbna-breadcrumbs-inbound-vs
+  namespace: pep-eiap-pbna-halo-preprod
+spec:
+  gateways:
+  - pep-eiap-pbna-halo-preprod/pep-eiap-pbna-halo-preprod-cv-gw
+  hosts:
+  - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-breadcrumbs-inbound.pep-eiap-pbna-halo-preprod.svc.cluster.local
+        port:
+          number: 80

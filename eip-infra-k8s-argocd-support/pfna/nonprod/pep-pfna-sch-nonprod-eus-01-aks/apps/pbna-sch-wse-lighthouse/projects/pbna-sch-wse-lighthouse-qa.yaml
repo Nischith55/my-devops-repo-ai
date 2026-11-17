@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-sch-wse-lighthouse-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-sch-wse-lighthouse-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-sch-wse-lighthouse-argocd-configs
+      - peppfnaschnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-pbna-pbnalghous-qa
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-sch-ops-admin
+      roles:
+      - name: pbna-sch-wse-lighthouse-qa-admin
+        description: Admin privileges to pbna-sch-wse-lighthouse-qa
+        policies:
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-admin, applications, *, pbna-sch-wse-lighthouse-qa/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-admin, repositories, *, pbna-sch-wse-lighthouse-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-sch-wse-lighthouse-qa-user
+        description: Read-only privileges to pbna-sch-wse-lighthouse-qa
+        policies:
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-user, applications, get, pbna-sch-wse-lighthouse-qa/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-user, applications, sync, pbna-sch-wse-lighthouse-qa/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-user, repositories, get, pbna-sch-wse-lighthouse-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pbna-sch-wse-lighthouse-qa:pbna-sch-wse-lighthouse-qa-user, applications, action/apps/Deployment/restart, pbna-sch-wse-lighthouse-qa/*, allow
+        groups:
+        - "Team.Support.PBNA.NonProd.lighth"
+        - "Team.Support.EIAP.READ"
+    

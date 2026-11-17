@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxwado-dsxwado-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dsxwado-dsxwado-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxwado-dsxwado-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-amesa-dsxwado-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxwado-dsxwado-dev-admin
+    description: Admin privileges to dsxwado-dsxwado-dev
+    policies:
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-admin, applications, *, dsxwado-dsxwado-dev/*, allow
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-admin, repositories, *, dsxwado-dsxwado-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dsxwado-dsxwado-dev-user
+    description: Read-only privileges to dsxwado-dsxwado-dev
+    policies:
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-user, applications, get, dsxwado-dsxwado-dev/*, allow
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-user, applications, sync, dsxwado-dsxwado-dev/*, allow
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-user, repositories, get, dsxwado-dsxwado-dev/*, allow
+    - p, proj:dsxwado-dsxwado-dev:dsxwado-dsxwado-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.FirstMile.AppSupport"
+    - "Team.Support.EIAP.READ"

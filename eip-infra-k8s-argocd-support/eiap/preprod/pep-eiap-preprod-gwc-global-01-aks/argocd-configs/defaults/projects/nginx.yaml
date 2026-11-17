@@ -1,0 +1,36 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for nginx app
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support 
+  destinations:
+  - name: pep-eiap-preprod-gwc-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-preprod-gwc-global-01-aks
+    namespace: pep-eiap-global-infra
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-preprod-gwc-global-01-aks
+    namespace: default
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-nonprod-gwc-global-01-aks
+    namespace: argocd
+    server: https://172.28.218.135:443
+  - name: pep-eiap-nonprod-gwc-global-01-aks
+    namespace: pep-eiap-global-infra-dev
+    server: https://172.28.218.135:443
+  - name: pep-eiap-nonprod-gwc-global-01-aks
+    namespace: default
+    server: https://172.28.218.135:443

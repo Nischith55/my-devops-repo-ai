@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-latam-pepsre-dev-sa
+  namespace: pep-eiap-latam-pepsre-dev

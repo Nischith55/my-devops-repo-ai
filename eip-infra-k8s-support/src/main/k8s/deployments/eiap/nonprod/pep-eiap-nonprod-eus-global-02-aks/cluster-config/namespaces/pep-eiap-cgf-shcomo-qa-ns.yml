@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-shcomo-qa
+  labels:
+    env-nonprod: "true"
+    project: shcomo
+    sector: cgf
+    team: cgf-shcomo
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: scmnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-cmdb-app-service-id: e034eac497d3e21063d33bc71153af32
+    pep-environment: QA
+    

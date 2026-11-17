@@ -1,0 +1,26 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: pc3004-cgf-sch-prod-suk-01-kv-wi
+  namespace: istio-system
+spec:
+  parameters:
+    clientID: 70a4d91e-735f-48a0-9853-663c424a1fcd
+    cloudName: ""
+    keyvaultName: pe3001-eiap-infra-01-kv
+    objects: |
+      array:
+        - |
+          objectName: -cgfsch-gw01-aks01-suk-prod-azure-intra-pepsico-com
+          objectType: secret
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    usePodIdentity: "false"
+  provider: azure
+  secretObjects:
+  - data:
+    - key: tls.key
+      objectName: -cgfsch-gw01-aks01-suk-prod-azure-intra-pepsico-com
+    - key: tls.crt
+      objectName: -cgfsch-gw01-aks01-suk-prod-azure-intra-pepsico-com
+    secretName: pep-cgf-sch-prod-suk-01-aks-gw01-tls
+    type: kubernetes.io/tls

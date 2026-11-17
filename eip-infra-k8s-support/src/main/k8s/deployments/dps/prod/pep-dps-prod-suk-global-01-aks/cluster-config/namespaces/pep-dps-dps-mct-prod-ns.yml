@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    project: mct
+    sector: dps
+    servicename_aks: virtual-control-room-dps
+    team: dps-mct
+  name: pep-dps-dps-mct-prod

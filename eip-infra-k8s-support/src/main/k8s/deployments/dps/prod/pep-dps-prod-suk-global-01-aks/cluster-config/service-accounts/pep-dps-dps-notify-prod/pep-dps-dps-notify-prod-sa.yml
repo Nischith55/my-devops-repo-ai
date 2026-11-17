@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 2b8c515e-dad5-4685-98f9-62e7432817f1
+  name: pep-dps-dps-notify-prod-sa
+  namespace: pep-dps-dps-notify-prod

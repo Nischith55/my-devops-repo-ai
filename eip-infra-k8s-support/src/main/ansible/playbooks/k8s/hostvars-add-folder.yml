@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+
+  vars:
+    myvars:
+      - varname: "{{ agent_working_dir }}/src/main/ansible/inventory/k8s/{{department}}/{{env}}/host_vars/{{cluster_name}}"
+           
+  tasks:
+    - name: foldercreation
+      file:
+        path: "{{ item.varname }}"
+        state: directory
+      with_items: "{{ myvars }}"
+      register: output
+
+    - name: namespacefilecreation
+      file:
+        path: "{{ agent_working_dir }}/src/main/ansible/inventory/k8s/{{department}}/{{env}}/host_vars/{{cluster_name}}/01-namespaces.yml"
+        state: touch
+      when: output.changed
+
+    - name: updatenamespace details
+      blockinfile:
+        path: "{{ agent_working_dir }}/src/main/ansible/inventory/k8s/{{department}}/{{env}}/host_vars/{{cluster_name}}/01-namespaces.yml"
+        marker: "####### {mark} Added recently --{{cluster_name}}######"
+        block: |
+         ---
+         # What namespaces this cluster is responsible for
+         # note: ONLY provide instance_namespace_vars 
+         instance_namespace_vars:
+      when: output.changed
+
+    - name: updateInventory details
+      blockinfile:
+        path: "{{ agent_working_dir }}/src/main/ansible/inventory/k8s/{{department}}/{{env}}/{{department}}-k8s-{{env}}-inventory.yml"       
+        marker: "####### {mark} Added recently --{{cluster_name}}######"
+        insertafter: "hosts:"
+        state: present
+        block: |6
+                      {{cluster_name}}:
+      when: output.changed  
+
+    # - name: updateInventory details
+    #   blockinfile:
+    #     path: {{ agent_working_dir }}/src/main/ansible/inventory/k8s/{{department}}/{{env}}/{{department}}-k8s-{{env}}-inventory.yml       
+    #     insertafter: "^        # {{region|upper}}"        
+    #     marker: "####### {mark} Added recently --{{cluster_name}}######"
+    #     state: present
+    #     block: |8
+    #                     {{cluster_name}}:
+

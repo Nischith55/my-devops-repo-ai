@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pgcs-batch-reportingservice-pbrn-vs
+  namespace: pep-eiap-och-edt-qa
+  labels:
+      app: pgcs-batch-reportingservice
+spec:
+  hosts:
+  - pgcs-batch-reportingservice-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-qa/pep-eiap-och-edt-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pgcs-batch-reportingservice.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 8080
+  

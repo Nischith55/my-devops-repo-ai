@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-pfna-transp-livefeed-api-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-livefeed-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/live-feed
+    route:
+    - destination:
+        host: pep-pfna-transp-livefeed-api.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

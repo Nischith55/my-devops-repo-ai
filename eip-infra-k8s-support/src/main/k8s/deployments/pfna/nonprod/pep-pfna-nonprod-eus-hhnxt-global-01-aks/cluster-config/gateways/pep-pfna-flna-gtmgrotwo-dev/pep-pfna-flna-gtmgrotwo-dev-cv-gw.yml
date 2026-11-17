@@ -1,0 +1,114 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-gtmgrotwo-dev-cv-gw
+  namespace: pep-pfna-flna-gtmgrotwo-dev
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-gtmgrotwo-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmgrotwo-dev-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-gtmgrotwo-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pcaf-api-assortmentservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-assortmentservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-assortmentservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-grotwo-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-gtmgrotwo-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmgrotwo-dev-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-gtmgrotwo-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-nonprod-eus-hhnxt-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pcaf-api-assortmentservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-assortmentservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-assortmentservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-commonservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-cycleservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-demandservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-geographyservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-managementservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-planogramservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-grotwo-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-spaceservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-gro-pog-two.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-gro-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-api-utilservice-grotwo-pog.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-gtmgrotwo-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmgrotwo-dev-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-gtmgrotwo-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

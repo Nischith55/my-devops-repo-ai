@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pgt-och-hhnx-pickseq-consumer-api-qa-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pgt-och-hhnx-pickseq-consumer-api-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pgt-och-hhnx-pickseq-consumer-api.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 80

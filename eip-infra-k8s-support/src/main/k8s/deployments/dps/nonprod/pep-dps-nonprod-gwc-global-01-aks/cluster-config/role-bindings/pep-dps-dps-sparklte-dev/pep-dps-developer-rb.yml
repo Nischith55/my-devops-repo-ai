@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-dps-developer-rb
+  namespace: pep-dps-dps-sparklte-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-dps-developer-clusterrole
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: b1a1815c-6a48-4dd2-8cbc-8e230203f602

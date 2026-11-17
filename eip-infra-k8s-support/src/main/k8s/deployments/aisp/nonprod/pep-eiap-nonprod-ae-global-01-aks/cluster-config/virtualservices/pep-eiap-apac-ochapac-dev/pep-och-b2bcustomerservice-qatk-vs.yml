@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-b2bcustomerservice-qatk-vs
+  namespace: pep-eiap-apac-ochapac-dev
+  labels:
+      app: pep-och-b2bcustomerservice
+spec:
+  hosts:
+  - pep-och-b2bcustomerservice.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-dev/pep-eiap-apac-ochapac-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-b2bcustomerservice.pep-eiap-apac-ochapac-dev.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,66 @@
+---
+# ##
+# Manifest generator(s) mainly for add-ons using kustomize
+#
+# REQUIREMENTS:
+#  - bash shell
+#  - kustomize binary > 3
+#  - kubectl binary > 1.18
+# ##
+
+- name: PLAY_ADD_ONS_MANIFEST_BUILD_AND_DEPLOY_LIFECYCLE
+  # cluster_name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    task_list: "{{ (run_task | default('')).split() }}"
+    cluster_name: "{{ inventory_hostname }}"
+    kube_context_name: "{{ cluster_name }}"
+    # CLI # app_name
+    # CLI # component_name
+    _app_varname_regex: |-
+      {{ '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$' }}
+    _app_config_list: |-
+      {{ q('vars', *q('varnames', _app_varname_regex)) }}
+
+  tasks:
+
+    - name: ASSERT_APP_CONFIG_EXISTS
+      assert:
+        that:
+          - (_app_config_list | length) == 1
+        fail_msg: |
+          {{ app_name }} configuration not found. 
+          Please make sure the application configuration varaiable, follows
+          the regex pattern: [{{ _app_varname_regex }}] and EXISTS
+
+    - name: APP_COMPONENT_GENERATE_BUILD_APPLY_BLOCK
+      block:
+        - name: SETUP_COMPONENT_SETTING FOR {{ app_config['name'] }}
+          set_fact:
+            component_setting: |-
+              {{ app_config['components'] 
+                | search_list(key='name', value=component_name) }}
+          vars:
+            app_config: "{{ _app_config_list | first }}"
+
+        - name: PRINT_PARAMS
+          debug:
+            msg: |
+              component_setting: 
+                {{ component_setting | to_nice_yaml(indent=2, width=1337) 
+                    | trim | indent(2) }}
+          when: (play_print_params | default('false') | bool)
+
+        - name: APP_COMPONENT_GENERATE_BUILD_APPLY
+          include_tasks:
+            file: tasks/manifest/generate-build-apply.yml
+          vars:
+            params_generate_build_apply:
+              params: "{{ component_setting }}"
+              kube_context: "{{ kube_context_name }}"
+      when: >
+        ('app_build_apply' in task_list) or ('add_on_build_apply' in task_list)
+

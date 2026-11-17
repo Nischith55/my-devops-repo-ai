@@ -1,0 +1,50 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_transp_dev
+  - ns_pep_eiap_cgf_opsteam_dev
+  - ns_pep_eiap_cgf_wiz_dev
+  - ns_pep_eiap_cgf_cvgtst_dev
+  - ns_pep_eiap_cgf_cmp_qa
+  - ns_pep_eiap_pbna_cmptaq3_dev
+  - ns_pep_eiap_hello_world1_dev
+  - ns_pep_eiap_apac_cmptest_dev
+  - ns_pep_eiap_apac_test_dev
+  - ns_pep_eiap_amesa_khdskae_dev
+  - ns_pep_eiap_amesa_blkfyic_dev
+  - ns_pep_eiap_amesa_czlgvos_dev
+  - ns_pep_eiap_amesa_abs_dev
+  - ns_pep_eiap_amesa_xkmruy_dev
+  - ns_pep_eiap_amesa_cmpttest_dev
+  - ns_pep_eiap_amesa_vymhxs_dev
+  - ns_pep_eiap_amesa_cjscsu_dev
+  - ns_pep_eiap_amesa_bxeycf_dev
+  - ns_pep_eiap_amesa_gsthnz_dev
+  - ns_pep_eiap_amesa_pdiamg_dev
+  - ns_pep_eiap_amesa_cmpten_dev
+  - ns_pep_eiap_amesa_cmpeht_dev
+  - ns_pep_eiap_flna_eiv_dev
+  - ns_pep_eiap_global_infra_dev
+  - ns_pep_eiap_global_mdp_dev
+  - ns_pep_eiap_latam_gtm_dev
+  - ns_pep_eiap_test_demo_dev
+  - ns_pep_eiap_global_gaia_dev
+  - ns_pep_eiap_flna_couchbase_dev
+  - ns_pep_eiap_global_services_dev
+  - ns_pep_eiap_global_idt_dev
+  - ns_pep_eiap_flna_hhnext_dev    
+  - ns_pep_eiap_cgf_cle_dev
+  - ns_pep_eiap_cgf_f2p_dev
+  - ns_pep_eiap_cgf_dop_dev
+  - ns_pep_eiap_pbna_pog_dev
+  - ns_pep_eiap_global_services_qa
+  - ns_pep_eiap_global_mdp_qa
+  - ns_pep_eiap_global_cmp_dev
+  - ns_pep_eiap_flna_iacoe_dev
+  - ns_pep_eiap_pbna_halo_dev
+  - ns_pep_eiap_pbna_halo_qa
+  - ns_pep_eiap_global_devsecops_dev
+  - ns_pep_eiap_pfna_xcontamination_dev

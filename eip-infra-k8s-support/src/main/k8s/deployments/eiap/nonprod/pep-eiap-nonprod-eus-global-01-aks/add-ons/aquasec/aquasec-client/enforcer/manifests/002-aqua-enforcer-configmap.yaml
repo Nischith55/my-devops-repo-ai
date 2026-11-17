@@ -1,0 +1,34 @@
+# ##
+# PEP NOTES
+# - Note: DaemonSet uses this configMap to supply as environment variables
+#   across the board.
+# - See Doc: https://docs.aquasec.com/docs/enforcer-optional-variables
+# - Make sure to change the Logical Name
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/created-by: haritha_shakirat_2021-09-20
+    app.kubernetes.io/managed-by: manual
+  name: aqua-enforcer-cm
+  namespace: aquasec-client
+data:  
+  AQUA_HEALTH_MONITOR_ENABLED: "true"
+  AQUA_INSTALL_PATH: "/var/lib/aquasec"
+  AQUA_SERVER: "aqua-gateway.aqua.gw02.aks04.scus.nonprod.azure.intra.pepsico.com:443" # Need to update with the gateway FQDN
+  RESTART_CONTAINERS: "no"
+  AQUA_LOGICAL_NAME: "pep-eiap-nonprod-eus-global-01-aks" #this may be need 
+  # AQUA_PUBLIC_KEY: "/opt/aquasec/ssl/aqua_enforcer.crt"
+  # AQUA_PRIVATE_KEY: "/opt/aquasec/ssl/aqua_enforcer.key"
+  # AQUA_ROOT_CA: "/opt/aquasec/ssl/rootCA.crt"
+
+  #Setting this might be helpful for problem determination. Acceptable values are DEBUG, INFO, WARN, and ERROR.
+  #SCALOCK_LOG_LEVEL: "ERROR"
+
+  #Specify true for the Enforcer to support 32-bit binaries in containers. The default is false.
+  #AQUA_32BIT_SUPPORT: "true"
+
+  #The Environment tab of the Workloads screen shows the environment variables of a given container. When this variable is set to true, the environment variables will not be displayed in clear text.
+  #AQUA_MASK_CONTAINER_ENV: "true"

@@ -1,0 +1,47 @@
+kubecostProductConfigs:
+  clusterName: pep-eiap-nonprod-eus-aisp-01-aks
+  productKey:
+    secretname: productkey
+    enabled: true
+  azureBillingRegion: US
+kubecostModel:
+  warmCache: false
+  warmSavingsCache: false
+  etl: false
+global:
+  grafana:
+    enabled: false
+    proxy: false
+  alertmanager:
+    enabled: false
+prometheus:
+  server:
+    retention: 2d
+    global:
+      external_labels:
+        cluster_id: pep-eiap-nonprod-eus-aisp-01-aks
+  nodeExporter:
+    enabled: true
+    tolerations: 
+    - operator: "Exists"
+networkCosts:
+  enabled: true
+  services:
+    azure-cloud-services: true
+  config:
+    destinations: 
+      in-zone:       
+        - "127.0.0.1"  
+  tolerations: 
+  - operator: "Exists"        
+thanos:
+  compact:
+    enabled: false
+  bucket:
+    enabled: false
+  query:
+    enabled: false
+  store:
+    enabled: false
+  queryFrontend:
+    enabled: false

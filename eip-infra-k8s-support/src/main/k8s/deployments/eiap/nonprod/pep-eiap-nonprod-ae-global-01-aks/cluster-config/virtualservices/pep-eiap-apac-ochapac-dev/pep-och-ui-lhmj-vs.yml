@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-ui-lhmj-vs
+  namespace: pep-eiap-apac-ochapac-dev
+  labels:
+      app: pep-och-ui
+spec:
+  hosts:
+  - pep-och-ui.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-dev/pep-eiap-apac-ochapac-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-ui.pep-eiap-apac-ochapac-dev.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Access-Control-Allow-Headers
+      - Access-Control-Allow-Origin
+      - Authorization
+      - Link
+      - Content-Type
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowOrigins:
+      - exact: https://apim-apac.dev.mypepsico.com/apac/inventory-service/v1/v1/api/getallplantstorage?page=0&size=200
+      - exact: https://apim-apac.dev.mypepsico.com/apac/inventory-service/v1/v1/api/cust/getallplantstorage?page=0&size=200
+      exposeHeaders:
+      - Authorization
+      - Link
+      - X-Total-Count  

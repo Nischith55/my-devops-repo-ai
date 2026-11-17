@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-flna-kamscal-dev-cv-webdeploy
+  name: pep-pfna-flna-kamscal-dev-cv-cdn-vs
+  namespace: pep-pfna-flna-kamscal-dev
+spec:
+  gateways:
+  - pep-pfna-flna-kamscal-dev/pep-pfna-flna-kamscal-dev-cv-gw
+  hosts:
+  - kamscal.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-flna-kamscal-dev-cv-webdeploy.pep-pfna-flna-kamscal-dev.svc.cluster.local
+        port:
+          number: 80

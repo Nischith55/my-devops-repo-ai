@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-iaicv-plt-prod
+    project: iaicv
+    sector: global
+    servicename_aks: iacoe
+    team: global-iaicv
+  name: pep-eiap-global-iaicv-plt-prod

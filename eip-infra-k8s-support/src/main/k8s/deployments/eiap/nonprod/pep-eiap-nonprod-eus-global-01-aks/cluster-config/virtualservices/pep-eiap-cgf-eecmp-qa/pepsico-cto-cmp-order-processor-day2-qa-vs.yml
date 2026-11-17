@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:36:42Z"
+  generation: 1
+  name: pepsico-cto-cmp-order-processor-day2-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638241705"
+  uid: 7babafb4-c8f3-4176-b201-86241cfdc1a7
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-processor-day2-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/day2
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-processor-day2.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

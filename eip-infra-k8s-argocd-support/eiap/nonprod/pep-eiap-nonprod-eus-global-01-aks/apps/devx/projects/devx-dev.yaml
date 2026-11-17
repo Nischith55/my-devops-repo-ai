@@ -1,0 +1,50 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: devx-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for devx-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-devx-dev
+        server: https://kubernetes.default.svc
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-launchp-dev
+        server: https://kubernetes.default.svc
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-codeone-dev
+        server: https://kubernetes.default.svc
+
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: devx-dev-admin
+        description: Admin privileges to devx-dev
+        policies:
+        - p, proj:devx-dev:devx-dev-admin, applications, *, devx-dev/*, allow
+        - p, proj:devx-dev:devx-dev-admin, repositories, *, devx-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: devx-dev-user
+        description: Read-only privileges to devx-dev
+        policies:
+        - p, proj:devx-dev:devx-dev-user, applications, get, devx-dev/*, allow
+        - p, proj:devx-dev:devx-dev-user, applications, sync, devx-dev/*, allow
+        - p, proj:devx-dev:devx-dev-user, repositories, get, devx-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:devx-dev:devx-dev-user, applications, action/apps/Deployment/restart, devx-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devX"
+        - "Team.Support.EIAP.GLOBAL.MDP.AppSupport"
+        - "Team.Support.EIAP.READ"
+    

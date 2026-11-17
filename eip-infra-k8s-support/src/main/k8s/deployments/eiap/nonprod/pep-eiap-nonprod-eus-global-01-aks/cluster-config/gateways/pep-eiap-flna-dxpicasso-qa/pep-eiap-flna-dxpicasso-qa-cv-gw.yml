@@ -1,0 +1,102 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-flna-dxpicasso-qa-cv-gw
+  namespace: pep-eiap-flna-dxpicasso-qa
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-flna-dxpicasso-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-dxpicasso-qa-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-flna-dxpicasso-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-eiap-flna-dxpicasso-qa-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-netcoreapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-netcoreapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-angular-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - picasso-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - add-delete-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cold-vault-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - manufacturer-report-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-flna-dxpicasso-netcoreapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - picaso-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - add-unit-movement-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-dxpicasso-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-flna-dxpicasso-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-eiap-flna-dxpicasso-qa-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-netcoreapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-netcoreapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-flna-dxpicasso-angular-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - picasso-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - picasso.qa.mypepsico.com
+    - cold-vault-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - add-delete-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - manufacturer-report-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-flna-dxpicasso-netcoreapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - picaso-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - add-unit-movement-app-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-dxpicasso-qa-cv-gw-http-80
+    port:
+      name: http-pep-eiap-flna-dxpicasso-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - picasso.qa.mypepsico.com
+    name: pep-eiap-picasso-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-picasso-qa-cv-gw-https-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: flna-dxpicasso-picasso-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

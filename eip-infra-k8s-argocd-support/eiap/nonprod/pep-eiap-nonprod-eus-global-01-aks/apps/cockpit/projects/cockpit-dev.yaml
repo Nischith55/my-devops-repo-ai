@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cockpit-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for cockpit-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Mosaic_Product_Teams/_git/pep-fpa-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-cgf-cpgpt-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: cockpit-dev-admin
+    description: Admin privileges to cockpit-dev
+    policies:
+    - p, proj:cockpit-dev:cockpit-dev-admin, applications, *, cockpit-dev/*, allow
+    - p, proj:cockpit-dev:cockpit-dev-admin, repositories, *, cockpit-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: cockpit-dev-user
+    description: Read-only privileges to cockpit-dev
+    policies:
+    - p, proj:cockpit-dev:cockpit-dev-user, applications, get, cockpit-dev/*, allow
+    - p, proj:cockpit-dev:cockpit-dev-user, applications, sync, cockpit-dev/*, allow
+    - p, proj:cockpit-dev:cockpit-dev-user, repositories, get, cockpit-dev/*, allow # This line will be replaced by the pipeline script
+    - p, proj:cockpit-dev:cockpit-dev-user, applications, action/apps/Deployment/restart, cockpit-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.Prod.FPA.CKPGPT.Developer"

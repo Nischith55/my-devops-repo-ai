@@ -1,0 +1,19 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+# WARNING: This is a built-in namespace SHOULD never be deleted.
+
+ns_default:
+
+  name: default
+
+  labels:
+    istio-injection: enabled
+

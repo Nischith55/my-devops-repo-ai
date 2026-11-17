@@ -1,0 +1,21 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-07-15 10:02:38
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-apigee-cluster-readonly-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.Apigee.Read
+    name: c411a17b-835a-4972-8902-ff9a43b9fdc9
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.Apigee.AzureOps
+    name: c857db82-78be-4839-961d-8872d06600de  
+

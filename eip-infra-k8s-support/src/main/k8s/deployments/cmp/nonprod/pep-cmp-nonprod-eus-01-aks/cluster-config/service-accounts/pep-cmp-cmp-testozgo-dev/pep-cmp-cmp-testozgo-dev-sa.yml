@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: abc9a798-49d4-41d0-b3fb-6ac63d415fc1
+  name: pep-cmp-cmp-testozgo-dev-sa
+  namespace: pep-cmp-cmp-testozgo-dev

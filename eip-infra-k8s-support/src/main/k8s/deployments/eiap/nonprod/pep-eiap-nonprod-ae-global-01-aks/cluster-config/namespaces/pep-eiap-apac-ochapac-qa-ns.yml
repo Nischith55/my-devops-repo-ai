@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: c730f1c597f026d04584b1aad053af51
+    pep-cmdb-bus-app-id: aa0ad23ddb149850ccfa65494b961944
+    pep-environment: QA
+    project: ochapac
+    sector: apac
+    servicename_aks: omni-channelcommerceintegrationhubseanon-prod
+    team: apac-ochapac
+  name: pep-eiap-apac-ochapac-qa

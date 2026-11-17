@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-essa-transformationconsumer
+  name: pep-och-essa-transformationconsumer-vs
+  namespace: pep-eiap-och-edt-prod
+spec:
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  hosts:
+  - pep-och-essa-transformationconsumer.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-essa-transformationconsumer.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 80

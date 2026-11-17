@@ -1,0 +1,35 @@
+---
+ns_pep_snt_cgf_promoai_preprod:
+  
+  name: pep-snt-cgf-promoai-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-promoai
+    sector: cgf
+    project: promoai
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-snt-cgf-promoai-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_promoai'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-snt-cgf-promoai-preprod-sa-token
+    namespace: pep-snt-cgf-promoai-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-snt-cgf-promoai-preprod-sa"

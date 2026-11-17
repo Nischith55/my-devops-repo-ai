@@ -1,0 +1,61 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-cgf-btb-app-equipment-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-btb-cgf-backend.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1/filter"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-filter.pep-eiap-cgf-btb-preprod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1/userpreferences"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-userpreferences.pep-eiap-cgf-btb-preprod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1/alerts"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-alerts.pep-eiap-cgf-btb-preprod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1/accessmanagement"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-accessmanagement.pep-eiap-cgf-btb-preprod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-equipment.pep-eiap-cgf-btb-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eiap-cgf-btb-app-equipment
+  name: pep-eiap-cgf-btb-app-equipment-vs
+  namespace: pep-eiap-cgf-btb-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-btb-preprod/pep-eiap-cgf-btb-preprod-cv-gw
+  hosts:
+  - pep-btb-cgf-backend.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/filter
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-filter.pep-eiap-cgf-btb-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/userpreferences
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-userpreferences.pep-eiap-cgf-btb-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/alerts
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-alerts.pep-eiap-cgf-btb-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/accessmanagement
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-accessmanagement.pep-eiap-cgf-btb-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-equipment.pep-eiap-cgf-btb-preprod.svc.cluster.local
+        port:
+          number: 80

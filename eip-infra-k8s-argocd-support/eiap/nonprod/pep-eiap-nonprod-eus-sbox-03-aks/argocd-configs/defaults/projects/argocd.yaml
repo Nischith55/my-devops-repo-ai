@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for EIAP   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CMP_CMP_Test_Oct_08/_git/react-srikala-nonprod2-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_DevOps/_git/pep-finaltest1-srikala-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_DevOps/_git/pep-finaltest1-final-argocd-configs
+  - "*"
+ 
+  destinations:
+  - name: "*"
+    namespace: "*"
+    server: "*"

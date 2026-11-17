@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-cle-rest-services-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - cle-rest-api.essa.dev.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-rest-services.pep-eiap-cgf-cle-dev.svc.cluster.local

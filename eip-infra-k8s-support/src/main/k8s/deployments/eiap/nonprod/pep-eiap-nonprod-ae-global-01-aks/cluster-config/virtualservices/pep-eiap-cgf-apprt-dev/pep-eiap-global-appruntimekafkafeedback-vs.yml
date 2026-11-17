@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eiap-global-appruntimekafkafeedback
+  name: pep-eiap-global-appruntimekafkafeedback-vs
+  namespace: pep-eiap-cgf-apprt-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-apprt-dev/pep-eiap-cgf-apprt-dev-cv-gw
+  hosts:
+  - pep-eiap-global-appruntimekafkafeedback.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprtdev-kaffbk
+    route:
+    - destination:
+        host: pep-eiap-global-appruntimekafkafeedback.pep-eiap-cgf-apprt-dev.svc.cluster.local
+        port:
+          number: 80

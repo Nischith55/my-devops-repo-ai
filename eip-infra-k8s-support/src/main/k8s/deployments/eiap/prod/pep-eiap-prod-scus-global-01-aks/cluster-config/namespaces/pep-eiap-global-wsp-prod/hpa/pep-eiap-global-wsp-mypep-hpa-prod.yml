@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1  
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pep-eiap-global-wsp-mypep-hpa  
+  namespace: pep-eiap-global-wsp-prod  
+spec:
+  maxReplicas: 5 
+  minReplicas: 2  
+  scaleTargetRef:  
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mypep 
+  targetCPUUtilizationPercentage: 70

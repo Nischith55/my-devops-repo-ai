@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-shp-services-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-shp-services-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Hand_Held_Next/_git/pep-pfna-shp-services-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-pgt-preprod
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-ops-admin
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-shp-preprod
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-flna-shpnone-preprod
+  roles:
+  - name: pep-pfna-shp-services-preprod-admin
+    description: Admin privileges to pep-pfna-shp-services-preprod
+    policies:
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-admin, applications, *, pep-pfna-shp-services-preprod/*, allow
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-admin, repositories, *, pep-pfna-shp-services-preprod/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-shp-services-preprod-user
+    description: Read-only privileges to pep-pfna-shp-services-preprod
+    policies:
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-user, applications, get, pep-pfna-shp-services-preprod/*, allow
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-user, applications, sync, pep-pfna-shp-services-preprod/*, allow
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-user, repositories, get, pep-pfna-shp-services-preprod/*, allow
+    - p, proj:pep-pfna-shp-services-preprod:pep-pfna-shp-services-preprod-user, applications, action/apps/Deployment/restart, pep-pfna-shp-services-preprod/*, allow
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.PROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PREPROD.Reader"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

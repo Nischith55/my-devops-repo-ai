@@ -1,0 +1,138 @@
+---
+# ##
+# Internal common globals that can be used with combine. WARNING if using
+# combine recursive merge will replace LIST elements.
+# ##
+
+
+# IMPORTANT: this should be combined with spec!!! (aka the patch itself)
+__jt_jb_spec_options:
+  spec:
+    # ##
+    # Common for all components
+    # ##
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - "{{ system_np_node_selector_term }}"
+    tolerations: "{{ system_np_tolerations }}"
+
+    # tune and parameterize!
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+      # NOTE: we need the below for PepsiCo CA certs
+      volumeMounts:
+        - name: certificates
+          mountPath: /es/certificates/
+          readOnly: true
+      volumes:
+        - name: certificates
+          secret:
+            secretName: "{{ pep_eiap_pepsico_ca_chain_misc_secret['name'] }}"
+    # ##
+    # Backend Components
+    # ##
+
+    # - agent
+    agent: |-
+      {{ __jt_jb_agent_options
+          | combine((jt_agent_options | default({})), recursive=True) 
+      }}
+
+    # - collector
+    collector: |-
+      {{ __jt_jb_collector_options
+          | combine((jt_collector_options | default({})), recursive=True) 
+      }}
+
+    # - sampling
+
+    # - query
+    # - collector
+    query: |-
+      {{ __jt_jb_query_options 
+          | combine((jt_query_options | default({})), recursive=True) 
+      }}
+
+    # - ingester
+# END -- top -level spec defaults
+
+# -- allInOne
+__jt_jb_all_in_one_options:
+  image: "jaegertracing/all-in-one:{{ jt_jb_tag }}"
+  options:
+    log-level: "{{ jt_jb_all_in_one_log_level | default('info') }}"
+
+# -- agent
+__jt_jb_agent_options:
+  image: "jaegertracing/jaeger-agent:{{ jt_jb_tag }}"
+  minReplicas: 2
+  maxReplicas: 10
+  autoscale: true
+  options:
+    log-level: "{{ jt_jb_agent_log_level | default('info') }}"
+
+# -- collector
+__jt_jb_collector_options:
+  image: "jaegertracing/jaeger-collector:{{ jt_jb_tag }}"
+  minReplicas: 2
+  maxReplicas: 10
+  autoscale: true
+  options:
+    log-level: "{{ jt_jb_collector_log_level | default('info') }}"
+
+# -- query
+__jt_jb_query_options:
+  image: "jaegertracing/jaeger-query:{{ jt_jb_tag }}"
+  minReplicas: 2
+  maxReplicas: 10
+  autoscale: true
+  options:
+    log-level: "{{ jt_jb_query_log_level | default('info') }}"
+
+# ##
+# All Storage Backends
+# ##
+
+# in mem
+__jt_jb_in_mem_storage:
+  type: memory
+  options:
+    memory:
+      # default 0 -- unbounded
+      max-traces: 100000
+
+
+# es external cluster
+__jt_jb_es_storage:
+  # should map to storage!
+  type: elasticsearch
+  options:
+    es:
+      # required!! set in observability (ob) namespace
+      server-urls: "{{ ob_elasticssearch_url }}"
+      index-prefix: "{{ 'aks-jaeger-' + cluster_name }}"
+      num-shards: 8
+      num-replicas: 1
+      # NOTE: true -- disables ILM, set use-alias: true in collector and query
+      create-index-templates: true
+      # index templates
+      # FUTURE # create-mappings: true
+      # FUTURE # index-date-layout:
+      tls:
+        enabled: true
+        # This should match the key in cert..
+        ca: /es/certificates/ca.crt
+        # skip-host-verify: true
+        # cert:
+        # key
+  # The secret must be pre-installed!!
+  secretName: jaeger-secret
+

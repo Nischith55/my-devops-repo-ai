@@ -1,0 +1,22 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+
+
+# ##
+# Centralized rootNamespace -- for managing VS, DR, EF etc..
+# ##
+ns_pep_eiap_istio_config:
+
+  name: pep-eiap-istio-config
+
+  labels:
+    istio-injection: disabled
+

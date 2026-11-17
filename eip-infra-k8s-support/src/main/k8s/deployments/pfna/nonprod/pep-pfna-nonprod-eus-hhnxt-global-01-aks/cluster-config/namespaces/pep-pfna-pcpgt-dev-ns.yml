@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    field.cattle.io/projectId: p-vpbql
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-pcpgt-dev
+    project: pcpgt
+    sector: pfna
+    servicename_aks: och-hhnext
+    team: pfna-pcgct
+  name: pep-pfna-pcpgt-dev

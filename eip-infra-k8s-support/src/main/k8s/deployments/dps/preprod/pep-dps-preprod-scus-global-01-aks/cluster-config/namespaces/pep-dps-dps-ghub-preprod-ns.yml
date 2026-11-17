@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-ghub-preprod
+  labels:
+    env-preprod: "true"
+    project: ghub
+    sector: dps
+    team: dps-ghub
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: grower-relationship-application-dps
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: a82999d947d85a548dc84ce4116d4360
+    pep-cmdb-app-service-id: 7c7fd4cd-6093-4c88-84fd-709c230964cf
+    pep-environment: Pre-Production
+    

@@ -1,0 +1,24 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-aisp-cluster-admin-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-aisp-ops-admin
+    name: pep-aisp-admin-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: bccaab7c-bf99-426a-9dfa-b2dac1eb5127
+    #Team.Support.CGF.NonProd.pepvigil - Requested via AKS Connect by AKS Engg

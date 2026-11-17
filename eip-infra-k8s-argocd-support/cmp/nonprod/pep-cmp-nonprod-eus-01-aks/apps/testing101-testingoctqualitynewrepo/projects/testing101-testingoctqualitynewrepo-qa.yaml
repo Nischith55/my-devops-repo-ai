@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testing101-testingoctqualitynewrepo-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testing101-testingoctqualitynewrepo-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testing101-testingoctqualitynewrepo-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testing101-testingoctqualitynewrepo-qa-admin
+    description: Admin privileges to testing101-testingoctqualitynewrepo-qa
+    policies:
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-admin, applications, *, testing101-testingoctqualitynewrepo-qa/*, allow
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-admin, repositories, *, testing101-testingoctqualitynewrepo-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testing101-testingoctqualitynewrepo-qa-user
+    description: Read-only privileges to testing101-testingoctqualitynewrepo-qa
+    policies:
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-user, applications, get, testing101-testingoctqualitynewrepo-qa/*, allow
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-user, applications, sync, testing101-testingoctqualitynewrepo-qa/*, allow
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-user, repositories, get, testing101-testingoctqualitynewrepo-qa/*, allow
+    - p, proj:testing101-testingoctqualitynewrepo-qa:testing101-testingoctqualitynewrepo-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

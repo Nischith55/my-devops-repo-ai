@@ -1,0 +1,166 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-scopt-dev-cv-gw
+  namespace: pep-pfna-flna-scopt-dev
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-scopt-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-scopt-dev-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-scopt-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pfna-addcut-excel.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-addcut-frontend.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-addcut.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-delivery-stop.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-favourite.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-frontend.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-kpi.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-load-status.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-locations.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-item-adjustment.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-item.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sc-notifications.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-stock.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-stop.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transport-order-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transport-order-item.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transportation-order-item-adjustment.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-events-summary.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-events.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-subscription.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-users.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-add-cut-services.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-sldashboard-api-repo.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-supply-chain-locations.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-supply-chain-notifications.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - status-transport-order-items.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-supportload-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-excel-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-sldashboard-repo.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-scopt-dev-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-scopt-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pfna-addcut-excel.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-addcut-frontend.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - addcut.dev.mypepsico.com
+    - pep-pfna-addcut.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-delivery-stop.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-favourite.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-frontend.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-kpi.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-load-status.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-locations.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-item-adjustment.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sales-order-item.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-sc-notifications.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-stock.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-shipment-stop.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transport-order-header.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transport-order-item.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-stock-transportation-order-item-adjustment.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-events-summary.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-events.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-trip-subscription.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-scopt-users.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-add-cut-services.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - api.addcut.dev.mypepsico.com
+    - pfna-sldashboard-api-repo.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-supply-chain-locations.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-supply-chain-notifications.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - status-transport-order-items.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-supportload-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-addcut-excel-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pfna-sldashboard-repo.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-scopt-dev-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-scopt-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - addcut.dev.mypepsico.com
+    name: pep-pfna-flna-scopt-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-pfna-flna-scopt-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-nonprod-scus-addcut-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - api.addcut.dev.mypepsico.com
+    name: pep-pfna-flna-scopt-dev-cv-gw-2-https-443
+    port:
+      name: https-pep-pfna-flna-scopt-dev-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-nonprod-scus-addcut-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

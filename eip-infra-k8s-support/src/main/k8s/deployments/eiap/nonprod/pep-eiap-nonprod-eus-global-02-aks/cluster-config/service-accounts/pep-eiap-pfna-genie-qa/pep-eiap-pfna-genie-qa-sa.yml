@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 0d12a175-67e6-4d80-92ce-bf46d505f6a1
+  name: pep-eiap-pfna-genie-qa-sa
+  namespace: pep-eiap-pfna-genie-qa

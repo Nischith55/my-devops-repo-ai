@@ -1,0 +1,34 @@
+---
+- name: applying daemonset 
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - /azp/agent/_work/1/s/templates/vars/variable.yml
+
+  tasks:
+    - name: Include vars
+      include_vars:
+        file: "{{ working_dir }}/templates/vars/variable.yml"
+        name: userpools
+
+    - name: creates temp directory
+      ansible.builtin.file:
+        path: "{{ working_dir }}/templates/daemonset"
+        state: directory
+
+    - template:
+        src: daemonset.j2 # Se Jinja2 template file
+        dest: "{{ working_dir }}/templates/daemonset/{{ userpools[item] }}.yml"
+      with_items: "{{ userpools }}"
+
+    - name: apply
+      shell: |
+          kubectl apply -f {{ userpools[item] }}.yml
+          kubectl describe daemonset -n kube-system revert-cgroups-{{ userpools[item] }}
+      args: 
+        chdir: "{{ working_dir }}/templates/daemonset"
+      register: daemonset
+      with_items: "{{ userpools }}"
+
+
+        

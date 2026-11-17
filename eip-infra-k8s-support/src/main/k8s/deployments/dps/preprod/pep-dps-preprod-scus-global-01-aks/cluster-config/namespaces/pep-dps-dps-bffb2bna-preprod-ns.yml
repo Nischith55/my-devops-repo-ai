@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-bffb2bna-preprod
+  labels:
+    env-preprod: "true"
+    project: bffb2bna
+    sector: dps
+    team: dps-bffb2bna
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsiconnect-b2b-portal-dominican-republic-menegocio-dps
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: cf1546a447bc7950e0168d12516d43b3
+    pep-environment: Pre-Production
+    

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 92e366b2-8688-4e93-9077-bea0d9eb9cde
+  name: pep-pfna-pbna-esskjri3st2-dev-sa
+  namespace: pep-pfna-pbna-esskjri3st2-dev

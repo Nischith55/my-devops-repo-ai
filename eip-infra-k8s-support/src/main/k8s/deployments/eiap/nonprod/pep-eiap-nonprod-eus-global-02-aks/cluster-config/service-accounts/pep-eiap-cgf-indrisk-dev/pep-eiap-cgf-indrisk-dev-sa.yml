@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 5b2dbd10-26d9-4220-8f36-4ea6c014a1a7
+  name: pep-eiap-cgf-indrisk-dev-sa
+  namespace: pep-eiap-cgf-indrisk-dev

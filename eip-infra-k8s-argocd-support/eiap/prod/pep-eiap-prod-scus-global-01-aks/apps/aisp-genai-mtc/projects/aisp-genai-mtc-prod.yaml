@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aisp-genai-mtc-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aisp-genai-mtc-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/aisp-genai-mtc-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-mtcprod-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aisp-genai-mtc-prod-admin
+        description: Admin privileges to aisp-genai-mtc-prod
+        policies:
+        - p, proj:aisp-genai-mtc-prod:aisp-genai-mtc-prod-admin, applications, *, aisp-genai-mtc-prod/*, allow
+        - p, proj:aisp-genai-mtc-prod:aisp-genai-mtc-prod-admin, repositories, *, aisp-genai-mtc-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aisp-genai-mtc-prod-user
+        description: Read-only privileges to aisp-genai-mtc-prod
+        policies:
+        - p, proj:aisp-genai-mtc-prod:aisp-genai-mtc-prod-user, applications, get, aisp-genai-mtc-prod/*, allow
+        - p, proj:aisp-genai-mtc-prod:aisp-genai-mtc-prod-user, applications, sync, aisp-genai-mtc-prod/*, allow
+        - p, proj:aisp-genai-mtc-prod:aisp-genai-mtc-prod-user, repositories, get, aisp-genai-mtc-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.NonProd.MTCDEV"
+        - "Team.Support.EIAP.READ"
+    

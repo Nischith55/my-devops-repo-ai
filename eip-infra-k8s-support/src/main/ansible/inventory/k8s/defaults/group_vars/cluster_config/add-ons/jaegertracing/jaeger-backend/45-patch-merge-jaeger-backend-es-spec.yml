@@ -1,0 +1,19 @@
+---
+# Template variable for patch jaeger with ES backend
+
+# IMPORTANT: This is used as default -- SO MUST be enabled per cluster
+_jt_jb_merge_spec_es_patch:
+
+  spec:
+
+    strategy: production
+
+    # storage ES
+    storage: "{{ __jt_jb_es_storage }}"
+
+#: ## 
+#: Final variable 
+#: ##
+jt_jb_prod_es_storage_spec: |-
+  {{ __jt_jb_spec_options 
+    | combine(_jt_jb_merge_spec_es_patch, recursive=True) }}

@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-latam-dsxbtbota-qa-sa
+  namespace: pep-dps-latam-dsxbtbota-qa

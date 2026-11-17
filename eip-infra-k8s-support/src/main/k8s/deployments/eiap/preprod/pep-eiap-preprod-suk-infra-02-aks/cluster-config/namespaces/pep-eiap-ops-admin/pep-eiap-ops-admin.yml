@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-ops-admin
+  labels:
+    cluster-name: pep-eiap-preprod-suk-infra-02-aks
+    istio-injection: disabled
+    environment: prod
+    team: eiap-admins
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE

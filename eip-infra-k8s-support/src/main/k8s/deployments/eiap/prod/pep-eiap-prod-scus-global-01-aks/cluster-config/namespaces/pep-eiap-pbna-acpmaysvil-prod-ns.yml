@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 65572ae6c3aff5544c9669deb001319a
+    pep-cmdb-bus-app-id: a157e6e6c3aff5544c9669deb00131ec
+    pep-environment: Production
+    project: acpmaysvil
+    sector: pbna
+    servicename_aks: systemlogisticswarehouseautomation
+    team: pbna-acpmaysvil
+  name: pep-eiap-pbna-acpmaysvil-prod

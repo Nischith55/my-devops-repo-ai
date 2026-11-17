@@ -1,0 +1,55 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-cluster-admin-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: pep-eiap-admin-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # e6793437-2f8c-4ba8-a82e-81d8ebc27a8d
+    name: rmittal2@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+<<<<<<< Updated upstream
+    name: vmudhrab@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: gm@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: rjames@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: rsjain10@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: iyenigul@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: vkandwal@pepsico.com  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: mqaiser6@pepsico.com  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: vlakshm1@pepsico.com  
+  
+=======
+    # 
+    name: nmaljevi@pepsico.com
+
+>>>>>>> Stashed changes

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: duaas-ingestionservice-api-bbda-vs
+  namespace: pep-eiap-cgf-duaas-prod
+  labels:
+      app: duaas-ingestionservice-api
+spec:
+  hosts:
+  - pep-cgf-prod-ingestionservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-duaas-prod/pep-eiap-cgf-duaas-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: duaas-ingestionservice-api.pep-eiap-cgf-duaas-prod.svc.cluster.local
+        port:
+          number: 443
+  

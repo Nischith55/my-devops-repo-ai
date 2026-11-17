@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pfna-flna-airbyte-dev-sa
+  namespace: pep-pfna-flna-airbyte-dev

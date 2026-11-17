@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-global-eip-billing-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pep-eiap-global-eip-billing.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /eipone/billing-service
+    route:
+    - destination:
+        host: pep-eiap-global-eip-billing.pep-eiap-global-mdp-dev.svc.cluster.local
+        port:
+          number: 80

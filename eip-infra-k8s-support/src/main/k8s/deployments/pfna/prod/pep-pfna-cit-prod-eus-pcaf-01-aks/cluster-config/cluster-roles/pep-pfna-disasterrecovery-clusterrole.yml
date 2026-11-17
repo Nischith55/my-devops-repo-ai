@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-pfna-disasterrecovery-clusterrole
+rules: 
+-   apiGroups:
+    - "apps"
+    resources:
+    - deployments/scale
+    - deployments
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+-   apiGroups:
+    - "batch"
+    resources:
+    - cronjobs
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+-   apiGroups:
+    - ''
+    resources:
+    - namespaces
+    verbs:
+    - list
+    - get

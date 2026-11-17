@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: och-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    name: pep-eiap-preprod-eus-infra-02-aks
+    namespace: argocd
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/och-argocd-configs
+    targetRevision: aks_master-test
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.2
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: och-dev
+      valueFiles:
+      - $values/dev/pep-eiap-nonprod-eus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-eiap-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'och-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/och-argocd-configs
+              repoName: och-argocd-configs
+              targetRevision: aks_master-test
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notification

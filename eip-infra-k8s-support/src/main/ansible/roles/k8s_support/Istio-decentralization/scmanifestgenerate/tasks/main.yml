@@ -1,0 +1,24 @@
+---
+
+# - name: Get list of namespaces
+#   kubernetes.core.k8s_info:
+#     kind: namespace 
+#   register: namespaces
+#   no_log: True
+  
+### create a folder to store generated manifest files
+- name: Creates directory to store manifest
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/sc-manifests/"
+    state: directory
+    
+- name: Get list of side car
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1alpha3
+    kind: Sidecar 
+    namespace: "pep-{{ department }}-istio-config"
+  register: sidecars
+
+- name: loop through each Side Car
+  include_tasks: scmanifestgenerate.yml
+  with_items: "{{ sidecars.resources }}"

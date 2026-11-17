@@ -1,0 +1,46 @@
+---
+
+- set_fact:
+    all_hosts_details: []
+- debug:
+    msg: "{{ cluster_name }} and {{ env }} and {{ department }} and {{ mypath }} and {{ job_name }}"
+- name: Get list of all virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+  register: virtualservices
+
+- name: print virtualservice with both http and tls blocks
+  debug:
+    msg: "The virtualservice {{ item.metadata.name }} is having both http and tls blocks. Please keep only one."
+  with_items: "{{ virtualservices.resources }}"
+  when: item.spec.http is defined and item.spec.tls is defined
+
+- name: get all hosts 
+  set_fact:
+    all_hosts_details: "{{ all_hosts_details + item.spec.hosts }}"
+  with_items: "{{ virtualservices.resources }}"
+
+
+- debug: var=all_hosts_details
+
+- set_fact:
+    list2: "{{ list2 + [{'key': item, 'freq': all_hosts_details|select('regex', myregex)|length}] }}"
+  loop: "{{ all_hosts_details|unique|sort }}"
+  vars:
+    list2: []
+    myregex: "^{{ item }}$"
+  no_log: True
+  
+
+- debug: var=list2
+
+- name: Creates directory to store outputs
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/curl-outputs/"
+    state: directory
+
+- name: artifact
+  copy:
+    content: "{{ list2 | to_yaml }}"
+    dest: "{{ mypath }}/Artifacts/curl-outputs/{{ job_name }}_vs_hosts_frequency.txt"

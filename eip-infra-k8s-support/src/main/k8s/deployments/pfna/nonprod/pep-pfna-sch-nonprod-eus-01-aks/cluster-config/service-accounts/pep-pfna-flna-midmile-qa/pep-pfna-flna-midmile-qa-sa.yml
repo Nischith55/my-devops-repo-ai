@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c6a959f6-881b-4c20-a182-05b0704fd713
+  name: pep-pfna-flna-midmile-qa-sa
+  namespace: pep-pfna-flna-midmile-qa

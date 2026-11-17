@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-exception-message-kafproducer-uzpu-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-exception-message-kafproducer
+spec:
+  hosts:
+  - pep-pfna-transp-exception-message-kafproducer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/exception
+    route:
+    - destination:
+        host: pep-pfna-transp-exception-message-kafproducer.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-snt-apexai-dev-sa
+  namespace: pep-eiap-snt-apexai-dev

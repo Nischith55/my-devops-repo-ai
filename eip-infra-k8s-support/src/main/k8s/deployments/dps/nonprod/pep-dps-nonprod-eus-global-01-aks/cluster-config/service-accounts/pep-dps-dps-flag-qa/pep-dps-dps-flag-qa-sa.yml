@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c10f1381-8786-4975-9150-5726d3bf8ba3
+  name: pep-dps-dps-flag-qa-sa
+  namespace: pep-dps-dps-flag-qa

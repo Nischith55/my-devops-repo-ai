@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: journey-optimizer-processor
+  name: journey-optimizer-processor-qa-vs
+  namespace: pep-dps-cgf-cct-qa
+spec:
+  gateways:
+  - pep-dps-cgf-cct-qa/pep-dps-cgf-cct-qa-cv-gw
+  hosts:
+  - journey-optimizer-processor-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: journey-optimizer-processor.pep-dps-cgf-cct-qa.svc.cluster.local
+        port:
+          number: 8080

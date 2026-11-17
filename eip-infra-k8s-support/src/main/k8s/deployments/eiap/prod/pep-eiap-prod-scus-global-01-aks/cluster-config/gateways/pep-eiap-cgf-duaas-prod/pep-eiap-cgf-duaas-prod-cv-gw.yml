@@ -1,0 +1,146 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-duaas-prod-cv-gw
+  namespace: pep-eiap-cgf-duaas-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-cgf-duaas-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-duaas-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-duaas-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - duaas-configurationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-ingestionservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-outputservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-translationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-validationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-translationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-ingestionservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-validationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-configurationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-mobile-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - dai-pepdoculingo-extraction-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-translation-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-extraction-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - dai-pepdoculingo-translation-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-configuration-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-intake-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-ingestion-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-translation-microservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-extraction-microservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-duaas-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-duaas-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - doculingo.azure.intra.pepsico.com
+    name: istio-in-gateway-01-doculingo-https-443
+    port:
+      name: https-web-doculingo-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-doculingo-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - duaas-configurationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-ingestionservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-outputservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-translationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-validationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - duaas-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - doculingo.azure.intra.pepsico.com
+    - pep-cgf-prod-translationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-ingestionservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-validationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-prod-configurationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-cgf-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo.mypepsico.com
+    - pepdoculingo-mobile-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - dai-pepdoculingo-extraction-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-translation-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-extraction-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - dai-pepdoculingo-translation-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-configuration-service-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-intake-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-ingestion-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-translation-microservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-extraction-microservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-duaas-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-duaas-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - pepdoculingo.mypepsico.com
+    name: pep-eiap-cgf-duaas-prod-cv-gw-4-https-443
+    port:
+      name: pep-eiap-cgf-duaas-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pepdoculingo-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,112 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sContainerRequests",
+  "metadata": {
+    "annotations": {},
+    "name": "container-must-have-requests"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra-dev",
+        "pep-eiap-global-cep-qa",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-dev",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "policy-system",
+        "gitops-connector-system",
+        "argocd",
+        "pep-eiap-global-cmp-dev",
+        "pep-eiap-global-cmp-qa",
+        "pep-eiap-global-infra-dev",
+        "default",
+        "pep-eiap-cgf-swaggerhub-dev",
+        "pep-eiap-cgf-cvopa-dev",
+        "pep-eiap-pbna-whseauto-dev",
+        "pep-eiap-qfna-whseauto-dev",
+        "pep-eiap-global-iai-dev",
+        "pep-eiap-cgf-iaicv-qa",
+        "pep-eiap-cgf-pepgenx-dev",
+        "pep-eiap-cgf-pepgenx-qa",
+        "pep-eiap-cgf-launchp-dev",
+        "falcon-kac",
+        "falcon-system",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "cpu": "1",
+      "exemptImages": [
+        "cyberark/secrets-provider-for-k8s*",
+        "docker.io/istio/*",
+        "docker.elastic.co/observability/*",
+        "appdynamics/*",
+        "docker.io/appdynamics/*",
+        "myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-ds-logic*",
+        "myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-event-manager*",
+        "myartifactory.mypepsico.com/aks-iai-cv-plt-docker-dev/pep/eiap/labelright/labelright-backend-ml-api-2022*",
+        "myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-manual-scenarios-api*",
+        "myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pep/eip/pep-eip-gnrm-pricingai-pricing-api*",
+        "31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/omnichannelecommercehub_docker_local/pep/och/essa/edt/pep-och-amazon-flna-mop*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*",
+        "myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/vct-pyservices-persistence*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*",
+        "myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/dsi-caching-testing*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/specification-digitization-api*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/iai-cv-pepiris-inference-ray-service*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pep-iai-cv-perspective-correction*",
+        "pepsmartcandveus1acr.azurecr.io/hasura/graphql-engine*",
+        "pepsmartcandveus1acr.azurecr.io/pep.smartcan.titan*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/iai-promotional-strip-removal-2024*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pbna/svt/svt-softbot-platform*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/eus-perf-perf3*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/duaas-translationservice-api*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-multiprocessing*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-logtoarize*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-mgmt-backend*",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/dlops/model-observability-framework*"
+      ],
+      "memory": "2Gi"
+    }
+  }
+}

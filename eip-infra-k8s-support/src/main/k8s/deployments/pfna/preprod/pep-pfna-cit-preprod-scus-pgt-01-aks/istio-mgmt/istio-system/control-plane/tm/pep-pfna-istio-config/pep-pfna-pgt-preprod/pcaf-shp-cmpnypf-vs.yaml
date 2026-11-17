@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-cmpnypf-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-shp-cmpnypf.genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - pcaf-shp-cmpnypf-genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pcaf-shp-cmpnypf.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80

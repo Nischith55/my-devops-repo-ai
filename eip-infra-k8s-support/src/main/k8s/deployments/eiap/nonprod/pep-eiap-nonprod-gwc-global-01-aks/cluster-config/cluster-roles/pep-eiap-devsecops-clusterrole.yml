@@ -1,0 +1,56 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-devsecops-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    - apps
+    - autoscaling
+    - extensions
+    - batch
+    resources:
+    - deployments
+    - deployments/rollback
+    - deployments/status
+    - deployments/scale
+    - horizontalpodautoscalers
+    - horizontalpodautoscalers/status
+    - jobs
+    - jobs/status
+    - cronjobs
+    - pods
+    - podtemplates
+    - pods/attach
+    - pods/binding
+    - pods/eviction
+    - pods/exec
+    - pods/log
+    - pods/status
+    - replicasets/scale
+    - replicasets/status
+    - replicasets
+    - services
+    - services/proxy
+    - services/status
+    - statefulsets
+    - statefulsets/scale
+    - statefulsets/status
+    verbs:
+    - create
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+  - constraints.gatekeeper.sh
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch

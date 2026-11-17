@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: sre-insights-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for sre-insights-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SnT_PepSRE_Insights/_git/sre-insights-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-latam-pepsre-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: sre-insights-prod-admin
+        description: Admin privileges to sre-insights-prod
+        policies:
+        - p, proj:sre-insights-prod:sre-insights-prod-admin, applications, *, sre-insights-prod/*, allow
+        - p, proj:sre-insights-prod:sre-insights-prod-admin, repositories, *, sre-insights-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: sre-insights-prod-user
+        description: Read-only privileges to sre-insights-prod
+        policies:
+        - p, proj:sre-insights-prod:sre-insights-prod-user, applications, get, sre-insights-prod/*, allow
+        - p, proj:sre-insights-prod:sre-insights-prod-user, applications, sync, sre-insights-prod/*, allow
+        - p, proj:sre-insights-prod:sre-insights-prod-user, repositories, get, sre-insights-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.LATAM.Prod.PepSRE"
+        - "Team.Support.EIAP.READ"
+    

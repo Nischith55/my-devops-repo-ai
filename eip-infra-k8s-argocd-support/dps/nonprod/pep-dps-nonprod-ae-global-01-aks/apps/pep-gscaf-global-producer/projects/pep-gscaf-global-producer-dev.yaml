@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-gscaf-global-producer-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app       
+spec:
+  description: Project for pep-gscaf-global-producer-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-gscaf-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-ae-global-01-aks
+    namespace: pep-dps-cgf-gscafso-dev
+  - name: pep-dps-nonprod-ae-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-gscaf-global-producer-dev-admin
+    description: Admin privileges to pep-gscaf-global-producer-dev
+    policies:
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-admin, applications, *, pep-gscaf-global-producer-dev/*, allow
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-admin, applications, get, argocd/*, allow
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-admin, repositories, *, pep-gscaf-global-producer-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-gscaf-global-producer-dev-user
+    description: Read-only privileges to pep-gscaf-global-producer-dev
+    policies:
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-user, applications, get, pep-gscaf-global-producer-dev/*, allow
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-user, applications, sync, pep-gscaf-global-producer-dev/*, allow
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-user, repositories, get, pep-gscaf-global-producer-dev/*, allow
+    - p, proj:pep-gscaf-global-producer-dev:pep-gscaf-global-producer-dev-user, applications, action/apps/Deployment/restart, pep-gscaf-global-producer-dev/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

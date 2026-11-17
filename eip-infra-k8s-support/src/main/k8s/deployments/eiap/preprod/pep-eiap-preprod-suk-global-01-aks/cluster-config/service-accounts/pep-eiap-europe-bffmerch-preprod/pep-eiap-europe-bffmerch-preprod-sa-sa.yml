@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-europe-bffmerch-preprod-sa
+  namespace: pep-eiap-europe-bffmerch-preprod

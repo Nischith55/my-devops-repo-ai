@@ -1,0 +1,36 @@
+kubecostProductConfigs:
+  clusterName: "pep-latam-opsbridge-nonprod-eus-01-aks"  
+  productKey:
+    secretname: productkey
+    enabled: true
+  azureBillingRegion: US
+kubecostModel:
+  warmCache: false
+  warmSavingsCache: false
+  etl: false
+global:
+  grafana:
+    enabled: false
+    proxy: false
+  alertmanager:
+    enabled: false
+prometheus:
+  server:
+    retention: 2d
+    global:
+      external_labels:
+        cluster_id: "pep-latam-opsbridge-nonprod-eus-01-aks"
+  nodeExporter:
+    enabled: true
+    tolerations: 
+    - operator: "Exists"
+networkCosts:
+  enabled: true
+  services:
+    azure-cloud-services: true
+  config:
+    destinations: 
+      in-zone:       
+        - "127.0.0.1" 
+  tolerations: 
+  - operator: "Exists"           

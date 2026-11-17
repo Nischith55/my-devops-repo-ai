@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-product-catalog-service-jyic-vs
+  namespace: pep-eiap-apac-ochapac-dev
+  labels:
+      app: pep-och-product-catalog-service
+spec:
+  hosts:
+  - pep-och-product-catalog-service.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-dev/pep-eiap-apac-ochapac-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-product-catalog-service.pep-eiap-apac-ochapac-dev.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-pogon-backend-zfqu-vs
+  namespace: pep-pfna-pfna-pogon-dev
+  labels:
+      app: pep-pcaf-pogon-backend
+spec:
+  hosts:
+  - dev-01.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pogon-dev/pep-pfna-pfna-pogon-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-pogon-backend.pep-pfna-pfna-pogon-dev.svc.cluster.local
+        port:
+          number: 80
+  

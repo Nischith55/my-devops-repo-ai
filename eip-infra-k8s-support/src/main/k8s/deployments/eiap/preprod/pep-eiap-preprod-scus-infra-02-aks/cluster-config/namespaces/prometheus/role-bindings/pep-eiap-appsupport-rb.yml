@@ -1,0 +1,21 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-12-09 12:56:24
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-appsupport-rb
+  namespace: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # e0f1c835-5384-463d-948f-19c8118fa5a1
+    name: sjinagam@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io    
+    kind: User
+    # d918fe0e-1446-4cf6-b252-2bee39dbe96d
+    name: msuyal01@pepsico.com

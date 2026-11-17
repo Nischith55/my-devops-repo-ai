@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: zookeeper
+  name: pep-cgf-kafka-zookeeper-vs
+  namespace: pep-infratools-test-kafka-qa
+spec:
+  gateways:
+  - pep-infratools-test-kafka-qa/pep-infratools-test-kafka-qa-cv-gw
+  hosts:
+  - zookeeper.kafka.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - zookeeper.kafka.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: zookeeper.pep-infratools-test-kafka-qa.svc.cluster.local
+        port:
+          number: 2181

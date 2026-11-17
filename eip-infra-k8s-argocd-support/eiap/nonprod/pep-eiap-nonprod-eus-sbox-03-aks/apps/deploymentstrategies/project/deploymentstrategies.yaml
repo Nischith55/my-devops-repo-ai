@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: deploymentstrategies
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for deploymentstrategies   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-azure-terraform-support
+  - pepeiapnonprodcommonacr.azurecr.io/pep/pod-info
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:  
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: canary-deployment-yug
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc   
+
+  roles:
+  - name: deploymentstrategies
+    description: Privileges to deploymentstrategies
+    policies:
+    - p, proj:deploymentstrategies:deploymentstrategies, applications, *, deploymentstrategies/*, allow
+    - p, proj:deploymentstrategies:deploymentstrategies, repositories, *, deploymentstrategies/*, allow
+    groups:
+    - "kbhuvane@pepsico.com"
+    - "nas@pepsico.com"

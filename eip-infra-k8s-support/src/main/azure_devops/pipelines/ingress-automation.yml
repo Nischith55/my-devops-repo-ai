@@ -1,0 +1,351 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+
+variables:
+  - name: template_file_path
+    value: 'src/main/azure_devops/pipelines/templates/virtual_service.yml'
+  - name: pool_name
+    value: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - group: nonprod_acr
+stages:
+  - stage: ingress_automation
+    displayName: ingress_automation
+    pool:
+      name: $(pool_name)
+    jobs:
+    - job: gather_inputs 
+      displayName: gather_inputs 
+      steps:
+        - task: CmdLine@2
+          displayName: python_configuration
+          inputs:
+            script: |
+              mkdir -p ~/venv
+              mkdir -p ~/venv/python38-ansible211
+              source ~/venv/python38-ansible211/bin/activate
+              python3.8 -m pip install requests openpyxl pandas
+        
+        - task: PythonScript@0
+          displayName: getting excell data
+          inputs:
+            scriptSource: 'filePath'
+            scriptPath: '$(system.defaultWorkingDirectory)/src/main/azure_devops/scripts/get_ingress_input.py'
+            arguments: '$(svcPersonalAccessToken) $(system.defaultWorkingDirectory)/src/main/azure_devops/pipelines/templates/clusters_pools.json'
+            pythonInterpreter: '/usr/bin/python3'
+        
+        - task: Bash@3
+          name: set_var 
+          inputs:
+            targetType: 'inline'
+            script: |
+              input_json=`cat input.json`
+              echo $input_json 
+              echo "##vso[task.setvariable variable=input_json;isOutput=true]$input_json"
+              
+
+    - job: validate_inputs
+      displayName: validate_inputs
+      dependsOn: gather_inputs
+      strategy:
+        matrix: $[ dependencies.gather_inputs.outputs['set_var.input_json'] ]
+      steps:
+        - task: Bash@3
+          displayName: Validation
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "hello , it's started."
+              echo "cluster name is $(cluster_name) "
+              echo "env is $(env)"
+              echo "namespace is $(namespace)"
+              if ! [[ $(service_name) =~ ^[a-z0-9-]*$ ]]; then
+                echo "service name has special characters."
+                exit 1                
+              fi 
+              if ! [[ "$(application_context_path)" = "/"* ]]; then 
+                echo "The Application context path does not start with the prefix /"
+                exit 1
+              fi
+              if [[ $(cluster_name) = pep* ]]; then
+                type=`echo $(cluster_name) | cut -d "-" -f 2`
+                echo "type of cluster is $type "
+                if [ "$type" = "pfna" ] || [ "$type" = "snt" ] || [ "$type" = "eiap" ] || [ "$type" = "apigee" ] || [ "$type" = "dps" ]; then
+                  cd $(system.defaultWorkingDirectory)/src/main/k8s/deployments/$type/$(env)
+                  if [[ `ls -lrth | awk '{print $9}' | grep -w "^$(cluster_name)$" ` ]]; then 
+                    echo "valid cluster "
+                  else
+                    echo "invalid cluster name"
+                    exit 1
+                  fi
+                else
+                  echo "invalid cluster name provided "
+                  exit 1
+                fi
+                #echo "valid cluster"
+              else
+                echo "invalid cluster name provided."
+                exit 1
+              fi 
+              ls -lrth
+        
+        - task: Bash@3
+          displayName: Update manifest
+          name: update_manifest
+          inputs:
+            targetType: 'inline'
+            script: | 
+              echo "updating manifest file"
+              type=`echo $(cluster_name) | cut -d "-" -f 2`
+              sub_type=`echo $(cluster_name) | cut -d "-" -f 3`
+              if [ $type = "pfna" ] && [ $(env) = "nonprod" ] && [ $sub_type = "sch" ]; then
+                ns="pep-$type-sch-istio-config"
+                echo "##vso[task.setvariable variable=ns;isOutput=true]$ns"
+              else 
+                ns="pep-$type-istio-config"
+                echo "##vso[task.setvariable variable=ns;isOutput=true]$ns"
+              fi 
+              # temp_ns="pep-eiap-cgf-eecmp-qa"
+              echo "##vso[task.setvariable variable=typeVar;isOutput=true]$type"
+              if [[ $(namespace) == *-qa ]]; then
+                vs_name='$(service_name)-qa-vs'
+              else
+                vs_name='$(service_name)-vs'
+              fi
+              prefix='$(application_context_path)'
+              dest_host='$(service_name).$(namespace).svc.cluster.local'
+              port='$(service_port)'
+              sed -i -e "s%prefix_value.*%$prefix%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              sed -i -e "s%vs_name.*%$vs_name%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              sed -i -e "s%destination_host_value.*%$dest_host%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              sed -i -e "s%port_value%$port%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              sed -i -e "s%ns_value%$ns%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              #sed -i -e "s%ns_value%$temp_ns%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              echo "updating host_value"
+              cd $(system.defaultWorkingDirectory)/src/main/k8s/deployments/$type/$(env)/$(cluster_name)
+              pwd
+              gateway_path=`find ./ -type f -name "istio-in-gateway-01.y*"`
+              echo "Gateway file path --> $gateway_path"
+              gw_suffix=`cat $gateway_path | grep 'pepsico.com' | grep "*" | cut -d '"' -f 2 | cut -d "'" -f 2 | cut -d "*" -f 2 | sort -u`
+              echo "gateway suffix is --> $gw_suffix"
+              if [[ $(namespace) == *-qa ]]; then
+                host_value="$(service_name)-qa$gw_suffix"
+              else
+                host_value="$(service_name)$gw_suffix"
+              fi
+              sed -i -e "s%host_value%$host_value%" $(system.defaultWorkingDirectory)/$(template_file_path)
+              echo "updation done. printing the output"
+              fname="$(cluster_name)_$(service_name).yml"
+              mv $(system.defaultWorkingDirectory)/$(template_file_path) $(system.defaultWorkingDirectory)/$fname
+              cat $(system.defaultWorkingDirectory)/$fname
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(system.defaultWorkingDirectory)/$(cluster_name)_$(service_name).yml'
+            ArtifactName: 'Manifest_file'
+    
+    - job: approval
+      dependsOn: 
+        - validate_inputs
+      condition: succeededOrFailed()
+      pool: server
+      timeoutInMinutes: 60 # job times out in 3 days
+      steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 60 # task times out in 1 day
+          inputs:
+            notifyUsers: |
+              srinivasarao.prudhivi.contractor@pepsico.com
+            instructions: 'Approval required after validating manifest file in Artifacts'
+    
+    - job: create_ingress
+      dependsOn: 
+        - validate_inputs
+        - gather_inputs
+        - approval
+      condition: succeededOrFailed()
+      strategy:
+        matrix: $[ dependencies.gather_inputs.outputs['set_var.input_json'] ]
+        maxParallel: 1
+
+      displayName: Applying Manifest file 
+      pool: 
+        name: $(agentpool)
+      steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+              buildType: 'current'
+              downloadType: 'specific'
+              downloadPath: '$(System.DefaultWorkingDirectory)'
+              
+
+        - task: Bash@3
+          displayName: ConditionCheck
+          inputs:
+            targetType: 'inline'
+            script: | 
+              echo "file status checking."
+              ls -lrth 
+              pwd 
+              ls -lrt $(System.DefaultWorkingDirectory)/Manifest_file/
+              echo "$(System.DefaultWorkingDirectory)/Manifest_file/$(cluster_name)_$(service_name).yml"
+              if [[ -f "$(System.DefaultWorkingDirectory)/Manifest_file/$(cluster_name)_$(service_name).yml" ]]; then 
+                echo "File exists."
+              else 
+                echo "Manifest file is not created. Hence exiting."
+                exit 1
+              fi
+
+        - template: templates/set_config_ingress.yml
+          parameters:
+            cluster: $(cluster_name)
+            env: $(env_convert)
+  
+
+        - task: Bash@3
+          displayName: cluster connect
+          inputs:
+            targetType: 'inline'
+            script: | 
+              echo "testing cluster connect and namespace"
+              cmd_out=`kubectl get ns --no-headers -o custom-columns=":metadata.name" | grep ^$(namespace)$`
+              if [[ $? != 0 ]]; then 
+                echo "namespace doesn't exist."
+                exit 1
+              else 
+                echo `kubectl get ns $(namespace)`
+              fi 
+          env:
+            AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+            AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+        
+        - task: Bash@3
+          displayName: copy_manifest
+          inputs:
+            targetType: 'inline'
+            script: | 
+              echo "copying the manifest file to repo"
+              type=`echo $(cluster_name) | cut -d "-" -f 2`
+              sub_type=`echo $(cluster_name) | cut -d "-" -f 3`
+              if [ $type = "pfna" ] && [ $(env) = "nonprod" ] && [ $sub_type = "sch" ]; then
+                ns="pep-$type-sch-istio-config"
+              else 
+                ns="pep-$type-istio-config"
+              fi
+              cd $(system.defaultWorkingDirectory)/src/main/k8s/deployments/$type/$(env)/$(cluster_name)
+              ns_path=`find ./ -type d -name $ns | grep "/istio-"`
+              cd $ns_path
+              echo $ns_path
+              dir="$(system.defaultWorkingDirectory)/src/main/k8s/deployments/$type/$(env)/$(cluster_name)/$ns_path/$(namespace)"
+              if [[ $(namespace) == *-qa ]]; then
+                file_name="$(service_name)-qa-vs.yml"
+              else
+                file_name="$(service_name)-vs.yml"
+              fi
+              echo "file name is --> $file_name"
+              if [[ -d "$dir" ]]; then 
+                echo "directory exists --> $dir" 
+                if [[ -e "$dir/$file_name" ]]; then
+                  echo "File $file_name already present. Choose a different service name."
+                  exit 1
+                fi               
+              else
+                echo "directory doesn't exist."
+                mkdir $dir 
+              fi 
+              cd $dir
+              echo "copying file "
+              cp $(System.DefaultWorkingDirectory)/Manifest_file/$(cluster_name)_$(service_name).yml $file_name 
+              file_path_full="$dir/$file_name"
+              echo "file path full is --> $file_path_full"
+              echo "##vso[task.setvariable variable=file_path_rel]$dir"
+              echo "##vso[task.setvariable variable=file_path_full]$file_path_full"
+              ls -lrth
+              cat $file_name
+              
+
+        - task: Bash@3
+          displayName: apply_ingress
+          inputs:
+            targetType: 'inline'
+            script: | 
+              echo "applying the ingress"
+              type=`echo $(cluster_name) | cut -d "-" -f 2`
+              sub_type=`echo $(cluster_name) | cut -d "-" -f 3`
+              if [ $type = "pfna" ] && [ $(env) = "nonprod" ] && [ $sub_type = "sch" ]; then
+                ns="pep-$type-sch-istio-config"
+              else 
+                ns="pep-$type-istio-config"
+              fi
+              if [[ $(namespace) == *-qa ]]; then
+                vs_name='$(service_name)-qa-vs'
+              else
+                vs_name='$(service_name)-vs'
+              fi
+              #temp_ns="pep-eiap-cgf-eecmp-qa"
+              echo "full file path is $(file_path_full)"
+              echo "file path is $(file_path_rel)"
+              cd $(file_path_rel)
+              cat $(file_path_full)
+              kubectl create -f $(file_path_full)
+              echo "checking if ingress is created. -------------------------------"
+              cmd_out=`kubectl get VirtualService -n $ns --no-headers -o custom-columns=":metadata.name" | grep ^$vs_name$`
+              if [[ $? != 0 ]]; then 
+                echo "Virtual service is not created. "
+                exit 1
+              else 
+                echo `kubectl get VirtualService -n $ns`
+              fi 
+              git branch
+              git checkout -b $(Build.SourceBranchName)
+              git config --global user.email "svceiapautomation@pepsico.com"
+              git config --global user.name "svceiapautomation"
+              git status
+              git add .
+              git commit -m "Added $(service_name)-vs.yml for $(Build.DefinitionName) and build id $(Build.BuildId)"
+              git config --global push.autoSetupRemote true
+              git config receive.denyNonFastForwards false
+              git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+                echo "##vso[task.setvariable variable=output;isOutput=true]nothing_to_commit"
+              else
+                git add .
+                git commit -m "Added $(service_name)-vs.yml for $(Build.DefinitionName) and build id $(Build.BuildId)"
+                git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+                outval=`echo $?`
+                echo $outval
+                if [ $outval -eq 0 ];then
+                  echo 'whoami'
+                else
+                  git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+                  for i in $(git diff --name-only --diff-filter=U --relative)
+                  do
+                    echo $i
+                    git show :1:$i > ./tmp.common
+                    git show :2:$i > ./tmp.ours
+                    git show :3:$i > ./tmp.theirs
+                    git merge-file --union -p ./tmp.ours ./tmp.common ./tmp.theirs > "$(system.defaultWorkingDirectory)/$i"
+                    git add "$(system.defaultWorkingDirectory)/$i"
+                    rm ./tmp.common
+                    rm ./tmp.ours
+                    rm ./tmp.theirs        
+                  done 
+                  git commit -m "resolve conflicts"
+                  git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+                  git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+                fi
+                echo "##vso[task.setvariable variable=output;isOutput=true]things_to_commit"
+              fi
+
+          env:
+            AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+            AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)    

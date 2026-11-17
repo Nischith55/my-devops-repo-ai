@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: poganalyzer-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for poganalyzer-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/poganalyzer/_git/poganalyzer-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-pog-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: poganalyzer-dev-admin
+        description: Admin privileges to poganalyzer-dev
+        policies:
+        - p, proj:poganalyzer-dev:poganalyzer-dev-admin, applications, *, poganalyzer-dev/*, allow
+        - p, proj:poganalyzer-dev:poganalyzer-dev-admin, repositories, *, poganalyzer-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: poganalyzer-dev-user
+        description: Read-only privileges to poganalyzer-dev
+        policies:
+        - p, proj:poganalyzer-dev:poganalyzer-dev-user, applications, get, poganalyzer-dev/*, allow
+        - p, proj:poganalyzer-dev:poganalyzer-dev-user, applications, sync, poganalyzer-dev/*, allow
+        - p, proj:poganalyzer-dev:poganalyzer-dev-user, repositories, get, poganalyzer-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:poganalyzer-dev:poganalyzer-dev-user, applications, action/apps/Deployment/restart, poganalyzer-dev/*, allow
+        groups:
+        - "Team.Support.POGStoreMappingAutomation"
+        - "Team.Support.EIAP.READ"
+    

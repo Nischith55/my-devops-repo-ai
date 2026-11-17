@@ -1,0 +1,60 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: calico-system-cv-gw
+  namespace: calico-system
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - "dummy-passthrough-calico-system.gw01.aks03.scus.nonprod.azure.intra.pepsico.com"
+    name: "calico-system-cv-gw-tls-443"
+    port:
+      name: "https-calico-system-cv-gw-tls-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - "dummy-calico-system-443.gw01.aks03.scus.nonprod.azure.intra.pepsico.com"
+    name: "calico-system-cv-gw-https-443"
+    port:
+      name: "https-calico-system-cv-gw-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: "pep-eiap-nonprod-scus-sbox-03-aks-gw01-tls"
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - "dummy-calico-system-80.gw01.aks03.scus.nonprod.azure.intra.pepsico.com"
+    name: "calico-system-cv-gw-http-80"
+    port:
+      name: "http-calico-system-cv-gw-80"
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true

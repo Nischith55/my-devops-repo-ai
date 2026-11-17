@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-hhnx-customer-master-ingest-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pep-eip-hhnext-customer-master-ingest.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pepsico-och-hhnx-customer-master-ingest.pep-eiap-flna-hhnext-dev.svc.cluster.local

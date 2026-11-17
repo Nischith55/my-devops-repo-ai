@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-wsp-prod
+    project: wsp
+    sector: global
+    servicename_aks: wsp-mypepsicopeople
+    team: global-wsp
+  name: pep-eiap-global-wsp-prod

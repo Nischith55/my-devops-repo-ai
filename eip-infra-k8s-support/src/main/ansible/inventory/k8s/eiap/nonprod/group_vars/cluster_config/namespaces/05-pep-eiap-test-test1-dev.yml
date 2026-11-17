@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_test_test1_dev:
+  
+  name: pep-eiap-test-test1-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: test-test1
+    sector: test
+    project: test1
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: formulaspecificationsystem-documentmanagementnon-prod
+    pep-cmdb-app-service-id: "985e11f44766151052293238436d438f"
+    pep-cmdb-bus-app-id: "ddbe003ddb3e8c10c2b5f38139961985"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-test-test1-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['test_test1'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-test-test1-dev-sa-token
+    namespace: pep-eiap-test-test1-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-test-test1-dev-sa"

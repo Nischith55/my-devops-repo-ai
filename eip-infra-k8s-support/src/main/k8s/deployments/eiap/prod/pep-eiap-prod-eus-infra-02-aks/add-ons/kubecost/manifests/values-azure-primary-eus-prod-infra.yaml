@@ -1,0 +1,105 @@
+kubecostProductConfigs:
+  clusterName: "pep-eiap-prod-eus-infra-02-aks"  
+  productKey:
+    secretname: productkey
+    enabled: true
+  cloudIntegrationSecret: cloud-integration # only runs on primary cluster
+  azureBillingRegion: US
+upgrade:
+  toV2: true
+prometheus:
+  server:
+    retention: 3d
+    global:
+      external_labels:
+        cluster_id: "pep-eiap-prod-eus-infra-02-aks" 
+    nodeSelector:
+      balance-group: KubeCostZonedPool
+    tolerations: 
+    - operator: "Exists"
+  nodeExporter:
+    enabled: false
+    tolerations: 
+    - operator: "Exists"
+  kube-state-metrics:
+    nodeSelector:
+      balance-group: KubeCostZonedPool
+    tolerations: 
+    - operator: "Exists"
+networkCosts:
+  enabled: true
+  services:
+    azure-cloud-services: true      
+  config:
+    destinations: 
+      in-zone:       
+        - "127.0.0.1"
+  tolerations: 
+  - operator: "Exists"
+forecasting:
+  nodeSelector:
+    balance-group: KubeCostZonedPool
+  tolerations:
+  - operator: "Exists"  
+kubecostModel:
+  etlCloudUsage: false
+  etlDailyStoreDurationDays: 365
+  etlHourlyStoreDurationHours: 49
+  etlCloudRefreshRateHours: 48
+  containerStatsEnabled: true
+  federatedStorageConfigSecret: federated-store
+  extraEnv:
+    - name: LOG_LEVEL
+      value: debug
+persistentVolume:
+  size: 64Gi
+federatedETL:  
+  readOnlyPrimary: false
+  federatedCluster: true
+grafana:
+  nodeSelector:
+    balance-group: KubeCostZonedPool
+  tolerations: 
+  - operator: "Exists"
+nodeSelector:
+  balance-group: KubeCostZonedPool
+tolerations:
+- operator: "Exists"
+etlUtils:
+  enabled: false
+  thanosSourceBucketSecret: kubecost-thanos  
+  nodeSelector:
+    balance-group: KubeCostZonedPool
+  tolerations:
+  - operator: "Exists"
+  resources: 
+    requests: 
+      memory: 10Gi
+      cpu: 1
+  fullImageName: gcr.io/kubecost1/cost-model:prod-2.3.5
+  env:
+    LOG_LEVEL: warn
+    ETL_UTIL_THREADS: 1
+kubecostAggregator:
+  logLevel: debug
+  cloudCost:
+    # Set requests so that it does not get evicted from the node
+    nodeSelector:
+      balance-group: KubeCostZonedPool
+    tolerations:
+    - operator: "Exists"
+      key: "KubeCostAgentPool"
+      effect: "NoSchedule"
+    # Reduce the amount of days to query at once
+    queryWindowDays: 1
+  etlDailyStoreDurationDays: 365
+  deployMethod: statefulset
+  replicas: 1
+  nodeSelector:
+    balance-group: KubeCostZonedPool
+  tolerations:
+  - operator: "Exists"
+    key: "KubeCostAgentPool"
+    effect: "NoSchedule"
+  aggregatorDbStorage:   
+    storageRequest: 512Gi

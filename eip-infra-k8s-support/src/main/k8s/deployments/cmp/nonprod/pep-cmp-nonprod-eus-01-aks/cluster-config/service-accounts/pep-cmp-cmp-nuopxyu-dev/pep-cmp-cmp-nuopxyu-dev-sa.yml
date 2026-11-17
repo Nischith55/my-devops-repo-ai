@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: fd0f8054-731e-41e1-be1b-e496be130c35
+  name: pep-cmp-cmp-nuopxyu-dev-sa
+  namespace: pep-cmp-cmp-nuopxyu-dev

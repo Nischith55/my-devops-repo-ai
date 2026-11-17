@@ -1,0 +1,35 @@
+---
+ns_pep_pfna_flna_truenorth_dev:
+  
+  name: pep-pfna-flna-truenorth-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-truenorth
+    sector: flna
+    project: truenorth
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-truenorth-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_truenorth'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-truenorth-dev-sa-token
+    namespace: pep-pfna-flna-truenorth-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-truenorth-dev-sa"

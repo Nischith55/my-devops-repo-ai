@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-arize-nginx-vs
+  namespace: pep-arize-global-prod
+spec:
+  gateways:
+  - pep-arize-global-prod/pep-arize-global-prod-cv-gw
+  hosts:
+  - pep-arize-nginx.arize.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-arize-nginx.pep-arize-global-prod.svc.cluster.local
+        port:
+          number: 8080

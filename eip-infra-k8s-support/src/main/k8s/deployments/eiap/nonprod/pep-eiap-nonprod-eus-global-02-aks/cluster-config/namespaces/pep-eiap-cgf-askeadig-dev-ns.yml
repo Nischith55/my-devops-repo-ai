@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-askeadig-dev
+  labels:
+    env-nonprod: "true"
+    project: askeadig
+    sector: cgf
+    team: cgf-askeadig
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: enterprisearchitectureassistant
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 140ee975c3716210476a900f0501314e
+    pep-cmdb-app-service-id: 1c0ee975c3716210476a900f05013187
+    pep-environment: Development
+    

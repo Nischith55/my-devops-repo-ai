@@ -1,0 +1,30 @@
+---
+# ##
+# DEPERECATED:: Once Python refactor is done this should be deleted
+# ##
+# ##
+# Aggregation of all cluster roles for any eiap AKS cluster. This should be the
+# first post-provisioning task.
+# ##
+
+
+# NOTE: we automatically pick ANY variable that ends with -clusterrole, so do
+# NOT define any variable that ends with '-clusterrole' if it is NOT a cluster
+# role variable.
+cluster_role_vars: |-
+  {{ q('varnames', '.+_clusterrole_cr_cfg$') }}
+
+
+# NOTE: we need a list of namespace objects
+#  - Also, note the use of '*' a python construct to 'expand' a list...
+common_cluster_roles: |-
+  {{ q('vars', *cluster_role_vars) }}
+
+
+# If you want to override a cluster roles list then use cluster_roles_ovrd
+cluster_roles: |-
+  {{ 
+    cluster_roles_ovrd 
+    | 
+    default(namespaces | build_k8s('cluster_role', common_cluster_roles)) 
+  }}

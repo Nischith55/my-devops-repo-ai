@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-mjlnt
+    kubernetes.io/metadata.name: default
+    servicename_aks: apigee
+  name: default

@@ -1,0 +1,27 @@
+# Implerative way 
+# k create deploy sampledeploy -n pep-dps-test-test-qa --image=pepdpsnonprodacr.azurecr.io/pep/cto/cmp/pepsico-cto-cmp-helloworld-webapp:20231024.26 --port=8080
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-dps-nginx
+  name: pep-dps-nginx
+  namespace: pep-dps-test-test-qa
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pep-dps-nginx
+  template:
+    metadata:
+      labels:
+        app: pep-dps-nginx
+    spec:
+      containers:
+        image: pepdpsnonprodacr.azurecr.io/pep/cto/cmp/pepsico-cto-cmp-helloworld-webapp:20231024.26
+        name: pep-dps-nginx
+        ports:
+        - Port: 8080
+          name: http

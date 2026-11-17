@@ -1,0 +1,196 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-pfna-vct-dev-cv-gw
+  namespace: pep-eiap-pfna-vct-dev
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-pfna-vct-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-pfna-vct-dev-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-pfna-vct-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - ds-upskilling-nonprod.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-automation-dbconnect.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-caching-testing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-onepep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dswreact-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink-jobmanager.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - graphqlautomation.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - krogerdsi-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pbi-generator-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cntwdev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-control-message-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctpyservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vctuistatic.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-eventhub-py-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vct-pyservices-persistence.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pysercies-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pyservices-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - walmartluminatedsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ds-upskilling-nonprod.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-automation-dbconnect.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-caching-testing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-onepep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dswreact-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink-jobmanager.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - graphqlautomation.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - krogerdsi-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pbi-generator-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cntwdev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-control-message-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctpyservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vctuistatic.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-eventhub-py-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vct-pyservices-persistence.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pysercies-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pyservices-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - walmartluminatedsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-pfna-vct-dev-cv-gw-https-443
+    port:
+      name: https-pep-eiap-pfna-vct-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ds-upskilling-nonprod.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-automation-dbconnect.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-caching-testing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-onepep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.dev.mypepsico.com
+    - dswreact-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink-jobmanager.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - graphqlautomation.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - krogerdsi-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pbi-generator-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cntwdev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - controltower.dev.mypepsico.com
+    - pep-eiap-pfna-vct-dev-control-message-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctpyservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vctuistatic.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-eventhub-py-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vct-pyservices-persistence.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pysercies-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pyservices-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - walmartluminatedsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ds-upskilling-nonprod.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-automation-dbconnect.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-caching-testing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi-onepep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsi.dev.mypepsico.com
+    - dswreact-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink-jobmanager.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - graphqlautomation.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - krogerdsi-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pbi-generator-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cntwdev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - controltower.dev.mypepsico.com
+    - pep-eiap-pfna-vct-dev-control-message-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-flink.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctpyservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vctservices.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vctuistatic.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-eventhub-py-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-pfna-vct-dev-vct-pyservices-persistence.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pysercies-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - vct-pyservices-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - walmartluminatedsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-pfna-vct-dev-cv-gw-http-80
+    port:
+      name: http-pep-eiap-pfna-vct-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - controltower.dev.mypepsico.com
+    name: pep-eiap-pfna-vct-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-eiap-pfna-vct-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-controltower-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - controltower.dev.mypepsico.com
+    name: pep-eiap-pfna-vct-dev-cv-gw-2-https-443
+    port:
+      name: https-pep-eiap-pfna-vct-dev-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-controltower-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

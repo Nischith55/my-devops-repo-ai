@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-exception-msg-by-date-cosmos-kafconsumer-iouh-vs
+  namespace: pep-pfna-flna-transp-dev
+  labels:
+      app: pep-pfna-transp-exception-msg-by-date-cosmos-kafconsumer
+spec:
+  hosts:
+  - pep-pfna-transp-exception-msg-by-date-cosmos-kafconsumer.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/exception-message-by-date/bronze-feed
+    route:
+    - destination:
+        host: pep-pfna-transp-exception-msg-by-date-cosmos-kafconsumer.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80
+  

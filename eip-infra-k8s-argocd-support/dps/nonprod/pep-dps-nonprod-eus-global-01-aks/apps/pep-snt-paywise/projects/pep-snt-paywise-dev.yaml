@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-snt-paywise-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-snt-paywise-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pep-snt-paywise-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-paywise-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-grir-dev
+    server: https://kubernetes.default.svc
+  roles:
+  - name: pep-snt-paywise-dev-admin
+    description: Admin privileges to pep-snt-paywise-dev
+    policies:
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-admin, applications, *, pep-snt-paywise-dev/*, allow
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-admin, repositories, *, pep-snt-paywise-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-snt-paywise-dev-user
+    description: Read-only privileges to pep-snt-paywise-dev
+    policies:
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-user, applications, get, pep-snt-paywise-dev/*, allow
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-user, applications, sync, pep-snt-paywise-dev/*, allow
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-user, repositories, get, pep-snt-paywise-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-snt-paywise-dev:pep-snt-paywise-dev-user, applications, action/apps/Deployment/restart, pep-snt-paywise-dev/*, allow
+
+    groups:
+    - "Team.Support.DPS.NonProd.paywise"
+    - "Team.Support.DPS.NonProd.GRIR"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

@@ -1,0 +1,30 @@
+---
+# generated file please do not edit
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-operator
+  namespace: elastic-system
+data:
+  eck.yaml: |
+    ca-cert-rotate-before: 24h
+    ca-cert-validity: 350400h
+    cert-rotate-before: 24h
+    cert-validity: 43800h
+    container-registry: docker.elastic.co
+    disable-config-watch: false
+    disable-telemetry: false
+    elasticsearch-client-timeout: 5m
+    enable-leader-election: true
+    enable-tracing: false
+    enable-webhook: true
+    ip-family: IPv4
+    kube-client-timeout: 60s
+    log-verbosity: 2
+    manage-webhook-certs: true
+    max-concurrent-reconciles: 3
+    metrics-port: 9090
+    namespaces: pep-eiap-elastic-cluster-01
+    operator-namespace: elastic-system
+    validate-storage-class: true
+    webhook-name: elastic-webhook.k8s.elastic.co

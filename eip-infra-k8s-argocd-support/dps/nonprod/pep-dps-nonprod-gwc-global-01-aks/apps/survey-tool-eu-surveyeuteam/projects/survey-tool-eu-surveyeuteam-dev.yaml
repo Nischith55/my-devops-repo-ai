@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: survey-tool-eu-surveyeuteam-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for survey-tool-eu-surveyeuteam-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/survey-tool-eu-surveyeuteam-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-surveyeu-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: survey-tool-eu-surveyeuteam-dev-admin
+    description: Admin privileges to survey-tool-eu-surveyeuteam-dev
+    policies:
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-admin, applications, *, survey-tool-eu-surveyeuteam-dev/*, allow
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-admin, repositories, *, survey-tool-eu-surveyeuteam-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: survey-tool-eu-surveyeuteam-dev-user
+    description: Read-only privileges to survey-tool-eu-surveyeuteam-dev
+    policies:
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-user, applications, get, survey-tool-eu-surveyeuteam-dev/*, allow
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-user, applications, sync, survey-tool-eu-surveyeuteam-dev/*, allow
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-user, repositories, get, survey-tool-eu-surveyeuteam-dev/*, allow
+    - p, proj:survey-tool-eu-surveyeuteam-dev:survey-tool-eu-surveyeuteam-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EUROPE.NonProd.SurveyEU"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

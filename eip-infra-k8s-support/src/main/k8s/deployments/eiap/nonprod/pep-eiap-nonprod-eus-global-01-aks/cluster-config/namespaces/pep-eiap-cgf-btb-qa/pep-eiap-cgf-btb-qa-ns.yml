@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-btb-qa
+  labels:
+    env-nonprod: "true"
+    environment: nonprod
+    project: btb
+    sector: cgf
+    team: cgf-btb
+    istio-injection: enabled

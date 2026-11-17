@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-devxai-prod-cv-web-vs
+  namespace: pep-eiap-cgf-devxai-prod
+  labels:
+    app: pep-eiap-cgf-devxai-prod-cv-web
+spec:
+  hosts:
+    - devx-ai.mypepsico.com
+    - pep-eiap-cgf-devxai-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-devxai-prod/pep-eiap-cgf-devxai-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-devxai-prod-cv-web.pep-eiap-cgf-devxai-prod.svc.cluster.local
+        port:
+          number: 80

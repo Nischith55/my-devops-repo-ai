@@ -1,0 +1,31 @@
+cluster_vnet_snet_resource_group_name   = "pep-network-prod-snt-scus-01-rg"
+cluster_vnet_name                       = "pep-paas-prod-snt-01-scus-vnet"
+cluster_snet_name                       = "pep-aks-global-01-subnet"
+managed_identity_name                   = "pep-snt-prod-scus-global-01-aks-01-mi"
+managed_identity_resource_group_name    = "pep-snt-retail360-prod-scus-k8s-01-rg"
+cluster_resource_group_name             = "pep-snt-retail360-prod-scus-k8s-01-rg"
+resource_name_to_create                 = "pep-snt-prod-scus-global-01-aks"
+cluster_location                        = "South Central US"
+active_directory_admin_group_object_ids = ["367dfb5d-8aed-4dcf-9366-6024024bfb94"]
+private_dns_zone_id                     = "/subscriptions/463c7676-c9ae-45e7-98c7-cd83065a4fb1/resourceGroups/pep-network-privatednszone-01-rg/providers/Microsoft.Network/privateDnsZones/privatelink.southcentralus.azmk8s.io"
+kubernetes_version                      = "1.31.7"
+default_node_pool_resource_group        = "pep-snt-prod-scus-global-01-aks-rg"
+cluster_tags = {
+  ModifiedData    = "{\"ExecuteHost\": \"LTIN382268\", \"TimeStamp\": \"2023-07-12T16:58:28\", \"User\": \"sivakalyan\"}"
+  department      = "snt"
+  description     = "Global 01 AKS Cluster"
+  environment     = "prod"
+  financialTag    = "H-######"
+  serviceName     = "dps-sharedaks"
+  spn             = "pep-eiap-prod-k8s-sp"
+  crosscharge_aks = "direct"
+}
+default_node_pool_tags = {
+  CreateData   = "{\"ExecuteHost\": \"LTIN382268\", \"TimeStamp\": \"2023-07-12T17:59:17\", \"User\": \"sivakalyan\"}"
+  department   = "snt"
+  description  = "Global 01 AKS Cluster"
+  environment  = "prod"
+  financialTag = "H-######"
+  serviceName  = "snt"
+  spn          = "pep-eiap-prod-k8s-sp"
+}

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: promoai-api-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for promoai-api-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/GNRM_PromoAI_Pricing/_git/gnrm-promoai-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-promoai-qa
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: promoai-api-qa-admin
+    description: Admin privileges to promoai-api-qa
+    policies:
+    - p, proj:promoai-api-qa:promoai-api-qa-admin, applications, *, promoai-api-qa/*, allow
+    - p, proj:promoai-api-qa:promoai-api-qa-admin, applications, get, argocd/*, allow
+    - p, proj:promoai-api-qa:promoai-api-qa-admin, repositories, *, promoai-api-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: promoai-api-qa-user
+    description: Read-only privileges to promoai-api-qa
+    policies:
+    - p, proj:promoai-api-qa:promoai-api-qa-user, applications, get, promoai-api-qa/*, allow
+    - p, proj:promoai-api-qa:promoai-api-qa-user, applications, sync, promoai-api-qa/*, allow
+    - p, proj:promoai-api-qa:promoai-api-qa-user, repositories, get, promoai-api-qa/*, allow
+    - p, proj:promoai-api-qa:promoai-api-qa-user, applications, action/apps/Deployment/restart, promoai-api-qa/*, allow
+    groups:
+    - "Team.App.CDO.GNRM.NonProd.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

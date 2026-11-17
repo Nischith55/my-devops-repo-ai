@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-rbac-service-pkgc-vs
+  namespace: pep-eiap-och-edt-prod
+  labels:
+      app: pep-och-rbac-service
+spec:
+  hosts:
+  - pep-och-rbac-service.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-rbac-service.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 8080
+  

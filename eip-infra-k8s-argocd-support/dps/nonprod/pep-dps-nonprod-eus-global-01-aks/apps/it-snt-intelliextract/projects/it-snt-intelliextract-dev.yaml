@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: it-snt-intelliextract-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for it-snt-intelliextract-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/it-snt-intelliextract-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-supplier-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: it-snt-intelliextract-dev-admin
+    description: Admin privileges to it-snt-intelliextract-dev
+    policies:
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-admin, applications, *, it-snt-intelliextract-dev/*, allow
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-admin, repositories, *, it-snt-intelliextract-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: it-snt-intelliextract-dev-user
+    description: Read-only privileges to it-snt-intelliextract-dev
+    policies:
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-user, applications, get, it-snt-intelliextract-dev/*, allow
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-user, applications, sync, it-snt-intelliextract-dev/*, allow
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-user, repositories, get, it-snt-intelliextract-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:it-snt-intelliextract-dev:it-snt-intelliextract-dev-user, applications, action/apps/Deployment/restart, it-snt-intelliextract-dev/*, allow
+
+    groups:
+    - "Team.App.SNT.PROC.SPHB.NonPROD.ContributorP"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

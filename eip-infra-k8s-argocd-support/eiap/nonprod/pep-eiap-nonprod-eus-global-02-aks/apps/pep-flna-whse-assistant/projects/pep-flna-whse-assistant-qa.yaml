@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-flna-whse-assistant-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-flna-whse-assistant-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/FLNA_PWM/_git/pep-flna-whse-ai-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-flna-flnawqa-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-flna-whse-assistant-qa-admin
+        description: Admin privileges to pep-flna-whse-assistant-qa
+        policies:
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-admin, applications, *, pep-flna-whse-assistant-qa/*, allow
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-admin, repositories, *, pep-flna-whse-assistant-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-flna-whse-assistant-qa-user
+        description: Read-only privileges to pep-flna-whse-assistant-qa
+        policies:
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-user, applications, get, pep-flna-whse-assistant-qa/*, allow
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-user, applications, sync, pep-flna-whse-assistant-qa/*, allow
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-user, repositories, get, pep-flna-whse-assistant-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-flna-whse-assistant-qa:pep-flna-whse-assistant-qa-user, applications, action/apps/Deployment/restart, pep-flna-whse-assistant-qa/*, allow
+        groups:
+        - "Team.App.FLNA.NonProd.WHSECC"
+        - "Team.Support.EIAP.READ"
+    

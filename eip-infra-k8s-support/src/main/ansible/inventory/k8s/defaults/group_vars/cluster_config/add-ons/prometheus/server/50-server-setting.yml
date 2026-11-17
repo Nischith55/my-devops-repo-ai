@@ -1,0 +1,191 @@
+---
+# prometheus -- server component
+# NOTES
+# - No storage class Name is specified -- Defaults to Azure Standard override
+#   for stateful sets
+# - storage class name
+# OVERRIDES:
+# - prom_server_storage_class_name: defaults to 'default' Storage Class
+#   Azure disk
+# - prom_server_pv_capacity: default to 15Gi
+
+_prom_server_component_name: server
+
+_prom_server_tag: v2.22.1
+
+# where the overlays dir is for kustomize build e.g.
+_prom_server_component_dest_root_dir: |-
+  {{ (prom_deploy_app_root_dir, _prom_server_component_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_prom_server_manifests_dest_dir: |-
+  {{ (_prom_server_component_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_prom_server_overlays_dest_dir: |-
+  {{ (_prom_server_component_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_prom_server_manifest_path: |-
+  {{ 
+    (_prom_server_manifests_dest_dir, 
+      prom_app_name + '-' + _prom_server_component_name + '.yml') 
+    | path_join 
+  }}
+
+_prom_server_kustomize_resource_base_dir: |-
+  {{ (prom_source_app_root_dir, 'kustomize', _prom_server_component_name, 'base') | path_join 
+  }}
+
+# -- meta parameters
+_prom_server_meta_params:
+
+  # component name
+  name: "{{ _prom_server_component_name }}"
+
+  # app name
+  app_name: "{{ prom_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ prom_namespace }}"
+
+__ps_sfset_target:
+  group: apps
+  version: v1
+  kind: StatefulSet
+  name: prometheus
+  namespace: "{{ prom_src_namespace }}"
+
+# IMPORTANT this is used everywhere!! to bind
+__ps_capacity: |-
+  {{ prom_server_pv_capacity | default('15Gi') }}
+# Defaults to AKS default storage class that we patched.
+__ps_sto_class_name: |-
+  {{ prom_server_storage_class_name | default('default') }}
+
+
+# -- build parameters
+
+_prom_server_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _prom_server_overlays_dest_dir }}"
+    output_path: "{{ _prom_server_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_prom_server_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _prom_server_kustomize_resource_base_dir 
+            | relpath(_prom_server_manifests_dest_dir) 
+        }}
+
+    images:
+      # MUST match what is in base!!
+      - name: &img001 quay.io/prometheus/prometheus
+        newName: *img001
+        newTag: |-
+          {{ prometheus_server_tag | default(_prom_server_tag) }}
+
+  # ##
+  # All patches -- using patch specification from template
+  # ##
+  patches:
+
+    # patch configmap: metricbeat-daemonset-config
+    - name: patch-prometheus-configmap
+      template_merge_src: "{{ kct_config_map_merge_yaml_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_prom_server_overlays_dest_dir, 'patch-prometheus-configmap.yml')
+          | path_join
+        }}
+      target: 
+        group: ""
+        version: v1
+        kind: ConfigMap
+        name: prometheus
+        namespace: "{{ prom_src_namespace }}"
+      merge:
+        # replace yaml
+        - key: prometheus.yml
+          value: "{{ prom_prometheus_yml_value_config_map }}"
+
+        # replace yaml
+        - key: alerting_rules.yml
+          value: "{{ prom_alerting_rules_yml_value_config_map }}"
+
+        # replace yaml
+        - key: recording_rules.yml
+          value: "{{ prom_recording_rules_yml_value_config_map }}"
+
+    # patch both strategic merge and json6902
+    - name: patch-server-statefulset
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_prom_server_overlays_dest_dir,
+             'patch-merge-server-statefulset.yml') | path_join
+        }}
+      target: "{{ __ps_sfset_target }}"
+      # this is the merge patch.
+      merge:
+        spec:
+          # override replicas
+          replicas: |-
+            {{ prom_server_statefulset_repliacs | default('2') | int }}
+          template:
+            spec:
+              # set node selector and tolerations
+              nodeSelector: "{{ system_np_node_selector }}"
+              # override all tolerations since it's a list
+              tolerations: "{{ system_np_tolerations }}"
+      # deployment json patch
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ (_prom_server_overlays_dest_dir,
+             'patch-json-server-statefulset.yml') | path_join }}
+      # any json patches (we use statefulset patch)
+      json6902:
+
+        # patch storage classname
+        - op: replace
+          path: /spec/volumeClaimTemplates/0/spec/storageClassName
+          value: "{{ __ps_sto_class_name }}"
+
+        # patch storage capacity 
+        - op: replace
+          path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
+          value: "{{ __ps_capacity }}"
+
+        # patch resources (increase mem)
+        - op: replace
+          path: /spec/template/spec/containers/0/resources
+          value:
+            limits:
+              cpu: 1000m
+              memory: 4096Mi
+            requests:
+              cpu: 512m
+              memory: 4096Mi
+
+
+
+# ##
+# Make the final settings
+# ##
+prom_server_component_setting: |-
+  {{
+    _prom_server_meta_params
+    |
+    combine(_prom_server_build_params, recursive=True)
+  }}
+

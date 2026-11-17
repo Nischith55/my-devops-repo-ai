@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pcaf-peoplebatch-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pcaf-peoplebatch.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pcaf-peoplebatch.pep-pfna-pcaf-preprod.svc.cluster.local
+        port: 
+          number: 80 

@@ -1,0 +1,187 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: pep-eiap-test-srikalari3qa-dev-cv-gw
+    namespace: pep-eiap-test-srikalari3qa-dev
+spec:
+    selector:
+        istio: pep-eiap-ingress-gw01
+    servers:
+    -   hosts:
+        - dummy-passthrough-pep-eiap-test-srikalari3qa-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-tls-443
+        port:
+            name: https-pep-eiap-test-srikalari3qa-dev-cv-gw-tls-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: PASSTHROUGH
+    -   hosts:
+        - dummy-pep-eiap-test-srikalari3qa-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev2.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy20-qawer-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy202423-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024-pon-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024-mnh-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev3.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev4.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-https-443
+        port:
+            name: https-pep-eiap-test-srikalari3qa-dev-cv-gw-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pep-eiap-nonprod-eus-sbox-03-aks-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - dummy-pep-eiap-test-srikalari3qa-dev-80.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev2.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pimctfb.qa.mypepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy20-qawer-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - cust1.qa.mypepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy202423-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - asdfgh.qa.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024-pon-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - cerom06.qa.mypepsico.com
+        - pep-eiap-test-srikalari3qa-dev-webdeploy2024-mnh-qa.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - app54.dev.mypepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev3.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        - api-pep-eip-amesa-nonprod-agro-dev4.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-http-80
+        port:
+            name: http-pep-eiap-test-srikalari3qa-dev-cv-gw-80
+            number: 80
+            protocol: http
+        tls:
+            httpsRedirect: true
+    -   hosts:
+        - pimctfb.qa.mypepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-3-https-443
+        port:
+            name: pep-eiap-test-srikalari3qa-dev-cv-gw-3-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pimctfb.qa-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - cust1.qa.mypepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-4-https-443
+        port:
+            name: pep-eiap-test-srikalari3qa-dev-cv-gw-4-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: cust1.qa-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - asdfgh.qa.pepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-5-https-443
+        port:
+            name: pep-eiap-test-srikalari3qa-dev-cv-gw-5-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: asdfgh.qa-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - cerom06.qa.mypepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-6-https-443
+        port:
+            name: pep-eiap-test-srikalari3qa-dev-cv-gw-6-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: cerom06.qa-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - app54.dev.mypepsico.com
+        name: pep-eiap-test-srikalari3qa-dev-cv-gw-7-https-443
+        port:
+            name: pep-eiap-test-srikalari3qa-dev-cv-gw-7-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: app54.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE

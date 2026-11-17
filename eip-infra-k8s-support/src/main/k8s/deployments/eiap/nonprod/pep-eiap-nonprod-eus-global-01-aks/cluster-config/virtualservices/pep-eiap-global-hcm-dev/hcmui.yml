@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: hcmui
+  name: hcmui
+  namespace: pep-eiap-global-hcm-dev
+spec:
+  gateways:
+  - pep-eiap-global-hcm-dev/pep-eiap-global-hcm-dev-cv-gw
+  hosts:
+  - hcmui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - hcm.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: hcmui.pep-eiap-global-hcm-dev.svc.cluster.local
+        port:
+          number: 80

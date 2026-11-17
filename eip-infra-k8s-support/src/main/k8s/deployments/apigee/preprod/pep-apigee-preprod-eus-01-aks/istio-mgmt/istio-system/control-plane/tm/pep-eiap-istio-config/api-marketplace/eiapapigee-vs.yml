@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: eiapapigeepreprod-vs
+  namespace: pep-apigee-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepxchange.apigee.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  - developer.preprod.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: eiapapigeepreprod.api-marketplace.svc.cluster.local
+        port: 
+          number: 80

@@ -1,0 +1,16 @@
+---
+- op: replace
+  path: /spec/volumeClaimTemplates/0/spec/storageClassName
+  value: default
+- op: replace
+  path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
+  value: 15Gi
+- op: replace
+  path: /spec/template/spec/containers/0/resources
+  value:
+    limits:
+      cpu: 1000m
+      memory: 4096Mi
+    requests:
+      cpu: 512m
+      memory: 4096Mi

@@ -1,0 +1,64 @@
+####### BEGIN Added recently --pep-dps-prod-scus-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_latam_nabtborch_prod
+  - ns_pep_dps_cgf_nabtboms_prod
+  - ns_pep_dps_cgf_nabtbprof_prod
+  - ns_pep_dps_cgf_nabtbprod_prod
+  - ns_pep_dps_cgf_nabtbprom_prod
+  - ns_pep_dps_cgf_nabtbcarts_prod
+  - ns_pep_dps_cgf_nabtbloy_prod
+  - ns_pep_dps_latam_udfna_prod
+  - ns_pep_dps_devx_test_prod
+  - ns_pep_dps_latam_bffprofile_prod
+  - ns_pep_dps_cgf_dsxadaptor_prod
+  - ns_pep_dps_cgf_bffbcp_prod
+  - ns_pep_dps_latam_globtboms_prod
+  - ns_pep_dps_latam_globtbprod_prod
+  - ns_pep_dps_latam_globtbprof_prod
+  - ns_pep_dps_latam_globtbcart_prod
+  - ns_pep_dps_latam_globtborch_prod
+  - ns_pep_dps_latam_globtbprom_prod
+  - ns_pep_dps_latam_globtbloy_prod
+  - ns_pep_dps_latam_bffmerch_prod
+  - ns_pep_dps_latam_bffckout_prod
+  - ns_pep_dps_latam_btbprofile_prod
+  - ns_pep_dps_latam_bfflylty_prod
+  - ns_pep_dps_cgf_canvas_prod
+  - ns_pep_dps_latam_btboms_prod
+  - ns_pep_dps_latam_btbcarts_prod
+  - ns_pep_dps_latam_btbproduct_prod
+  - ns_pep_dps_latam_btborch_prod
+  - ns_pep_dps_latam_btblylty_prod
+  - ns_pep_dps_cgf_dsd_prod
+  - ns_pep_dps_sntdps_toggle_prod
+  - ns_pep_dps_cgf_aspiretwob_prod
+  - ns_pep_dps_cgf_peployalty_prod
+  - ns_pep_dps_cgf_vcr_prod
+  - ns_pep_dps_cgf_risingwave_prod
+  - ns_pep_dps_cgf_promoai_prod
+  - ns_pep_dps_cgf_pepconnmex_prod
+  - ns_pep_dps_cgf_cct_prod
+  - ns_pep_dps_cgf_appruntime_prod
+  - ns_pep_dps_cgf_psd_prod
+  - ns_pep_dps_cgf_emd_prod
+  - ns_pep_dps_cgf_peacock_prod
+  - ns_pep_dps_cgf_gpg_prod
+  - ns_pep_dps_cgf_extractor_prod
+  - ns_pep_dps_cgf_rsrewards_prod
+  - ns_pep_dps_cgf_temporal_prod
+  - ns_pep_dps_cgf_rsvalidati_prod
+  - ns_pep_dps_cgf_rsadmin_prod
+  - ns_pep_dps_cgf_rsruleng_prod
+  - ns_pep_dps_cgf_rsproduct_prod
+  - ns_pep_dps_cgf_rsmaster_prod
+  - ns_pep_dps_cgf_gscafso_prod
+  - ns_pep_dps_cgf_ibpenemon_prod
+  - ns_pep_dps_latam_bff_prod
+  - ns_pep_dps_cgf_gnrm_prod
+  - ns_pep_dps_cgf_fmcs_prod
+  - ns_pep_dps_cgf_adportal_prod
+  - ns_pep_dps_cgf_retailprod_prod
+####### END Added recently --pep-dps-prod-scus-global-01-aks######

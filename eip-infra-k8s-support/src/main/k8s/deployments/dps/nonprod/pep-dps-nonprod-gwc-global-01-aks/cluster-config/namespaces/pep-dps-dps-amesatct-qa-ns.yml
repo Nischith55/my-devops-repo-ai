@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-amesatct-qa
+  labels:
+    env-nonprod: "true"
+    project: amesatct
+    sector: dps
+    team: dps-amesatct
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: transportationcontroltoweramesa
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 61ee44fddb3e8c10c2b5f38139961962
+    pep-cmdb-app-service-id: 2677aefb-67c2-49fe-863d-8dc44b8cda24
+    pep-environment: QA
+    

@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: awx-service-vs
+  namespace: pep-paas-infratools-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - awx-service.infratools.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - ha-ansibledev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: awx-service.pep-infratools-cgf-awx-dev.svc.cluster.local
+        port: 
+          number: 80

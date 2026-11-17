@@ -1,0 +1,69 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: falcon-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for falcon-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-infra-02-aks
+        namespace: falcon-system
+      - name: pep-eiap-preprod-scus-infra-02-aks
+        namespace: falcon-kac
+      - name: pep-eiap-preprod-scus-infra-02-aks
+        namespace: pep-eiap-ops-admin
+      - name: pep-eiap-preprod-scus-infra-02-aks
+        namespace: ''
+      clusterResourceWhitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+      namespaceResourceWhitelist:
+      - group: rbac.authorization.k8s.io
+        kind: Role
+      - group: rbac.authorization.k8s.io
+        kind: RoleBinding
+      - group: ""
+        kind: ResourceQuota
+      - group: ""
+        kind: ConfigMap
+      - group: ""
+        kind: Secret
+      - group: ""
+        kind: Service
+      - group: ""
+        kind: ServiceAccount
+      - group: apps
+        kind: Deployment
+      - group: apps
+        kind: DaemonSet
+      roles:
+      - name: falcon-preprod-admin
+        description: Admin privileges to falcon-preprod
+        policies:
+        - p, proj:falcon-preprod:falcon-preprod-admin, applications, *, falcon-preprod/*, allow
+        - p, proj:falcon-preprod:falcon-preprod-admin, repositories, *, falcon-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: falcon-preprod-user
+        description: Read-only privileges to falcon-preprod
+        policies:
+        - p, proj:falcon-preprod:falcon-preprod-user, applications, get, falcon-preprod/*, allow
+        - p, proj:falcon-preprod:falcon-preprod-user, applications, sync, falcon-preprod/*, allow
+        - p, proj:falcon-preprod:falcon-preprod-user, repositories, get, falcon-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:falcon-preprod:falcon-preprod-user, applications, action/apps/Deployment/restart, falcon-preprod/*, allow
+        groups:
+        - "Team.App.AZURE.FalconADO.GSE.corppvt"
+        - "Team.Support.EIAP.READ"
+    

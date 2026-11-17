@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-latam-opsbridge-prod-scus-01-aks
+    crosscharge_aks: direct
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-latam-opsbridge-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    servicename_aks: operation-bridge
+    team: eiap-admins
+  name: pep-latam-opsbridge-ops-admin

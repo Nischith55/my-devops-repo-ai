@@ -1,0 +1,46 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pes-sw-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pes-sw-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PBNA_Commercial-Equipment_Service_and_Vending/_git/pes_sw_argocd_configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-pbna-vmsprprd-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-pbna-vms365-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-pbna-halo-preprod
+      roles:
+      - name: pes-sw-preprod-admin
+        description: Admin privileges to pes-sw-preprod
+        policies:
+        - p, proj:pes-sw-preprod:pes-sw-preprod-admin, applications, *, pes-sw-preprod/*, allow
+        - p, proj:pes-sw-preprod:pes-sw-preprod-admin, repositories, *, pes-sw-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pes-sw-preprod-user
+        description: Read-only privileges to pes-sw-preprod
+        policies:
+        - p, proj:pes-sw-preprod:pes-sw-preprod-user, applications, get, pes-sw-preprod/*, allow
+        - p, proj:pes-sw-preprod:pes-sw-preprod-user, applications, sync, pes-sw-preprod/*, allow
+        - p, proj:pes-sw-preprod:pes-sw-preprod-user, repositories, get, pes-sw-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pes-sw-preprod:pes-sw-preprod-user, applications, action/apps/Deployment/restart, pes-sw-preprod/*, allow
+        groups:
+        - "Team.Support.PBNA.NonProd.VMS365"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+    

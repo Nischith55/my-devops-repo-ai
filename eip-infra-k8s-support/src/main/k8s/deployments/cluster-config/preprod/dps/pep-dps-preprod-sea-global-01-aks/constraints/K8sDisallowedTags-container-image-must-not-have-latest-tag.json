@@ -1,0 +1,65 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sDisallowedTags",
+  "metadata": {
+    "annotations": {},
+    "name": "container-image-must-not-have-latest-tag"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "tigera-operator",
+        "pep-dps-ops-admin",
+        "pep-dps-istio-config",
+        "pep-dps-elastic-client-01",
+        "pep-dps-global-infra-preprod",
+        "snyk-monitor",
+        "policy-system",
+        "internal-services",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {},
+      "scope": "*"
+    },
+    "parameters": {
+      "exemptImages": [
+        "openpolicyagent/opa-exp:latest",
+        "openpolicyagent/opa-exp2:latest",
+        "appdynamics/dl-proxy:latest",
+        "docker.io/appdynamics/java-agent:latest",
+        "nvcr.io/nim/meta/llama-3.1-70b-instruct:latest",
+        "busybox:latest"
+      ],
+      "tags": [
+        "latest"
+      ]
+    }
+  }
+}

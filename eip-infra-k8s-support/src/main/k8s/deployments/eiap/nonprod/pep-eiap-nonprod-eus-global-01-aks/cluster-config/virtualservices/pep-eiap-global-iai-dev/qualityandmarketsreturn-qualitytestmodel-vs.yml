@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: qualityandmarketsreturn-qualitytestmodel-vs
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - qualityandmarketsreturn-qualitytestmodel.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model-objectclassification
+    - ignoreUriCase: true
+      uri:
+        prefix: /admin
+    route:
+    - destination:
+        host: qualityandmarketsreturn-qualitytestmodel.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000

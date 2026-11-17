@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: forge-tyef-vs
+  namespace: pep-infratools-cgf-eiotptools-prod
+  labels:
+      app: flowforge
+spec:
+  hosts:
+  - flowfuse.infratools.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-infratools-cgf-eiotptools-prod/pep-infratools-cgf-eiotptools-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: forge.pep-infratools-cgf-eiotptools-prod.svc.cluster.local
+        port:
+          number: 80
+  

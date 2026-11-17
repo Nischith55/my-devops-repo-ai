@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-ast-plandeqpmt-api-py
+  name: pcaf-ast-plandeqpmt-api-py-vs
+  namespace: pep-pfna-ast-prod
+spec:
+  gateways:
+  - pep-pfna-ast-prod/pep-pfna-ast-prod-cv-gw
+  hosts:
+  - pcaf-ast-plandeqpmt-api-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-ast-plandeqpmt-api-py.pep-pfna-ast-prod.svc.cluster.local
+        port:
+          number: 8080

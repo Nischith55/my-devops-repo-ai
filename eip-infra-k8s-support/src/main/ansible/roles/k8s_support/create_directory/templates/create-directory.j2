@@ -1,0 +1,37 @@
+acr-pull-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/acrpullbindings/{{ prefix }}-ops-admin
+elasticlient1-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/common/manifests
+elasticlient2-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ var['prefix'] }}-elastic-client-01/common/manifests
+elasticlient3-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-elastic-client-01/filebeat/cluster/manifests
+elasticlient4-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-elastic-client-01/filebeat/common/manifests
+elasticlient5-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-elastic-client-01/metricbeat/cluster/manifests
+elasticlient6-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-elastic-client-01/metricbeat/common/manifests
+kube-state-metrics-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kube-state-metrics/2.7.0/manifests
+kube-cost-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kubecost/manifests
+msi-acr-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/msi-acrpull/msi-acrpull-system/default/manifests
+aks-init-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/apps/{{ prefix }}-aks-init/{{ prefix }}-ops-admin/2.0.0/manifests
+nginx-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/apps/{{ prefix }}-{{ var['infrans'] }}_NGINX/{{ prefix }}-nginx/default/manifests
+cluster-role-binding-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/cluster-role-bindings
+cluster-roles-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/cluster-roles
+istio-system-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/istio-system
+kubecost-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/kubecost
+msi-acr-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/msi-acrpull-system
+monitoring-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/monitoring
+observability-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/observability
+elastic-client-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/{{ prefix }}-elastic-client-01
+infra-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/{{ prefix }}-{{ var['infrans'] }}
+istio-config-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/{{ prefix }}-istio-config
+ops-admin-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/namespaces/{{ prefix }}-ops-admin
+storage-classes-ns-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/storage-classes
+msi-acrpull-defaults: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/msi-acrpull/default/manifests
+init-secret: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/secrets/aks-init-secret
+kubecostpath: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kubecost/manifests
+kubestate-metrics-path: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kube-state-metrics/2.7.0/manifests
+prometheus: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/prometheus/server/manifests
+filebeat: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/filebeat/cluster/manifests
+ca-cert-configmap: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/common/manifests
+metricbeat: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/elastic-client/{{ prefix }}-{{ env }}-elastic-client-01/metricbeat/cluster/manifests
+pdbs: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kubecost/pdbs
+istiogateway: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/istio-mgmt/istio-system/control-plane/gateways
+sidecar: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/istio-mgmt/istio-system/control-plane/sidecar
+nginxvs: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/istio-mgmt/istio-system/control-plane/tm/{{ prefix }}-istio-config/{{ prefix }}-{{ var['infrans'] }}
+vs-infra-directory: src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/virtualservices/{{ prefix }}-{{ infrans }}

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-latam-operator-dev-sa
+  namespace: pep-infratools-latam-operator-dev

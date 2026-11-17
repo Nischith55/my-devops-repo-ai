@@ -1,0 +1,126 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-latam-ochlatam-preprod-cv-gw
+  namespace: pep-eiap-latam-ochlatam-preprod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-latam-ochlatam-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-ochlatam-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-latam-ochlatam-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-eiap-latam-ochlatam-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-fetch-order-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-product-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-customer-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-order-ack-svc-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-customer-processor-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-catalog-processor-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-orderstore-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-catalog-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bproductbatch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hffpreprod-bees-fetch-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hffpreprod-bees-catalog.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-product-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bpricingservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-pep-och-visitlistbatchprocessor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2borderservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-orderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-auditstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-orderstore-v2.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-customer-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-customer-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-order-ack-svc.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bpricingbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bcustomerservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2binventoryservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bvisitlist.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductlistingservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductlistingbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2brouteservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bcustomerbatch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bcustomerservice-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bvisitlist-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-ochlatam-preprod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-latam-ochlatam-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-eiap-latam-ochlatam-preprod-80.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-fetch-order-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-product-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-customer-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-order-ack-svc-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-customer-processor-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-catalog-processor-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-orderstore-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - och-bees-catalog-batch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bproductbatch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hffpreprod-bees-fetch-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hffpreprod-bees-catalog.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-product-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bpricingservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-pep-och-visitlistbatchprocessor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2borderservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-orderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-auditstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-orderstore-v2.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-customer-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-customer-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-bees-order-ack-svc.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bpricingbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bcustomerservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2binventoryservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bvisitlist.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductlistingservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductlistingbatch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2brouteservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-na-hfpreprod-och-b2bproductservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bcustomerbatch-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bcustomerservice-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-och-b2bvisitlist-v2-hfpreprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-ochlatam-preprod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-latam-ochlatam-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-cto-cmp-ri-masterdata-processor
+  name: pepsico-cto-cmp-ri-masterdata-processor-vs
+  namespace: pep-eiap-global-cmp-dev
+spec:
+  gateways:
+  - pep-eiap-global-cmp-dev/pep-eiap-global-cmp-dev-cv-gw
+  hosts:
+  - pepsico-cto-cmp-ri-masterdata-processor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/ri
+    route:
+    - destination:
+        host: pepsico-cto-cmp-ri-masterdata-processor.pep-eiap-global-cmp-dev.svc.cluster.local
+        port:
+          number: 80

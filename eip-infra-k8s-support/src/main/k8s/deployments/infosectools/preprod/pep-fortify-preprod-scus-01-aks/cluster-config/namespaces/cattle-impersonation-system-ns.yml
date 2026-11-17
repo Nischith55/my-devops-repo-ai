@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    authz.cluster.cattle.io/impersonator: 'true'
+    cattle.io/creator: norman
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-6lh4c
+    kubernetes.io/metadata.name: cattle-impersonation-system
+    servicename_aks: fortify
+  name: cattle-impersonation-system

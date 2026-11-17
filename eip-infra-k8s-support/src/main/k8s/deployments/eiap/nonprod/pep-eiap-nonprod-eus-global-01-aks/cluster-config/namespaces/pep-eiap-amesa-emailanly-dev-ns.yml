@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: emailanly
+    sector: amesa
+    servicename_aks: newspageindianon-prod
+    team: amesa-emailanly
+  name: pep-eiap-amesa-emailanly-dev

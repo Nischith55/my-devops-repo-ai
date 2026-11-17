@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-cto-cmp-cmdb-lookups
+  name: pepsico-cto-cmp-cmdb-lookups-vs
+  namespace: pep-eiap-global-cmp-dev
+spec:
+  gateways:
+  - pep-eiap-global-cmp-dev/pep-eiap-global-cmp-dev-cv-gw
+  hosts:
+  - pepsico-cto-cmp-cmdb-lookups.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/cmdb/lookups
+    route:
+    - destination:
+        host: pepsico-cto-cmp-cmdb-lookups.pep-eiap-global-cmp-dev.svc.cluster.local
+        port:
+          number: 80

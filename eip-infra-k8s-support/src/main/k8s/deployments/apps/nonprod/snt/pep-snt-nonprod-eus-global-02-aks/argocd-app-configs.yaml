@@ -1,0 +1,12 @@
+global:
+  spec:
+    destination:
+      clusterName: pep-snt-nonprod-eus-global-02-aks
+
+argoCDApplications:
+  nginx-pep-snt-nonprod-eus-global-02-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/snt/pep-snt-nonprod-eus-global-02-aks/pep-snt-global-infra-dev_NGINX

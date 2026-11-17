@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-ppsi-sit
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for rd-ppsi-sit   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-ppsi-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-cgf-ppsipreprd-qa
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: rd-ppsi-sit-admin
+    description: Admin privileges to rd-ppsi-sit
+    policies:
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-admin, applications, *, rd-ppsi-sit/*, allow
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-admin, repositories, *, rd-ppsi-sit/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.App.RnD.PPSI.Contributors"
+
+  - name: rd-ppsi-sit-user
+    description: Read-only privileges to rd-ppsi-sit
+    policies:
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-user, applications, get, rd-ppsi-sit/*, allow
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-user, applications, sync, rd-ppsi-sit/*, allow
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-user, repositories, get, rd-ppsi-sit/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:rd-ppsi-sit:rd-ppsi-sit-user, applications, action/apps/Deployment/restart, rd-ppsi-sit/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.PPS"
+    - "Team.Support.EIAP.READ"
+    - "Team.App.RnD.PPSI.Contributors"

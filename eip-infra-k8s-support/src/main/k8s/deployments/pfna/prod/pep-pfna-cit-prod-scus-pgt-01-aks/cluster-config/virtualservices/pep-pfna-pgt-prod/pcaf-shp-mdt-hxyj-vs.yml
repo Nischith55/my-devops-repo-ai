@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-mdt-hxyj-vs
+  namespace: pep-pfna-pgt-prod
+  labels:
+      app: pcaf-shp-mdt
+spec:
+  hosts:
+  - pcaf-shp-mdt-genp-prod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /replay
+    route:
+    - destination:
+        host: pcaf-shp-mdt.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- istio-system/istio-system.yml 
+- kubecost/kubecost.yml
+- monitoring/monitoring.yml
+- msi-acrpull-system/msi-acrpull-system.yml
+- observability/observability.yml
+- pep-eiap-elastic-client-01/pep-eiap-elastic-client-01.yml
+- pep-eiap-infra-dev/pep-eiap-infra-dev.yml
+- pep-eiap-istio-config/pep-eiap-istio-config.yml
+- pep-eiap-ops-admin/pep-eiap-ops-admin.yml
+- default/default.yaml

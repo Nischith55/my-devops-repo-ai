@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-aiqr360-prod-cv-web-vs
+  namespace: pep-dps-dps-aiqr360-prod
+  labels:
+    app: pep-dps-dps-aiqr360-prod-cv-web
+spec:
+  hosts:
+    - usaiq.pepsico.com
+    - pep-dps-dps-aiqr360-prod-cv.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-aiqr360-prod/pep-dps-dps-aiqr360-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-aiqr360-prod-cv-web.pep-dps-dps-aiqr360-prod.svc.cluster.local
+        port:
+          number: 80

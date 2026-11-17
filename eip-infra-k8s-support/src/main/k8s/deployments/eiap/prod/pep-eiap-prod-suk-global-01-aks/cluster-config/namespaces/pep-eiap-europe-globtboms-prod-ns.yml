@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: bdb6b73e93c16a5016c4b57c5cba1000
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: globtboms
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalomseuropeprod
+    team: europe-globtboms
+  name: pep-eiap-europe-globtboms-prod

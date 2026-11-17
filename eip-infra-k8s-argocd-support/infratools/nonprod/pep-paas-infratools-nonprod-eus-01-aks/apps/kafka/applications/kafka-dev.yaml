@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Kafka_Infrastructure/_git/pep-eiap-kafka-argocd-configs
+    targetRevision: develop
+  - repoURL: pepinfratoolsnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.2
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: kafka-dev
+      valueFiles:
+      - $values/nonprod/pep-kafka-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          spec:
+            project: 'kafka-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Kafka_Infrastructure/_git/pep-eiap-kafka-argocd-configs
+              repoName: pep-eiap-kafka-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notification

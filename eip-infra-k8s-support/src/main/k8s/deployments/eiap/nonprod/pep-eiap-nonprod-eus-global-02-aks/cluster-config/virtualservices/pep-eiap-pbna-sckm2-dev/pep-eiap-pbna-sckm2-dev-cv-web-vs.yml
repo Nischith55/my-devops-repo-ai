@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-pbna-sckm2-dev-cv-web-vs
+  namespace: pep-eiap-pbna-sckm2-dev
+  labels:
+    app: pep-eiap-pbna-sckm2-dev-cv-web
+spec:
+  hosts:
+    - pbnasckm.dev.pepsico.com
+    - pep-eiap-pbna-sckm2-dev-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-sckm2-dev/pep-eiap-pbna-sckm2-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-pbna-sckm2-dev-cv-web.pep-eiap-pbna-sckm2-dev.svc.cluster.local
+        port:
+          number: 80

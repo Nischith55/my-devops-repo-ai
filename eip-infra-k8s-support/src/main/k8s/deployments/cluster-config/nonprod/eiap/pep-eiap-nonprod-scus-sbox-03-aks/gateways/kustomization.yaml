@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cao/cao-cv-gw.yml
+- calico-system/calico-system-cv-gw.yml
+- default/default-cv-gw.yml
+- kube-node-lease/kube-node-lease-cv-gw.yml
+- kube-public/kube-public-cv-gw.yml
+- kube-system/kube-system-cv-gw.yml
+- kubecost/kubecost-cv-gw.yml
+- monitoring/monitoring-cv-gw.yml
+- msi-acrpull-system/msi-acrpull-system-cv-gw.yml
+- observability/observability-cv-gw.yml
+- pep-eiap-cgf-eecmp-dev/pep-eiap-cgf-eecmp-dev-cv-gw.yml
+- pep-eiap-elastic-client-01/pep-eiap-elastic-client-01-cv-gw.yml
+- pep-eiap-infra-dev/pep-eiap-infra-dev-cv-gw.yml
+- pep-eiap-istio-config/pep-eiap-istio-config-cv-gw.yml
+- pep-eiap-ops-admin/pep-eiap-ops-admin-cv-gw.yml
+- pep-eiap-pbna-halo-dev/pep-eiap-pbna-halo-dev-cv-gw.yml
+- test/test-cv-gw.yml
+- test-istio-dcz-10/test-istio-dcz-10-cv-gw.yml
+- tigera-operator/tigera-operator-cv-gw.yml

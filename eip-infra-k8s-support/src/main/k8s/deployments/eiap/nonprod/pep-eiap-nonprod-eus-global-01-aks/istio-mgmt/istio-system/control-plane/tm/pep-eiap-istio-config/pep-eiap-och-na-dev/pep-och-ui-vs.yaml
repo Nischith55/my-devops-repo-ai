@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-ui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - pepcommerce-ordermanagement.dev.na.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-ui.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80

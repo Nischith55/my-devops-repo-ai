@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: alm-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for alm-dev   
+  sourceRepos:
+  - https://github.com/Global-SnT/ghgt-test-dpa-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-alm-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: alm-dev-admin
+    description: Admin privileges to alm-dev
+    policies:
+    - p, proj:alm-dev:alm-dev-admin, applications, *, alm-dev/*, allow
+    - p, proj:alm-dev:alm-dev-admin, repositories, *, alm-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: alm-dev-user
+    description: Read-only privileges to alm-dev
+    policies:
+    - p, proj:alm-dev:alm-dev-user, applications, get, alm-dev/*, allow
+    - p, proj:alm-dev:alm-dev-user, applications, sync, alm-dev/*, allow
+    - p, proj:alm-dev:alm-dev-user, repositories, get, alm-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:alm-dev:alm-dev-user, applications, action/apps/Deployment/restart, alm-dev/*, allow
+
+    groups:
+    - "Team.Support.AzureDevOps.Org.Admins"
+    - "Team.Support.EIAP.READ"
+    - "Team.App.Support.InsightBoard.InfraAdmins"    

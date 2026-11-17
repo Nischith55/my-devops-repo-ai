@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: applicationname-envname-namespaces
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-platform
+    spec:
+      description: Namespace creation project for applicationname-envname
+      sourceRepos:
+      - argorepourl
+      destinations:
+      - name: destcluster
+        namespace: appnamespace
+      # SECOND_NAMESPACE_PLACEHOLDER
+      - name: destcluster
+        namespace: ''
+      clusterResourceWhitelist:
+      - group: ""
+        kind: Namespace
+      namespaceResourceWhitelist:
+      - group: ""
+        kind: Namespace
+      roles:
+      - name: applicationname-envname-namespaces-admin
+        description: Admin privileges to applicationname-envname-namespaces
+        policies:
+        - p, proj:applicationname-envname-namespaces:applicationname-envname-namespaces-admin, applications, *, applicationname-envname-namespaces/*, allow
+        groups:
+        - "admingroup"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: applicationname-envname-namespaces-user
+        description: Read-only privileges to applicationname-envname-namespaces
+        policies:
+        - p, proj:applicationname-envname-namespaces:applicationname-envname-namespaces-user, applications, get, applicationname-envname-namespaces/*, allow
+        - p, proj:applicationname-envname-namespaces:applicationname-envname-namespaces-user, applications, sync, applicationname-envname-namespaces/*, allow
+        groups:
+        - "readergroup"
+        - "Team.Support.EIAP.READ"

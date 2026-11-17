@@ -1,0 +1,38 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Patch for ConfigMap that has yaml files as string.
+  IMPORTANT:
+    - only key that ends with .yml or .yaml are rendered.
+  INPUTS:
+    - params_tmpl:
+        params:
+          patch-data:
+            target:
+            merge:
+#}
+{% set _p = params_tmpl %}
+{% set _pt = _p['target'] %}
+{% set _pm = _p['merge'] %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+{# api group could be empty #}
+{% if ((_pt['group'] | default('')) | length) > 0 %}
+apiVersion: {{ _pt['group'] }}/{{ _pt['version'] }}
+{% else %}
+apiVersion: {{ _pt['version'] }}
+{% endif %}
+kind: {{ _pt['kind'] }}
+metadata:
+  name: {{ _pt['name'] }}
+  {% if _pt['namespace'] is defined %}
+  namespace: {{ _pt['namespace'] }}
+  {% endif %}
+data:
+  {% for _pm_d in _pm %}
+  {% if _pm_d['key'].endswith('.yml') or _pm_d['key'].endswith('yaml') %}
+  {{ _pm_d['key'] }}: |
+    {{ _pm_d['value'] | to_nice_yaml(indent=2, width=1337) 
+      | trim | indent(4) }}
+  {% endif %}
+  {% endfor %}

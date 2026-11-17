@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 023535ea-3362-4523-85af-bcfd5f76a770
+  name: pep-eiap-cgf-ai4bisw-qa-sa
+  namespace: pep-eiap-cgf-ai4bisw-qa

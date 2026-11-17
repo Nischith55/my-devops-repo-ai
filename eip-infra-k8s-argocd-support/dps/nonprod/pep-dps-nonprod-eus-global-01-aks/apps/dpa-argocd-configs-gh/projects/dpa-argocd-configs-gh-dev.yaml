@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dpa-argocd-configs-gh-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dpa-argocd-configs-gh-dev   
+  sourceRepos:
+  - https://github.com/Global-SnT/ghgt-dpa-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-devsol-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dpa-argocd-configs-gh-dev-admin
+    description: Admin privileges to dpa-argocd-configs-gh-dev
+    policies:
+    - p, proj:dpa-argocd-configs-gh-dev:dpa-argocd-configs-gh-dev-admin, applications, *, dpa-argocd-configs-gh-dev/*, allow
+    - p, proj:dpa-argocd-configs-gh-dev:dpa-argocd-configs-gh-dev-admin, repositories, *, dpa-argocd-configs-gh-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dpa-argocd-configs-gh-dev-user
+    description: Read-only privileges to dpa-argocd-configs-gh-dev
+    policies:
+    - p, proj:dpa-argocd-configs-gh-dev:dpa-argocd-configs-gh-dev-user, applications, get, dpa-argocd-configs-gh-dev/*, allow
+    - p, proj:dpa-argocd-configs-gh-dev:dpa-argocd-configs-gh-dev-user, applications, sync, dpa-argocd-configs-gh-dev/*, allow
+    - p, proj:dpa-argocd-configs-gh-dev:dpa-argocd-configs-gh-dev-user, repositories, get, dpa-argocd-configs-gh-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.AzureDevOps.Org.Admins"
+    - "Team.Support.EIAP.READ"

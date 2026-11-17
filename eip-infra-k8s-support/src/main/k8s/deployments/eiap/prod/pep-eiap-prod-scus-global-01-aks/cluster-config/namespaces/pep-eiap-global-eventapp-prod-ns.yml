@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-eventapp-prod
+    project: eventapp
+    sector: global
+    team: global-eventapp
+  name: pep-eiap-global-eventapp-prod

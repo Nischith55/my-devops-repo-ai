@@ -1,0 +1,35 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-pfna-devsecops-cd-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-devsecops-cd-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-pfna-ops-admin
+    name: pep-pfna-devsecops-cd-sa
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-pfna-global-devsecops-preprod
+    name: pep-pfna-buildagent
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    #   pep-eiap-preprod-devsecops-spn 
+    name: 89b32fe8-f980-4857-8c26-37e763ddb047
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    #   Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+#   pep-eiap-preprod-k8s-sp
+    name: c93e3f5f-6cfa-4c4d-820e-ff53b9168f4a
+  - kind: ServiceAccount
+    name: gw-update-sa
+    namespace: pep-pfna-ops-admin
+
+

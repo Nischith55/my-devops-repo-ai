@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: receipt-scanning-validation-service-dkvq-vs
+  namespace: pep-dps-dps-rsmain-prod
+  labels:
+      app: receipt-scanning-validation-service
+spec:
+  hosts:
+  - pep-dps-prod-receipt-scanning-validation-service.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-rsmain-prod/pep-dps-dps-rsmain-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-validation-service.pep-dps-dps-rsmain-prod.svc.cluster.local
+        port:
+          number: 8084
+  

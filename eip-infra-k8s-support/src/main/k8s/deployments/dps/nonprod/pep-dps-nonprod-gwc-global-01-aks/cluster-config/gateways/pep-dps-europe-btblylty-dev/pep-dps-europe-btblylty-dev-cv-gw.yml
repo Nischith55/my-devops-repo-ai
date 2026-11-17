@@ -1,0 +1,214 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-btblylty-dev-cv-gw
+  namespace: pep-dps-europe-btblylty-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-btblylty-dev.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-btblylty-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-btblylty-dev-443.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-europe-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-dev-rollout-canary-scale.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-dev-rollout.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-btblylty-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-btblylty-dev-80.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-eu.dev.mypepsico.com
+    - b2b-eu.dev.mypepsico.com
+    - b2b-loyalty-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-eu.dev.pepsico.com
+    - b2b-profile-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-in.dev.mypepsico.com
+    - rewards-b2b-pl.dev.mypepsico.com
+    - b2b-loyalty-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-am.dev.mypepsico.com
+    - b2b-lylty-admin-ui-europe-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-dev-rollout.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-dev-rollout-canary-scale.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-btblylty-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - b2b-eu.dev.mypepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-3-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: b2b-eu.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-eu.dev.pepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-eu.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-eu.dev.mypepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-5-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-europe-rewards-b2b-eu.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-in.dev.mypepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-6-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-in.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-pl.dev.mypepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-8-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-8-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-pl.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-am.dev.mypepsico.com
+    name: pep-dps-europe-btblylty-dev-cv-gw-9-https-443
+    port:
+      name: pep-dps-europe-btblylty-dev-cv-gw-9-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-am.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

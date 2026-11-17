@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_latam_idcard_qa:
+  
+  name: pep-eiap-latam-idcard-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-idcard
+    sector: latam
+    project: idcard
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-idcard-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_idcard'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

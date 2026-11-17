@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    istio-injection: disabled
+    kubernetes.io/metadata.name: msi-acrpull-system
+    servicename_aks: sharedaks
+    team: eiap-admins
+  name: msi-acrpull-system

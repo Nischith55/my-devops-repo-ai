@@ -1,0 +1,16 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- $appChartlabels := include "app-chart.labels" . }}
+{{- if .Values.configmaps.enabled }}
+{{- range $.Values.configmaps.configurations }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-configmap
+  namespace: {{ $namespace }}
+  labels:
+    {{- $appChartlabels | nindent 4 }}
+data:
+  {{- toYaml .config | nindent 2 }}   
+{{- end }}
+{{- end }}

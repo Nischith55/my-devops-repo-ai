@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:  
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd  
+  name: argocd-rbac-cm
+  namespace: argocd
+data:
+    policy.default: role:nginx-user
+    policy.csv: |
+       p, role:argo-admin, applications, *, */*, allow
+       p, role:argo-admin, clusters, *, *, allow
+       p, role:argo-admin, repositories, *, *, allow
+       p, role:argo-admin, projects, *, *, allow
+       p, role:argo-admin, logs, *, */*, allow
+       p, role:argo-admin, exec, *, */*, allow
+       g, "Team.Support.EIAP.K8S.Admin", role:argo-admin       
+       p, role:argo-user, applications, get, */*, allow
+       p, role:argo-user, applications, sync, */*, allow
+       p, role:argo-user, clusters, get, *, allow
+       p, role:argo-user, repositories, get, *, allow
+       p, role:argo-user, projects, get, *, allow
+       p, role:argo-user, logs, get, */*, allow
+       g, "Team.Support.EIAP.READ", role:argo-user 
+       g, "Team.Support.EIAP.GLOBAL.DevSecOps.Developer", role:argo-user
+       p, role:nginx-user, applications, get, nginx/*, allow
+       p, role:nginx-user, exec, create, nginx/*, allow
+       p, role:nginx-user, *, delete , *, deny
+    scopes: '[groups, email]'

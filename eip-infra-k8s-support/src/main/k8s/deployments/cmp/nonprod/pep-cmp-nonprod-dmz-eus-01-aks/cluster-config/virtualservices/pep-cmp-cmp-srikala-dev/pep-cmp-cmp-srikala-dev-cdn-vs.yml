@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-srikala-dev-cv-cdn-vs
+  namespace: pep-cmp-cmp-srikala-dev
+spec:
+  hosts:
+    - Tesq4pp.dev.mypepsico.com
+  gateways:
+  - "pep-cmp-cmp-srikala-dev/pep-cmp-cmp-srikala-dev-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-cmp-cmp-srikala-dev-cv-webdeploy.pep-cmp-cmp-srikala-dev.svc.cluster.local"
+        port:
+          number: 80

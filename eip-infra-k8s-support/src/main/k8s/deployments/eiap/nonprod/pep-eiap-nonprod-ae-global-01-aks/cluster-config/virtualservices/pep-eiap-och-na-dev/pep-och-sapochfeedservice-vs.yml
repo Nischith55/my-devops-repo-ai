@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-och-sapochfeedservice-vs
+  namespace: pep-eiap-och-na-dev
+spec:
+  gateways:
+  - pep-eiap-och-na-dev/pep-eiap-och-na-dev-cv-gw
+  hosts:
+  - pep-och-sapochfeedservice.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-sapochfeedservice.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80

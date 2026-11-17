@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-latam-cv-object-classification-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-latam-cv-object-classification.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-latam-cv-object-classification.pep-eiap-global-iaicv-plt-prod.svc.cluster.local","port":{"number":8000}}}]}]}}
+  labels:
+    app: pep-eip-latam-cv-object-classification
+  name: pep-eip-latam-cv-object-classification-vs
+  namespace: pep-eiap-global-iaicv-plt-prod
+spec:
+  gateways:
+  - pep-eiap-global-iaicv-plt-prod/pep-eiap-global-iaicv-plt-prod-cv-gw
+  hosts:
+  - pep-eip-latam-cv-object-classification.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-cv-object-classification.pep-eiap-global-iaicv-plt-prod.svc.cluster.local
+        port:
+          number: 8000

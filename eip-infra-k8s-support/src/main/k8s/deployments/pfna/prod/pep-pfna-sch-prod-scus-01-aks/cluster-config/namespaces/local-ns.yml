@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    kubernetes.io/metadata.name: local
+    servicename_aks: sch-pfna
+  name: local

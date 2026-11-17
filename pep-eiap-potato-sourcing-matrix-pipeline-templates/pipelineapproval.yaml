@@ -1,0 +1,28 @@
+jobs:
+- job: Pipeline_Approval
+  steps:
+  - task: Bash@3
+    displayName: 'validation'
+    name: validation
+    inputs:
+      targetType: 'inline'
+      script: |
+        if [[ "${{ parameters.cr_number }}" == " " ]]; then
+          echo "CR number is empty."
+          exit 1
+        fi
+        http_response=$(curl -s -o response.txt -w "%{http_code}" -X POST "$(api_url)" -H 'Content-Type: application/json' -u $PIPELINE_APPROVAL_CLIENT_ID:$PIPELINE_APPROVAL_PASSWORD -d "{\"u_number\": \"${{ parameters.cr_number }}\",\"u_application_ci\": \"$(ci_value)\",\"u_group_name\": \"$(assignment_group)\"}")
+        if [ $http_response != "200" ]; then
+          echo "handle error with return code $http_response"
+          echo "##vso[task.setvariable variable=is_auto;isoutput=true]false"
+        else
+          echo "##vso[task.setvariable variable=is_auto;isoutput=true]true"
+          status=`cat response.txt | jq '.result.Validation'`
+          reason=`cat response.txt | jq '.result.Message[]'`
+          if [[ "$status" == "true" ]]; then
+            echo "Good to approve."
+          else
+            echo "Validation failed with below reason(s). $reason "
+            exit 1
+          fi
+        fi

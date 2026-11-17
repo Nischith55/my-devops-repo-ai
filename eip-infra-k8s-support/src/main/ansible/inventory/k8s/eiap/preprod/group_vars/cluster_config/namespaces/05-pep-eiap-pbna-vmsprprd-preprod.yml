@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_pbna_vmsprprd_preprod:
+  
+  name: pep-eiap-pbna-vmsprprd-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-vmsprprd
+    sector: pbna
+    project: vmsprprd
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: vms-retail365
+    pep-cmdb-app-service-id: "f16e2b218336f5581b1d34b5eeaad393"
+    pep-cmdb-bus-app-id: "f96e2b218336f5581b1d34b5eeaad364"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-vmsprprd-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_vmsprprd'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-pbna-vmsprprd-preprod-sa-token
+    namespace: pep-eiap-pbna-vmsprprd-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pbna-vmsprprd-preprod-sa"

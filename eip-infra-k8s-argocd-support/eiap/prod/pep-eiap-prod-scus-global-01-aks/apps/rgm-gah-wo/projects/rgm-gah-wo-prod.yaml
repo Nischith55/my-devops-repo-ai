@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: rgm-gah-wo-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for rgm-gah-wo-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/GNRM_Analytics_Hub/_git/rgm-gah-wo-dwd-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-aibirgm-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: rgm-gah-wo-prod-admin
+        description: Admin privileges to rgm-gah-wo-prod
+        policies:
+        - p, proj:rgm-gah-wo-prod:rgm-gah-wo-prod-admin, applications, *, rgm-gah-wo-prod/*, allow
+        - p, proj:rgm-gah-wo-prod:rgm-gah-wo-prod-admin, repositories, *, rgm-gah-wo-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: rgm-gah-wo-prod-user
+        description: Read-only privileges to rgm-gah-wo-prod
+        policies:
+        - p, proj:rgm-gah-wo-prod:rgm-gah-wo-prod-user, applications, get, rgm-gah-wo-prod/*, allow
+        - p, proj:rgm-gah-wo-prod:rgm-gah-wo-prod-user, applications, sync, rgm-gah-wo-prod/*, allow
+        - p, proj:rgm-gah-wo-prod:rgm-gah-wo-prod-user, repositories, get, rgm-gah-wo-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.RGMAIforBI.Admins"
+        - "Team.Support.EIAP.READ"
+    

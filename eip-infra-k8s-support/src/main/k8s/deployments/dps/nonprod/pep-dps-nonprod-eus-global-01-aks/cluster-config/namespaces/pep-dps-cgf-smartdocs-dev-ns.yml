@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-cgf-smartdocs-dev
+  labels:
+    env-nonprod: "true"
+    project: smartdocs
+    sector: cgf
+    team: cgf-smartdocs
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: digitalservicesaccelerator-dsx
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: f0624479c3cc7e107e0cfbdf050131fd
+    pep-cmdb-app-service-id: 31628479c3cc7e107e0cfbdf05013124
+    pep-environment: Development
+    

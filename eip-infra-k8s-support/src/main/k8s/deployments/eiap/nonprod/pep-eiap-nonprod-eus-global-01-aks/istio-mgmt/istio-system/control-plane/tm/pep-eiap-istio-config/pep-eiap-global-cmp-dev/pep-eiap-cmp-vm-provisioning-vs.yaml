@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-cmp-vm-provisioning-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+#  - pepcom.dev.mypepsico.com
+  - pep-eip-cmp-vm-provisioning.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cmp-vm-provisioning.pep-eiap-global-cmp-dev.svc.cluster.local
+        port:
+          number: 443

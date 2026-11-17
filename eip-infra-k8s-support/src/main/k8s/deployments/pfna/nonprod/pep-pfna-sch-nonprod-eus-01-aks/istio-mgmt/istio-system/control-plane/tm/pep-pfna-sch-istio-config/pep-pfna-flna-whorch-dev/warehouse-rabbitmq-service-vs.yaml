@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: warehouse-rabbitmq-service-vs
+  namespace: pep-pfna-sch-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - warehouse-rabbitmq-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: warehouse-rabbitmq-service.pep-pfna-flna-whorch-dev.svc.cluster.local
+        port:
+          number: 15672
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://warehouse-orchestration-ui-dev-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://warehouse-orchestration-ui-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://warehouse-orchestrator-api-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://warehouse-orchestrator-api-dev-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://warehouse-camunda-orchestrator-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count
+      - x-source

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: cost-model-framework
+  name: cost-model-framework-vs
+  namespace: pep-dps-dps-dtvscm-dev
+spec:
+  gateways:
+  - pep-dps-dps-dtvscm-dev/pep-dps-dps-dtvscm-dev-cv-gw
+  hosts:
+  - cost-model-framework.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cost-model-framework.pep-dps-dps-dtvscm-dev.svc.cluster.local
+        port:
+          number: 8000

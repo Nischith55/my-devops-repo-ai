@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testonboarding-operationkt02-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testonboarding-operationkt02-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testonboarding-operationkt02-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/devsecops-java17-project01/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testonboarding-operationkt02-dev-admin
+    description: Admin privileges to testonboarding-operationkt02-dev
+    policies:
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-admin, applications, *, testonboarding-operationkt02-dev/*, allow
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-admin, repositories, *, testonboarding-operationkt02-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testonboarding-operationkt02-dev-user
+    description: Read-only privileges to testonboarding-operationkt02-dev
+    policies:
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-user, applications, get, testonboarding-operationkt02-dev/*, allow
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-user, applications, sync, testonboarding-operationkt02-dev/*, allow
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-user, repositories, get, testonboarding-operationkt02-dev/*, allow
+    - p, proj:testonboarding-operationkt02-dev:testonboarding-operationkt02-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

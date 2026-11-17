@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: gatoradedid-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for gatoradedid-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/gatoradedid-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-latam-gatdidp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: gatoradedid-prod-admin
+        description: Admin privileges to gatoradedid-prod
+        policies:
+        - p, proj:gatoradedid-prod:gatoradedid-prod-admin, applications, *, gatoradedid-prod/*, allow
+        - p, proj:gatoradedid-prod:gatoradedid-prod-admin, repositories, *, gatoradedid-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: gatoradedid-prod-user
+        description: Read-only privileges to gatoradedid-prod
+        policies:
+        - p, proj:gatoradedid-prod:gatoradedid-prod-user, applications, get, gatoradedid-prod/*, allow
+        - p, proj:gatoradedid-prod:gatoradedid-prod-user, applications, sync, gatoradedid-prod/*, allow
+        - p, proj:gatoradedid-prod:gatoradedid-prod-user, repositories, get, gatoradedid-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.LATAM.NonProd.DIDGENAI"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azdevops-placeholder
+  namespace: pep-pfna-global-devsecops-preprod
+  labels:
+    app: azdevops-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azdevops-agent
+  template:
+    metadata:
+      labels:
+        app: azdevops-agent
+    spec:  
+      nodeSelector:
+        balance-group: BuildAgentPools
+      tolerations:
+      - effect: "NoSchedule"
+        key: "BuildAgentPool"
+        operator: "Exists"
+      - effect: NoExecute	
+        key: node.kubernetes.io/not-ready	
+        operator: Exists	
+        tolerationSeconds: 300	
+      - effect: NoExecute	
+        key: node.kubernetes.io/unreachable	
+        operator: Exists	
+        tolerationSeconds: 300
+      serviceAccountName: pep-pfna-buildagent    
+      containers:
+      - name: azdevops-agent
+        image: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: "pep-pfna-svc-global-devsecops-azdevops"
+                key: AZP_URL
+          - name: AZP_POOL
+            valueFrom:
+              secretKeyRef:
+                name: "pep-pfna-svc-global-devsecops-azdevops"
+                key: AZP_POOL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AZP_TOKEN
+        resources: {}
+        volumeMounts:
+          - mountPath: "/mnt/azure"
+            name: volume
+          - name: acr-secret
+            mountPath: "/home/neipd999/.docker"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        imagePullPolicy: Always
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: pvc-azurefile-devops
+        - name: acr-secret
+          secret:
+            secretName: pep-pfna-svc-global-devsecops-acr-creds
+            items:
+            - key: .dockerconfigjson
+              path: config.json

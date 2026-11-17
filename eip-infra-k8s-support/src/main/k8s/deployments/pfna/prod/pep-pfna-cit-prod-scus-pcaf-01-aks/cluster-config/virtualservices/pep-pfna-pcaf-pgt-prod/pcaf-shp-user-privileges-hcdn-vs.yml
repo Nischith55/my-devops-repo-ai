@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-user-privileges-hcdn-vs
+  namespace: pep-pfna-pcaf-pgt-prod
+  labels:
+      app: pcaf-shp-user-privileges
+spec:
+  hosts:
+  - pcaf-shp-user-privileges.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-pgt-prod/pep-pfna-pcaf-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-user-privileges.pep-pfna-pcaf-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.mypepsico.com
+      - exact: https://shp.pfna.mypepsico.com
+      - exact: https://shop.pfna.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - Authorization
+      - Link
+       
+  

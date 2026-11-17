@@ -1,0 +1,25 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+ns_msi_acrpull_system:
+  name: msi-acrpull-system
+
+  labels:
+    istio-injection: disabled
+
+  generic_secrets: |-
+    {{ msi_acrpull_generic_secrets_names | default([]) }}
+
+  registry_secrets: |-
+    {{ msi_acrpull_registry_secrets_names | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ msi_acrpull_tls_secrets_names | default([]) }}

@@ -1,0 +1,16 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-pfna-appsupport-rb
+  namespace: pep-pfna-flna-gtmdsld-preprod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-appsupport-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.PGT.FLNA.GTM.Developers
+    name: fad909bf-4418-4ea1-9c22-7b84736a1a68

@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"revman-ui-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["revman-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","revolutiom.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"revman-ui.pep-eiap-latam-lassot-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: revman-ui
+  name: revman-ui-vs
+  namespace: pep-eiap-latam-lassot-prod
+spec:
+  gateways:
+  - pep-eiap-latam-lassot-prod/pep-eiap-latam-lassot-prod-cv-gw
+  hosts:
+  - revman-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - revolutiom.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: revman-ui.pep-eiap-latam-lassot-prod.svc.cluster.local
+        port:
+          number: 80

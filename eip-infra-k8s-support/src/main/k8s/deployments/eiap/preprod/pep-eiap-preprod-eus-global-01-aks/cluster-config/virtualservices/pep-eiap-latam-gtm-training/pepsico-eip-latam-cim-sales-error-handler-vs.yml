@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-cim-sales-error-handler
+  name: pepsico-eip-latam-cim-sales-error-handler-vs
+  namespace: pep-eiap-latam-gtm-training
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-training/pep-eiap-latam-gtm-training-cv-gw
+  hosts:
+  - pepsico-eip-latam-cim-sales-error-handler.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /invoke-directly
+    route:
+    - destination:
+        host: pepsico-eip-latam-cim-sales-error-handler.pep-eiap-latam-gtm-training.svc.cluster.local

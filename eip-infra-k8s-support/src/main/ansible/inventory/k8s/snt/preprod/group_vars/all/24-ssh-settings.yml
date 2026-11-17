@@ -1,0 +1,10 @@
+---
+#
+# ENV specific ssh settings
+#
+
+# NOTE: private_key_file for preprod id_rsa_aks_nonprod
+aks_ssh_private_key_file: |-
+  {{ 
+    ((aks_ssh_private_key_dir, 'id_rsa_pep_aks_preprod') | path_join)
+  }}

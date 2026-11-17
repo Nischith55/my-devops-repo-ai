@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-pfna-transportation-dispatcher-processor
+  name: pepsico-pfna-transportation-dispatcher-processor-vs
+  namespace: pep-pfna-flna-transp-dev
+spec:
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  hosts:
+  - pepsico-pfna-transportation-dispatcher-processor.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/dispatcher
+    route:
+    - destination:
+        host: pepsico-pfna-transportation-dispatcher-processor.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80

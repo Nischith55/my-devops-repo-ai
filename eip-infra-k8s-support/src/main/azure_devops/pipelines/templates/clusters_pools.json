@@ -1,0 +1,500 @@
+{
+  "prod": [
+    {
+      "cluster": "pep-apigee-prod-ae-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-prod-eus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-prod-gwc-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-prod-suk-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-prod-sea-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-eus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-eus-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-gwc-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-gwc-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-scus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-aisp-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-scus-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-sea-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-sea-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-suk-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-prod-suk-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-eus-hhnxt-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-eus-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-eus-pcaf-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-eus-pgt-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-scus-hhnxt-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-scus-infra-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-scus-pcaf-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-prod-scus-pgt-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-sch-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-pfna-cit-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-snt-prod-scus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-snt-prod-scus-global-02-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-prod-scus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-dps-prod-scus-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-prod-sea-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-dps-prod-sea-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-prod-suk-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-dps-prod-suk-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-fortify-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-infratools-prod-eus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-infratools-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-eus-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-eus-infra-02-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-gwc-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-scus-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-scus-infra-02-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-suk-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-preprod-suk-infra-02-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-preprod-scus-hhnxt-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-pfna-cit-preprod-scus-pcaf-01-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-preprod-scus-pcaf-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-pfna-cit-preprod-scus-pcaf-01-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-cit-preprod-scus-pgt-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-pfna-cit-preprod-scus-pcaf-01-aks-agents"
+    },
+    {
+      "cluster": "pep-snt-preprod-scus-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-ae-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-eus-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-gwc-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-scus-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-suk-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-preprod-sea-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-preprod-scus-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-dps-preprod-scus-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-preprod-sea-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-dps-preprod-sea-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-preprod-suk-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-dps-preprod-suk-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-fortify-preprod-scus-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pbna-preprod-scus-global-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-eiap-preprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-arize-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-automation-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pbna-prod-eus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pbna-prod-scus-global-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-sch-preprod-scus-01-aks",
+      "env": "PREPROD",
+      "agentpool": "pep-pfna-sch-preprod-scus-01-aks-agents"
+    }
+  ],
+  "nonprod": [
+    {
+      "cluster": "pep-apigee-nonprod-ae-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-automation-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-aisp-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-nonprod-eus-shp-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-nonprod-eus-hhnxt-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-nonprod-scus-shp-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-nonprod-scus-shp-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-apigee-nonprod-gwc-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-ae-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-global-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-infra-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-mldeploy-04-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-eus-sbox-03-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-gwc-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-gwc-infra-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-scus-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-scus-infra-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-paas-infratools-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-nonprod-eus-hhnxt-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-nonprod-eus-hhnxt-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-nonprod-eus-hhnxt-infra-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-nonprod-eus-hhnxt-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-sch-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-sch-nonprod-eus-01-aks-agents"
+    },
+    {
+      "cluster": "pep-snt-nonprod-eus-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-sch-nonprod-eus-01-aks-agents"
+    },
+    {
+      "cluster": "pep-snt-nonprod-eus-global-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-eiap-nonprod-scus-sbox-03-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-nonprod-ae-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-dps-nonprod-ae-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-nonprod-eus-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-dps-nonprod-eus-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-dps-nonprod-gwc-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-dps-nonprod-gwc-global-01-aks-agents"
+    },
+    {
+      "cluster": "pep-kafka-nonprod-scus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-kafka-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pbna-nonprod-eus-global-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-arize-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    }
+  ],
+  "others": [
+    {
+      "cluster": "pep-latam-opsbridge-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pfna-sch-nonprod-eus-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-pfna-sch-nonprod-eus-01-aks-agents"
+    },
+    {
+      "cluster": "pep-cmp-nonprod-eus-01-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-latam-opsbridge-prod-scus-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    },
+    {
+      "cluster": "pep-pbna-apigee-prod-scus-dr-01-aks",
+      "env": "PROD",
+      "agentpool": "pep-eiap-prod-scus-infra-02-aks-agents"
+    }
+  ],
+  "test": [
+    {
+      "cluster": "pep-snt-nonprod-eus-global-02-aks",
+      "env": "NONPROD",
+      "agentpool": "pep-eiap-nonprod-eus-infra-02-aks-agents"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for eiap   
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-eiap-prod-gwc-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

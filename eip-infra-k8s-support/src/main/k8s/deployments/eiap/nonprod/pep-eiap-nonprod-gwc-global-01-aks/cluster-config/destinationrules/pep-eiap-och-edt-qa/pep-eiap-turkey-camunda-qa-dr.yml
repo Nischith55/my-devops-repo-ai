@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-eiap-turkey-camunda-qa-dr
+  namespace: pep-eiap-och-edt-qa
+spec:
+  host: pep-och-essa-turkeycamunda.pep-eiap-och-edt-qa.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: IstioSessionAffinity
+          ttl: 0s

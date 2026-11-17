@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-pcaf-pgt-prod
+    pep-cmdb-app-service-id: 9b1245cf8706455001ee400d0ebb3552
+    pep-cmdb-bus-app-id: 778c25ff1b6334504d6e64e1604bcb8e
+    pep-environment: Production
+    project: pcaf-pgt
+    sector: pfna
+    servicename_aks: och-hhnext
+    team: pfna-pcaf-pgt
+  name: pep-pfna-pcaf-pgt-prod

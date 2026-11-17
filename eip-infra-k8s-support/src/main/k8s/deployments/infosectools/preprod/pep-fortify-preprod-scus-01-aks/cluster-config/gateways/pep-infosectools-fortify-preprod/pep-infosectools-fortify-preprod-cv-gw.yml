@@ -1,0 +1,178 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-infosectools-fortify-preprod-cv-gw
+  namespace: pep-infosectools-fortify-preprod
+spec:
+  selector:
+    istio: pep-fortify-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-infosectools-fortify-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-infosectools-fortify-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - scancentral-dast-api.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - scancentral-dast-utilityservice.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - scancentral-dast-wise.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - scancentral-sast-controller.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - ssc-service.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-infosectools-fortify-preprod-cv-gw-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-fortify-preprod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - scancentral-dast-api.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dastapi-preprod.pepasm.net
+    - scancentral-dast-utilityservice.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dastutility-preprod.pepasm.net
+    - scancentral-dast-wise.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - wise-preprod.pepasm.net
+    - scancentral-sast-controller.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - csc-preprod.pepasm.net
+    - ssc-service.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - ssc-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-http-80
+    port:
+      name: http-pep-infosectools-fortify-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - dastapi-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-preprod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dastutility-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-2-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-preprod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - wise-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-3-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-preprod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - csc-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-4-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-preprod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ssc-preprod.pepasm.net
+    name: pep-infosectools-fortify-preprod-cv-gw-5-https-443
+    port:
+      name: https-pep-infosectools-fortify-preprod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-preprod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

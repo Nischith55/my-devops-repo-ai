@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-iam-logservice
+  name: pep-iam-logservice-vs
+  namespace: pep-eiap-cgf-iamservice-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-iamservice-dev/pep-eiap-cgf-iamservice-dev-cv-gw
+  hosts:
+  - pep-iam-logservice.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iam-logservice.pep-eiap-cgf-iamservice-dev.svc.cluster.local
+        port:
+          number: 80

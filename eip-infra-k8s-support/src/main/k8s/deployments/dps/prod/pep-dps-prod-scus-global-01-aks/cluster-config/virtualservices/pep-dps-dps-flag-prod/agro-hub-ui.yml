@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"agro-hub-ui","app.kubernetes.io/instance":"agro-hub-ui-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"agro-hub-ui","namespace":"pep-dps-dps-flag-prod"},"spec":{"gateways":["pep-dps-dps-flag-prod/pep-dps-dps-flag-prod-cv-gw"],"hosts":["agro-hub-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"agro-hub-ui.pep-dps-dps-flag-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+
+'
+    labels:
+        app: agro-hub-ui
+        app.kubernetes.io/instance: agro-hub-ui-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: agro-hub-ui
+    namespace: pep-dps-dps-flag-prod
+spec:
+    gateways:
+    - pep-dps-dps-flag-prod/pep-dps-dps-flag-prod-cv-gw
+    hosts:
+    - agro-hub-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - aghub.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: agro-hub-ui.pep-dps-dps-flag-prod.svc.cluster.local
+                port:
+                    number: 80

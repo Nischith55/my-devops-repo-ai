@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-cv-platform-portal-backend
+  name: pep-eip-cv-platform-portal-backend-vs
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - pep-eip-cv-platform-portal-backend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/non_favourite/projects
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/favourite/projects
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/details/:project_id
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/create
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/add/collaborator
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/isfavourite/toggle/:project_id
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project/project-collaborators/:project_id
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/project
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/modelzip_upload
+    route:
+    - destination:
+        host: pep-eip-cv-platform-portal-backend.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000

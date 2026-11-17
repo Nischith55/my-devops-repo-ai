@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pepconnect-b2bweb-india-sull-vs
+  namespace: pep-dps-europe-pepconnind-dev
+  labels:
+      app: pepsico-pepconnect-b2bweb-india
+spec:
+  hosts:
+  - pep-dps-dev-pepsiconnectindia.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - pepsiconnectindia.dev.pepsico.com
+  gateways:
+  - pep-dps-europe-pepconnind-dev/pep-dps-europe-pepconnind-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-india.pep-dps-europe-pepconnind-dev.svc.cluster.local
+        port:
+          number: 80
+  

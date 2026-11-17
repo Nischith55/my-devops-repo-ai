@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-nf-prod-cv-web-vs
+  namespace: pep-dps-dps-nf-prod
+  labels:
+    app: pep-dps-dps-nf-prod-cv-web
+spec:
+  hosts:
+    - notify-apac.mypepsico.com
+    - pep-dps-dps-nf-prod-cv.dps.gw01.aks01.sea.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-nf-prod/pep-dps-dps-nf-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-nf-prod-cv-web.pep-dps-dps-nf-prod.svc.cluster.local
+        port:
+          number: 80

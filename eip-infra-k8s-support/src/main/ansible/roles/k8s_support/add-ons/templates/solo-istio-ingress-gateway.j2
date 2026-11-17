@@ -1,0 +1,82 @@
+revision: main
+
+name: istio-ingressgateway
+
+global:
+  hub: us-docker.pkg.dev/gloo-mesh/istio-d11c80c0c3fc
+  tag: {{ istio_tag }}
+
+  network: {{ resourcename }}
+
+  multiCluster:
+    clusterName: {{ resourcename }}
+
+labels:
+  app: istio-ingressgateway
+  istio: ingressgateway
+  revision: main
+
+  pep-environment: {{ env }}
+
+service:
+  type: LoadBalancer
+
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "30"
+
+  loadBalancerIP: {{ wc_ip }}
+
+  ports:
+  - name: tcp-status-port
+    port: 15021
+    targetPort: 15021
+
+  - name: http2
+    port: 80
+    targetPort: 8080
+
+  - name: https
+    port: 443
+    targetPort: 8443
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  limits:
+    cpu: 2000m
+    memory: 1024Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 6
+
+nodeSelector:
+  kubernetes.azure.com/mode: system
+  kubernetes.io/os: linux
+
+tolerations:
+- key: CriticalAddonsOnly
+  operator: Exists
+
+topologySpreadConstraints:
+- maxSkew: 1
+  topologyKey: topology.kubernetes.io/zone
+  whenUnsatisfiable: DoNotSchedule
+  labelSelector:
+    matchLabels:
+      app: istio-ingressgateway
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - istio-ingressgateway
+      topologyKey: kubernetes.io/hostname

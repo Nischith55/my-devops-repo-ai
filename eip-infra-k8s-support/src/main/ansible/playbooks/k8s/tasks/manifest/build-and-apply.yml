@@ -1,0 +1,84 @@
+---
+# ##
+# Task to build manifests and apply to target_cluster.
+# - manifests can be generated via jinja 2 templates -> kustomize
+# - if build_type == 'kustomize' only then kustomize build is executed.
+#
+# NOTES:
+#  - local variables should have _ with the number == directory depth
+# INPUTS:
+#   params_build_task:
+#     build_type:
+#     app_params:
+#     deploy_dir_root: deployment root directory for template output and 
+#                      manifest out
+#     
+# ##
+
+- name: GENERATE_APP_MANIFEST_BLOCK
+  block:
+
+    - name: GENERATE_TEMPLATE_FILES
+      include_tasks:
+        file: tasks/manifest/generate-from-template.yml
+      vars:
+        params_gen: "{{ __app_params }}"
+      when: >-
+        ((__app_params['template_files'] | length) > 0)
+        and
+        (not (skip_generate | default('false') | bool))
+
+    - name: KUSTOMIZE_BUILD_BLOCK
+      block:
+
+        - name: ENSURE_KUSTOMIZE_BUILD_OUT_DIR ({{ __kustomize_out_dir }})
+          file:
+            path: "{{ __kustomize_out_dir }}"
+            state: directory
+            mode: "u=rwx,g=rx,o=rx"
+            recurse: yes
+
+        - name: KUSTOMIZE_BUILD
+          include_role:
+            name: k8s_support/kustomize
+            tasks_from: execute
+          vars:
+            kustomize_action: build
+            kustomize_action_args: |-
+              {{ __kustomize_src_dir }} -o {{ __kustomize_out_file }}
+
+        # build out file mode is correct
+        - name: ENSURE_BUILD_OUT_FILE_MODE ({{ __kustomize_out_file }})
+          file:
+            path: "{{ __kustomize_out_file }}"
+            state: file
+            mode: "u=rw,g=r,o=r"
+
+      vars:
+        __kustomize_src_dir: "{{ __app_params['kustomize_overlay_dir'] }}"
+        __kustomize_out_dir: "{{ __manifest_dir }}"
+        __kustomize_out_file: "{{ __manifest_file }}"
+      # option to skip and anything that startswith kustomize
+      when: >-
+        (not (skip_kustomize | default('false') | bool) )
+        and
+        ((__app_params['build_type'] | default('')).startswith('kustomize'))
+
+    - name: DO_KUBECTL_APPLY
+      include_role:
+        name: k8s_support/kubectl
+        tasks_from: execute
+      vars:
+        kube_context: "{{ __kube_context }}"
+        kctl_action: apply
+        kctl_action_args: "-f {{ __manifest_dir }}"
+      # option to skip
+      when: >-
+        (not (skip_kctl | default('false') | bool) )
+
+  # block vars
+  vars:
+    __kube_context: "{{ params_build_task['kube_context'] }}"
+    __app_params: "{{ params_build_task['app_params'] }}"
+    __manifest_dir: "{{ __app_params['target_dir'] }}"
+    __manifest_file: "{{ __app_params['manifest_file'] }}"

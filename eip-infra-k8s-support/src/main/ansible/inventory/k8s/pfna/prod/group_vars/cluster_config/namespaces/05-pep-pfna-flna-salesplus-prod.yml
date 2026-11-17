@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_flna_salesplus_prod:
+  
+  name: pep-pfna-flna-salesplus-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-salesplus
+    sector: flna
+    project: salesplus
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: salespro-plusprod
+    pep-cmdb-app-service-id: "913f3e961b8c70908fd586e3604bcb42"
+    pep-cmdb-bus-app-id: "513f3e961b8c70908fd586e3604bcb60"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-salesplus-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_salesplus'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-salesplus-prod-sa-token
+    namespace: pep-pfna-flna-salesplus-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-salesplus-prod-sa"

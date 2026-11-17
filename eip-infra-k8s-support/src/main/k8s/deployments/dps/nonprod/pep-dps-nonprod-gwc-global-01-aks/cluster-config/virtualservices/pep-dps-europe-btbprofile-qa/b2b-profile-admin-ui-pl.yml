@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-profile-admin-ui-pl-qa:networking.istio.io/VirtualService:pep-dps-europe-btbprofile-qa/b2b-profile-admin-ui-pl
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-profile-admin-ui-pl-qa:networking.istio.io/VirtualService:pep-dps-europe-btbprofile-qa/b2b-profile-admin-ui-pl"},"labels":{"app":"b2b-profile-admin-ui-pl","app.kubernetes.io/instance":"b2b-profile-admin-ui-pl","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","country":"poland","env":"uat","helm.sh/chart":"platform-chart-1.2.9"},"name":"b2b-profile-admin-ui-pl","namespace":"pep-dps-europe-btbprofile-qa"},"spec":{"gateways":["pep-dps-europe-btbprofile-qa/pep-dps-europe-btbprofile-qa-cv-gw"],"hosts":["b2b-profile-admin-ui-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"b2b-profile-admin-ui-pl.pep-dps-europe-btbprofile-qa.svc.cluster.local","port":{"number":8080},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: b2b-profile-admin-ui-pl
+        app.kubernetes.io/instance: b2b-profile-admin-ui-pl
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        country: poland
+        env: uat
+        helm.sh/chart: platform-chart-1.2.9
+    name: b2b-profile-admin-ui-pl
+    namespace: pep-dps-europe-btbprofile-qa
+spec:
+    gateways:
+    - pep-dps-europe-btbprofile-qa/pep-dps-europe-btbprofile-qa-cv-gw
+    hosts:
+    - b2b-profile-admin-ui-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-pl.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-profile-admin-ui-pl.pep-dps-europe-btbprofile-qa.svc.cluster.local
+                port:
+                    number: 8080

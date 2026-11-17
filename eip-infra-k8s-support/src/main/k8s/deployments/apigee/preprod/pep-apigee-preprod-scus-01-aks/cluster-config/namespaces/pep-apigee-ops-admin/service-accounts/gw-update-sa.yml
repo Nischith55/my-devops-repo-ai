@@ -1,0 +1,7 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gw-update-sa
+  namespace: pep-apigee-ops-admin

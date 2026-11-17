@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testapp100-testteam123-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testapp100-testteam123-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testapp100-testteam123-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testapp100-testteam123-preprod-admin
+    description: Admin privileges to testapp100-testteam123-preprod
+    policies:
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-admin, applications, *, testapp100-testteam123-preprod/*, allow
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-admin, repositories, *, testapp100-testteam123-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testapp100-testteam123-preprod-user
+    description: Read-only privileges to testapp100-testteam123-preprod
+    policies:
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-user, applications, get, testapp100-testteam123-preprod/*, allow
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-user, applications, sync, testapp100-testteam123-preprod/*, allow
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-user, repositories, get, testapp100-testteam123-preprod/*, allow
+    - p, proj:testapp100-testteam123-preprod:testapp100-testteam123-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: adapter-odm-gateway
+  namespace: pep-dps-dps-adapt-dev
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - adapter-odm.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: adapter-odm-tls
+      mode: SIMPLE
+

@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-aisp-global-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: infra
+    sector: aisp
+    team: global-aisp
+    crosscharge_aks: direct
+    servicename_aks: sharedaks-platform

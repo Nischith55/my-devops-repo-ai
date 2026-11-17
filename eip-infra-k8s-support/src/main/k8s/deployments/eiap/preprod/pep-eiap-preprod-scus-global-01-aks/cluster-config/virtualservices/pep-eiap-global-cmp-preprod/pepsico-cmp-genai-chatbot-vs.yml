@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-cmp-genai-chatbot-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepsico-cmp-genai-chatbot-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-cmp-genai-chatbot.pep-eiap-global-cmp-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: pepsico-cmp-genai-chatbot
+  name: pepsico-cmp-genai-chatbot-vs
+  namespace: pep-eiap-global-cmp-preprod
+spec:
+  gateways:
+  - pep-eiap-global-cmp-preprod/pep-eiap-global-cmp-preprod-cv-gw
+  hosts:
+  - pepsico-cmp-genai-chatbot-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cmp-genai-chatbot.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 8080

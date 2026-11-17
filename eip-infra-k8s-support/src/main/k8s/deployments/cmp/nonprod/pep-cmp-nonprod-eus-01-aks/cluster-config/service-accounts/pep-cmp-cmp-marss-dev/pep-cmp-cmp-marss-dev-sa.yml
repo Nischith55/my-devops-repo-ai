@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: a9f56c6a-bb64-4497-bcda-ccb09665ad00
+  name: pep-cmp-cmp-marss-dev-sa
+  namespace: pep-cmp-cmp-marss-dev

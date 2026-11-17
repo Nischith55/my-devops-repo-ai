@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 8daa029a-8416-400b-9260-b5c3a7f4eea4
+  name: pep-eiap-cgf-askcyber-dev-sa
+  namespace: pep-eiap-cgf-askcyber-dev

@@ -1,0 +1,132 @@
+---
+# component: appdynamics-cluster-agent
+# ABBREVIATIONS:
+#   - _jt_jb: jaegertracing_jaeger_backend
+# REQUIRED:
+# - jaeger_backend_merge_spec_patch: must be defined to enable the component
+# ##
+
+# Must match [add-ons|apps]/<app_name>/<this_name>
+jt_jb_name: jaeger-backend
+
+# default image tag
+jt_jb_tag: |-
+  {{ jt_jb_tag_ovrd | default('1.21.0') }}
+
+# metadata/name in source manifest..
+_jt_jb_src_name: jaeger-backend
+
+# ##
+# component meta information
+# ##
+jt_jb_meta:
+  # component_name
+  name: "{{ jt_jb_name }}"
+  # namespace where this component is installed.
+  namespace: "{{ jt_target_namespace }}"
+
+# ##
+# Global -- URL to expose for collector
+# ##
+jaeger_collector_url: |-
+  {{ '{0}.{1}.{2}:{3}'.format(jt_jb_name + '-' + 'collector',
+       jt_target_namespace, k8s_svc_domain, '9411') }}
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+# we use <component> specific templates, specify the directories here.
+
+_jt_jb_common_templates_dir: |-
+  {{ (jt_source_app_root_dir, 'common-templates', jt_jb_name) 
+      | path_join }}
+_jt_jb_source_kustomize_dir: |-
+  {{ (jt_source_app_root_dir, 'kustomize', jt_jb_name) | path_join }}
+# base directory where we have the original manifests
+_jt_jb_kustomize_resource_base_dir: |-
+  {{ (jt_source_app_root_dir, _jt_jb_source_kustomize_dir, 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_jt_jb_dest_root_dir: |-
+  {{ (jt_deploy_app_root_dir, jt_jb_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_jt_jb_overlays_dest_dir: |-
+  {{ (_jt_jb_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_jt_jb_manifests_dest_dir: |-
+  {{ (_jt_jb_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_jt_jb_manifest_path: |-
+  {{ (_jt_jb_manifests_dest_dir, _jt_jb_src_name + '.yml') 
+      | path_join 
+  }}
+
+# re-usable patch target
+_jt_jb_target:
+  #: this is a custom operator CRD -- CHANGE
+  group: jaegertracing.io
+  version: v1
+  kind: Jaeger
+  name: "{{ _jt_jb_src_name }}"
+  #namespace: observability
+
+# convenient variables
+__jt_jb_pmerge01_fn__: patch-merge-jaeger-all-spec.yml
+
+# control plane main build params
+_jt_jb_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _jt_jb_overlays_dest_dir }}"
+    output_path: "{{ _jt_jb_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_jt_jb_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _jt_jb_kustomize_resource_base_dir 
+            | relpath(_jt_jb_manifests_dest_dir) 
+        }}
+
+  patches:
+
+    # merge patch
+    - name: patch-merge-jaeger-backend-spec
+      # we are using templates from <app>/common-templates/<component>
+      template_merge_src: |-
+        {{ kct_template_spec_merge_src }}
+      template_merge_dest: |-
+        {{ (_jt_jb_overlays_dest_dir, __jt_jb_pmerge01_fn__) | path_join }}
+      target: "{{ _jt_jb_target }}"
+      # force it!!
+      merge: |-
+        {{ jaeger_backend_merge_spec_patch }}
+      # # json patch
+      # template_json_src: "{{ kct_json6902_patch_src }}"
+      # template_json_dest: |-
+      #   {{ (_jt_jb_overlays_dest_dir, 'patch-json-jaeger-spec.yml')
+      #     | path_join }}
+      # # any json patches
+      # json6902: |-
+      #   {{ _jt_jb_json_spec_patch }}
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+jt_jaeger_backend_component_setting: |-
+  {{
+    jt_jb_meta
+    |
+    combine(_jt_jb_build_params, recursive=True)
+  }}
+

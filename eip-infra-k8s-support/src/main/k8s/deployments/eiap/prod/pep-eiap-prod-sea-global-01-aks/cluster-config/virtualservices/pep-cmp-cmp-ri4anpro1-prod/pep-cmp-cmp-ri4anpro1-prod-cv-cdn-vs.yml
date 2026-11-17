@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-cmp-cmp-ri4anpro1-prod-cv-webdeploy
+  name: pep-cmp-cmp-ri4anpro1-prod-cv-cdn-vs
+  namespace: pep-cmp-cmp-ri4anpro1-prod
+spec:
+  gateways:
+  - pep-cmp-cmp-ri4anpro1-prod/pep-cmp-cmp-ri4anpro1-prod-cv-gw
+  hosts:
+  - sig.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-ri4anpro1-prod-cv-webdeploy.pep-cmp-cmp-ri4anpro1-prod.svc.cluster.local
+        port:
+          number: 80

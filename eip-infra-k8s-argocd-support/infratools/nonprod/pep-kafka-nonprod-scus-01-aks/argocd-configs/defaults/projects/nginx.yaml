@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for nginx app
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support 
+  destinations:
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: argocd
+    server: https://pep-kafka-nonprod-scus-01-aks-os2mitsz.privatelink.southcentralus.azmk8s.io
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: pep-kafka-infra-dev
+    server: https://pep-kafka-nonprod-scus-01-aks-os2mitsz.privatelink.southcentralus.azmk8s.io
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: default
+    server: https://pep-kafka-nonprod-scus-01-aks-os2mitsz.privatelink.southcentralus.azmk8s.io

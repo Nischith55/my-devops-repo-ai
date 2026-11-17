@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-combrain-prod
+  labels:
+    env-prod: "true"
+    project: combrain
+    sector: cgf
+    team: cgf-combrain
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: daipepgenx
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 7f0e42b8c3ba46d8b74985359901310f
+    pep-cmdb-app-service-id: 841e42b8c3ba46d8b7498535990131f7
+    pep-environment: Production
+    

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_ckptgptppc_preprod:
+  
+  name: pep-eiap-cgf-ckptgptppc-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-ckptgptppc
+    sector: cgf
+    project: ckptgptppc
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: cockpitgpt
+    pep-cmdb-app-service-id: "3f3961a9-dca9-41dd-b3b5-41a7faadf228"
+    pep-cmdb-bus-app-id: "3a366ca783b5b510f576d8426daad345"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-ckptgptppc-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_ckptgptppc'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-ckptgptppc-preprod-sa-token
+    namespace: pep-eiap-cgf-ckptgptppc-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-ckptgptppc-preprod-sa"

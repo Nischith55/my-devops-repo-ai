@@ -1,0 +1,115 @@
+---
+# jaegertracing - operator
+
+_jt_op_name: operator
+
+_jt_op_tag: 1.21.2
+
+# where the overlays dir is for kustomize build e.g.
+_jt_op_dest_root_dir: |-
+  {{ (jt_deploy_app_root_dir, _jt_op_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_jt_op_manifests_dest_dir: |-
+  {{ (_jt_op_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_jt_op_overlays_dest_dir: |-
+  {{ (_jt_op_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_jt_op_manifest_path: |-
+  {{ 
+    (_jt_op_manifests_dest_dir, 
+      jt_app_name + '-' + _jt_op_name + '.yml') 
+    | path_join 
+  }}
+
+_jt_op_kustomize_resource_base_dir: |-
+  {{ (jt_source_app_root_dir, 'kustomize', _jt_op_name, 'base') | path_join 
+  }}
+
+# -- meta parameters
+_jt_op_meta_params:
+
+  # component name
+  name: "{{ _jt_op_name }}"
+
+  # app name
+  app_name: "{{ jt_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ jt_target_namespace }}"
+
+
+# -- build parameters
+
+_jt_op_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _jt_op_overlays_dest_dir }}"
+    output_path: "{{ _jt_op_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_jt_op_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _jt_op_kustomize_resource_base_dir 
+            | relpath(_jt_op_manifests_dest_dir) 
+        }}
+
+    images:
+      # MUST match what is in base!!
+      - name: &img001 jaegertracing/jaeger-operator
+        newName: *img001
+        newTag: |-
+          {{ jaeger_operator_tag | default(_jt_op_tag) }}
+
+  patches:
+
+    # patch both strategic merge and json6902
+    - name: patch-operator-deployment
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_jt_op_overlays_dest_dir, 'patch-merge-operator-deployment.yml')
+          | path_join
+        }}
+      target:
+        group: apps
+        version: v1
+        kind: Deployment
+        name: jaeger-operator
+      # this is the merge patch.
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+      # deployment json patch
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ (_jt_op_overlays_dest_dir, 'patch-json-operator-deployment.yml')
+          | path_join }}
+      # any json patches
+      json6902: |-
+        {{ jt_operator_deployment_json_patch }}
+
+# ##
+# Make the final settings
+# ##
+jt_operator_component_setting: |-
+  {{
+    _jt_op_meta_params
+    |
+    combine(_jt_op_build_params, recursive=True)
+  }}
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: llamacloud-frontend-bfjx-vs
+  namespace: pep-eiap-cgf-llamaparse-preprod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-eiap-llamaparse.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-llamaparse-preprod/pep-eiap-cgf-llamaparse-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: llamacloud-frontend.pep-eiap-cgf-llamaparse-preprod.svc.cluster.local
+        port:
+          number: 3000
+  

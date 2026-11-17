@@ -1,0 +1,168 @@
+steps: 
+- task: PythonScript@0
+  displayName: "Extract Azure KV secrets"
+  name: "GetAzureCredentials"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+    arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+  env:
+    PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+    NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+    PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+    NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+    PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+    PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+    PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+    NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+    PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+
+- task: PythonScript@0
+  displayName: "Set Azure credentials"
+  name: "SetAzureCredentials"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+    arguments: "${{ parameters.service_principal_backend }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: PythonScript@0
+  displayName: "Set Service Principal"
+  name: "SetServicePrincipal"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_config_spn.py'
+    arguments: "${{ parameters.service_principal }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: Bash@3
+  displayName: pre-requisite
+  inputs:
+    targetType: 'inline'
+    script: |
+      pip3 install ruamel.yaml
+      ansible --version
+      pip3 install --upgrade ansible
+      ansible --version
+      pip3 install openshift==0.11.0
+      pip3 install kubernetes==28.1.0
+      pip3 install pyyaml
+      pip3 show pyyaml
+      pip3 show openshift
+      pip3 show kubernetes
+      ansible --version
+      ansible-galaxy collection install community.kubernetes -p ~/.ansible/collections
+      ansible-galaxy collection install cloud.common -p ~/.ansible/collections
+
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  inputs:
+    secureFile: 'config'
+
+- task: CopyFiles@2
+  displayName: "Copyitems"
+  inputs:
+    SourceFolder: $(Agent.TempDirectory)
+    Contents: config
+    TargetFolder: $(HOME)
+
+- task: PublishBuildArtifacts@1
+  condition: always() 
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(HOME)/config'
+
+- task: Bash@3
+  displayName: 'set_context'
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -e
+      echo "$(CLIENTID)"
+      echo "$(CLIENTSECRET)"
+      mkdir $HOME/.kube
+      cp $(Agent.TempDirectory)/config $HOME/.kube/
+      kubectl config use-context ${{ parameters.resource_name }}
+      kubectl config current-context
+      pwd
+      cd /home/neipd999/.kube/
+      ls -la
+      cat config
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: Ansible@0
+  displayName: "pre_check"
+  name: "pre_check"
+  inputs:
+    verboseMode: '0'
+    ansibleInterface: 'agentMachine'
+    playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/ansible/playbooks/pre_check.yml'
+    failOnStderr: false
+    args: '-e ''{ "resourcename": "${{ parameters.resource_name }}" , "opt": "${{ parameters.opt }}" , "enable_endpoint": "${{ parameters.enable_endpoint }}" , "curl_pfna": "${{ parameters.curl_pfna }}" , "working_dir": "$(system.defaultWorkingDirectory)" }'' -v'
+  env:
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+    ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/ansible/roles
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: Bash@3
+  displayName: 'pre-requisites pdb deletion'
+  inputs:
+    targetType: 'inline'
+    script: |
+      mkdir -p $(system.defaultWorkingDirectory)/pdb/${{ parameters.resource_name }}/${{ parameters.opt }}
+      if [[ "${{ parameters.opt }}" == "pre" ]]; then
+      number_of_pdbs_maxUnavailable=`kubectl get pdb -A -o json | jq -r '[.items[] | select(.spec.maxUnavailable==0) | {name: .metadata.name, namespace: .metadata.namespace}]'`
+      for row in $(echo "${number_of_pdbs_maxUnavailable}" | jq -r '.[] | @base64'); do
+          __jq(){
+            echo ${row} | base64 --decode | jq -r ${1}
+          }
+          echo "deleting pdb with maxUnavailable is $(__jq '.name')"
+          kubectl get pdb $(__jq '.name') -n $(__jq '.namespace') -o yaml > $(system.defaultWorkingDirectory)/pdb/${{ parameters.resource_name }}/${{ parameters.opt }}/pdb_backup_create_$(__jq '.name').yml
+          kubectl delete pdb $(__jq '.name') -n $(__jq '.namespace')
+          ls -ltr
+      done
+      kubectl get pdb -A -o json | jq -r '[.items[] | select(.spec.minAvailable) |{name: .metadata.name, label: .spec.selector.matchLabels, metadata: .metadata, minAvailable: .spec.minAvailable, namespace: .metadata.namespace}]' > pdb_details.json
+      /usr/bin/python3 $(system.defaultWorkingDirectory)/templates/scripts/pdb_deployment_query.py pdb_details.json
+      number_of_pdbs_Allowed_disruptions=`kubectl get pdb -A -o json | jq -r '[.items[] | select(.status.disruptionsAllowed==0) | {name: .metadata.name, namespace: .metadata.namespace}]'`
+      for row in $(echo "${number_of_pdbs_Allowed_disruptions}" | jq -r '.[] | @base64'); do
+          __jq(){
+              echo ${row} | base64 --decode | jq -r ${1}
+          }
+          echo "pdb with disruptionsAllowed equal to zero is $(__jq '.name')"
+          kubectl get pdb $(__jq '.name') -n $(__jq '.namespace') -o yaml > $(system.defaultWorkingDirectory)/pdb/${{ parameters.resource_name }}/${{ parameters.opt }}/pdb_backup_create_$(__jq '.name').yml
+          kubectl delete pdb $(__jq '.name') -n $(__jq '.namespace')
+        done
+      fi
+
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: CopyFiles@2
+  displayName: 'Copy pdb files'
+  inputs:
+    SourceFolder: '$(system.defaultWorkingDirectory)/pdb'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: false
+
+- task: CopyFiles@2
+  displayName: 'Copy precheck files'
+  inputs:
+    SourceFolder: '$(system.defaultWorkingDirectory)/k8s_backups'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    ArtifactName: 'drop'

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pcaf-eiap-shp-routesalessummary
+  name: pcaf-eiap-shp-routesalessummary-qa-vs
+  namespace: pep-pfna-hhnext-qa
+spec:
+  gateways:
+  - pep-pfna-hhnext-qa/pep-pfna-hhnext-qa-cv-gw
+  hosts:
+  - pcaf-eiap-shp-routesalessummary-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-eiap-shp-routesalessummary.pep-pfna-hhnext-qa.svc.cluster.local
+        port:
+          number: 80

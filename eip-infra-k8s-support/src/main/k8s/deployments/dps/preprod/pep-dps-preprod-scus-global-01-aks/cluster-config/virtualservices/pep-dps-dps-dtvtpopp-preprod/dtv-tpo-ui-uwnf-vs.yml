@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtv-tpo-ui-uwnf-vs
+  namespace: pep-dps-dps-dtvtpopp-preprod
+  labels:
+      app: dtv-tpo-ui
+spec:
+  hosts:
+  - dtv-tpo-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - dtv-tpo.preprod.mypepsico.com
+  gateways:
+  - pep-dps-dps-dtvtpopp-preprod/pep-dps-dps-dtvtpopp-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtv-tpo-ui.pep-dps-dps-dtvtpopp-preprod.svc.cluster.local
+        port:
+          number: 8080
+  

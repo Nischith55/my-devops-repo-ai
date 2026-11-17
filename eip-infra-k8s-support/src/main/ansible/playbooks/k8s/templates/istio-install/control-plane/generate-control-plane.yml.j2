@@ -1,0 +1,111 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  DESCRIPTION:
+  This template generates the istio operator manifest file. Requires istio
+  operator to be installed first. Supported version 1.7 and above
+#}
+{% set _p = params_tmpl['params'] %}
+{% set _s = _p['spec'] %}
+{% set _sc = _s['components'] %}
+{% set _saoc = _s['addonComponents'] %}
+{% set _sv = _s['values'] %}
+{% if _p['node_params']['node_selector'] is defined %}
+{% set _node_selector = _p['node_params']['node_selector'] %}
+{% endif %}
+{% if _p['node_params']['tolerations'] is defined %}
+{% set _tolerations = _p['node_params']['tolerations'] %}
+{% endif %}
+---
+# Generated -- please do not edit manually
+# {{ ansible_managed }}
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: {{ _p['name'] }}
+  namespace: {{ _p['namespace'] }}
+spec:
+  profile: {{ _s['profile'] }}
+  {% if _s['hub'] is defined %}
+  hub: {{ _s['hub'] }}
+  {% endif %}
+  {% if _s['tag'] is defined %}
+  tag: {{ _s['tag'] }}
+  {% endif %}
+  {% if _s['revision'] is defined %}
+  revision: {{ _s['revision'] }}
+  {% endif %}
+  {% if _s['meshConfig'] is defined %}
+  # ##
+  # Mesh Configuration
+  # ##
+  meshConfig: 
+    {{ _s['meshConfig'] | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+  {% endif %}
+  {# we will always have components #}
+  # ##
+  # Components to enable or disable
+  # ##
+  components:
+
+    #: Base Component
+    base:
+      {{ _sc['base'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% if _sc['pilot'] is defined %}
+    #: Pilot Component
+    pilot:
+      {{ _sc['pilot'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['policy'] is defined %}
+    policy:
+      {{ _sc['policy'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['telemetry'] is defined %}
+    telemetry:
+      {{ _sc['telemetry'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['cni'] is defined %}
+    cni:
+      {{ _sc['cni'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['istiodRemote'] is defined %}
+    istiodRemote:
+      {{ _sc['istiodRemote'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['ingressGateways'] is defined %}
+    ingressGateways:
+      {{ _sc['ingressGateways'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+    {% if _sc['egressGateways'] is defined %}
+    egressGateways:
+      {{ _sc['egressGateways'] | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(6) }}
+
+    {% endif %}
+
+  {# addOnComponents #}
+  {% if _saoc is defined %}
+  addonComponents:
+    {{ _saoc | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(4) }}
+  {% endif %}
+
+  {# values #}
+  {% if _sv is defined %}
+  values:
+    {{ _sv | to_nice_yaml(indent=2, width=1337) 
+        | trim | indent(4) }}
+  {% endif %}

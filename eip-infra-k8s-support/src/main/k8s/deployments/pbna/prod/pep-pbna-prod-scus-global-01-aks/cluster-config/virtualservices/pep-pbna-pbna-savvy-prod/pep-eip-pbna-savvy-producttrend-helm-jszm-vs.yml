@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-pbna-savvy-producttrend-helm-jszm-vs
+  namespace: pep-pbna-pbna-savvy-prod
+  labels:
+      app: pep-eip-pbna-savvy-producttrend-helm
+spec:
+  hosts:
+  - pep-eip-pbna-savvy-producttrend-helm.pbna.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pbna-pbna-savvy-prod/pep-pbna-pbna-savvy-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-savvy-producttrend-helm.pep-pbna-pbna-savvy-prod.svc.cluster.local
+        port:
+          number: 8080
+  

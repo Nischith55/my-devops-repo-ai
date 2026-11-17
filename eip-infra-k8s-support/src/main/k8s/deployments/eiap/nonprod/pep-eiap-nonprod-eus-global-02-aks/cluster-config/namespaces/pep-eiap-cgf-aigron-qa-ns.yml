@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-aigron-qa
+  labels:
+    env-nonprod: "true"
+    project: aigron
+    sector: cgf
+    team: cgf-aigron
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: a.i.gronomist
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 1e4044b34787ee5027ba9454836d43c6
+    pep-cmdb-app-service-id: d34084b34787ee5027ba9454836d43ac
+    pep-environment: QA
+    

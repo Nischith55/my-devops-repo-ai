@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pfna-shp-services-scus-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pfna-shp-services-scus-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Hand_Held_Next/_git/pep-pfna-shp-services-argocd-configs
+      - peppfnanonprodhhnextacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-scus-shp-global-01-aks
+        namespace: pep-pfna-shp-qa
+      - name: pep-pfna-nonprod-scus-shp-global-01-aks
+        namespace: pep-pfna-nonprod-ops-admin
+      roles:
+      - name: pep-pfna-shp-services-scus-qa-admin
+        description: Admin privileges to pep-pfna-shp-services-scus-qa
+        policies:
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-admin, applications, *, pep-pfna-shp-services-scus-qa/*, allow
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-admin, repositories, *, pep-pfna-shp-services-scus-qa/*, allow
+        groups:
+        - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pfna-shp-services-scus-qa-user
+        description: Read-only privileges to pep-pfna-shp-services-scus-qa
+        policies:
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-user, applications, get, pep-pfna-shp-services-scus-qa/*, allow
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-user, applications, sync, pep-pfna-shp-services-scus-qa/*, allow
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-user, repositories, get, pep-pfna-shp-services-scus-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-pfna-shp-services-scus-qa:pep-pfna-shp-services-scus-qa-user, applications, action/apps/Deployment/restart, pep-pfna-shp-services-scus-qa/*, allow
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

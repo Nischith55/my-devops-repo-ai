@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-latam-gatdidp-prod
+  labels:
+    env-prod: "true"
+    project: gatdidp
+    sector: latam
+    team: latam-gatdidp
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: gatorade-didprod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 6b9631618321de50ec15bad6feaad35d
+    pep-cmdb-app-service-id: 6241e087c3d9ead0863b7badc001317e
+    pep-environment: Production
+    

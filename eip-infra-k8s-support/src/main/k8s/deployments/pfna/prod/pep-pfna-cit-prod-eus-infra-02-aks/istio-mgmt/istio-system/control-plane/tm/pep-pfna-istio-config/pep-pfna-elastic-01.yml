@@ -1,0 +1,31 @@
+---
+# IMPORTANT:
+# - please create the k8s services pep-eiap-elastic-01
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-elastic-01
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-elastic-01.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+  - pep-pfna-elastic-01-admin.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+  # TLS routes will be applied to platform service ports named 'https-',
+  # 'tls-', unterminated gateway ports using HTTPS/TLS protocols (i.e.
+  # with "passthrough" TLS mode) and service entry ports using
+  # HTTPS/TLS protocols.
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - pep-pfna-elastic-01.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+          - pep-pfna-elastic-01-admin.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+
+      route:
+        - destination:
+            host: pep-pfna-elastic-01.pep-pfna-elastic-cluster-01.svc.cluster.local
+            port:
+              number: 9200
+          weight: 100

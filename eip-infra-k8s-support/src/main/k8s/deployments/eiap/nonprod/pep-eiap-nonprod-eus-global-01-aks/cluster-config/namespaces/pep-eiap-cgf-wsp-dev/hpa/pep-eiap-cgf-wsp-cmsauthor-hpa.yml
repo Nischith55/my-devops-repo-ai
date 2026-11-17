@@ -1,0 +1,14 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pep-eiap-cgf-wsp-cmsauthor-hpa
+  namespace: pep-eiap-cgf-wsp-dev
+spec:
+  maxReplicas: 10
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cmsauthor
+  targetCPUUtilizationPercentage: 80
+

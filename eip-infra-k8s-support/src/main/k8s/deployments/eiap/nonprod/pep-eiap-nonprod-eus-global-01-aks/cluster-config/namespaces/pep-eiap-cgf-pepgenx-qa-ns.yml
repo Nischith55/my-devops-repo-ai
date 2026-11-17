@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-pepgenx-qa
+    pep-cmdb-app-service-id: 167ca5de831bf1d07a58f9447daad331
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: QA
+    project: pepgenx
+    sector: cgf
+    servicename_aks: engineeringexcellencepepgenx
+    team: cgf-pepgenx
+  name: pep-eiap-cgf-pepgenx-qa

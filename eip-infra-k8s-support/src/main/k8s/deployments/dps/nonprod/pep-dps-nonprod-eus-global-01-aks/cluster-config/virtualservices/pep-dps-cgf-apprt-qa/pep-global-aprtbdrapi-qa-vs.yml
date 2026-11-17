@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-global-aprtbdrapi
+  name: pep-global-aprtbdrapi-qa-vs
+  namespace: pep-dps-cgf-apprt-qa
+spec:
+  gateways:
+  - pep-dps-cgf-apprt-qa/pep-dps-cgf-apprt-qa-cv-gw
+  hosts:
+  - pep-global-aprtbdrapi-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-global-aprtbdrapi.pep-dps-cgf-apprt-qa.svc.cluster.local
+        port:
+          number: 80

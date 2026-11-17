@@ -1,0 +1,13 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-cmp-nonprod-eus-01-aks
+
+argoCDApplications:
+  nginx-pep-cmp-nonprod-eus-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/cmp/pep-cmp-nonprod-eus-01-aks/pep-cmp-global-infra-dev_NGINX

@@ -1,0 +1,20 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-global-mdp-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.MDP.AppSupport
+    name: 73c6a2bc-fdb3-47df-ac06-2b5714372505
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-global-mdp-sp
+    name: f3193d0e-b62a-4e41-a3cf-76e0d42facb8

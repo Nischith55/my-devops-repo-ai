@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: a551ed3847e6151052293238436d4378
+    pep-cmdb-bus-app-id: 26de84bddb3e8c10c2b5f381399619f7
+    pep-environment: Development
+    project: hcmfar
+    sector: cgf
+    servicename_aks: saparchiving-nanon-prod
+    team: cgf-hcmfar
+  name: pep-eiap-cgf-hcmfar-dev

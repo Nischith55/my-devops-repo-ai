@@ -1,0 +1,32 @@
+---
+- name: create_storage_classes 
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - lvrfrc87.git_acp
+  vars_files:
+    - /azp/agent/_work/1/s/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml
+  tasks:
+    - name: Include generic storage class data from variables file.
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/genericstorageclass.yml"
+        name: genclassvariables_file
+
+    - name: Include generic storage classes data from variables file.
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/genericstorageclasses.yml"
+        name: genclassesvariables_file
+
+    - name: Include built-in storage class data from variables file.
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/builtinstorageclass.yml"
+        name: builtinvariables_file
+
+    - name: Include vars from variables file.
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml"
+        name: var
+        
+    - name: import storage classes creation role
+      import_role:
+        name: create_storageClasses

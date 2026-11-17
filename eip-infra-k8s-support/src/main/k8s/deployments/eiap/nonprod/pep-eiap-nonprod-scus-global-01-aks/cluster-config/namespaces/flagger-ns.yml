@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: flagger
+    kustomize.toolkit.fluxcd.io/name: flagger
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    servicename_aks: sharedaks
+  name: flagger

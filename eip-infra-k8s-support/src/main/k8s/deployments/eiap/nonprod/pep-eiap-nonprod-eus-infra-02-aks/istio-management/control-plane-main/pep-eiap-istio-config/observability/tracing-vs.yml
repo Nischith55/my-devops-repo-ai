@@ -1,0 +1,24 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: tracing-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+    - istio-system/istio-in-gateway-02
+  hosts:
+  - tracing.infra.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  - tracing.infra.gw02.aks02.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - name: tracing-v1-route
+    match:
+      - uri:
+          prefix: /
+    route:
+    - destination:
+        host: jaeger-backend-query.observability.svc.cluster.local
+        port: 
+          number: 16686
+

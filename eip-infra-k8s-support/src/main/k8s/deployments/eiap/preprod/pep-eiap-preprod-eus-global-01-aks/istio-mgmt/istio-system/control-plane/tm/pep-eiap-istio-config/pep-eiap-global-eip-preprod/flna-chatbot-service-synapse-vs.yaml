@@ -1,0 +1,21 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: flna-chatbot-service-synapse-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - flna-chatbot-service-synapse.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: flna-chatbot-service-synapse.pep-eiap-global-eip-preprod.svc.cluster.local
+        port:
+          number: 80

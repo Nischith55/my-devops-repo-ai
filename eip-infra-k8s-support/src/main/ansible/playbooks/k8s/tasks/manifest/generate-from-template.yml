@@ -1,0 +1,42 @@
+---
+# ##
+# Convenient task to generate from templates and output to certain directory
+#
+# INPUTS:
+#  - params_gen
+# ##
+
+- name: GENERATE_FROM_TEMPLATE_BLOCK
+  block:
+
+    # block tasks
+    - name: ENSURE_TEMPLATE_DEST_DIR {{ __template_dest_dir }}
+      file:
+        path: "{{ __template_dest_dir }}"
+        state: directory
+        mode: "u=rwx,g=rx,o=rx"
+        recurse: yes
+
+    - name: GENERATE_FROM_TEMPLATE {{ __template_src_dir }}
+      template:
+        src: |-
+          {{ (__template_src_dir, item) | path_join }}
+        # note strip j2
+        dest: |-
+          {{ 
+            (__template_dest_dir, (item | splitext | first)) 
+             | path_join 
+          }}
+        mode: "u=rw,g=r,o=r"
+      # template vars - make sure it's clean
+      vars:
+        params_tmpl: "{{ __template_params }}"
+      loop: "{{ __template_files }}"
+
+  # just in case
+  delegate_to: localhost
+  vars:
+    __template_params: "{{ params_gen }}"
+    __template_files: "{{ params_gen['template_files'] }}"
+    __template_src_dir: "{{ params_gen['generate_src_dir'] }}"
+    __template_dest_dir: "{{ params_gen['generate_out_dir'] }}"

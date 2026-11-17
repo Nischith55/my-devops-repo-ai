@@ -1,0 +1,14 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pep-eip-latam-cv-rack-segmentation-qa-hpa
+  namespace: pep-eiap-global-iai-dev
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pep-eip-latam-cv-rack-segmentation-qa
+  targetCPUUtilizationPercentage: 70
+

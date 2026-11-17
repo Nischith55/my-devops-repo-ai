@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gnrm-promoai-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gnrm-promoai-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/GNRM_PromoAI_Pricing/_git/gnrm-promoai-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-promoai-prod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gnrm-promoai-prod-admin
+    description: Admin privileges to gnrm-promoai-prod
+    policies:
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-admin, applications, *, gnrm-promoai-prod/*, allow
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-admin, applications, get, argocd/*, allow
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-admin, repositories, *, gnrm-promoai-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gnrm-promoai-prod-user
+    description: Read-only privileges to gnrm-promoai-prod
+    policies:
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-user, applications, get, gnrm-promoai-prod/*, allow
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-user, applications, sync, gnrm-promoai-prod/*, allow
+    - p, proj:gnrm-promoai-prod:gnrm-promoai-prod-user, repositories, get, gnrm-promoai-prod/*, allow
+    groups:
+    - "Team.App.CDO.GNRM.NonProd.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

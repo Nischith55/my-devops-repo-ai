@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-pcaf-prod
+  labels:
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    project: pcaf
+    sector: pfna
+    team: pfna-pcaf

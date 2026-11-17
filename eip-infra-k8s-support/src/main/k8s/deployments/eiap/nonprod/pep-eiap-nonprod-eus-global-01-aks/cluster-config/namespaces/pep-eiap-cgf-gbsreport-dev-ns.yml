@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: gbsreport
+    sector: cgf
+    team: cgf-gbsreport
+  name: pep-eiap-cgf-gbsreport-dev

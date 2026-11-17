@@ -1,0 +1,9 @@
+####### BEGIN Added recently --pep-pfna-nonprod-eus-shp-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pfna_flna_shp_qa
+  - ns_pep_pfna_flna_saleshub_qa
+  - ns_pep_pfna_test_test_dev
+####### END Added recently --pep-pfna-nonprod-eus-shp-global-01-aks######

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ prefix }}-nginx-vs
+  namespace: {{ prefix }}-{{ infrans }}
+spec:
+  gateways:
+  - {{ prefix }}-{{ infrans }}/{{ prefix }}-{{ infrans }}-cv-gw
+  hosts:
+  - {{ prefix }}-nginx{{ wcardforhosts }}
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ prefix }}-nginx.{{ prefix }}-{{ ecl['infrans'] }}.svc.cluster.local
+        port: 
+          number: 8080

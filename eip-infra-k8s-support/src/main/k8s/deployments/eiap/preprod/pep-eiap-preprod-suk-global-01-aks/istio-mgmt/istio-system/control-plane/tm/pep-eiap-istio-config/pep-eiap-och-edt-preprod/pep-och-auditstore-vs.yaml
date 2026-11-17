@@ -1,0 +1,33 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-auditstore-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-auditstore.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-auditstore.pep-eiap-och-edt-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-falloutmanagement.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+      allowMethods:
+      - GET
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - x-total-count

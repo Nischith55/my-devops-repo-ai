@@ -1,0 +1,98 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:  
+  name: pep-eiap-k8sautomation-clusterrole
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - persistentvolumeclaims
+  - pods
+  - pods/status
+  - pods/log
+  - events
+  - secrets
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  - pods/eviction
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - delete
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - create
+- apiGroups:
+  - msi-acrpull.microsoft.com
+  resources:
+  - acrpullbindings
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  - virtualservices
+  - sidecars
+  - destinationrules
+  verbs:
+  - '*' 
+- apiGroups:
+  - argoproj.io
+  resources:
+  - appprojects
+  - applications
+  verbs:
+  - '*'

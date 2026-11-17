@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-wsp-stockticker-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-cgf-wsp-stockticker.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - route:
+    - destination:
+        host: stockticker.pep-eiap-cgf-wsp-dev.svc.cluster.local
+        port:
+          number: 80
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /

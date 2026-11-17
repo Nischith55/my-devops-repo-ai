@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: cost-analyzer
+  name: kubecost-cost-analyzer-vs
+  namespace: kubecost
+spec:
+  gateways:
+  - kubecost/kubecost-cv-gw
+  hosts:
+  - kubecost-cost-analyzer.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: kubecost-cost-analyzer.kubecost.svc.cluster.local
+        port:
+          number: 9090

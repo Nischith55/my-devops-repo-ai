@@ -1,0 +1,57 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-dps-nonprod-eus-global-01-aks
+
+argoCDApplications:
+  nginx-pep-dps-nonprod-eus-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-eus-global-01-aks/pep-dps-infra-dev_NGINX
+
+  arc-controller-pep-dps-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set-controller
+    revision: 0.14.2
+    namespace: arc-systems
+    path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-eus-global-01-aks/pep-dps-arc/controller
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-runner-set-pep-dps-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set
+    revision: 0.14.2
+    namespace: pep-dps-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-eus-global-01-aks/pep-dps-arc/runner-set
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-image-prepull-pep-dps-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-dps-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-eus-global-01-aks/pep-dps-arc/prepull
+    syncOptions:
+      - CreateNamespace=true
+
+  # arc-kaniko-rbac-pep-dps-nonprod-eus-global-01-aks:
+  #   enabled: true
+  #   autoSync: true
+  #   helm: false
+  #   recursive: false
+  #   namespace: pep-dps-global-devsecops-dev
+  #   path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-eus-global-01-aks/pep-dps-arc/kaniko-rbac
+  #   syncOptions:
+  #     - CreateNamespace=true

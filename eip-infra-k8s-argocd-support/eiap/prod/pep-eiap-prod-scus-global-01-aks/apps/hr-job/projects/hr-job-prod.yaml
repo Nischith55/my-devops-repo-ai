@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: hr-job-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for hr-job-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_BI_Reporting/_git/hr-job-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-gbs-hrjepc-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: hr-job-prod-admin
+        description: Admin privileges to hr-job-prod
+        policies:
+        - p, proj:hr-job-prod:hr-job-prod-admin, applications, *, hr-job-prod/*, allow
+        - p, proj:hr-job-prod:hr-job-prod-admin, repositories, *, hr-job-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: hr-job-prod-user
+        description: Read-only privileges to hr-job-prod
+        policies:
+        - p, proj:hr-job-prod:hr-job-prod-user, applications, get, hr-job-prod/*, allow
+        - p, proj:hr-job-prod:hr-job-prod-user, applications, sync, hr-job-prod/*, allow
+        - p, proj:hr-job-prod:hr-job-prod-user, repositories, get, hr-job-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.IAI.PWC.Azure.Dev"
+        - "Team.Support.EIAP.READ"
+    

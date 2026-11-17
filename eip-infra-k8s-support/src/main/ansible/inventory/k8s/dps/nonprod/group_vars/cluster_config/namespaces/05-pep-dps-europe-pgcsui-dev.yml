@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_pgcsui_dev:
+  
+  name: pep-dps-europe-pgcsui-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-pgcsui
+    sector: europe
+    project: pgcsui
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalcartseuropenon-prod
+    pep-cmdb-app-service-id: "f9be6846970122501351f2c0f053af7a"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-pgcsui-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_pgcsui'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-pgcsui-dev-sa-token
+    namespace: pep-dps-europe-pgcsui-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-pgcsui-dev-sa"

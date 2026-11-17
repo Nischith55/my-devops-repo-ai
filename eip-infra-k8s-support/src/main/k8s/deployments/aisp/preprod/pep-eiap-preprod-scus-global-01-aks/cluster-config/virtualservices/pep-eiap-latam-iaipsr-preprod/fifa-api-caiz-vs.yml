@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: fifa-api-caiz-vs
+  namespace: pep-eiap-latam-iaipsr-preprod
+  labels:
+      app: fifa-api
+spec:
+  hosts:
+  - fifa-api.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-iaipsr-preprod/pep-eiap-latam-iaipsr-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: fifa-api.pep-eiap-latam-iaipsr-preprod.svc.cluster.local
+        port:
+          number: 8000
+  

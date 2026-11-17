@@ -1,0 +1,32 @@
+---
+# ##
+# Custom service definition for Coordinating Nodes
+# IMPORTANT:
+#   CHANGE:
+#   - metadata.name
+#   - metadata.namespace
+#   - spec.selector...cluster-name
+#
+# ##
+apiVersion: v1
+kind: Service
+metadata:
+  # should match the istio hostname
+  name: pep-eiap-elastic-01
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  type: ClusterIP
+  ports:
+    # The port name MUST be https for ECK xpack
+  - name: https
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  selector:
+    elasticsearch.k8s.elastic.co/cluster-name: cluster-01-preprod-suk
+    elasticsearch.k8s.elastic.co/node-master: "false"
+    elasticsearch.k8s.elastic.co/node-data: "false"
+    elasticsearch.k8s.elastic.co/node-ingest: "false"
+    elasticsearch.k8s.elastic.co/node-ml: "false"
+    elasticsearch.k8s.elastic.co/node-transform: "false"
+  sessionAffinity: None

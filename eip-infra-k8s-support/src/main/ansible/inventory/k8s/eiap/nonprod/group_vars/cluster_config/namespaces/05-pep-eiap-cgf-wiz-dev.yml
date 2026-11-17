@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_wiz_dev:
+  
+  name: pep-eiap-cgf-wiz-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-wiz
+    sector: cgf
+    project: wiz
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: wiznon-prod
+    pep-cmdb-app-service-id: "bff568b3474eea50fbe192e2846d4350"
+    pep-cmdb-bus-app-id: "48cc0b674760b9501253efdc416d43ac"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-wiz-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_wiz'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-wiz-dev-sa-token
+    namespace: pep-eiap-cgf-wiz-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-wiz-dev-sa"

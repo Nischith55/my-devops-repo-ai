@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cle-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cle-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/NextGen_CLE/_git/cle-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-cle-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cle-dev-admin
+        description: Admin privileges to cle-dev
+        policies:
+        - p, proj:cle-dev:cle-dev-admin, applications, *, cle-dev/*, allow
+        - p, proj:cle-dev:cle-dev-admin, repositories, *, cle-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cle-dev-user
+        description: Read-only privileges to cle-dev
+        policies:
+        - p, proj:cle-dev:cle-dev-user, applications, get, cle-dev/*, allow
+        - p, proj:cle-dev:cle-dev-user, applications, sync, cle-dev/*, allow
+        - p, proj:cle-dev:cle-dev-user, repositories, get, cle-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cle-dev:cle-dev-user, applications, action/apps/Deployment/restart, cle-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.CGF.NextGenCLE.Developer"
+        - "Team.Support.EIAP.READ"
+    

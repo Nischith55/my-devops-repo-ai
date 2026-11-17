@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-growers-hub-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-growers-hub-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/agro-growers-hub-web-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-suk-global-01-aks
+    namespace: pep-dps-dps-ghub-preprod
+  - name: pep-dps-preprod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: agro-growers-hub-preprod-admin
+    description: Admin privileges to agro-growers-hub-preprod
+    policies:
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-admin, applications, *, agro-growers-hub-preprod/*, allow
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-admin, repositories, *, agro-growers-hub-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-growers-hub-preprod-user
+    description: Read-only privileges to agro-growers-hub-preprod
+    policies:
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-user, applications, get, agro-growers-hub-preprod/*, allow
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-user, applications, sync, agro-growers-hub-preprod/*, allow
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-user, repositories, get, agro-growers-hub-preprod/*, allow
+    - p, proj:agro-growers-hub-preprod:agro-growers-hub-preprod-user, applications, action/apps/Deployment/restart, agro-growers-hub-preprod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GRA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,40 @@
+---
+
+# - name: Get list of namespaces
+#   kubernetes.core.k8s_info:
+#     kind: namespace 
+#   register: namespaces
+#   no_log: True
+
+- set_fact:
+    full_ns_list_temp: []
+
+- name: Get list of namespaces
+  kubernetes.core.k8s_info:
+    kind: namespace 
+  register: namespaces
+
+- name: store all namespaces names 
+  set_fact:
+    full_ns_list_temp: "{{ full_ns_list_temp + [item.metadata.name] }}"
+  with_items: "{{ namespaces.resources }}"
+
+### create a folder to store generated manifest files
+- name: Creates directory to store manifest
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/dr-manifests/"
+    state: directory
+  
+- name: Get list of destination rule
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule 
+    namespace: "pep-{{ department }}-istio-config"
+  register: destinationrules
+
+- name: loop through each Destination Rule 
+  include_tasks: drmanifestcreation.yml
+  with_items: "{{ destinationrules.resources }}"
+  vars:
+    full_ns_list: "{{ full_ns_list_temp }}"
+  # when: item.metadata.name == "pep-eiap-global-test-dev"

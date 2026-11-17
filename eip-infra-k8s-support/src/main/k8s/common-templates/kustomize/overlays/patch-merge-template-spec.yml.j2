@@ -1,0 +1,39 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Patch for spec/template/spec merge. Mainly used in DaemonSet or
+  Deployments
+
+  INPUTS:
+    - params_tmpl:
+        target:
+        merge:
+          spec:
+            <map>
+#}
+{% set _p = params_tmpl %}
+{% set _pt = _p['target'] %}
+{% set _pm = _p['merge'] %}
+{% set _pmma = _pm['metadata']['annotations'] | default({}) %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+{# api group could be empty #}
+{% if ((_pt['group'] | default('')) | length) > 0 %}
+apiVersion: {{ _pt['group'] }}/{{ _pt['version'] }}
+{% else %}
+apiVersion: {{ _pt['version'] }}
+{% endif %}
+kind: {{ _pt['kind'] }}
+metadata:
+  name: {{ _pt['name'] }}
+  {% if _pt['namespace'] is defined %}
+  namespace: {{ _pt['namespace'] }}
+  {% endif %}
+  {% if (_pmma | length) > 0 %}
+  annotations:
+    {{ _pmma | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+{% if _pm['spec'] is defined %}
+spec:
+  {{ _pm['spec'] | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% endif %}

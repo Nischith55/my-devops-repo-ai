@@ -1,0 +1,32 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sReplicaLimits
+metadata:
+  name: replicalimit
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:  
+    # OPA Exception RITM4634288 latam 
+    - pep-eiap-latam-gtm-prod
+    - pep-eiap-pfna-ipp-prod
+    # OPA Exception RITM5479678 latam 
+    - pep-eiap-cgf-labelright-prod
+    # CTASK2073590
+    - pep-eiap-cgf-nvingest-prod
+    # Approved by Mohsin
+    - pep-eiap-global-eip-prod
+  
+    kinds:
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
+    labelSelector:
+      matchExpressions: []
+    namespaceSelector:
+      matchExpressions: []
+    scope: '*'
+  parameters:
+    ranges:
+    - max_replicas: 15
+      min_replicas: 0

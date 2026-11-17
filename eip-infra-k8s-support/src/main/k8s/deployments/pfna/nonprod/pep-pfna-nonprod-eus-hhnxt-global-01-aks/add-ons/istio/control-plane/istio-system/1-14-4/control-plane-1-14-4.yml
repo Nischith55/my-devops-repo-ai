@@ -1,0 +1,117 @@
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: control-plane-1-14-4
+  namespace: istio-system
+spec:
+  profile: minimal
+  tag: "1.14.4"
+
+  # If namespace is set here then make sure:
+  # - You must also set values.global.istioNamespace
+  # Otherwise:
+  # - it will use the namespace of the CR
+  # namespace: istio-system
+
+  # revision (IMPORTANT: change in validatingWebHookConfiguration)
+  revision: "1-14-4"
+
+  meshConfig:
+    proxyListenPort: 15001
+    connectTimeout: 10s
+    protocolDetectionTimeout: 5s
+
+    ingressService: pep-pfna-ingress-gw01
+    ingressSelector: pep-pfna-ingress-gw01
+
+    accessLogFile: /dev/stdout
+
+    # # Format for the proxy access log Empty value results in proxy’s
+    # # default access log format
+    # accessLogFormat:
+    accessLogEncoding: TEXT
+
+    enableAutoMtls: true
+
+    defaultServiceExportTo:
+      - "*"
+    defaultVirtualServiceExportTo:
+      - "*"
+    defaultDestinationRuleExportTo:
+      - "*"
+    rootNamespace: pep-pfna-istio-config
+
+    h2UpgradePolicy: DO_NOT_UPGRADE
+
+    enablePrometheusMerge: true
+
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY
+
+    defaultConfig:
+
+      statusPort: 15020
+
+      drainDuration: 45s
+
+      parentShutdownDuration: 60s
+
+      terminationDrainDuration: 5s
+
+      proxyAdminPort: 15000
+
+      controlPlaneAuthPolicy: MUTUAL_TLS
+
+  # ##
+  # Components to enable or disable
+  # ##
+  components:
+
+    #: Base Component (type:  BaseComponentSpec)
+    # Configuration for base component.
+    base:
+      enabled: true
+
+    cni:
+      enabled: true
+
+    #: Pilot Component
+    # type: ComponentSpec
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 9
+        nodeSelector:
+          kubernetes.azure.com/mode: system
+          kubernetes.io/os: linux
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        overlays:
+        - kind: Deployment
+          name: istiod-1-14-4
+          patches:
+          - path: spec.template.spec.topologySpreadConstraints
+            value:
+            - labelSelector:
+                matchLabels:
+                  operator.istio.io/component: Pilot
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+
+  values:
+# When installing revisioned control planes with the CNI component enabled
+# values.istio_cni.enabled needs to be set, so that sidecar injector does not inject
+# the istio-init init container  
+    istio_cni:
+      enabled: true
+# excluding istio cni operations from istio-system and kube-system namespaces
+    cni:
+      excludeNamespaces:
+       - istio-system
+       - kube-system
+      logLevel: info

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-cpgpt-dev
+  labels:
+    env-nonprod: "true"
+    project: cpgpt
+    sector: cgf
+    team: cgf-cpgpt
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: cockpit-report-generator-cgf
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

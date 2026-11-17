@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-snt-cgf-promoai-dev-sa
+  namespace: pep-snt-cgf-promoai-dev

@@ -1,0 +1,86 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-aig-dev-cv-gw
+  namespace: pep-dps-dps-aig-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-aig-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aig-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-aig-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-dps-aig-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-data-collector.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-core.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-creation-properties.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-orchestrator.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-schedulers.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - opensearch-dashboards.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - opensearch-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - upgrade-ninja.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-pepgenx-adapter-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-document-ingestor-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-qna-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-ui-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-video-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aig-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-aig-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-dps-aig-dev-80.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-data-collector.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-core.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-creation-properties.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-orchestrator.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aig-schedulers.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - opensearch-dashboards.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - opensearch-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - upgrade-ninja.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-pepgenx-adapter-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-document-ingestor-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-qna-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-ui-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - rag-video-poc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aig-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-aig-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

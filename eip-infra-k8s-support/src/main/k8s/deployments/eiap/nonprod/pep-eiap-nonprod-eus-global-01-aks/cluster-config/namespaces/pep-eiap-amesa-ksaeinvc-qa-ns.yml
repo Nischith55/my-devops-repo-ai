@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-amesa-ksaeinvc-qa
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    project: KSAEinvoicing
+    sector: amesa
+    servicename_aks: data-digitalsolutions-amesa
+    team: eiap-amesa
+  name: pep-eiap-amesa-ksaeinvc-qa

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_europe_opeurope_prod:
+  
+  name: pep-eiap-europe-opeurope-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-opeurope
+    sector: europe
+    project: opeurope
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: supplychainautomationservicesfororderprocessing
+    pep-cmdb-app-service-id: "617fc90d83756d14ef899630ceaad353"
+    pep-cmdb-bus-app-id: "ed7f890d83756d14ef899630ceaad3db"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-opeurope-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_opeurope'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-europe-opeurope-prod-sa-token
+    namespace: pep-eiap-europe-opeurope-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-europe-opeurope-prod-sa"

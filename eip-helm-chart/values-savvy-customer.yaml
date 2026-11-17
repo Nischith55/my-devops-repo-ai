@@ -1,0 +1,127 @@
+global:
+# fullnameoverride sets the name of the deployment and service 
+  fullnameOverride: "pep-eip-pbna-savvy-customer" 
+# targetted namespace to which the chart objects get deployed
+  namespace: sscsi  
+  pvc:
+    enabled: false
+    accessModes:
+    - ReadWriteOnce
+    storageClass: ""
+    storageRequest: 2Gi
+    mountPath: /mount
+  secretManagement:
+    enabled: false
+    secretProviderClassName: test-csi 
+    mountPath: /secretmount
+    clientId: bb2ede38-8689-4f18-87c0-2c47df148c7f
+    keyvaultName: pe1001-git-test-01-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects:
+    - secretName: databasecreds
+      data:
+      - objectName: test
+        objectType: secret
+        key : username
+      - objectName: sample
+        objectType: secret
+        key : password 
+  
+platform-chart:
+  autoscalingEnabled: true
+  hpaConfigMinReplicas: 2
+  hpaConfigMaxReplicas: 6
+  targetCPUUtilizationPercentage: 80 
+  pdbEnabled: true
+  pdbMaxUnavailable: 1
+  pdbSelector:
+    app: pep-eip-pbna-savvy-customer  
+    
+  virtualService: 
+    enabled: true
+    name: pep-eip-pbna-savvy-customer-vs
+    namespace: pep-eiap-istio-config
+    hosts: 
+    - pep-eip-pbna-savvy-customer.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+    routes:
+    - prefix: /
+      destinationService: pep-eip-pbna-savvy-customer
+      port: 8080
+    
+  pv:
+    enabled: false    
+    fileShare: test
+    accessSecret: azure-secret
+    storageClass: ""
+    resourceGroup: pep-eiap-nonprod-scus-k8s-01-rg
+    storageAccount: pe0001sbox03aks01sa
+
+app-chart:
+  replicaCount: 2
+  
+  labels:
+    app: pep-eip-pbna-savvy-customer
+
+  image:    
+    repository: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/pbna/halo/pep-eip-pbna-savvy-customer
+    tag: "20230621.12"
+  
+  imagePullSecrets:
+    - name: "pep-eiap-pbna-halo-dev-regcred"
+  
+  containerPorts:
+  - port: 8080
+    name: "app-port"
+  
+  probes:
+    enabled: true
+    liveness:
+      path: /actuator/health/liveness
+      port: app-port
+      initialDelaySeconds: 90
+      periodSeconds: 10
+      timeoutSeconds: 15
+    readiness:
+      path: /actuator/health/readiness
+      port: app-port
+      initialDelaySeconds: 90
+      periodSeconds: 10
+      timeoutSeconds: 15
+    startup:
+      path: /actuator/health/liveness
+      port: app-port
+      initialDelaySeconds: 90
+      periodSeconds: 10
+      timeoutSeconds: 15
+      successThreshold: 1
+      failureThreshold: 30
+
+  envFromSecrets:
+  - name: TERADATA_USER
+    secret: 
+      name: pep-eip-pbna-savvy-customer-secret
+      key: TERADATA_USER
+  - name: TERADATA_PASSWORD
+    secret: 
+      name: pep-eip-pbna-savvy-customer-secret
+      key: TERADATA_PASSWORD
+  
+  resources: 
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+    requests:
+      cpu: "1"
+      memory: "1400Mi"
+ 
+  configmapFromFile:
+    enabled: true    
+    configurations: 
+      pep-eip-pbna-savvy-customer:
+        config: 'test'
+        tobeMounted: false
+        mountPath: '/config'
+        volumeName: application-config 
+
+  serviceAccount:
+    name: wi-sa

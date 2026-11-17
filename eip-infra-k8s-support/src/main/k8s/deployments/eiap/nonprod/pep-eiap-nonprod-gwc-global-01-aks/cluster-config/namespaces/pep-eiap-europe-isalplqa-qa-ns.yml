@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-europe-isalplqa-qa
+  labels:
+    env-nonprod: "true"
+    project: isalplqa
+    sector: europe
+    team: europe-isalplqa
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: isales2easterneuropenon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: dbbe083ddb3e8c10c2b5f381399619cf
+    pep-cmdb-app-service-id: a8b0c1d41bbf6410e3f45310604bcb71
+    pep-environment: QA
+    

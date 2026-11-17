@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-global-data-caf-write-back-v1
+  name: pepsico-global-data-caf-write-back-v1-vs
+  namespace: pep-eiap-pfna-onepep-prod
+spec:
+  gateways:
+  - pep-eiap-pfna-onepep-prod/pep-eiap-pfna-onepep-prod-cv-gw
+  hosts:
+  - pepsico-global-data-caf-write-back-v1.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-global-data-caf-write-back-v1.pep-eiap-pfna-onepep-prod.svc.cluster.local
+        port:
+          number: 80

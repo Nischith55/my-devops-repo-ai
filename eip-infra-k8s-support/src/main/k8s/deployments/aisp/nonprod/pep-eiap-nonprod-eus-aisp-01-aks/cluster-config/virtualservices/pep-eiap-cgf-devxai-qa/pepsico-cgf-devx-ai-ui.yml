@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pepsico-cgf-devx-ai-ui","app.kubernetes.io/instance":"pepsico-cgf-devx-ai-ui-qa","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","environment":"qa","helm.sh/chart":"platform-chart-1.2.0"},"name":"pepsico-cgf-devx-ai-ui","namespace":"pep-eiap-cgf-devxai-qa"},"spec":{"gateways":["pep-eiap-cgf-devxai-qa/pep-eiap-cgf-devxai-qa-cv-gw"],"hosts":["pepsico-cgf-devx-ai-ui-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-cgf-devx-ai-ui.pep-eiap-cgf-devxai-qa.svc.cluster.local","port":{"number":80}}}]}]}}
+
+'
+        meta.helm.sh/release-name: pepsico-cgf-devx-ai-ui
+        meta.helm.sh/release-namespace: pep-eiap-cgf-devxai-qa
+    labels:
+        app: pepsico-cgf-devx-ai-ui
+        app.kubernetes.io/instance: pepsico-cgf-devx-ai-ui-qa
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        environment: qa
+        helm.sh/chart: platform-chart-1.2.0
+    name: pepsico-cgf-devx-ai-ui
+    namespace: pep-eiap-cgf-devxai-qa
+spec:
+    gateways:
+    - pep-eiap-cgf-devxai-qa/pep-eiap-cgf-devxai-qa-cv-gw
+    hosts:
+    - pepsico-cgf-devx-ai-ui-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-ai.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-cgf-devx-ai-ui.pep-eiap-cgf-devxai-qa.svc.cluster.local
+                port:
+                    number: 80

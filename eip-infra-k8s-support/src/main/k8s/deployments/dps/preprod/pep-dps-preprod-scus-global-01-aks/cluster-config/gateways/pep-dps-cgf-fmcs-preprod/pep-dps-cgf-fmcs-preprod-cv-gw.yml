@@ -1,0 +1,84 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-fmcs-preprod-cv-gw
+  namespace: pep-dps-cgf-fmcs-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-fmcs-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-fmcs-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-fmcs-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dss-fmcs.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-fmcs-support-forms-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-fmcs-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-fmcs-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-dss-fmcs.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-fmcs-support-forms-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - fmcs-support-forms-ui.preprod.mypepsico.com
+    name: pep-dps-cgf-fmcs-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-fmcs-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - fmcs-support-forms-ui.preprod.mypepsico.com
+    name: pep-dps-cgf-fmcs-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-fmcs-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-fmcs-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

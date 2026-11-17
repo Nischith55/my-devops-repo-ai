@@ -1,0 +1,15 @@
+--- 
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  # naming convention is "acrname-serviceaccountname"
+  name: pepeiapprodcommonacr-pep-eiap-flna-eiv-prod-sa
+  namespace: pep-eiap-flna-eiv-prod
+spec:
+  # fully qualified ACR name
+  acrServer: pepeiapprodcommonacr.azurecr.io
+  # managed identity that should have the access to the ACR specified
+  managedIdentityResourceID: /subscriptions/72d4c1b3-fd6e-432a-b18a-89eec2c10a6b/resourceGroups/pep-eiap-prod-scus-global-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-eiap-prod-scus-global-01-aks-agentpool
+  # Service account used by deployments
+  serviceAccountName: pep-eiap-flna-eiv-prod-sa

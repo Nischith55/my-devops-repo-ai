@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+pep-pfna-nonprod-global-devmetadata:
+  name: pep-pfna-nginx
+  namespace: pep-pfna-nonprod-global-dev
+spec:
+  template:
+    spec:
+      containers:
+        - image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+          name: pep-pfna-nginx
+          env:
+            - name: FAIL_LINK
+              value: https://google.com
+      volumes:
+        - name: all-gw-secrets
+          projected:
+            defaultMode: 256
+            sources:
+            - secret:
+                items:
+                - key: cert
+                  path: gw01-tls.crt
+                - key: key
+                  path: gw01-tls.key
+                name: pep-pfna-nonprod-eus-shp-global-01-aks-gw01-tls

@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falcon-prod-pep-eiap-prod-sea-infra-02-aks-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+    targetRevision: develop
+  - repoURL: pepeiapprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: falcon-prod-pep-eiap-prod-sea-infra-02-aks
+      valueFiles:
+      - $values/prod/eiap/pep-eiap-prod-sea-infra-02-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: prod
+          helm:  
+            enabled: false       
+            repo: pepeiapprodcommonacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-eiap-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'falcon-prod-pep-eiap-prod-sea-infra-02-aks' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+              repoName: pep-falcon-aisp-aks-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

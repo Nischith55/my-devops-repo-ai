@@ -1,0 +1,26 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+# Elastic Search Server
+ns_elastic_system:
+  name: elastic-system
+
+  labels:
+    istio-injection: enabled
+
+  generic_secrets: |-
+    {{ elastic_generic_secrets_names | default([]) }}
+
+  registry_secrets: |-
+    {{ elastic_registry_secrets_names | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ elastic_tls_secrets_names | default([]) }}

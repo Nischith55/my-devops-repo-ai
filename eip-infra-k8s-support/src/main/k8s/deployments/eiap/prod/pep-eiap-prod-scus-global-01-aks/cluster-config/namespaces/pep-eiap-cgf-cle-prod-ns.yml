@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-cle-prod
+    project: cle
+    sector: cgf
+    servicename_aks: cle
+    team: cgf-cle
+  name: pep-eiap-cgf-cle-prod

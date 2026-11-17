@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test-august19testingnondpa-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test-august19testingnondpa-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-august19testingnondpa-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/devsecops-java17-project01/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test-august19testingnondpa-dev-admin
+    description: Admin privileges to test-august19testingnondpa-dev
+    policies:
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-admin, applications, *, test-august19testingnondpa-dev/*, allow
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-admin, repositories, *, test-august19testingnondpa-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: test-august19testingnondpa-dev-user
+    description: Read-only privileges to test-august19testingnondpa-dev
+    policies:
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-user, applications, get, test-august19testingnondpa-dev/*, allow
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-user, applications, sync, test-august19testingnondpa-dev/*, allow
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-user, repositories, get, test-august19testingnondpa-dev/*, allow
+    - p, proj:test-august19testingnondpa-dev:test-august19testingnondpa-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aig-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for aig-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/aig-core-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-aig-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: aig-dev-admin
+    description: Admin privileges to aig-dev
+    policies:
+    - p, proj:aig-dev:aig-dev-admin, applications, *, aig-dev/*, allow
+    - p, proj:aig-dev:aig-dev-admin, applications, get, argocd/*, allow
+    - p, proj:aig-dev:aig-dev-admin, repositories, *, aig-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: aig-dev-user
+    description: Read-only privileges to aig-dev
+    policies:
+    - p, proj:aig-dev:aig-dev-user, applications, get, aig-dev/*, allow
+    - p, proj:aig-dev:aig-dev-user, applications, sync, aig-dev/*, allow
+    - p, proj:aig-dev:aig-dev-user, repositories, get, aig-dev/*, allow
+    - p, proj:aig-dev:aig-dev-user, applications, action/apps/Deployment/restart, aig-dev/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.AIG"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

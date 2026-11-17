@@ -1,0 +1,8 @@
+####### BEGIN Added recently --pep-aisp-preprod-scus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_aisp_cgf_ckptgptpp_preprod
+  - ns_pep_aisp_cgf_pepgenx_preprod
+####### END Added recently --pep-aisp-preprod-scus-01-aks######

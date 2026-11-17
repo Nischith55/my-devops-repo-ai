@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-ppsi-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for rd-ppsi-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-ppsi-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-snt-prod-scus-global-02-aks
+    namespace: pep-snt-cgf-ppsi-prod
+  - name: pep-snt-prod-scus-global-02-aks
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: rd-ppsi-prod-admin
+    description: Admin privileges to rd-ppsi-prod
+    policies:
+    - p, proj:rd-ppsi-prod:rd-ppsi-prod-admin, applications, *, rd-ppsi-prod/*, allow
+    - p, proj:rd-ppsi-prod:rd-ppsi-prod-admin, repositories, *, rd-ppsi-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-ppsi-prod-user
+    description: Read-only privileges to rd-ppsi-prod
+    policies:
+    - p, proj:rd-ppsi-prod:rd-ppsi-prod-user, applications, get, rd-ppsi-prod/*, allow
+    - p, proj:rd-ppsi-prod:rd-ppsi-prod-user, applications, sync, rd-ppsi-prod/*, allow
+    - p, proj:rd-ppsi-prod:rd-ppsi-prod-user, repositories, get, rd-ppsi-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.CGF.RD.PPSI.Prod"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

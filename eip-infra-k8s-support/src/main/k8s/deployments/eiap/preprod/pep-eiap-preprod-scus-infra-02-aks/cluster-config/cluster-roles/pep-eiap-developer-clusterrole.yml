@@ -1,0 +1,192 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-developer-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - nodes
+    - namespaces
+    - persistentvolumes
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pod
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - ''
+    resources:
+    - persistentvolumeclaims
+    verbs:
+    - '*'
+-   apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    verbs:
+    - '*'
+-   apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    - daemonsets
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - podtemplates
+    - pods
+    - pods/attach
+    - pods/binding
+    - pods/eviction
+    - pods/exec
+    - pods/log
+    - pods/portforward
+    - pods/proxy
+    - pods/status
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - services
+    - services/proxy
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - secrets
+    verbs:
+    - create
+    - get
+    - list
+    - patch
+    - update
+    - watch
+-   apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs:
+    - '*'
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - '*'
+-   apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    - api
+    - autoscaling
+    - batch
+    - networking.istio.io
+    resources:
+    - '*/status'
+    - '*/scale'
+    verbs:
+    - '*'
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - virtualservices
+    - destinationrules
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - events
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    - triggerauthentications
+    verbs:
+    - '*'
+-   apiGroups:
+    - policy
+    resources:
+    - poddisruptionbudgets 
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - gateways
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - security.istio.io
+    resources:
+    - peerauthentication
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - networking.k8s.io
+    resources:
+    - networkpolicies
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - secrets-store.csi.x-k8s.io
+    resources:
+    - secretproviderclasses
+    - secretproviderclasspodstatuses
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - roles
+    - rolebindings
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - ''
+    resources:
+    - serviceaccounts
+    - endpoints
+    verbs:
+    - get
+    - list

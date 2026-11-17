@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: loyalty-admin-ui-euhub-prod:networking.istio.io/VirtualService:pep-dps-cgf-dtcjoykz-prod/dtcsrv-joy-admin-ui-eu-euhub-vs
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"loyalty-admin-ui-euhub-prod:networking.istio.io/VirtualService:pep-dps-cgf-dtcjoykz-prod/dtcsrv-joy-admin-ui-eu-euhub-vs"},"labels":{"app":"dtcsrv-joy-admin-ui-eu-euhub","app.kubernetes.io/instance":"loyalty-admin-ui-euhub","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.9"},"name":"dtcsrv-joy-admin-ui-eu-euhub-vs","namespace":"pep-dps-cgf-dtcjoykz-prod"},"spec":{"gateways":["pep-dps-cgf-dtcjoykz-prod/pep-dps-cgf-dtcjoykz-prod-cv-gw"],"hosts":["dtcsrv-joy-admin-ui-eu-euhub.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"dtcsrv-joy-admin-ui-eu-euhub.pep-dps-cgf-dtcjoykz-prod.svc.cluster.local","port":{"number":80},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: dtcsrv-joy-admin-ui-eu-euhub
+        app.kubernetes.io/instance: loyalty-admin-ui-euhub
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.9
+    name: dtcsrv-joy-admin-ui-eu-euhub-vs
+    namespace: pep-dps-cgf-dtcjoykz-prod
+spec:
+    gateways:
+    - pep-dps-cgf-dtcjoykz-prod/pep-dps-cgf-dtcjoykz-prod-cv-gw
+    hosts:
+    - dtcsrv-joy-admin-ui-eu-euhub.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - admin-pepl-euhub.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: dtcsrv-joy-admin-ui-eu-euhub.pep-dps-cgf-dtcjoykz-prod.svc.cluster.local
+                port:
+                    number: 80

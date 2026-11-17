@@ -1,0 +1,40 @@
+---
+ns_pep_dps_latam_btbproduct_preprod:
+  
+  name: pep-dps-latam-btbproduct-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-btbproduct
+    sector: latam
+    project: btbproduct
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalproductsamericasnon-prod
+    pep-cmdb-app-service-id: "fa12635547555e1c26faaa22516d4301"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-dps-latam-btbproduct-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_btbproduct'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-latam-btbproduct-preprod-sa-token
+    namespace: pep-dps-latam-btbproduct-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-latam-btbproduct-preprod-sa"

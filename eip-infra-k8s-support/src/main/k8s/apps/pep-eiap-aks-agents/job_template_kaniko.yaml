@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: pepsico-eip-kaniko-job-
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: pep-eiap-svc-global-devsecops-sp-regcred # Secret name created earlier
+      serviceAccountName: pep-eiap-buildagent
+      containers:
+      - name: kaniko-executor
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/kaniko-executor:official
+        args: ["--dockerfile=Dockerfilepath",
+               "--context=/artifacts/context-to-be-updated",
+               #"--context-sub-path=contextsubpath-to-be-updated",
+               "--destination=image-to-be-updated"]
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "2Gi"
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+        volumeMounts:
+          - name: volume
+            mountPath: /artifacts
+          - name: kaniko-secret
+            mountPath: "/kaniko/.docker"
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: pep-eiap-svc-global-devsecops-acr-creds
+            items:
+            - key: .dockerconfigjson
+              path: config.json
+        - name: volume
+          persistentVolumeClaim:
+            claimName: pvc-azurefile-devops
+      nodeSelector:
+        agentpool: npu02
+      restartPolicy: "OnFailure"
+      tolerations:
+      - key: "BuildAgentPool"
+        operator: "Exists"
+        effect: "NoSchedule"

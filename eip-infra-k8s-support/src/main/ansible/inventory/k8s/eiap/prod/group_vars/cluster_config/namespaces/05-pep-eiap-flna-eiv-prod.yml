@@ -1,0 +1,40 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace FLNA EIV
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_flna_eiv_prod:
+  
+  name: pep-eiap-flna-eiv-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-eiv
+    sector: flna
+    project: eiv
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_eiv'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-eiap-flna-eiv-prod-sa
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb

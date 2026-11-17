@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-prod: "true"
+    environment: prod
+    istio-injection: enabled
+    project: eip
+    sector: global
+    team: global-eip
+  name: pep-eiap-global-eip-prod

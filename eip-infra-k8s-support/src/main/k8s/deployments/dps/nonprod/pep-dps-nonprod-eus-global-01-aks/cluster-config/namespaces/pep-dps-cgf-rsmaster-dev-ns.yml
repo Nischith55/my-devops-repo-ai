@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-dps-cgf-rsmaster-dev
+    pep-cmdb-app-service-id: c3ba487fc3ee3194ad658535990131a9
+    pep-cmdb-bus-app-id: a0ee40fddb3e8c10c2b5f381399619cd
+    pep-environment: Development
+    project: rsmaster
+    sector: cgf
+    servicename_aks: dpsdsdvisibilityappservice
+    team: cgf-rsmaster
+  name: pep-dps-cgf-rsmaster-dev

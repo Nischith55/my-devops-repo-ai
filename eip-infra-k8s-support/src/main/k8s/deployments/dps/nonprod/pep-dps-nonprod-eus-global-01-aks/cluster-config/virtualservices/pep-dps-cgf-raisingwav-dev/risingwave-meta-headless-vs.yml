@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: risingwave-meta-headless-vs
+  namespace: pep-dps-cgf-raisingwav-dev
+spec:
+  gateways:
+  - pep-dps-cgf-raisingwav-dev/pep-dps-cgf-raisingwav-dev-cv-gw
+  hosts:
+  - risingwave-meta-headless.dps.gw02.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: risingwave-meta-headless.pep-dps-cgf-raisingwav-dev.svc.cluster.local
+        port:
+          number: 5691

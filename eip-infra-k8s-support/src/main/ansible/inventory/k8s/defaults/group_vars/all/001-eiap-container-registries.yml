@@ -1,0 +1,10 @@
+---
+# EIAP Container Registries
+
+eiap_nonprod_common_acr: pepeiapnonprodcommonacr.azurecr.io
+eiap_prod_common_acr: pepeiapprodcommonacr.azurecr.io
+
+# The following would need to set for each environment.
+
+# eiap_env_common_acr:
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: swaggerui
+  name: swaggerui-qa-vs
+  namespace: pep-eiap-global-cep-qa
+spec:
+  gateways:
+  - pep-eiap-global-cep-qa/pep-eiap-global-cep-qa-cv-gw
+  hosts:
+  - swaggerui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - swagger.cep.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: swaggerui.pep-eiap-global-cep-qa.svc.cluster.local
+        port:
+          number: 80

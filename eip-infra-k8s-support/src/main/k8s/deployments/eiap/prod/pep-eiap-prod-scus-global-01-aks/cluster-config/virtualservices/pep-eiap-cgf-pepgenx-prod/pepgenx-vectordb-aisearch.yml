@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: pep-cto-ee-pepgenx-vectordb-aisearch
+    meta.helm.sh/release-namespace: pep-eiap-cgf-pepgenx-prod
+  labels:
+    app: pepgenx-vectordb-aisearch
+    app.kubernetes.io/instance: pep-cto-ee-pepgenx-vectordb-aisearch
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: '20240718.1'
+    helm.sh/chart: platform-chart-0.1.1
+  name: pepgenx-vectordb-aisearch
+  namespace: pep-eiap-cgf-pepgenx-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepgenx-prod/pep-eiap-cgf-pepgenx-prod-cv-gw
+  hosts:
+  - pepgenx-vectordb-aisearch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepgenx-vectordb-aisearch.pep-eiap-cgf-pepgenx-prod.svc.cluster.local
+        port:
+          number: 8080

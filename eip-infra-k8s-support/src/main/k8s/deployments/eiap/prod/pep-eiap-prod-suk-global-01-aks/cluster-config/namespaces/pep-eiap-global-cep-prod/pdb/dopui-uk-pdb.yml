@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: dopui-uk
+  namespace: pep-eiap-global-cep-prod
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: dopui-uk   

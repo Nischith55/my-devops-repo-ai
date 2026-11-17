@@ -1,0 +1,114 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-gtmdsld-prod-cv-gw
+  namespace: pep-pfna-flna-gtmdsld-prod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-gtmdsld-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmdsld-prod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-gtmdsld-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pcaf-api-accountgroupservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-adminservice-dsld-stp.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-chainrestrictionservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-chainservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-cmaservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-contentservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customersearchservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customerservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customerservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-employeeservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-flavorservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-stp.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-iriservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-promotionaleventservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-reportservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-storecheckinservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-storeservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-teradataservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-trainingservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-userservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-vehicleservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-workorderservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-kafka-consumerservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-kafka-producerservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-gtmdsld-prod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmdsld-prod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-gtmdsld-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-cit-prod-scus-pgt-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pcaf-api-accountgroupservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-adminservice-dsld-stp.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-chainrestrictionservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-chainservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-cmaservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-contentservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customersearchservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customerservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-customerservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-employeeservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-flavorservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-stp.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-generalservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-iriservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-promotionaleventservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-reportservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-storecheckinservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-storeservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-teradataservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-trainingservice-dsld-sfod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-userservice-dsld-xpc.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-vehicleservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-api-workorderservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-kafka-consumerservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pcaf-kafka-producerservice-dsld-txl.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-gtmdsld-prod.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-gtmdsld-prod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-gtmdsld-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

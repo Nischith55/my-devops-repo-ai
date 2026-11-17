@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"b2b-profile-admin-ui-global","app.kubernetes.io/instance":"b2b-profile-admin-ui-global-preprod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-profile-admin-ui-global","namespace":"pep-dps-latam-btblylty-preprod"},"spec":{"gateways":["pep-dps-latam-btblylty-preprod/pep-dps-latam-btblylty-preprod-cv-gw"],"hosts":["b2b-profile-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-profile-admin-ui-global.pep-dps-latam-btblylty-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-profile-admin-ui-global
+        app.kubernetes.io/instance: b2b-profile-admin-ui-global-preprod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-profile-admin-ui-global
+    namespace: pep-dps-latam-btblylty-preprod
+spec:
+    gateways:
+    - pep-dps-latam-btblylty-preprod/pep-dps-latam-btblylty-preprod-cv-gw
+    hosts:
+    - b2b-profile-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - profile-b2b-glo.preprod.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-profile-admin-ui-global.pep-dps-latam-btblylty-preprod.svc.cluster.local
+                port:
+                    number: 8080

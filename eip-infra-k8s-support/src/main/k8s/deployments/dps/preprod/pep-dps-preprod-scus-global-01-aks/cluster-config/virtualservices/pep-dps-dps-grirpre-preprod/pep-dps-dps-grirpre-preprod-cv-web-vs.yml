@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-grirpre-preprod-cv-web-vs
+  namespace: pep-dps-dps-grirpre-preprod
+  labels:
+    app: pep-dps-dps-grirpre-preprod-cv-web
+spec:
+  hosts:
+    - grir.preprod.pepsico.com
+    - pep-dps-dps-grirpre-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-grirpre-preprod/pep-dps-dps-grirpre-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-grirpre-preprod-cv-web.pep-dps-dps-grirpre-preprod.svc.cluster.local
+        port:
+          number: 80

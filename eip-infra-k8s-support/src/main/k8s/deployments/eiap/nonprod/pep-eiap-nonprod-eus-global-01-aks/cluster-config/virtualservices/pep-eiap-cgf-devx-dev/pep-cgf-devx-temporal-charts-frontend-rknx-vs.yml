@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cgf-devx-temporal-charts-frontend-rknx-vs
+  namespace: pep-eiap-cgf-devx-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-cgf-devx-temporal-charts-frontend-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-devx-dev/pep-eiap-cgf-devx-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cgf-devx-temporal-charts-frontend.pep-eiap-cgf-devx-dev.svc.cluster.local
+        port:
+          number: 7233
+  

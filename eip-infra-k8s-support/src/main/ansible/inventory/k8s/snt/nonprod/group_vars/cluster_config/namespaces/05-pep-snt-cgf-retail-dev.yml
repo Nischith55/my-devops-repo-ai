@@ -1,0 +1,29 @@
+---
+ns_pep_snt_cgf_retail_dev:
+  
+  name: pep-snt-cgf-retail-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-retail
+    sector: cgf
+    project: retail
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-snt-cgf-retail-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_retail'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

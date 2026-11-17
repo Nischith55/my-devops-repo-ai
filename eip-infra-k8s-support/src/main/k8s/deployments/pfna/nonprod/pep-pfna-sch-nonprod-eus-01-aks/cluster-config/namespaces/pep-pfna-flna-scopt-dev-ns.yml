@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-flna-scopt-dev
+    pep-cmdb-app-service-id: 4701e53447e6151052293238436d4316
+    pep-cmdb-bus-app-id: a0ee40fddb3e8c10c2b5f381399619cd
+    pep-environment: Development
+    project: scopt
+    sector: flna
+    servicename_aks: supplychaindatawarehousenon-prod
+    team: flna-scopt
+  name: pep-pfna-flna-scopt-dev

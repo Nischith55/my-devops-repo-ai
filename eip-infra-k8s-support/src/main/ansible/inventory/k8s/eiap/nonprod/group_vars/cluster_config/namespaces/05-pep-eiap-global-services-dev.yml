@@ -1,0 +1,55 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace GLOBAL SERVICES
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_global_services_dev:
+
+  name: pep-eiap-global-services-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: global-services
+    sector: global
+    project: services
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-global-services-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_services'] }}"
+        - "{{ k8s_sup_subjects['global_services_sp'] }}"
+        
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _global_services_spn_name }}"
+      registries: 
+        - pepeiapnonprodglobalservicesacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _global_services_spn_name }}"
+      # Any contents apart from what is in secret        

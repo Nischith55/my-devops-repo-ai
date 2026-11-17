@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 3bb2a06e1bb9c5d03b070ed8cc4bcbf7
+    pep-cmdb-bus-app-id: 79cec07ddb3e8c10c2b5f38139961954
+    pep-environment: Production
+    project: iamcentral
+    sector: cgf
+    servicename_aks: myidmprod
+    team: cgf-iamcentral
+  name: pep-eiap-cgf-iamcentral-prod

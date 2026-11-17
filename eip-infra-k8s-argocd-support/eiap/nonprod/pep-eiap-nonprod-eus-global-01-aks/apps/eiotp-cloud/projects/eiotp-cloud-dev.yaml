@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: eiotp-cloud-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for eiotp-cloud-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PEPsense_IoT_Platform/_git/pep-eiotp-cloud-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-global-eiotp-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: eiotp-cloud-dev-admin
+    description: Admin privileges to eiotp-cloud-dev
+    policies:
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-admin, applications, *, eiotp-cloud-dev/*, allow
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-admin, repositories, *, eiotp-cloud-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: eiotp-cloud-dev-user
+    description: Read-only privileges to eiotp-cloud-dev
+    policies:
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-user, applications, get, eiotp-cloud-dev/*, allow
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-user, applications, sync, eiotp-cloud-dev/*, allow
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-user, repositories, get, eiotp-cloud-dev/*, allow # This line will be replaced by the pipeline script
+    - p, proj:eiotp-cloud-dev:eiotp-cloud-dev-user, applications, action/apps/Deployment/restart, eiotp-cloud-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Global.EIOTP.NonProd.ContributorNoDelete"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.EIAP.Global.EIOTP.NonProd.Reader"

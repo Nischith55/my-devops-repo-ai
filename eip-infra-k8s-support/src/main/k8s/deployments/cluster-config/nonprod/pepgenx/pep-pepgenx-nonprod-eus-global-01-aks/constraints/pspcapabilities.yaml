@@ -1,0 +1,36 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPCapabilities
+metadata:
+  name: restrict-container-capabilities
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+    - argocd
+    - gatekeeper-system
+    - default
+    - istio-ingress
+    - istio-system
+    - keda
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - monitoring
+    - pep-pepgenx-elastic-client-01
+    - pep-pepgenx-elastic-askadaa-01
+    - pep-pepgenx-global-devsecops-dev
+    - pep-pepgenx-global-dev
+    - pep-pepgenx-snowdiscovery-nonprod
+  parameters:
+    requiredDropCapabilities:
+      - NET_RAW
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - SYS_MODULE
+
+
+

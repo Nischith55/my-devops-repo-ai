@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: compass-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for compass-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Pepsico_GlobalProcurementAutomation/_git/compass-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-gpacommgt-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: compass-dev-admin
+        description: Admin privileges to compass-dev
+        policies:
+        - p, proj:compass-dev:compass-dev-admin, applications, *, compass-dev/*, allow
+        - p, proj:compass-dev:compass-dev-admin, repositories, *, compass-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: compass-dev-user
+        description: Read-only privileges to compass-dev
+        policies:
+        - p, proj:compass-dev:compass-dev-user, applications, get, compass-dev/*, allow
+        - p, proj:compass-dev:compass-dev-user, applications, sync, compass-dev/*, allow
+        - p, proj:compass-dev:compass-dev-user, repositories, get, compass-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:compass-dev:compass-dev-user, applications, action/apps/Deployment/restart, compass-dev/*, allow
+        groups:
+        - "Team.App.GpaDev.Users"
+        - "Team.Support.EIAP.READ"
+    

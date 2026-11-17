@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pep-fss-prod-csext-dcs-pg-vs
+  namespace: pep-aisp-cgf-fss-prod
+spec:
+  gateways:
+  - pep-aisp-cgf-fss-prod/pep-aisp-cgf-fss-prod-cv-gw
+  hosts:
+  - pep-fss-prd-csext-dcs-pg.aisp.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 2591
+    route:
+    - destination:
+        host: csext-dcs-pg.pep-aisp-cgf-fss-prod.svc.cluster.local
+        port:
+          number: 2591

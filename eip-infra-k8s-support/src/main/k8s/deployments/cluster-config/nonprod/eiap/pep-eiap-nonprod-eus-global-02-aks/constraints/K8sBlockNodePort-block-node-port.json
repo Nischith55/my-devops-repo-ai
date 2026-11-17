@@ -1,0 +1,25 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockNodePort",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/K8sBlockNodePort:default/block-node-port"
+    },
+    "name": "block-node-port"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ]
+    }
+  }
+}

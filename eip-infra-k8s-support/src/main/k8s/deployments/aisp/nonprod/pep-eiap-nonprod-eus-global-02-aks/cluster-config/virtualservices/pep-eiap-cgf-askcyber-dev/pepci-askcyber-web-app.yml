@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pepci-askcyber-web-app-dev:networking.istio.io/VirtualService:pep-eiap-cgf-askcyber-dev/pepci-askcyber-web-app
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pepci-askcyber-web-app-dev:networking.istio.io/VirtualService:pep-eiap-cgf-askcyber-dev/pepci-askcyber-web-app"},"labels":{"app":"pepci-askcyber-web-app","app.kubernetes.io/instance":"pepci-askcyber-web-app","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"pepci-askcyber-web-app","namespace":"pep-eiap-cgf-askcyber-dev"},"spec":{"gateways":["pep-eiap-cgf-askcyber-dev/pep-eiap-cgf-askcyber-dev-cv-gw"],"hosts":["pepci-askcyber-web-app-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepci-askcyber-web-app.pep-eiap-cgf-askcyber-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pepci-askcyber-web-app
+        app.kubernetes.io/instance: pepci-askcyber-web-app
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: pepci-askcyber-web-app
+    namespace: pep-eiap-cgf-askcyber-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-askcyber-dev/pep-eiap-cgf-askcyber-dev-cv-gw
+    hosts:
+    - pepci-askcyber-web-app-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - askcyber.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepci-askcyber-web-app.pep-eiap-cgf-askcyber-dev.svc.cluster.local
+                port:
+                    number: 8080

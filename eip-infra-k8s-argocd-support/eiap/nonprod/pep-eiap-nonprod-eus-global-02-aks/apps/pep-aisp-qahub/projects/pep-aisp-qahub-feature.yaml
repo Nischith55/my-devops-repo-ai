@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-aisp-qahub-feature
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-aisp-qahub-feature   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_AI_SDLC_Agents/_git/pep-aisp-qahub-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-mtc-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-aisp-qahub-feature-admin
+        description: Admin privileges to pep-aisp-qahub-feature
+        policies:
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-admin, applications, *, pep-aisp-qahub-feature/*, allow
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-admin, repositories, *, pep-aisp-qahub-feature/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-aisp-qahub-feature-user
+        description: Read-only privileges to pep-aisp-qahub-feature
+        policies:
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-user, applications, get, pep-aisp-qahub-feature/*, allow
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-user, applications, sync, pep-aisp-qahub-feature/*, allow
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-user, repositories, get, pep-aisp-qahub-feature/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-aisp-qahub-feature:pep-aisp-qahub-feature-user, applications, action/apps/Deployment/restart, pep-aisp-qahub-feature/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.MTCDEV"
+        - "Team.Support.EIAP.READ"
+    

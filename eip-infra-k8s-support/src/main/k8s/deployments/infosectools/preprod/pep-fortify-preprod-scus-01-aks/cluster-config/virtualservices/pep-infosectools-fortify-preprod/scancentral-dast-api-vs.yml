@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"scancentral-dast-api-vs","namespace":"pep-fortify-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["scancentral-dast-api.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com","dastapi-preprod.pepasm.net"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"scancentral-dast-api.pep-infosectools-fortify-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: scancentral-dast-api-vs
+  namespace: pep-infosectools-fortify-preprod
+spec:
+  gateways:
+  - pep-infosectools-fortify-preprod/pep-infosectools-fortify-preprod-cv-gw
+  hosts:
+  - scancentral-dast-api.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - dastapi-preprod.pepasm.net
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: scancentral-dast-api.pep-infosectools-fortify-preprod.svc.cluster.local
+        port:
+          number: 80

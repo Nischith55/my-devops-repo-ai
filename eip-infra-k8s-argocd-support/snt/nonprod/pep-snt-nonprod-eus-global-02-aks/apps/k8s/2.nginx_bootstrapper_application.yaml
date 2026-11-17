@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-bootstrapper-pep-snt-nonprod-eus-global-02-aks
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: nginx
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+    targetRevision: develop   
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: pep-snt-nonprod-eus-global-02-aks-nginx
+      valueFiles:
+      - $values/src/main/k8s/deployments/apps/nonprod/snt/pep-snt-nonprod-eus-global-02-aks/argocd-app-configs.yaml    
+      values: |
+        global:               
+          spec:
+            project: 'nginx' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+              repoName: eip-infra-k8s-support
+              targetRevision: develop
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notification

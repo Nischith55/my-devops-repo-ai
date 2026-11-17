@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nsgagent-nsgagent-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for nsgagent-nsgagent-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_cloudaiops/_git/nsgagent-nsgagent-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-snt-nsgagent-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: nsgagent-nsgagent-dev-admin
+    description: Admin privileges to nsgagent-nsgagent-dev
+    policies:
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-admin, applications, *, nsgagent-nsgagent-dev/*, allow
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-admin, repositories, *, nsgagent-nsgagent-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: nsgagent-nsgagent-dev-user
+    description: Read-only privileges to nsgagent-nsgagent-dev
+    policies:
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-user, applications, get, nsgagent-nsgagent-dev/*, allow
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-user, applications, sync, nsgagent-nsgagent-dev/*, allow
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-user, repositories, get, nsgagent-nsgagent-dev/*, allow
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-user, *, delete, *, deny
+    - p, proj:nsgagent-nsgagent-dev-user, applications, action/apps/Deployment/restart, nsgagent-nsgagent-dev/*, allow
+    - p, proj:nsgagent-nsgagent-dev:nsgagent-nsgagent-dev-user, applications, action/apps/Deployment/restart, nsgagent-nsgagent-dev/*, allow
+
+
+    groups:
+    - "Team.App.AZURE.NSG.agent.Priv"
+    - "Team.Support.EIAP.READ"

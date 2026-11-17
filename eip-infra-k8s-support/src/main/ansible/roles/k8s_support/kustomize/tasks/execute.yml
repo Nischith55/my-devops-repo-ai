@@ -1,0 +1,45 @@
+---
+
+# Execute arbitrary kustomize command (note: can be dangerous)
+- name: KUSTOMIZE_EXEC_BLOCK
+  block:
+
+    - name: |-
+        KUSTOMIZE_EXEC ({{ kustomize_action }}) ({{ kustomize_action_args }})
+      shell: |
+        set -eou pipefail
+        {{ kustomize_cmd }} {{ kustomize_options | default('') }} \
+          {{ kustomize_action }} \
+          {{ kustomize_action_args }}
+      args:
+        executable: /bin/bash
+      register: kustomize_exec_result
+      changed_when: 
+        - kustomize_exec_result.rc == 0
+        - kustomize_exec_result.stdout is defined
+      failed_when: false
+
+    - name: KUSTOMIZE_EXEC_MSG ({{ kustomize_action }}) ({{ kustomize_action_args }})
+      debug:
+        msg: "{{ kustomize_exec_result.stdout }}"
+      when: >-
+        (kustomize_exec_result.stdout is defined)
+        and
+        (print_resp | default('true') | bool)
+
+    - name: |-
+        KUSTOMIZE_EXEC_ASSERT ({{ kustomize_action }}) ({{ kustomize_action_args }})
+      assert:
+        that:
+          - kustomize_exec_result.rc == 0
+        # MUST be a string
+        fail_msg: |-
+          {{ 
+            (kustomize_exec_result.stderr | default('No Stderr!!')) 
+            | to_nice_yaml 
+          }}
+      when: >-
+        (kustomize_exec_assert_ovrd | default('true') | bool)
+  
+  # always delegate to controller
+  delegate_to: localhost

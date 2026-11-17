@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: af3e20de-961a-4e14-b7c5-67553f155c4a
+  name: pep-eiap-latam-bdr-qa-sa
+  namespace: pep-eiap-latam-bdr-qa

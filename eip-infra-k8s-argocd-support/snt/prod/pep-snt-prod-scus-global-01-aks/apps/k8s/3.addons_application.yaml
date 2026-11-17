@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: add-ons-bootstrapper-pep-snt-prod-scus-global-01-aks
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: k8s-resources
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+    targetRevision: develop
+  - repoURL: pepeiapprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: pep-snt-prod-scus-global-01-aks-add-ons
+      valueFiles:
+      - $values/src/main/k8s/deployments/add-ons/prod/snt/pep-snt-prod-scus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:  
+          helm:  
+            enabled: false       
+            repo: https://charts.rancher.io
+          spec:
+            project: 'k8s-resources' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+              repoName: eip-infra-k8s-support
+              targetRevision: develop
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notification

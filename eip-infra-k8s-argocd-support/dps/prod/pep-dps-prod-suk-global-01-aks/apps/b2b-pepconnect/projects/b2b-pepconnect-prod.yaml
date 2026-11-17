@@ -1,0 +1,114 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-pepconnect-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for b2b-pepconnect-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btbproduct-prod
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btbprofile-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-bfflylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-bffmerch-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-bffckout-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btbpromo-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-globtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-globtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-globtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-globtbprof-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btblylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btblylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btbproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbprof-prod
+    server: https://kubernetes.default.svc    
+  
+
+  roles:
+  - name: b2b-pepconnect-prod-admin
+    description: Admin privileges to b2b-pepconnect-prod
+    policies:
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-admin, applications, *, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-admin, repositories, *, b2b-pepconnect-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Role.App.B2BArgo.PepsiConnect.Admin"
+
+  - name: b2b-pepconnect-prod-user
+    description: Read-only privileges to b2b-pepconnect-prod
+    policies:
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, applications, get, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, applications, sync, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, repositories, get, b2b-pepconnect-prod/*, allow
+    groups:
+    - "Team.Support.LATAM.Prod.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

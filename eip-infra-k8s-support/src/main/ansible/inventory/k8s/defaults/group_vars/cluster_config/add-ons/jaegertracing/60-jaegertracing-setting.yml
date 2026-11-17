@@ -1,0 +1,39 @@
+---
+# ##
+# ABBREVIATION:
+# - jt -> jaegertracing
+# ##
+
+# the app name
+jt_app_name: jaegertracing
+
+# which namespace is this add-on targeted to.
+jt_target_namespace: observability
+
+# which namespace is the original base manifest is targeted to.
+# jt_src_namespace: 
+
+# This can be configure various components directory paths.
+jt_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, jt_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+jt_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, jt_app_name) | path_join }}
+
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+add_on_jaegertracing_setting:
+
+  # app_name
+  name: "{{ jt_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with jt_ and ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^jt_.+_component_setting$'))
+    }}

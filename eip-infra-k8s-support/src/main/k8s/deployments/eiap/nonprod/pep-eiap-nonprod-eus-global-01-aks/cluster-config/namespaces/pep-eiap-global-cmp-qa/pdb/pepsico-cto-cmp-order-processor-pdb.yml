@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pepsico-cto-cmp-order-processor-pdb
+  namespace: pep-eiap-global-cmp-qa
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pepsico-cto-cmp-order-processor

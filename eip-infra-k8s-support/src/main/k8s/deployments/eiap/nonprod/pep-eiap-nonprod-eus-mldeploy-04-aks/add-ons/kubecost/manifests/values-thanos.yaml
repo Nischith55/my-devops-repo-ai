@@ -1,0 +1,86 @@
+global:
+  thanos:
+    enabled: true
+
+# For Thanos Installs, Allow Higher Concurrency from Cost-Model
+# Still may require tweaking for some installs, but the thanos-query-frontend
+# will greatly assist in reduction memory bloat in query.
+kubecostModel:
+  maxQueryConcurrency: 5
+  # This configuration is applied to thanos only. Expresses the resolution to 
+  # use for longer query ranges. Options: raw, 5m, 1h - Default: raw
+  maxSourceResolution: 5m
+
+prometheus:
+  server:
+    extraArgs:
+      storage.tsdb.min-block-duration: 2h
+      storage.tsdb.max-block-duration: 2h
+      storage.tsdb.retention: 2w
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+    extraVolumes:
+    - name: object-store-volume
+      secret:
+        # Ensure this secret name matches thanos.storeSecretName
+        secretName: kubecost-thanos
+    enableAdminApi: true
+    sidecarContainers:
+    - name: thanos-sidecar
+      image: thanosio/thanos:v0.24.0
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      args:
+      - sidecar
+      - --log.level=debug
+      - --tsdb.path=/data/
+      - --prometheus.url=http://127.0.0.1:9090
+      - --objstore.config-file=/etc/config/object-store.yaml
+      # Start of time range limit to serve. Thanos sidecar will serve only metrics, which happened
+      # later than this value. Option can be a constant time in RFC3339 format or time duration
+      # relative to current time, such as -1d or 2h45m. Valid duration units are ms, s, m, h, d, w, y.
+      - --min-time=-3h
+      env:
+      - name: POD_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
+      ports:
+      - name: http
+        containerPort: 10902
+      - name: grpc
+        containerPort: 10901
+      - name: cluster
+        containerPort: 10900
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/prometheus
+      - name: storage-volume
+        mountPath: /data
+        subPath: ""
+      - name: object-store-volume
+        mountPath: /etc/config
+    
+thanos: 
+  
+  # Thanos Sidecar Service Discovery
+  # Disabling removes the prometheus sidecar from querier store discovery. This ensures
+  # that all clusters read from the same data in remote store. 
+  sidecar:
+    enabled: true
+  compact:
+    enabled: false
+  bucket:
+    enabled: false
+  query:
+    enabled: false
+  store:
+    enabled: false
+  queryFrontend:
+    enabled: false
+ 
+  # This secret name should match the sidecar configured secret name volume
+  # in the prometheus.server.extraVolumes entry
+  storeSecretName: kubecost-thanos

@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: admin-portal-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for admin-portal-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-portal-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-adportal-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+    server: https://kubernetes.default.svc
+  roles:
+  - name: admin-portal-dev-admin
+    description: Admin privileges to admin-portal-dev
+    policies:
+    - p, proj:admin-portal-dev:admin-portal-dev-admin, applications, *, admin-portal-dev/*, allow
+    - p, proj:admin-portal-dev:admin-portal-dev-admin, applications, get, argocd/*, allow
+    - p, proj:admin-portal-dev:admin-portal-dev-admin, repositories, *, admin-portal-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: admin-portal-dev-user
+    description: Read-only privileges to admin-portal-dev
+    policies:
+    - p, proj:admin-portal-dev:admin-portal-dev-user, applications, get, admin-portal-dev/*, allow
+    - p, proj:admin-portal-dev:admin-portal-dev-user, applications, sync, admin-portal-dev/*, allow
+    - p, proj:admin-portal-dev:admin-portal-dev-user, repositories, get, admin-portal-dev/*, allow
+    - p, proj:admin-portal-dev:admin-portal-dev-user, applications, action/apps/Deployment/restart, admin-portal-dev/*, allow
+    groups:
+    - "Team.Support.ST.AdminPortal.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

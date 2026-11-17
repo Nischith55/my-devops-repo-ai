@@ -1,0 +1,67 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-06-02 13:44:54
+- op: remove
+  path: /spec/template/spec/containers/0/env/0/value
+- op: add
+  path: /spec/template/spec/containers/0/env/0/valueFrom
+  value:
+    secretKeyRef:
+      key: host
+      name: elasticsearch-secret
+- op: remove
+  path: /spec/template/spec/containers/0/env/1/value
+- op: add
+  path: /spec/template/spec/containers/0/env/1/valueFrom
+  value:
+    secretKeyRef:
+      key: port
+      name: elasticsearch-secret
+- op: remove
+  path: /spec/template/spec/containers/0/env/2/value
+- op: add
+  path: /spec/template/spec/containers/0/env/2/valueFrom
+  value:
+    secretKeyRef:
+      key: username
+      name: elasticsearch-secret
+- op: remove
+  path: /spec/template/spec/containers/0/env/3/value
+- op: add
+  path: /spec/template/spec/containers/0/env/3/valueFrom
+  value:
+    secretKeyRef:
+      key: password
+      name: elasticsearch-secret
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: KIBANA_HOST
+    valueFrom:
+      secretKeyRef:
+        key: kibana_host
+        name: elasticsearch-secret
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: KIBANA_HOST
+    valueFrom:
+      secretKeyRef:
+        key: kibana_port
+        name: elasticsearch-secret
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: PEP_CA_CERT_CHAIN
+    valueFrom:
+      secretKeyRef:
+        key: pep_ca_chain
+        name: elasticsearch-secret
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: K8S_CLUSTER_NAME
+    valueFrom:
+      secretKeyRef:
+        key: k8s_cluster_name
+        name: elasticsearch-secret

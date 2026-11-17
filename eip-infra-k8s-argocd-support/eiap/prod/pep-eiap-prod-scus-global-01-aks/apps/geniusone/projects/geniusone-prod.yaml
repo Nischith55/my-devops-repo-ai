@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: geniusone-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for geniusone-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/GeniusOne/_git/geniusone-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-global-eip-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: geniusone-prod-admin
+        description: Admin privileges to geniusone-prod
+        policies:
+        - p, proj:geniusone-prod:geniusone-prod-admin, applications, *, geniusone-prod/*, allow
+        - p, proj:geniusone-prod:geniusone-prod-admin, repositories, *, geniusone-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: geniusone-prod-user
+        description: Read-only privileges to geniusone-prod
+        policies:
+        - p, proj:geniusone-prod:geniusone-prod-user, applications, get, geniusone-prod/*, allow
+        - p, proj:geniusone-prod:geniusone-prod-user, applications, sync, geniusone-prod/*, allow
+        - p, proj:geniusone-prod:geniusone-prod-user, repositories, get, geniusone-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.SERVICES.Developer"
+        - "Team.Support.EIAP.READ"
+    

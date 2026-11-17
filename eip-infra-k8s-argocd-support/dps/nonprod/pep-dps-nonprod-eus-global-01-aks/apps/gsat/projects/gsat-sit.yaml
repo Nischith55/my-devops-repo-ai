@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gsat-sit
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for gsat-sit   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gsat-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-gspt-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gsat-sit-admin
+    description: Admin privileges to gsat-sit
+    policies:
+    - p, proj:gsat-sit:gsat-sit-admin, applications, *, gsat-sit/*, allow
+    - p, proj:gsat-qa:gsat-qa-admin, applications, get, argocd/*, allow
+    - p, proj:gsat-sit:gsat-sit-admin, repositories, *, gsat-sit/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gsat-sit-user
+    description: Read-only privileges to gsat-sit
+    policies:
+    - p, proj:gsat-sit:gsat-sit-user, applications, get, gsat-sit/*, allow
+    - p, proj:gsat-sit:gsat-sit-user, applications, sync, gsat-sit/*, allow
+    - p, proj:gsat-sit:gsat-sit-user, repositories, get, gsat-sit/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GSAT"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

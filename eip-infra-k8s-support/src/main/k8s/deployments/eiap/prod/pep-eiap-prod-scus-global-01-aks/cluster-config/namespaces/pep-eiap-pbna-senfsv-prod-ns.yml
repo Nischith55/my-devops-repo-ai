@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: cd0aa9e3c3f30ad86bb4be0599013186
+    pep-cmdb-bus-app-id: 2bde4cbddb3e8c10c2b5f38139961943
+    pep-environment: Production
+    project: senfsv
+    sector: pbna
+    servicename_aks: sen_fsv_integration_prod
+    team: pbna-senfsv
+  name: pep-eiap-pbna-senfsv-prod

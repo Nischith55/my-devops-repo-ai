@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: flna-e2e-monday-c360
+        meta.helm.sh/release-namespace: pep-eiap-flna-monday-prod
+    labels:
+        app: flna-e2e-monday-c360
+        app.kubernetes.io/instance: flna-e2e-monday-c360
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250115.2'
+        environment: prod
+        helm.sh/chart: platform-chart-1.0.2
+    name: flna-e2e-monday-c360
+    namespace: pep-eiap-flna-monday-prod
+spec:
+    gateways:
+    - pep-eiap-flna-monday-prod/pep-eiap-flna-monday-prod-cv-gw
+    hosts:
+    - flna-e2e-monday-c360.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - commintakebrief.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: flna-e2e-monday-c360.pep-eiap-flna-monday-prod.svc.cluster.local
+                port:
+                    number: 3000

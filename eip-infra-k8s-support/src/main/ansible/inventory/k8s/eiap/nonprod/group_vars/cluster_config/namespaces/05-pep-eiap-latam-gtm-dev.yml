@@ -1,0 +1,55 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace LatAm GTM
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_latam_gtm_dev:
+
+  name: pep-eiap-latam-gtm-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: latam-gtm
+    sector: latam
+    project: gtm
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_gtm'] }}"
+        - "{{ k8s_sup_subjects['latam_gtm_sp'] }}"
+        
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _latam_gtm_spn_name }}"
+      registries: 
+        - pepeiapnonprodlatamgtmacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _latam_gtm_spn_name }}"
+      # Any contents apart from what is in secret        
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-latam-gtm-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb

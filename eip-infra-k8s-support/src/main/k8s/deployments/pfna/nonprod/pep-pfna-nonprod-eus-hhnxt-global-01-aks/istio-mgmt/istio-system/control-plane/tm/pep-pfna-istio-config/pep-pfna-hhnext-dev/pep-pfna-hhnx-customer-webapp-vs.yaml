@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-hhnx-customer-webapp-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-hhnx-customer-webapp.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v2
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v2/customer-org-units
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-hhnx-customer-webapp.pep-pfna-hhnext-dev.svc.cluster.local
+        port:
+          number: 80

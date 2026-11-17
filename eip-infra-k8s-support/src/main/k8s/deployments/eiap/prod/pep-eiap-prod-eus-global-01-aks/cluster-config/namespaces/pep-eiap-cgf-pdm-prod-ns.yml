@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-pdm-prod
+    project: pdm
+    sector: cgf
+    servicename_aks: pdm
+    team: cgf-pdm
+  name: pep-eiap-cgf-pdm-prod

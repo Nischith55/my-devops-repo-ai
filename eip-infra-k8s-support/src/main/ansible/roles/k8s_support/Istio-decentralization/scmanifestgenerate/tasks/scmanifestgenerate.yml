@@ -1,0 +1,44 @@
+- name: set sidecar facts
+  set_fact:
+    sc: "{{ item.metadata.name }}"
+    spec: "{{ item.spec }}"
+
+- name: creating the file 
+  copy:
+    dest: "{{ sc }}-sc-temp.yml"
+    content: |
+      ---
+      apiVersion: networking.istio.io/v1alpha3
+      kind: Sidecar
+      metadata: 
+        name: 
+        namespace: istio-system
+      spec:
+
+- name: read the file content  
+  slurp:
+    src: "{{ sc }}-sc-temp.yml"
+  register: yml_file_content
+
+- name: decode the content
+  set_fact: 
+    decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+- name: update yml file  content 
+  ansible.utils.update_fact: 
+    updates: 
+      - path: decoded_yml.spec
+        value: "{{ spec }}" 
+      - path: decoded_yml.metadata.name
+        value: "{{ sc }}" 
+  register: decoded_yml_temp
+ 
+
+- name: write the updated one to the file 
+  copy:
+    content: "{{ decoded_yml_temp.decoded_yml | to_nice_yaml(indent=2) }}"
+    dest: "{{ mypath }}/Artifacts/sc-manifests/{{ sc }}-sc.yml"
+
+- name: print manifest 
+  debug:
+    var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/sc-manifests/{{ sc }}-sc.yml')

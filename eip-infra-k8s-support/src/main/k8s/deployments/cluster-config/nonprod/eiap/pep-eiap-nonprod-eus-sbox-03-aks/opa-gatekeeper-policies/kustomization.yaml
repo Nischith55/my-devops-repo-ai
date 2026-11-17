@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../opa-gatekeeper-policies
+
+patches:
+  - path: constraints/containerdenyemptydirnosizelimit.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: ContainerDenyEmptyDirNoSizeLimit
+      name: containerdenyemptydirnosizelimit
+  - path: constraints/restrictrepo.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sAllowedRepos
+      name: restrictrepo

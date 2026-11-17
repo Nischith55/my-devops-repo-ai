@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eip-latam-cv-rack-segmentation-qa-qa-vs
+  namespace: pep-eiap-cgf-iaicv-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-iaicv-qa/pep-eiap-cgf-iaicv-qa-cv-gw
+  hosts:
+  - pep-eip-latam-cv-rack-segmentation-qa-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-cv-rack-segmentation-qa-qa.pep-eiap-cgf-iaicv-qa.svc.cluster.local
+        port:
+          number: 8000

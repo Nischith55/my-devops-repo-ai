@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: afh-menupro-orchestrator
+    app.kubernetes.io/instance: afh-menupro-orchestrator-dev
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: afh-menupro-orchestrator
+  namespace: pep-dps-dps-afhmenup-dev
+spec:
+  gateways:
+  - pep-dps-dps-afhmenup-dev/pep-dps-dps-afhmenup-dev-cv-gw
+  hosts:
+  - afh-menupro-orchestrator.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-orchestrator.pep-dps-dps-afhmenup-dev.svc.cluster.local
+        port:
+          number: 8080

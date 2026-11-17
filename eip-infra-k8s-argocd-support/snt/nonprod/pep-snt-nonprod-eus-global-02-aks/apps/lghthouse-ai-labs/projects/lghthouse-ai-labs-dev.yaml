@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: lghthouse-ai-labs-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for lghthouse-ai-labs-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/RD_Digital_Platform_Engineering/_git/lghthouse-ai-labs-argocd-configs
+      - pepnonprodsntacr.azurecr.io/helm
+      destinations:
+      - name: pep-snt-nonprod-eus-global-02-aks
+        namespace: pep-snt-cgf-lighthouse-dev
+      - name: pep-snt-nonprod-eus-global-02-aks
+        namespace: pep-snt-ops-admin
+      roles:
+      - name: lghthouse-ai-labs-dev-admin
+        description: Admin privileges to lghthouse-ai-labs-dev
+        policies:
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-admin, applications, *, lghthouse-ai-labs-dev/*, allow
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-admin, repositories, *, lghthouse-ai-labs-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: lghthouse-ai-labs-dev-user
+        description: Read-only privileges to lghthouse-ai-labs-dev
+        policies:
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-user, applications, get, lghthouse-ai-labs-dev/*, allow
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-user, applications, sync, lghthouse-ai-labs-dev/*, allow
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-user, repositories, get, lghthouse-ai-labs-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:lghthouse-ai-labs-dev:lghthouse-ai-labs-dev-user, applications, action/apps/Deployment/restart, lghthouse-ai-labs-dev/*, allow
+        groups:
+        - "Team.App.RND.Lighthouse.Prod.DataAnalyst"
+        - "Team.Support.EIAP.READ"
+    

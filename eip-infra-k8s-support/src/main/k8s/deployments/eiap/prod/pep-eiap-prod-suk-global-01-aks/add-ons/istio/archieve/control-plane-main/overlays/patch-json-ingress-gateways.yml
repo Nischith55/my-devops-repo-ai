@@ -1,0 +1,41 @@
+---
+# Gateway 1
+- op: replace
+  path: /spec/components/ingressGateways/1/enabled
+  value: True
+# IP -- required, IMPORTANT the Kind: Service index is 2
+- op: add
+  path: /spec/components/ingressGateways/1/k8s/overlays/2/patches/-
+  value: 
+    path: spec.loadBalancerIP
+    value: 172.28.90.254
+- op: replace
+  path: /spec/components/ingressGateways/1/k8s/nodeSelector
+  value:
+    beta.kubernetes.io/os: linux
+    kubernetes.azure.com/mode: system
+- op: replace
+  path: /spec/components/ingressGateways/1/k8s/tolerations
+  value:
+    - key: CriticalAddonsOnly
+      operator: Exists
+# Gateway 2
+- op: replace
+  path: /spec/components/ingressGateways/2/enabled
+  value: True
+# IP -- required, IMPORTANT the Kind: Service index is 2
+- op: add
+  path: /spec/components/ingressGateways/2/k8s/overlays/2/patches/-
+  value: 
+    path: spec.loadBalancerIP
+    value: 172.28.90.253
+- op: replace
+  path: /spec/components/ingressGateways/2/k8s/nodeSelector
+  value:
+    beta.kubernetes.io/os: linux
+    kubernetes.azure.com/mode: system
+- op: replace
+  path: /spec/components/ingressGateways/2/k8s/tolerations
+  value:
+    - key: CriticalAddonsOnly
+      operator: Exists

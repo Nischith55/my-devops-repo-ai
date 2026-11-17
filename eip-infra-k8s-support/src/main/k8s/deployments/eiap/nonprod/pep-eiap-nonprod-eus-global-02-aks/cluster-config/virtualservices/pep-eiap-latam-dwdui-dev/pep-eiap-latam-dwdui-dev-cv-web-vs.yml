@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-latam-dwdui-dev-cv-web-vs
+  namespace: pep-eiap-latam-dwdui-dev
+  labels:
+    app: pep-eiap-latam-dwdui-dev-cv-web
+spec:
+  hosts:
+    - dwd.dev.mypepsico.com
+    - pep-eiap-latam-dwdui-dev-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-dwdui-dev/pep-eiap-latam-dwdui-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-latam-dwdui-dev-cv-web.pep-eiap-latam-dwdui-dev.svc.cluster.local
+        port:
+          number: 80

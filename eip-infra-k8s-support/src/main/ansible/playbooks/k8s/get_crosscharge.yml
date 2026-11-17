@@ -1,0 +1,36 @@
+---
+- name: get_crosscharge
+  hosts: localhost 
+  connection: local
+  collections:
+    - kubernetes.core
+    - azure.azcollection
+    - ansible.utils
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_TENANT_ID' ) }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks: 
+    - name: set variables
+      set_fact:
+        cluster_name: "{{ vars['cluster_name'] }}"
+        script_dir: "{{ lookup('env', 'script_dir') }}"
+    - name: Get facts for one Azure Kubernetes Service
+      azure.azcollection.azure_rm_aks_info:
+        name: "{{ cluster_name }}"
+      register: aks_info
+    - name: get cluster tag
+      set_fact:
+        crosscharge_aks: "{{ item.tags.crosscharge_aks }}"
+      loop: "{{ aks_info.aks }}"
+      when: item.name == cluster_name
+    - debug: var=crosscharge_aks
+    - copy: content="{{ crosscharge_aks }}" dest="{{ script_dir }}/crosscharge.txt"
+
+
+    

@@ -1,0 +1,84 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-pbna-vms365-preprod-cv-gw
+  namespace: pep-eiap-pbna-vms365-preprod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-pbna-vms365-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-vms365-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-pbna-vms365-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-eiap-pbna-vms365-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-mor-assets-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-forecast-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-forecast-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-mobile-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-mobile-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-pgt-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-pgt-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-planogram-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-planogram-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-middleware-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-schdeuler-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-vms365-preprod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-pbna-vms365-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-eiap-pbna-vms365-preprod-80.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-mor-assets-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-forecast-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-forecast-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-mobile-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-mobile-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-pgt-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-pgt-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-planogram-consumer-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-planogram-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-middleware-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pbna-preprod-vending-fsv-vms-schdeuler-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-pbna-vms365-preprod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-pbna-vms365-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

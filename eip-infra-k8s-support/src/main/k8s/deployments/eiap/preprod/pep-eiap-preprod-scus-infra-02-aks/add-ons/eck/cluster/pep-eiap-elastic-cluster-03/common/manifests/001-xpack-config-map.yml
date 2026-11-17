@@ -1,0 +1,13 @@
+---
+# ConfigMap for LDAP Settings
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pep-eiap-xpack-settings
+  namespace: pep-eiap-elastic-cluster-03
+  labels:
+    app: pep-eiap-elastic-cluster-03
+data:
+  # change
+  ldap_bind_dn: uid=ieip_dev_eck,ou=system accounts,ou=internal,ou=people,o=pepsico,dc=pep,dc=pvt
+  ldap_url_0: ldaps://idx.ite.pepsico.pvt:636

@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: e2e-ibp-fs61-engine
+    meta.helm.sh/release-namespace: pep-dps-cgf-ibpenemon-prod
+  labels:
+    app: e2e-fs61-app
+    app.kubernetes.io/instance: e2e-ibp-fs61-engine
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: e2e-fs61-app
+  namespace: pep-dps-cgf-ibpenemon-prod
+spec:
+  gateways:
+  - pep-dps-cgf-ibpenemon-prod/pep-dps-cgf-ibpenemon-prod-cv-gw
+  hosts:
+  - e2e-fs61-app.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: e2e-fs61-app.pep-dps-cgf-ibpenemon-prod.svc.cluster.local
+        port:
+          number: 8080

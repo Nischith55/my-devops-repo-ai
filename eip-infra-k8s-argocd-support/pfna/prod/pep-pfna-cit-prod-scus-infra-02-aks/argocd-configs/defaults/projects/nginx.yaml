@@ -1,0 +1,53 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for nginx app
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support 
+  destinations:
+  - name: pep-pfna-cit-prod-scus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-infra-02-aks
+    namespace: pep-pfna-global-infra-prod
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-infra-02-aks
+    namespace: default
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-scus-hhnxt-01-aks
+    namespace: argocd
+    server: https://172.20.24.7:443
+  - name: pep-pfna-cit-prod-scus-hhnxt-01-aks
+    namespace: pep-pfna-global-infra-prod
+    server: https://172.20.24.7:443
+  - name: pep-pfna-cit-prod-scus-hhnxt-01-aks
+    namespace: default
+    server: https://172.20.24.7:443
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: argocd
+    server: https://172.24.223.4:443
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-global-infra-prod
+    server: https://172.24.223.4:443
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: default
+    server: https://172.24.223.4:443
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: argocd
+    server: https://172.24.223.132:443
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: pep-pfna-global-infra-prod
+    server: https://172.24.223.132:443
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: default
+    server: https://172.24.223.132:443

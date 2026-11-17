@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nodeday2test-testingoct2026new-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for nodeday2test-testingoct2026new-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/nodeday2test-testingoct2026new-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: nodeday2test-testingoct2026new-dev-admin
+    description: Admin privileges to nodeday2test-testingoct2026new-dev
+    policies:
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-admin, applications, *, nodeday2test-testingoct2026new-dev/*, allow
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-admin, repositories, *, nodeday2test-testingoct2026new-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: nodeday2test-testingoct2026new-dev-user
+    description: Read-only privileges to nodeday2test-testingoct2026new-dev
+    policies:
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-user, applications, get, nodeday2test-testingoct2026new-dev/*, allow
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-user, applications, sync, nodeday2test-testingoct2026new-dev/*, allow
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-user, repositories, get, nodeday2test-testingoct2026new-dev/*, allow
+    - p, proj:nodeday2test-testingoct2026new-dev:nodeday2test-testingoct2026new-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

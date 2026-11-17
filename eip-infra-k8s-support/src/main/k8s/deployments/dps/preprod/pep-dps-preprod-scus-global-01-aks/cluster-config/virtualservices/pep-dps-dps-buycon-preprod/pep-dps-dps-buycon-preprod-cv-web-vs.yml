@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-buycon-preprod-cv-web-vs
+  namespace: pep-dps-dps-buycon-preprod
+  labels:
+    app: pep-dps-dps-buycon-preprod-cv-web
+spec:
+  hosts:
+    - procurementhub.preprod.mypepsico.com
+    - pep-dps-dps-buycon-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-buycon-preprod/pep-dps-dps-buycon-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-buycon-preprod-cv-web.pep-dps-dps-buycon-preprod.svc.cluster.local
+        port:
+          number: 80

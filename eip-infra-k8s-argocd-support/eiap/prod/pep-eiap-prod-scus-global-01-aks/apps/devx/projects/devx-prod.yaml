@@ -1,0 +1,49 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: devx-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for devx-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-devx-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-devxai-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-launchp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepvgl-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-global-eipone-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: devx-prod-admin
+        description: Admin privileges to devx-prod
+        policies:
+        - p, proj:devx-prod:devx-prod-admin, applications, *, devx-prod/*, allow
+        - p, proj:devx-prod:devx-prod-admin, repositories, *, devx-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: devx-prod-user
+        description: Read-only privileges to devx-prod
+        policies:
+        - p, proj:devx-prod:devx-prod-user, applications, get, devx-prod/*, allow
+        - p, proj:devx-prod:devx-prod-user, applications, sync, devx-prod/*, allow
+        - p, proj:devx-prod:devx-prod-user, repositories, get, devx-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.Prod.devX"
+        - "Team.Support.EIAP.GLOBAL.MDP.AppSupport"
+        - "Team.Support.EIAP.READ"
+    

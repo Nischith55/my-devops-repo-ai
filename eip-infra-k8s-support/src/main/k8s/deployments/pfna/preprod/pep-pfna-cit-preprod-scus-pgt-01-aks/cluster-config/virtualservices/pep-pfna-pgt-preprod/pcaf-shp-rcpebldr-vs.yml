@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-shp-rcpebldr
+  name: pcaf-shp-rcpebldr-vs
+  namespace: pep-pfna-pgt-preprod
+spec:
+  gateways:
+  - pep-pfna-pgt-preprod/pep-pfna-pgt-preprod-cv-gw
+  hosts:
+  - pcaf-shp-rcpebldr.genp.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-rcpebldr.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80

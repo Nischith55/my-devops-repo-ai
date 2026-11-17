@@ -1,0 +1,17 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: appdynamics
+resources:
+  - ../../../../../../add-ons/appdynamics/kustomize/cluster-agent/base
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-cluster-agent-spec.yml
+# All json6902 patches
+# only filename not full path
+patches:
+ 

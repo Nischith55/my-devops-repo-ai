@@ -1,0 +1,35 @@
+---
+ns_pep_eiap_apac_gscaf_prod:
+  
+  name: pep-eiap-apac-gscaf-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: apac-gscaf
+    sector: apac
+    project: gscaf
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-apac-gscaf-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['apac_gscaf'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-apac-gscaf-prod-sa-token
+    namespace: pep-eiap-apac-gscaf-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-apac-gscaf-prod-sa"

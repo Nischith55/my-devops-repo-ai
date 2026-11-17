@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: admin-portal-iam-ms-vs
+  namespace: pep-dps-cgf-adportal-preprod
+spec:
+  gateways:
+  - pep-dps-cgf-adportal-preprod/pep-dps-cgf-adportal-preprod-cv-gw
+  hosts:
+  - admin-portal-iam-ms.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: admin-portal-iam-ms.pep-dps-cgf-adportal-preprod.svc.cluster.local
+        port:
+          number: 8080

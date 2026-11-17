@@ -1,0 +1,639 @@
+
+trigger: none
+
+resources:
+ repositories: 
+    - repository: terraformmodules
+      type: git
+      name: eip-infra-terraform-modules
+    - repository: eip-infra-azure-terraform-support
+      type: git
+      name: eip-infra-azure-terraform-support
+      ref: main
+
+parameters:
+  - name: control_plane_upgrade
+    displayName: 'Control_Plane_Upgrade'
+    type: boolean
+    default: 'false'
+  - name: system_pool_upgrade
+    displayName: 'System_Pool_Upgrade'
+    type: boolean
+    default: 'false'
+  - name: user_pool_upgrade
+    displayName: 'User_Pool_Upgrade'
+    type: boolean
+    default: 'false'
+  - name: service_principal
+    displayName: service_principal
+    type: string
+    values:  
+      - NONPROD_K8S_SPN
+      - PREPROD_K8S_SPN
+      - PROD_K8S_SPN
+  - name: Functional_Area
+    displayName: Functional_Area
+    type: string
+    values:
+      - eiap
+      - aisp
+      - edap
+      - pfna
+      - snt
+      - cmp
+      - infratools
+      - infosectools
+      - pbna
+      - dps
+      - cmptest
+      - automation
+      - cgf
+      - pepgenx
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+  - name: ResourceType
+    displayName: Resource Type
+    type: string
+    default: azure-kubernetes-services
+    values:
+      - azure-kubernetes-services
+  - name: ResourceGroupName
+    displayName: ResourceGroupName
+    type: string
+  - name: ResourceName
+    displayName: Resource Name
+    type: string
+  - name: list_of_nodepools
+    displayName: User Nodepools List
+    type: string
+    default: 'all'
+  - name:  versions
+    displayName: versions
+    type: string
+  - name: max_surge
+    displayName: max_surge for user_nodepools
+    type: string
+    default: ' '
+  - name: nginx_url
+    displayName: nginx url
+    type: string 
+  - name: parallelism
+    displayName: Terraform parallelism to run no. of jobs
+    type: string
+    default: 2
+    values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5    
+  - name: is_infra_cluster
+    displayName: Is this Infra cluster?
+    type: boolean
+    default: 'false'
+#---------------------------------------------------------------------------------------------------------------
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: linux_windows_profiles
+  - group: repo_access_token
+  - group: agentpools_k8s
+
+  # - name: nonprod_eus_agents
+  #   value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  # - name: nonprod_scus_agents
+  #   value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  # - name: preprod_eus_agents
+  #   value: pep-eiap-preprod-scus-infra-02-aks-agents
+
+  # - name: preprod_scus_agents
+  #   value: pep-eiap-preprod-scus-infra-02-aks-agents
+
+  # - name: prod_eus_agents
+  #   value: pep-eiap-prod-eus-infra-02-aks-agents
+
+  # - name: prod_scus_agents
+  #   value: pep-eiap-prod-scus-infra-02-aks-agents
+
+  # - name: nonprod_pfna_agents
+  #   value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+
+  # - name: preprod_pfna_agents
+  #   value: pep-pfna-cit-preprod-scus-infra-02-aks-agents
+
+  # - name: prod_pfna_agents
+  #   value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+
+  - name: nonprod_backend_resource_group
+    value: pep-eiap-nonprod-eus-infra-01-rg
+
+  - name: preprod_backend_resource_group
+    value: pep-eiap-preprod-eus-infra-01-rg
+    
+  - name: prod_backend_resource_group
+    value: pep-eiap-prod-eus-infra-01-rg
+
+  - name: nonprod_backend_storage_account
+    value: pe1003auto01tf01sa
+
+  - name: preprod_backend_storage_account
+    value: pe2003auto01tf01sa
+    
+  - name: prod_backend_storage_account
+    value: pe3003auto01tf01sa
+
+  - name: eiap_backend_storage_container
+    value: eiap-storage-container
+
+  - name: edap_backend_storage_container
+    value: edap-storage-container
+    
+  - name: pfna_backend_storage_container
+    value: pfna-storage-container
+
+  - name: snt_backend_storage_container
+    value: snt-storage-container
+    
+  - name: cmp_backend_storage_container
+    value: cmp-storage-container
+
+  - name: infratools_backend_storage_container
+    value: infratools-storage-container
+
+  - name: infosectools_backend_storage_container
+    value: infosectools-storage-container
+  
+  - name: cgf_backend_storage_container
+    value: eiap-storage-container
+  
+  - name: pbna_backend_storage_container
+    value: pbna-storage-container  
+
+  - name: dps_backend_storage_container
+    value: dps-storage-container 
+  
+  - name: cmptest_backend_storage_container
+    value: cmptest-storage-container
+  
+  - name: automation_backend_storage_container
+    value: automation-storage-container
+  
+  - name: aisp_backend_storage_container
+    value: aisp-storage-container 
+
+  - name: pepgenx_backend_storage_container
+    value: pepgenx-storage-container 
+
+  - name: approval_ITEIAPK8sSUPPORT 
+    value: iteiapk8ssupport@pepsico.com
+      
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(nonprod_pfna_agents_global)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(nonprod_pfna_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Region, 'scus'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(preprod_pfna_agents_global)
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(preprod_pfna_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Region, 'scus'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(prod_pfna_agents_eus)
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna'))}}:
+        value: $(prod_pfna_agents_scus)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'eus'))}}:
+        value: $(nonprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'scus'))}}:
+        value: $(nonprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(nonprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(nonprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'eus'))}}:
+        value: $(preprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'scus'))}}:
+        value: $(preprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(preprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(preprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'eus'))}}:
+        value: $(prod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.is_infra_cluster, 'true'), eq(parameters.Region, 'scus'))}}:
+        value: $(prod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(prod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(prod_scus_agents) 
+    ${{ else }}:
+      value: $(nonprod_eus_agents)
+
+  - name: pfna_agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(nonprod_pfna_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: $(preprod_pfna_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna'))}}:
+        value: $(prod_pfna_agents)
+    ${{ else }}:
+      value: $(agent_pool)    
+
+  - name: resource_group_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_resource_group)
+   
+  - name: storage_account_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_storage_account)
+ 
+  - name: container_name_for_backend  
+    ${{ if eq(parameters.Functional_Area, 'eiap') }}:
+      value: $(eiap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'edap') }}:
+      value: $(edap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pfna') }}:
+      value: $(pfna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'snt') }}:
+      value: $(snt_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cmp') }}:
+      value: $(cmp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infratools') }}:
+      value: $(infratools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infosectools') }}:
+      value: $(infosectools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pbna') }}:
+      value: $(pbna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'dps') }}:
+      value: $(dps_backend_storage_container)     
+    ${{ if eq(parameters.Functional_Area, 'cmptest') }}:
+      value: $(cmptest_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'automation') }}:
+      value: $(automation_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'aisp') }}:
+      value: $(aisp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pepgenx') }}:
+      value: $(pepgenx_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cgf') }}:
+      value: $(cgf_backend_storage_container)
+  
+  - name: inplace
+    value: true
+
+  - name: curl_pfna
+    ${{ if and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: false
+    ${{ elseif or(eq(parameters.control_plane_upgrade, 'true'),eq(parameters.system_pool_upgrade, 'true')) }}:
+      value: false
+    ${{ else }}:
+      value: true  
+
+  - name: key_for_backend
+    value: "${{parameters.ResourceType}}/${{parameters.Region}}/$(resource_name_input).tfstate"
+
+  - name: terraform_modules_repo
+    value: "https://PepsiCoIT@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-terraform-modules"  
+
+  - name: resource_name_input
+    value: ${{parameters.ResourceName}}
+
+  - name: backend_spn
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: "NONPROD_NETWORK_SPN"
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: "PREPROD_NETWORK_SPN"  
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: "PROD_NETWORK_SPN"  
+  
+  - name: subscription_id_others
+    ${{ if and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 498640c4-36eb-4566-b752-ca3d2939c544
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'snt')) }}:
+      value: cf488406-af15-4248-898e-11932611df2b
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cmp')) }}:
+      value: dcae03ca-ca66-40ff-a58e-a8585fd62d6d
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 55bde1f0-8591-432c-a37f-5c1bdff8c2f8
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'snt')) }}:
+      value: c02eac0c-ef5a-4dc0-a613-c4be86e092ab
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 92ddb5ec-2ad5-45f6-b81f-e358d4904d04
+    ${{ elseif and(or(eq(parameters.env, 'preprod'),eq(parameters.env, 'prod'),eq(parameters.env, 'nonprod')), eq(parameters.Functional_Area, 'infosectools')) }}:
+      value: bbfb8d7c-7f66-4690-9a6a-0aec959d9035
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: f427a039-5122-4a35-ac4a-c63c96d1acde
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: 5f9ba971-f3d4-4706-8d5c-2aae550f9cb4  
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 93c33431-a080-4b4a-a362-3b7c5a36b6dc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 4f85ea10-aee0-4b46-82cc-4416208c1485  
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'cmptest')) }}:
+      value: d6451cb5-7d7a-4caf-84e2-5fbaa36c083e
+    ${{ elseif and(or(eq(parameters.env, 'preprod'),eq(parameters.env, 'prod'),eq(parameters.env, 'nonprod')), eq(parameters.Functional_Area, 'automation')) }}:
+      value: 34030b4b-d34e-4290-bd1b-a6945f95d9aa
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: d6a9062c-4c82-4e49-8204-100c57f33583
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 06d0e1b4-b6e3-43c3-9f97-29e840d4d893
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pepgenx')) }}:
+      value: c1eeeb0b-31c1-4cda-b497-3a9c83685dbf
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: 0c1319a6-1def-4d09-a0ca-46d9b0812fbd
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: f479bd9e-6531-43ea-85eb-cc6c21b4957b
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: 0c1319a6-1def-4d09-a0ca-46d9b0812fbd
+    ${{ else }}:
+      value: Using-subscription-id-available-in-keyvault
+  
+  - name: subscription_id_other_regions
+    ${{ if and(eq(parameters.Region, 'suk'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'gwc'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'ae'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ else }}:
+      value: Not-applicable-for-selected-parameters
+
+  - name: path_of_nodepools
+    value: $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}/nodepools-${{parameters.ResourceName}}.tfvars
+
+  - name: path_of_defaults
+    value: $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}/defaults-${{parameters.ResourceName}}.tfvars
+
+  - name: path_of_mandatory
+    value: $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}/mandatory-${{parameters.ResourceName}}.tfvars
+
+  - name: plane_select_control_plane
+    ${{ if eq(parameters.control_plane_upgrade, true) }}:
+      value: control_plane_upgrade
+  - name: plane_select_system_pool
+    ${{ if eq(parameters.system_pool_upgrade, true) }}:
+      value: system_pool_upgrade
+  - name: plane_select_user_pool  
+    ${{ if eq(parameters.user_pool_upgrade, true) }}:
+      value: user_pool_upgrade
+#_______________________________________________________________________________________________________________________________________________________________________
+stages:   
+  - stage: display
+    displayName: display-selected-inputs-by-user
+    pool: 
+      name: $(agent_pool)
+    jobs: 
+      - job: display_backend_values
+        continueOnError: false
+        steps:
+        - task: Bash@3
+          displayName: "display-selected-parameters"
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "Checked out branch: $(Build.SourceBranch)"
+              echo "Selected Environment : ${{Parameters.env}}"
+              echo "Selected Resource Type : ${{Parameters.ResourceType}}"
+              echo "Selected Region : ${{Parameters.Region}}"
+              echo "Agent Pool to be used for all stages : ${{variables.agent_pool}}"
+              echo "Backend resource group name : ${{variables.resource_group_name_for_backend}}"
+              echo "Backend storage account : ${{variables.storage_account_name_for_backend}}"
+              echo "Backend container name : ${{variables.container_name_for_backend}}"
+              echo "Backend Key : ${{variables.key_for_backend}}"
+              echo "Name of the targeted resource : ${{ parameters.ResourceName }}"
+              if [ -z "${{ variables.resource_name_input }}" ]; then
+                echo "Error: ResourceName parameter is invalid."
+                exit 1
+              fi
+              echo "Resource Group Name : ${{parameters.ResourceGroupName}}"
+              echo "Selected SPN details : ${{Parameters.service_principal}}"
+              echo "Subscription id for pfna/snt/infratools : ${{variables.subscription_id_others}}"
+              echo "Subscription id for EIAP suk/ae/gwc regions : ${{variables.subscription_id_other_regions}}"
+              echo "Selected AKS Version : ${{Parameters.versions}}"
+              # echo "Selected Upgrade types : ${{variables.plane_select_control_plane}} ${{variables.plane_select_system_pool}} ${{variables.plane_select_user_pool}}"     
+              if [[ "${{variables.plane_select_user_pool}}" == "user_pool_upgrade" ]]; then
+                echo "Selected Upgrade Type & Usernodepools List : ${{variables.plane_select_user_pool}} & ${{Parameters.list_of_nodepools}}"
+              else
+                echo "Selected Upgrade types : ${{variables.plane_select_control_plane}} ${{variables.plane_select_system_pool}}"
+              fi  
+              echo "Selected Max Surge for UserNodepool: ${{Parameters.max_surge}}"
+              echo "Selected Parallelism to run no of Jobs: ${{Parameters.parallelism}}"
+
+#__________________________________________________________________________________________
+  # - stage: check_for_config
+  #   displayName: manual-check-for-selected-parameters
+  #   dependsOn: display
+  #   pool: 
+  #     name: $(agent_pool)
+  #   jobs:
+  #   - job: approval
+  #     pool: server
+  #     timeoutInMinutes: 5
+  #     steps:
+  #     - task: ManualValidation@0
+  #       timeoutInMinutes: 6
+  #       inputs:
+  #         instructions: 'validate the selected parameters before proceeding'
+# __________________________________________________________________________________________
+  - stage: update_tfvars_tfplan
+    displayName: terraform-plan
+    # condition: and(succeeded('check_for_config'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    condition: ne(variables['build.sourceBranch'], 'refs/heads/main')
+    # dependsOn: check_for_config
+    pool: 
+      name: $(agent_pool) 
+    jobs:
+    - job: aksupgrade
+      displayName: TF-plan&updating-tfvars
+      steps:
+      - template: templates/aks_upgrade.yml
+        parameters:
+          plane_select_user_pool: ${{variables.plane_select_user_pool}}
+          plane_select_system_pool: ${{variables.plane_select_system_pool}}
+          plane_select_control_plane: ${{variables.plane_select_control_plane}}
+          list_of_nodepools: ${{ parameters.list_of_nodepools}}
+          versions: ${{ parameters.versions}}
+          max_surge: ${{parameters.max_surge}}
+          path_of_nodepools: ${{variables.path_of_nodepools}}
+          path_of_mandatory: ${{variables.path_of_mandatory}}
+          path_of_defaults: ${{variables.path_of_defaults}}
+          Functional_Area: ${{parameters.Functional_Area}}
+          env: ${{parameters.env}}
+          Region: ${{parameters.Region }}
+          ResourceType: ${{parameters.ResourceType}}  
+          ResourceName: ${{variables.resource_name_input}}
+          service_principal: ${{parameters.service_principal}}
+          service_principal_backend: ${{variables.backend_spn}}
+          resource_name: ${{variables.resource_name_input}}
+          inplace: ${{variables.inplace}}
+#_________________________________________________________________________________
+  - stage: pre_check
+    displayName: pre-check
+    dependsOn: update_tfvars_tfplan
+    condition: and(succeeded('update_tfvars_tfplan'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+        name: $(agent_pool)    
+    jobs:
+    - job: pre_check
+      displayName: pre-check
+      steps:  
+      - template: templates/pre_check.yml
+        parameters:
+          resource_name: ${{variables.resource_name_input}}
+          Functional_Area: ${{parameters.Functional_Area}}
+          env: ${{parameters.env}}
+          Region: ${{parameters.Region }}
+          ResourceType: ${{parameters.ResourceType}}  
+          service_principal: ${{parameters.service_principal}}
+          service_principal_backend: ${{variables.backend_spn}}
+          inplace: ${{variables.inplace}}
+          curl_pfna: ${{variables.curl_pfna}} 
+          opt: pre 
+#__________________________________________________________________________________________________
+  - stage: checkforapprovalforapply
+    displayName: approval-to-terraform-apply
+    dependsOn: pre_check
+    condition: and(succeeded('pre_check'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: approvalforapply
+      pool: server
+      timeoutInMinutes: 4320 # job times out in 3 days
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 1440 # task times out in 1 day
+        inputs:
+          notifyUsers: |
+            $(approval_ITEIAPK8sSUPPORT)
+          instructions: 'Approval required for Terraform Execution'
+#__________________________________________________________________________________________________
+  - stage: post_check_tfapply
+    displayName: terrafrom-apply-upgrade
+    condition: and(succeeded('checkforapprovalforapply'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    dependsOn: checkforapprovalforapply  
+    jobs:  
+    - job: terraform_apply
+      displayName: TF-apply-upgrade-post-check
+      pool: 
+        name: $(agent_pool) 
+      timeoutInMinutes: 0
+      steps:
+      - template: templates/post_check.yml
+        parameters:
+          resource_name: ${{variables.resource_name_input}}
+          Functional_Area: ${{parameters.Functional_Area}}
+          env: ${{parameters.env}}
+          Region: ${{parameters.Region }}
+          ResourceType: ${{parameters.ResourceType}}  
+          service_principal: ${{parameters.service_principal}}
+          service_principal_backend: ${{variables.backend_spn}}  
+          inplace: ${{variables.inplace}} 
+          parallelism: ${{parameters.parallelism}} 
+          curl_pfna: ${{variables.curl_pfna}} 
+          opt: post
+#------------------------------------------------------------------------------------          
+  - stage: GitPushFinalChanges
+    displayName: approval-to-push-featurebranch
+    dependsOn: post_check_tfapply
+    condition: and(succeeded('post_check_tfapply'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      name: $(agent_pool)   
+    jobs:
+    # - job: approvaltoGitPush
+    #   displayName: Gitpush-approval
+    #   pool: server
+    #   timeoutInMinutes: 4320 # job times out in 3 days
+    #   steps:
+    #   - task: ManualValidation@0
+    #     timeoutInMinutes: 1440 # task times out in 1 day
+    #     inputs:
+    #       notifyUsers: |
+    #         $(approval_ITEIAPK8sSUPPORT)
+    #       instructions: 'Approval required for Terraform Execution'
+    
+    - job: git_push
+      #dependsOn: approvaltoGitPush
+      steps: 
+      - task: DownloadPipelineArtifact@2
+        displayName: 'download files'
+        inputs:
+          artifactName: 'modified-tfvars'
+          downloadPath: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+      - template: templates/git_push.yml
+    
+    - job: CreatingPR
+      displayName: PR-to-Main
+      dependsOn: git_push
+      steps:
+      - task: Bash@3
+        displayName: 'raise-pull-request'
+        inputs:
+          targetType: 'inline'
+          script: |
+            export AZURE_DEVOPS_EXT_PAT=$(svcPersonalAccessToken)
+            pip install azure-devops   
+            prid=$(az repos pr create --organization https://dev.azure.com/PepsiCoIT/ --project EIP-Infrastructure --repository eip-infra-azure-terraform-support --source-branch $(Build.SourceBranchName) --target-branch main --title "Merge Request after Upgrade" --description "Mandatory Pull Request to be Approved/Completed Before Proceeding with further Upgrade Steps" --auto-complete true | grep "codeReviewId" | awk '{ print $2 }' | sed 's/,//g')
+            echo "Pull request created with ID:$prid, Please Complete it before Proceeding to Validation"
+    # - job: approval_if_PR_done
+    #   displayName: pull-request-confirmation
+    #   dependsOn: CreatingPR
+    #   pool: server
+    #   timeoutInMinutes: 4320 # job times out in 3 days
+    #   steps:
+    #   - task: ManualValidation@0
+    #     timeoutInMinutes: 1440 # task times out in 1 day
+    #     inputs:
+    #       notifyUsers: |
+    #         $(approval_ITEIAPK8sSUPPORT)
+    #       instructions: 'Kindly approve the PR before proceeding further'        
+#__________________________________________________________________________________________________
+  - stage: validation
+    displayName: validation
+    dependsOn: GitPushFinalChanges
+    condition: and(succeeded('GitPushFinalChanges'), ne(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      name: $(agent_pool)
+    jobs:  
+    - job: validation
+      steps:
+      - template: templates/validation.yml  # Template reference 
+        parameters:
+          resource_name: ${{ parameters.ResourceName }}
+          department: ${{ parameters.Functional_Area }}
+          region: ${{ parameters.region }}
+          env: ${{ parameters.env }}
+          nginx_url: ${{ parameters.nginx_url }}
+          service_principal: ${{parameters.service_principal}}
+          service_principal_backend: ${{variables.backend_spn}}
+          curl_pfna: ${{variables.curl_pfna}} 
+          build: $(Build.BuildId)
+#__________________________________________________________________________________________________
+
+

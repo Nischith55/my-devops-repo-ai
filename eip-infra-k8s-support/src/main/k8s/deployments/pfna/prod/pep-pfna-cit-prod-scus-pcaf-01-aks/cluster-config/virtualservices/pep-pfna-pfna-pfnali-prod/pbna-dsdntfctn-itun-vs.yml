@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pbna-dsdntfctn-itun-vs
+  namespace: pep-pfna-pfna-pfnali-prod
+  labels:
+      app: pbna-dsdntfctn
+spec:
+  hosts:
+  - pbna-dsdntfctn.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pfnali-prod/pep-pfna-pfna-pfnali-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pbna-dsdntfctn.pep-pfna-pfna-pfnali-prod.svc.cluster.local
+        port:
+          number: 80
+  

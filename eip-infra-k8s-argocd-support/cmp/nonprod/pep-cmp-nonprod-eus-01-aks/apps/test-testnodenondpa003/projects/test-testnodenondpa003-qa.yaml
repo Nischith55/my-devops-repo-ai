@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test-testnodenondpa003-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test-testnodenondpa003-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-testnodenondpa003-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react17-vite-frontend-service/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test-testnodenondpa003-qa-admin
+    description: Admin privileges to test-testnodenondpa003-qa
+    policies:
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-admin, applications, *, test-testnodenondpa003-qa/*, allow
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-admin, repositories, *, test-testnodenondpa003-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: test-testnodenondpa003-qa-user
+    description: Read-only privileges to test-testnodenondpa003-qa
+    policies:
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-user, applications, get, test-testnodenondpa003-qa/*, allow
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-user, applications, sync, test-testnodenondpa003-qa/*, allow
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-user, repositories, get, test-testnodenondpa003-qa/*, allow
+    - p, proj:test-testnodenondpa003-qa:test-testnodenondpa003-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

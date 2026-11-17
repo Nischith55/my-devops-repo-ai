@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: f8b669f583af0e5c6a4357d0deaad325
+    pep-cmdb-bus-app-id: 6a38097347ecfd1029ffb098436d43d7
+    pep-environment: Development
+    project: dtcjoy
+    sector: europe
+    servicename_aks: dtcpeployaltynon-prod
+    team: europe-dtcjoy
+  name: pep-dps-europe-dtcjoy-dev

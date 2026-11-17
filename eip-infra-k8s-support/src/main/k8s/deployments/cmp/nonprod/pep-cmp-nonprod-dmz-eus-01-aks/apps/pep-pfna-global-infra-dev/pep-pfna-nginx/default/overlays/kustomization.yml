@@ -1,0 +1,29 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: pep-cmp-global-infra-dev
+resources:
+  - ../../../../../../../apps/pep-eiap-nginx/kustomize/default/base
+images:
+  - name: pepcmpnonproddmzeusacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx
+    newName: pepcmpnonproddmzeusacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx
+    newTag: ubuntu-bionic-2021.07.12
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-override-container-01.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-override-container-01.yml
+    target:
+      group: apps
+      kind: Deployment
+      name: pep-cmp-nginx
+      namespace: pep-cmp-global-infra-dev
+      version: v1
+ 
+ 

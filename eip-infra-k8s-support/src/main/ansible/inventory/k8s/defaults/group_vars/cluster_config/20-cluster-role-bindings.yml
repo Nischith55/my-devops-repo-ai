@@ -1,0 +1,18 @@
+---
+# ##
+# This file should only contain the final cluster_role_bindings, which is built
+# dynamically by looking at namespaces.
+# ##
+
+#: ##
+#: Collect all the cluster role bindings
+#: ##
+cluster_role_binding_config_all: |-
+  {{ q('vars', *q('varnames', '^pep-eiap-.+-crb$') ) }}
+
+cluster_role_bindings: |-
+  {{ 
+      namespaces 
+      | 
+      build_k8s('cluster_role_binding', cluster_role_binding_config_all) 
+  }}

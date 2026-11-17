@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: retail360-uat
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for retail360-uat   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-retailuat-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: retail360-uat-admin
+    description: Admin privileges to retail360-uat
+    policies:
+    - p, proj:retail360-uat:retail360-uat-admin, applications, *, retail360-uat/*, allow
+    - p, proj:retail360-uat:retail360-uat-admin, applications, get, argocd/*, allow
+    - p, proj:retail360-uat:retail360-uat-admin, repositories, *, retail360-uat/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: retail360-uat-user
+    description: Read-only privileges to retail360-uat
+    policies:
+    - p, proj:retail360-uat:retail360-uat-user, applications, get, retail360-uat/*, allow
+    - p, proj:retail360-uat:retail360-uat-user, applications, sync, retail360-uat/*, allow
+    - p, proj:retail360-uat:retail360-uat-user, repositories, get, retail360-uat/*, allow
+    - p, proj:retail360-uat:retail360-uat-user, applications, action/apps/Deployment/restart, retail360-uat/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

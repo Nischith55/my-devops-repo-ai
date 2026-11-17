@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-flna-dxpicasso-qa
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    project: dxpicasso
+    sector: flna
+    team: flna-dxpicasso
+  name: pep-eiap-flna-dxpicasso-qa

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-adminapp-cv-webapp-tech-upgrade-uqgf-vs
+  namespace: pep-eiap-global-iai-dev
+  labels:
+      app: pep-eip-adminapp-cv-webapp-tech-upgrade
+spec:
+  hosts:
+  - pep-eip-adminapp-cv-webapp-tech-upgrade.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - pepirisportal2.dev.mypepsico.com
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-adminapp-cv-webapp-tech-upgrade.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 80
+  

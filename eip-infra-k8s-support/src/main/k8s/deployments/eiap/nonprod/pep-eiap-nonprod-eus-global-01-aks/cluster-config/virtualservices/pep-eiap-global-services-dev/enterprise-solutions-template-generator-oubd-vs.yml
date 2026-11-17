@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: enterprise-solutions-template-generator-oubd-vs
+  namespace: pep-eiap-global-services-dev
+  labels:
+      app: enterprise-solutions-template-generator
+spec:
+  hosts:
+  - enterprise-solutions-template-generator.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-services-dev/pep-eiap-global-services-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: enterprise-solutions-template-generator.pep-eiap-global-services-dev.svc.cluster.local
+        port:
+          number: 80
+  

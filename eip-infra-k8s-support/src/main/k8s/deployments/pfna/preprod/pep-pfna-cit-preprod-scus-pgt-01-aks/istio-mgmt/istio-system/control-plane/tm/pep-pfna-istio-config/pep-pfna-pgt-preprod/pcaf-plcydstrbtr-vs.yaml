@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-plcydstrbtr-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-plcydstrbtr-genp.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - pcaf-plcydstrbtr.genp.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-plcydstrbtr.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80

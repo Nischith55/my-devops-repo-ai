@@ -1,0 +1,19 @@
+steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  name: config
+  inputs:
+    secureFile: 'config'
+
+- task: Bash@3
+  displayName: 'set_context'
+  inputs:
+    targetType: 'inline'
+    script: |
+      mkdir $HOME/.kube
+      cp $(config.secureFilePath) $HOME/.kube/
+      kubectl config use-context ${{ parameters.cluster }}
+      kubectl config current-context
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

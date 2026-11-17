@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: savvy-apps-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+  destination:
+    namespace: pep-eiap-pbna-halo-dev
+    server: https://kubernetes.default.svc
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-argocd-configs
+    targetRevision: main
+  - repoURL: https://myartifactory.mypepsico.com/artifactory/eiapplatform-helm-prod-virtual
+    targetRevision: 0.1.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: savvy-apps
+      valueFiles:
+      - $values/dev/pep-eiap-nonprod-eus-sbox-03-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:
+            enabled: false       
+            repo: pepnonprodsntacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 1.1.1
+          spec:
+            project: 'default' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-argocd-configs
+              repoName: eip-argocd-configs
+              targetRevision: main
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications: 
+              notifyEmail: prasanti.kadiyala@pepsico.com  
+              teamsChannel: myteams
+    

@@ -1,0 +1,17 @@
+####### BEGIN Added recently --pep-dps-nonprod-ae-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_apac_psd_qa
+  - ns_pep_dps_apac_fmcshs_dev
+  - ns_pep_dps_apac_psd_dev
+  - ns_pep_dps_cgf_apprt_qa
+  - ns_pep_dps_cgf_apprt_dev
+  - ns_pep_dps_cgf_gpg_dev
+  - ns_pep_dps_cgf_gpg_qa
+  - ns_pep_dps_cgf_gscafso_qa
+  - ns_pep_dps_cgf_gscafso_dev
+  - ns_pep_dps_cgf_pepconntha_qa
+  - ns_pep_dps_cgf_pepconntha_dev
+####### END Added recently --pep-dps-nonprod-ae-global-01-aks######

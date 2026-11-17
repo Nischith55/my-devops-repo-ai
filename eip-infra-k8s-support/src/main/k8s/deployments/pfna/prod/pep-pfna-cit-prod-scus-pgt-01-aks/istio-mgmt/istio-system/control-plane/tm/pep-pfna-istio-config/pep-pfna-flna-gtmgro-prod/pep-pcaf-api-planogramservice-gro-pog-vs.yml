@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-planogramservice-gro-pog-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-planogramservice-gro-pog.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/planogram
+    route:
+    - destination:
+        host: pep-pcaf-api-planogramservice-gro-pog.pep-pfna-flna-gtmgro-prod.svc.cluster.local
+        port:
+          number: 80
+          

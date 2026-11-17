@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-pfna-vctpyservices-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["vctpyservices.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"vctpyservices.pep-eiap-pfna-vct-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: pep-eiap-pfna-vctpyservices-vs
+  namespace: pep-eiap-pfna-vct-preprod
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-preprod/pep-eiap-pfna-vct-preprod-cv-gw
+  hosts:
+  - vctpyservices.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vctpyservices.pep-eiap-pfna-vct-preprod.svc.cluster.local
+        port:
+          number: 80

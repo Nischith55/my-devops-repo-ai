@@ -1,0 +1,24 @@
+###
+# - name: read the file content  
+#   slurp:
+#     src: "{{ item }}"
+#   register: yml_file_content
+
+# - name: decode the content 
+#   set_fact: 
+#     decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+- name: name of destinationrule 
+  set_fact: 
+    dr_name: "{{ item.metadata.name }}"
+
+- debug: 
+    msg: "deleting the old Destinationrule."
+- name: delete Old Destinationrule
+  kubernetes.core.k8s: 
+    state: absent 
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule 
+    namespace: "pep-{{ department }}-istio-config"
+    name: "{{ dr_name }}"
+  

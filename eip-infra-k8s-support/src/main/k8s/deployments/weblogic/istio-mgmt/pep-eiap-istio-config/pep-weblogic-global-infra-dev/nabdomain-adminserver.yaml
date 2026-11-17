@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nabdomain-adminserver-vs
+  namespace: pep-weblogic-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - nabdomain-adminserver.weblogic.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /console
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    headers:
+      request:
+        set: 
+          WL-Proxy-SSL: "true"
+  #    sslRedirect: true
+    route:
+    - destination:
+        host: nabdomain-adminserver.pep-weblogic-apache-dev.svc.cluster.local
+        port: 
+          number: 7001 

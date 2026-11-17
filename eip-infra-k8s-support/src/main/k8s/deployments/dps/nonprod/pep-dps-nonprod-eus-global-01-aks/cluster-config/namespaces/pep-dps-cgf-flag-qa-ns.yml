@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-cgf-flag-qa
+  labels:
+    env-nonprod: "true"
+    project: flag
+    sector: cgf
+    team: cgf-flag
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: fritolayagwebsite
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 89579d9147185a548dc84ce4116d43f1
+    pep-cmdb-app-service-id: 1957dd9147185a548dc84ce4116d436d
+    pep-environment: QA
+    

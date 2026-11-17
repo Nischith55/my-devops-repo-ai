@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iai-promotional-strip-removal-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iai-promotional-strip-removal-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-promotional-strip-removal-2024-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-latam-iaipsr-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: iai-promotional-strip-removal-dev-admin
+        description: Admin privileges to iai-promotional-strip-removal-dev
+        policies:
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-admin, applications, *, iai-promotional-strip-removal-dev/*, allow
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-admin, repositories, *, iai-promotional-strip-removal-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iai-promotional-strip-removal-dev-user
+        description: Read-only privileges to iai-promotional-strip-removal-dev
+        policies:
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-user, applications, get, iai-promotional-strip-removal-dev/*, allow
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-user, applications, sync, iai-promotional-strip-removal-dev/*, allow
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-user, repositories, get, iai-promotional-strip-removal-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:iai-promotional-strip-removal-dev:iai-promotional-strip-removal-dev-user, applications, action/apps/Deployment/restart, iai-promotional-strip-removal-dev/*, allow
+        groups:
+        - "Team.App.AppliedAI.LATAMStripRemoval.NPRD"
+        - "Team.Support.EIAP.READ"
+    

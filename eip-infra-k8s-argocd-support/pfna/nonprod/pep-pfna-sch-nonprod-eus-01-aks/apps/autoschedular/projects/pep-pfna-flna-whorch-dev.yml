@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: autoschedular-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_Warehouse_Automation/_git/pep-pfna-whse-autoschedular-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-whorch-dev  
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: autoschedular-dev-admin
+    description: Admin privileges to autoschedular-dev
+    policies:
+    - p, proj:autoschedular-dev:autoschedular-dev-admin, applications, *, autoschedular-dev/*, allow
+    - p, proj:autoschedular-dev:autoschedular-dev-admin, repositories, *, autoschedular-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: autoschedular-dev-user
+    description: Read-only privileges to autoschedular-dev
+    policies:
+    - p, proj:autoschedular-dev:autoschedular-dev-user, applications, get, autoschedular-dev/*, allow
+    - p, proj:autoschedular-dev:autoschedular-dev-user, applications, sync, autoschedular-dev/*, allow
+    - p, proj:autoschedular-dev:autoschedular-dev-user, repositories, get, autoschedular-dev/*, allow
+    - p, proj:autoschedular-dev:autoschedular-dev-user, applications, action/apps/Deployment/restart, autoschedular-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.PFNA.WHAutomation.Developer"
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.PFNA.whseas.Developer"

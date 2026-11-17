@@ -1,0 +1,12 @@
+####### BEGIN Added recently --pep-dps-preprod-sea-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_apac_pepconnind_preprod
+  - ns_pep_dps_apac_psd_preprod
+  - ns_pep_dps_cgf_gpg_preprod
+  - ns_pep_dps_cgf_test_preprod
+  - ns_pep_dps_cgf_testing_preprod
+  - ns_pep_dps_cgf_pepconntha_preprod
+####### END Added recently --pep-dps-preprod-sea-global-01-aks######

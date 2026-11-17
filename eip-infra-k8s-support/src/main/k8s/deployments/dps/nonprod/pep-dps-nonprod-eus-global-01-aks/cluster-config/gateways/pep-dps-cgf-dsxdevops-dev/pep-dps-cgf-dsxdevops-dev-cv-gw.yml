@@ -1,0 +1,78 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-dsxdevops-dev-cv-gw
+  namespace: pep-dps-cgf-dsxdevops-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-dsxdevops-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-dsxdevops-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-dsxdevops-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dsx-agentic-gateway.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsx-agentic-gateway-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-rbac-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-memory-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-reasoning-agent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-branch-cleanup-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-insights-costagent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-debugger-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-infra-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-orchestrator-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: dsx-agentic-gateway-http-80
+    port:
+      name: http-dsx-agentic-gateway-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - dsx-agentic-gateway.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsx-agentic-gateway-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-rbac-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-memory-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-reasoning-agent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-branch-cleanup-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-insights-costagent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-debugger-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-infra-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dsxdevops-agentic-orchestrator-agent.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: dsx-agentic-gateway-https-443
+    port:
+      name: https-dsx-agentic-gateway-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

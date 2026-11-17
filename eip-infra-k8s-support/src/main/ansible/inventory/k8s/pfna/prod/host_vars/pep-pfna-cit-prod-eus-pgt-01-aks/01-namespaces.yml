@@ -1,0 +1,9 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_pfna_flna_pgt_prod
+
+

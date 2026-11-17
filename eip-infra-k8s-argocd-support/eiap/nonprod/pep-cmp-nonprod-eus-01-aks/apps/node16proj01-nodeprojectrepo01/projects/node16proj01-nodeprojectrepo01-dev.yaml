@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: node16proj01-nodeprojectrepo01-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for node16proj01-nodeprojectrepo01-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/node16proj01-nodeprojectrepo01-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: node16proj01-nodeprojectrepo01-dev-admin
+    description: Admin privileges to node16proj01-nodeprojectrepo01-dev
+    policies:
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-admin, applications, *, node16proj01-nodeprojectrepo01-dev/*, allow
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-admin, repositories, *, node16proj01-nodeprojectrepo01-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: node16proj01-nodeprojectrepo01-dev-user
+    description: Read-only privileges to node16proj01-nodeprojectrepo01-dev
+    policies:
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-user, applications, get, node16proj01-nodeprojectrepo01-dev/*, allow
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-user, applications, sync, node16proj01-nodeprojectrepo01-dev/*, allow
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-user, repositories, get, node16proj01-nodeprojectrepo01-dev/*, allow
+    - p, proj:node16proj01-nodeprojectrepo01-dev:node16proj01-nodeprojectrepo01-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ"

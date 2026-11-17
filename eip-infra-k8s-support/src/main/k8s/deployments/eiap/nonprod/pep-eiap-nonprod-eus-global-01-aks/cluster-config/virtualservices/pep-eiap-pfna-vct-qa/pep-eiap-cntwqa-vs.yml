@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: cntwqa
+  name: pep-eiap-cntwqa-vs
+  namespace: pep-eiap-pfna-vct-qa
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-qa/pep-eiap-pfna-vct-qa-cv-gw
+  hosts:
+  - cntwqa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - controltower.qa.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cntwqa.pep-eiap-pfna-vct-qa.svc.cluster.local
+        port:
+          number: 80

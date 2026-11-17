@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-pfna-flna-iwmsgeswav-dev-sa
+  namespace: pep-pfna-flna-iwmsgeswav-dev

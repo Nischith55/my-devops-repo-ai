@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-europe-dtcksa-prod-sa
+  namespace: pep-eiap-europe-dtcksa-prod

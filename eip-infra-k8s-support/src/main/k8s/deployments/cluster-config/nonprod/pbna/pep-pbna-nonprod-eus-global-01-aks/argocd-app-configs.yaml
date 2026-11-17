@@ -1,0 +1,16 @@
+---
+global:
+  spec:
+    destination:
+      clusterName: pep-pbna-nonprod-eus-global-01-aks
+
+argoCDApplications:  
+  clusterconfig-pep-pbna-nonprod-eus-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    syncOptions:
+    - Force=true
+    - Replace=true
+    path: src/main/k8s/deployments/cluster-config/nonprod/pbna/pep-pbna-nonprod-eus-global-01-aks

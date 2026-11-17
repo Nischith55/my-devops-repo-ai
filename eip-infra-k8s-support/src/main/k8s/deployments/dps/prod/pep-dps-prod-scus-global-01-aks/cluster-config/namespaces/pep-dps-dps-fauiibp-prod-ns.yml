@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-fauiibp-prod
+  labels:
+    env-prod: "true"
+    project: fauiibp
+    sector: dps
+    team: dps-fauiibp
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: integratedbusinessplanning-ibp-non-prod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: b07619cadb8bf8903d3e3967f496194a
+    pep-cmdb-app-service-id: f62f15f047a6151052293238436d439e
+    pep-environment: Production
+    

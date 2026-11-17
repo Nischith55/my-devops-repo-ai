@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: k8s-resources
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+     argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for k8s platform components   
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+  - https://charts.rancher.io
+  - https://open-policy-agent.github.io/gatekeeper/charts 
+  destinations:  
+  - name: pep-eiap-preprod-eus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+
+  - name: pep-eiap-preprod-eus-infra-02-aks
+    namespace: default
+    server: https://kubernetes.default.svc
+  
+  - name: pep-eiap-preprod-eus-infra-02-aks
+    namespace: gatekeeper-system
+    server: https://kubernetes.default.svc
+       
+  - name: pep-eiap-prod-eus-global-01-aks
+    namespace: argocd
+    server: https://pep-eiap-prod-eus-global-01-aks-8bf5ab3d.privatelink.eastus.azmk8s.io:443
+
+  - name: pep-infratools-prod-eus-01-aks
+    namespace: argocd
+    server: https://pep-infratools-prod-eus-01-aks-w5zfugrc.privatelink.eastus.azmk8s.io:443
+
+  - name: pep-eiap-prod-eus-global-01-aks
+    namespace: default
+    server: https://pep-eiap-prod-eus-global-01-aks-8bf5ab3d.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-prod-eus-global-01-aks
+    namespace: gatekeeper-system
+    server: https://pep-eiap-prod-eus-global-01-aks-8bf5ab3d.privatelink.eastus.azmk8s.io:443
+

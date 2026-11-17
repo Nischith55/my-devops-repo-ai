@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 9b7ea8cac385ae1097d1981f05013170
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: btbcarts
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalcartseuropeprod
+    team: europe-btbcarts
+  name: pep-dps-europe-btbcarts-prod

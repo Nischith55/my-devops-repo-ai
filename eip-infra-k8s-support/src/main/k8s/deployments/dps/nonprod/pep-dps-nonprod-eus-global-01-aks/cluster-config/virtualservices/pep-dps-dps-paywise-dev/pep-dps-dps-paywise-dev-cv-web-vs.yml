@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-paywise-dev-cv-web-vs
+  namespace: pep-dps-dps-paywise-dev
+  labels:
+    app: pep-dps-dps-paywise-dev-cv-web
+spec:
+  hosts:
+    - paywise.dev.pepsico.com
+    - pep-dps-dps-paywise-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-paywise-dev/pep-dps-dps-paywise-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-paywise-dev-cv-web.pep-dps-dps-paywise-dev.svc.cluster.local
+        port:
+          number: 80

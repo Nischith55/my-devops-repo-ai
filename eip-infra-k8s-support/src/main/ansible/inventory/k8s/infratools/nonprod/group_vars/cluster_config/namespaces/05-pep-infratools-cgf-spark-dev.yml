@@ -1,0 +1,36 @@
+---
+ns_pep_infratools_cgf_spark_dev:
+  
+  name: pep-infratools-cgf-spark-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-spark
+    sector: cgf
+    project: spark
+    crosscharge_aks: direct
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-infratools-cgf-spark-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-infratools-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-infratools-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_spark'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-infratools-cgf-spark-dev-sa-token
+    namespace: pep-infratools-cgf-spark-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-infratools-cgf-spark-dev-sa"

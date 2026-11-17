@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pod-info-2-vs
+  namespace: test
+spec:
+  gateways:
+  - test/test-cv-gw
+  hosts:
+  - pod-info-test-ns.sandbox.gw01.aks03.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pod-info.test.svc.cluster.local
+        port:
+          number: 9898

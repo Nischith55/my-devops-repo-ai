@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-devxaicp-qa
+  labels:
+    env-nonprod: "true"
+    project: devxaicp
+    sector: cgf
+    team: cgf-devxaicp
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: devxnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 72bf2fe347521a50f206dcdb416d4395
+    pep-cmdb-app-service-id: 474f8eb7872d9a9455ffb8c7cebb3576
+    pep-environment: QA
+    

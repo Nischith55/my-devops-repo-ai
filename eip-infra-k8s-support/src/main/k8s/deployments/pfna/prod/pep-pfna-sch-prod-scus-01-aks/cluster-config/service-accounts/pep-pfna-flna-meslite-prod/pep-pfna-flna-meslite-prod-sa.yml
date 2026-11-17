@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: f9405bdc-9991-4e50-bb61-3d2b07e51696
+  name: pep-pfna-flna-meslite-prod-sa
+  namespace: pep-pfna-flna-meslite-prod

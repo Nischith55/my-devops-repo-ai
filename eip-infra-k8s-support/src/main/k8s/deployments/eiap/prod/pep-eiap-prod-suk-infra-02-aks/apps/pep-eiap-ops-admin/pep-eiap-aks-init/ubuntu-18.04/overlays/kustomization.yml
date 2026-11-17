@@ -1,0 +1,14 @@
+---
+# generated file please do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: pep-eiap-ops-admin
+resources:
+  - ../../../../../../../apps/pep-eiap-aks-init/kustomize/ubuntu-18.04/base
+# All strategic merge patches
+# only filename not full path
+ 
+ 
+
+

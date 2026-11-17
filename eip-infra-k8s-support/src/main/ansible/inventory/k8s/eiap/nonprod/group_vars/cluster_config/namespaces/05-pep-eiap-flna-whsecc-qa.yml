@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_flna_whsecc_qa:
+  
+  name: pep-eiap-flna-whsecc-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-whsecc
+    sector: flna
+    project: whsecc
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: pwm-pickworkmanagernon-prod
+    pep-cmdb-app-service-id: "9ba0a13047e6151052293238436d430d"
+    pep-cmdb-bus-app-id: "c9de00bddb3e8c10c2b5f381399619ca"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-flna-whsecc-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_whsecc'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-flna-whsecc-qa-sa-token
+    namespace: pep-eiap-flna-whsecc-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-flna-whsecc-qa-sa"

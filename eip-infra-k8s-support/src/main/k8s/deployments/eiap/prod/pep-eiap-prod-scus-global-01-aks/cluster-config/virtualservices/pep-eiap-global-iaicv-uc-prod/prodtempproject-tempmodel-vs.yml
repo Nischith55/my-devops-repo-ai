@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: prodtempproject-tempmodel
+  name: prodtempproject-tempmodel-vs
+  namespace: pep-eiap-global-iaicv-uc-prod
+spec:
+  gateways:
+  - pep-eiap-global-iaicv-uc-prod/pep-eiap-global-iaicv-uc-prod-cv-gw
+  hosts:
+  - prodtempproject-tempmodel.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: prodtempproject-tempmodel.pep-eiap-global-iaicv-uc-prod.svc.cluster.local
+        port:
+          number: 8000

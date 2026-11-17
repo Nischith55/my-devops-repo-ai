@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pgt-pcaf-bireport-repo
+  name: pep-pgt-pcaf-bireport-repo-qa-vs
+  namespace: pep-pfna-pcaf-qa
+spec:
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  hosts:
+  - pep-pgt-pcaf-bireport-repo-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowOrigins:
+      - exact: https://t1.uap.pepenv.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pgt-pcaf-bireport-repo.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-gtmothr-qa
+  labels:
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: gtmothr
+    sector: flna
+    team: flna-gtmothr

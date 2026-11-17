@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: profittoserve-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for profittoserve-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/profittoserve-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-ctxptspp-preprod
+    server: https://kubernetes.default.svc
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: profittoserve-preprod-admin
+    description: Admin privileges to profittoserve-preprod
+    policies:
+    - p, proj:profittoserve-preprod:profittoserve-preprod-admin, applications, *, profittoserve-preprod/*, allow
+    - p, proj:profittoserve-preprod:profittoserve-preprod-admin, repositories, *, profittoserve-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: profittoserve-preprod-user
+    description: Read-only privileges to profittoserve-preprod
+    policies:
+    - p, proj:profittoserve-preprod:profittoserve-preprod-user, applications, get, profittoserve-preprod/*, allow
+    - p, proj:profittoserve-preprod:profittoserve-preprod-user, applications, sync, profittoserve-preprod/*, allow
+    - p, proj:profittoserve-preprod:profittoserve-preprod-user, repositories, get, profittoserve-preprod/*, allow
+    - p, proj:profittoserve-preprod:profittoserve-preprod-user, *, delete, *, deny
+    - p, proj:profittoserve-preprod:profittoserve-preprod-user, applications, action/apps/Deployment/restart, profittoserve-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.CTXPTS" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

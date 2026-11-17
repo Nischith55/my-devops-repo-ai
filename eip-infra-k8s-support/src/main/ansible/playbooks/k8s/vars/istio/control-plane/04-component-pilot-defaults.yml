@@ -1,0 +1,23 @@
+---
+# Defaults for pilot components
+
+__icp_spec_component_pilot:
+
+    enabled: true
+
+    # k8s overlays
+    k8s:
+
+      hpaSpec:
+        minReplicas: 4
+
+##
+# NOTE: override if needed as we do a combine and default is first always
+##
+__icp_spec_component_pilot_params: |-
+  {{
+    __icp_spec_component_pilot
+    |
+    combine((icp_spec_component_pilot | default({})), recursive=True)
+  }}
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-pogon-backend-scheduler-fttb-vs
+  namespace: pep-pfna-pfna-pogon-prod
+  labels:
+      app: pep-pcaf-pogon-backend-scheduler
+spec:
+  hosts:
+  - pep-pcaf-pogon-backend-scheduler.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pogon-prod/pep-pfna-pfna-pogon-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-pogon-backend-scheduler.pep-pfna-pfna-pogon-prod.svc.cluster.local
+        port:
+          number: 80
+  

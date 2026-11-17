@@ -1,0 +1,27 @@
+---
+apiVersion: appdynamics.com/v1alpha1
+kind: Clusteragent
+metadata:
+  name: appdynamics-cluster-agent
+  namespace: appdynamics
+spec:
+  # log configuration
+  logFileBackups: 3
+  logFileSizeMb: 5
+  logLevel: INFO
+  maxPodLogsTailLinesCount: 500
+  # sa name MUST match what is configured in operator manifest
+  serviceAccountName: appdynamics-cluster-agent
+
+  # ###
+  # Java Application auto instrumentation
+  # ###
+  imageInfo:
+    java:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/java-agent:latest
+      imagePullPolicy: IfNotPresent
+  numberOfTaskWorkers: 2
+  resourcesToInstrument:
+  - Deployment
+  - StatefulSet

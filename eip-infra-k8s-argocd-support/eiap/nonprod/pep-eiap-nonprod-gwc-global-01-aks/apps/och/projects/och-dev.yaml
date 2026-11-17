@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: och-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for och-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-gwc-global-01-aks
+    namespace: pep-eiap-och-edt-dev
+  - name: pep-eiap-nonprod-gwc-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: och-dev-admin
+    description: Admin privileges to och-dev
+    policies:
+    - p, proj:och-dev:och-dev-admin, applications, *, och-dev/*, allow
+    - p, proj:och-dev:och-dev-admin, repositories, *, och-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: och-dev-user
+    description: Read-only privileges to och-dev
+    policies:
+    - p, proj:och-dev:och-dev-user, applications, get, och-dev/*, allow
+    - p, proj:och-dev:och-dev-user, applications, sync, och-dev/*, allow
+    - p, proj:och-dev:och-dev-user, repositories, get, och-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.OCH.ESSA.DigitalSales.Developer"

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-ri3adrea-dev-cv-vs
+  namespace: pep-cmp-cmp-ri3adrea-dev
+spec:
+  gateways:
+  - pep-cmp-cmp-ri3adrea-dev/pep-cmp-cmp-ri3adrea-dev-cv-gw
+  hosts:
+  - pep-cmp-cmp-ri3adrea-dev-cv.cmpdmz.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-ri3adrea-dev-cv-webdeploy.pep-cmp-cmp-ri3adrea-dev.svc.cluster.local
+        port:
+          number: 80

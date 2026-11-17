@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for dps   
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/aiforbi-amesamt-uae-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/AMESA_APAC_Data_Digital/_git/amesa-apac-argocd-configs
+  destinations:
+  - name: pep-eiap-nonprod-ae-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

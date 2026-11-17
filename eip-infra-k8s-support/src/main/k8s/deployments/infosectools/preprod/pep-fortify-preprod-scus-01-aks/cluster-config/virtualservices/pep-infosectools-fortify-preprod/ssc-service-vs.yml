@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"ssc-service-vs","namespace":"pep-fortify-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["ssc-service.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com","ssc-preprod.pepasm.net"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"ssc-service.pep-infosectools-fortify-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: ssc-service-vs
+  namespace: pep-infosectools-fortify-preprod
+spec:
+  gateways:
+  - pep-infosectools-fortify-preprod/pep-infosectools-fortify-preprod-cv-gw
+  hosts:
+  - ssc-service.fortify.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - ssc-preprod.pepasm.net
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: ssc-service.pep-infosectools-fortify-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test-testteam-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test-testteam-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-testteam-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test-testteam-dev-admin
+    description: Admin privileges to test-testteam-dev
+    policies:
+    - p, proj:test-testteam-dev:test-testteam-dev-admin, applications, *, test-testteam-dev/*,
+      allow
+    - p, proj:test-testteam-dev:test-testteam-dev-admin, repositories, *, test-testteam-dev/*,
+      allow
+    groups:
+    - Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+  - name: test-testteam-dev-user
+    description: Read-only privileges to test-testteam-dev
+    policies:
+    - p, proj:test-testteam-dev:test-testteam-dev-user, applications, get, test-testteam-dev/*,
+      allow
+    - p, proj:test-testteam-dev:test-testteam-dev-user, applications, sync, test-testteam-dev/*,
+      allow
+    - p, proj:test-testteam-dev:test-testteam-dev-user, repositories, get, test-testteam-dev/*,
+      allow
+    - p, proj:test-testteam-dev:test-testteam-dev-user, *, delete, *, deny
+    groups:
+    - Team.Support.CGF.NonProd.devX
+    - Team.Support.EIAP.READ
+  privilegedGroups:
+  - Team.Support.CGF.NonProd.devX

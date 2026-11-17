@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-ict-goodsreceipt-ib-ingest
+  name: pep-eip-ict-goodsreceipt-ib-ingest-qa-vs
+  namespace: pep-eiap-global-services-qa
+spec:
+  gateways:
+  - pep-eiap-global-services-qa/pep-eiap-global-services-qa-cv-gw
+  hosts:
+  - pep-eip-ict-goodsreceipt-ib-ingest-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-ict-goodsreceipt-ib-ingest.pep-eiap-global-services-qa.svc.cluster.local
+        port:
+          number: 80

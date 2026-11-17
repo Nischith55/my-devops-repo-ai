@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-cgf-iamservice-qa-sa
+  namespace: pep-eiap-cgf-iamservice-qa

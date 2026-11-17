@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:36:42Z"
+  generation: 1
+  name: pepsico-cmp-order-oracle-iaas-orchestrator-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638241711"
+  uid: 996ed8fe-6a93-488b-99ff-fc9569f206a1
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cmp-order-oracle-iaas-orchestrator-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/orchestrator/
+    route:
+    - destination:
+        host: pepsico-cmp-order-oracle-iaas-orchestrator.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

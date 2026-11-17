@@ -1,0 +1,40 @@
+---
+ns_pep_dps_latam_bfflylty_qa:
+  
+  name: pep-dps-latam-bfflylty-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-bfflylty
+    sector: latam
+    project: bfflylty
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectadminbffcustomerloyaltyamericasnon-prod
+    pep-cmdb-app-service-id: "14e466f8c3ea9e902fdb37bf05013192"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-dps-latam-bfflylty-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_bfflylty'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-latam-bfflylty-qa-sa-token
+    namespace: pep-dps-latam-bfflylty-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-latam-bfflylty-qa-sa"

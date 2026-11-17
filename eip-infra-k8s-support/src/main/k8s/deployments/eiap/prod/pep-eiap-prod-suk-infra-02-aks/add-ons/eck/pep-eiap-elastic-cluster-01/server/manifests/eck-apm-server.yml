@@ -1,0 +1,186 @@
+---
+# ##
+# IMPORTANT:
+# - need to create a secret for monitoring cluster user and password
+# - we use internal collection, saves a bit of round trip configuration
+# ##
+# APM Server Bits for ECK deployment
+apiVersion: apm.k8s.elastic.co/v1
+kind: ApmServer
+metadata:
+  # NOTE: eck append apm-server
+  name: cluster-01
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  version: !!str 7.16.2
+  image: &img_apmserver001 docker.elastic.co/apm/apm-server:7.16.2
+  count: 2
+
+  elasticsearchRef:
+    # name of the cluster that this is attached to
+    name: cluster-01
+#    serviceName: pep-eiap-data-01
+
+  # Kibana reference
+  kibanaRef:
+    name: kibana-01
+
+  # HTTP Layer
+  http:
+    tls:
+      certificate:
+        # make sure this is installed in the namespace
+        secretName: &gw01_secret pep-eiap-prod-suk-infra-02-aks-gw01-generic
+
+  #: Most of the apm-server.yml go here -- READ THE DOCS
+  config:
+    output:
+      elasticsearch:
+        ssl: &pep_ca_ssl
+          enabled: true
+          # The following 2 must be mounted at paths shown below from
+          # pep-ca-certs-config ConfigMap
+          certificate_authorities:
+            - /projected/etc/certs/PepsiCoCA01.pem
+            - /projected/etc/certs/PepsiCoRootCA.pem
+          supported_protocols:
+            - TLSv1.2
+            - TLSv1.3
+          verification_mode: certificate
+    # ##
+    # IMPORTANT: Bug Alert
+    # - Documentation says kibana settings can be overridden in setup.kibana
+    # - But the generated apm-server.yml appears to have the kibana section
+    #   in apm-server.kibana Ugh!!!
+    # - We need this since we do SSL passthrough, so w/o our PEP CA the call
+    #   fails.
+    # ##
+    apm-server:
+      ssl: &apm_ssl_settings
+        enabled: true
+        certificate: /projected/etc/certs/gw01.crt
+        key: /projected/etc/certs/gw01.key
+        #key_passphrase:
+        supported_protocols:
+          - TLSv1.2
+          - TLSv1.3
+
+      kibana:
+        ssl: *pep_ca_ssl
+
+    # ~~
+    # use internal collection to send monitroring data to our dedicated
+    # monitoring cluster
+    # ~~
+    # monitoring:
+    #   enabled: false
+    #   elasticsearch:
+    #     # derived from output settings, if different specify here
+    #     # cluster_uuid:
+    #     hosts:
+    #       - ${MONITORING_CLUSTER_URL}
+    #     username: ${MONITORING_CLUSTER_USER}
+    #     password: ${MONITORING_CLUSTER_PASSWORD}
+    #     ssl: *pep_ca_ssl
+
+    logging:
+      level: info
+      # selectors:
+      #   - beat
+
+  podTemplate:
+    metadata:
+      annotations:
+        co.elastic.logs/enabled: "true"
+
+    spec:
+
+      # ##
+      # IMPORTANT: we will pack kibana on Cooridnator nodes
+      # - setup the antiaffinity for ingest nodes
+      # - setup preferred topology constraints (since we are zoned)
+      # - setup nodeSelector and tolerations
+      # - adjust limits (resource) so we can schedule
+      # ##
+      nodeSelector:
+        balance-group: ESGeneralPurpose01ZonedPools
+
+      tolerations:
+        - key: ESGeneralPurpose01NodeOnlyZone1
+          operator: Exists
+        - key: ESGeneralPurpose01NodeOnlyZone2
+          operator: Exists
+        - key: ESGeneralPurpose01NodeOnlyZone3
+          operator: Exists
+
+      # ~~
+      # Volumes
+      # ~~
+      volumes:
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 420
+          sources:
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+          # Gateway Cert
+          - secret:
+              name: *gw01_secret
+              items:
+                - key: tls.crt
+                  path: etc/certs/gw01.crt
+                  mode: 420
+                - key: tls.key
+                  path: etc/certs/gw01.key
+                  mode: 420
+
+      containers:
+      - name: apm-server
+
+        resources:
+          # limits:
+          #   memory: 4Gi
+          #   # cpu: 2000m
+          requests:
+            memory: 2Gi
+            # cpu: 1900m
+        #: ~~
+        #: environment vars
+        #: ~~
+        # env:
+        #   - name: MONITORING_CLUSTER_URL
+        #     # we use internal url since we are running in same cluster as the
+        #     # monitoring cluster
+        #     value: https://monitor-01-es-http.pep-eiap-elastic-monitor-01.svc.cluster.local:9200
+
+        #   # All secrets from elastic-client-shared
+        #   - name: MONITORING_CLUSTER_USER
+        #     valueFrom:
+        #       secretKeyRef:
+        #         name: &shared_sec elastic-client-shared
+        #         key: BEATS_INGEST_USER_01
+
+        #   - name: MONITORING_CLUSTER_PASSWORD
+        #     valueFrom:
+        #       secretKeyRef:
+        #         name: *shared_sec
+        #         key: BEATS_INGEST_PASSWORD_01
+
+        # VolumeMounts
+        volumeMounts:
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

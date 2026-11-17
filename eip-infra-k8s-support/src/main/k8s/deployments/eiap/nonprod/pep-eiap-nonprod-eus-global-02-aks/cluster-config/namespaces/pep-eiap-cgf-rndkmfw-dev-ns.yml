@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 03435a0adbda74d03d3e3967f496195d
+    pep-cmdb-bus-app-id: 87435a0adbda74d03d3e3967f4961988
+    pep-environment: Development
+    project: rndkmfw
+    sector: cgf
+    servicename_aks: iaicognitivesearchprod
+    team: cgf-rndkmfw
+  name: pep-eiap-cgf-rndkmfw-dev

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-dps-latam-btbprofile-dev-sa
+  namespace: pep-dps-latam-btbprofile-dev

@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receipt-scanning-ui
+    app.kubernetes.io/instance: dss-receiptscanningui-dev
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: receipt-scanning-ui
+  namespace: pep-dps-cgf-rsmaster-dev
+spec:
+  gateways:
+  - pep-dps-cgf-rsmaster-dev/pep-dps-cgf-rsmaster-dev-cv-gw
+  hosts:
+  - dss-receiptscanningui.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+  - receiptscanning.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-ui.pep-dps-cgf-rsmaster-dev.svc.cluster.local
+        port:
+          number: 8080

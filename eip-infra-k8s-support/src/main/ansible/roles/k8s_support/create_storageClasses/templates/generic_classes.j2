@@ -1,0 +1,24 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+{% if genclassvariables_file[item] == "default"  %}
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+{% endif %}
+  name: {{ genclassvariables_file[item] }}
+parameters:
+{% if genclassvariables_file[item] == "default" or genclassvariables_file[item] == "managed-csi" or genclassvariables_file[item] == "managed" %}
+  skuName: Standard_LRS
+{% elif genclassvariables_file[item] == "managed-csi-premium"  %}
+  skuName: Premium_LRS
+{% else %}
+{% endif %}
+  cachingmode: ReadOnly
+  kind: Managed
+  resourceGroup: {{ var['rg'] }}
+  zoned: 'true'
+provisioner: disk.csi.azure.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 5a31ddb0-429a-4838-a868-f48090daa007
+  name: pep-dps-dps-r360uat-preprod-sa
+  namespace: pep-dps-dps-r360uat-preprod

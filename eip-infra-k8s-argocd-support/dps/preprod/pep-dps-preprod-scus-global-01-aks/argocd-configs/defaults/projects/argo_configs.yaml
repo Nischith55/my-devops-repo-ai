@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argo-configs
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for dps   
+  sourceRepos:
+  - pepdpsprodacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-portal-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/product-success-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/feature-toggle-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

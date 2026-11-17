@@ -1,0 +1,128 @@
+#jinja2: lstrip_blocks: "True", variable_start_string: "[%" , variable_end_string: "%]"
+{#
+  IMPORTATNT:
+  - Since this is a meta-generator, we have to use 'variable_start_string'
+    and 'variable_end_string' see the first line. Because we CANNOT use
+    jinja2 raw and endraw blocks
+  Description:
+    Template to create generic ingress gateway component file to be fed to
+    istio-operator manifest.
+    params_tmpl:
+      control-plane-name: [required] control plane name
+      index: [required]
+      cluster-name: [required]
+      cluster-name-short: [required]
+      lb-ip: [required]
+      min-replicas: [optional]
+
+
+#}
+{% set _p = params_tmpl %}
+{% set _idx = _p['index'] %}
+{% set _cp_name = _p['control-plane-name']  %}
+{% set _cname = _p['cluster-name']  %}
+{% set _cname_short = _p['cluster-name-short']  %}
+{% if _p['node_params']['node_selector'] is defined %}
+{% set _node_selector = _p['node_params']['node_selector'] %}
+{% endif %}
+{% if _p['node_params']['tolerations'] is defined %}
+{% set _tolerations = _p['node_params']['tolerations'] %}
+{% endif %}
+{# internal variables #}
+{% set _gw_name_ = _cname_short + '-igw-' + _idx %}
+{# gateway variable name: always have cluster_name and cp_name #}
+{% set _var_gw_ = 
+          (_cname + '_' + _cp_name  + '_' + _idx + '_ingress_gw') 
+          | replace('-', '_') 
+%}
+{% set _var_gw_name_ = ('istio_' + _cp_name + '_igwy_' + _idx + '_name') 
+                  | replace('-', '_') %}
+{% set _var_gw_sa_name_ = _var_gw_name_ + '_sa_name' 
+                  | replace('-', '_') %}
+---
+# [% ansible_managed %]
+# Convenient name variable (NOTE: we use the anchor throughout)
+
+[% _var_gw_name_ %]: &igw_name [% _gw_name_ %]
+
+# IMPORTANT: 
+# - service account name for patching this must end with 
+#    '-service-account' otherwise manifest will fail
+[% _var_gw_sa_name_ %]: &igw_sa_name |-
+  {{ [% _var_gw_name_ %] + '-service-account' }}
+
+[% _var_gw_ %]: 
+  # using anchors
+  name: *igw_name
+  enabled: [% _gw_p['enabled'] | default('true') | bool %]
+  # k8s overlays
+  k8s:
+    hpaSpec:
+      minReplicas: [% _p['min-replicas'] | default('2') | int %]
+    {% if _node_selector is defined %}
+    nodeSelector:
+      [% _node_selector | to_nice_yaml(indent=2) | trim | indent(6) %] 
+    {% endif %}
+    {% if _tolerations is defined %}
+    tolerations:
+      [% _tolerations | to_nice_yaml(indent=2) | trim | indent(6) %] 
+    {% endif %}
+    serviceAnnotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+      service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "15"
+    # ##
+    # overlays
+    # ##
+    overlays:
+    # Patch HPA
+    - kind: HorizontalPodAutoscaler
+      name: *igw_name
+      patches:
+        - path: metadata.labels.app
+          value: *igw_name
+        - path: metadata.labels.istio
+          value: *igw_name
+        - path: spec.scaleTargetRef.name
+          value: *igw_name
+
+    # Patch deployment
+    - kind: Deployment
+      name: *igw_name
+      patches:
+        - path: metadata.labels.app
+          value: *igw_name
+        - path: metadata.labels.istio
+          value: *igw_name
+        - path: spec.selector.matchLabels.app
+          value: *igw_name
+        - path: spec.selector.matchLabels.istio
+          value: *igw_name
+        - path: spec.template.metadata.labels.app
+          value: *igw_name
+        - path: spec.template.metadata.labels.istio
+          value: *igw_name
+
+    # Patch service
+    - kind: Service
+      name: *igw_name
+      apiVersion: v1
+      patches:
+        - path: spec.loadBalancerIP
+          value: [% _p['lb-ip'] %]
+        - path: metadata.labels.app
+          value: *igw_name
+        - path: metadata.labels.istio
+          value: *igw_name
+        - path: spec.selector.app
+          value: *igw_name
+        - path: spec.selector.istio
+          value: *igw_name
+
+    # Patch Service Account
+    - kind: ServiceAccount
+      name: *igw_sa_name
+      patches:
+        - path: metadata.labels.app
+          value: *igw_name
+        - path: metadata.labels.istio
+          value: *igw_name

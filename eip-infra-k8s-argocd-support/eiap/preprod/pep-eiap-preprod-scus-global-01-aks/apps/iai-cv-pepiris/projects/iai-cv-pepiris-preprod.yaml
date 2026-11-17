@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iai-cv-pepiris-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iai-cv-pepiris-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepiris-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepiris01-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: iai-cv-pepiris-preprod-admin
+        description: Admin privileges to iai-cv-pepiris-preprod
+        policies:
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-admin, applications, *, iai-cv-pepiris-preprod/*, allow
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-admin, repositories, *, iai-cv-pepiris-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iai-cv-pepiris-preprod-user
+        description: Read-only privileges to iai-cv-pepiris-preprod
+        policies:
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-user, applications, get, iai-cv-pepiris-preprod/*, allow
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-user, applications, sync, iai-cv-pepiris-preprod/*, allow
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-user, repositories, get, iai-cv-pepiris-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:iai-cv-pepiris-preprod:iai-cv-pepiris-preprod-user, applications, action/apps/Deployment/restart, iai-cv-pepiris-preprod/*, allow
+        groups:
+        - "Team.Support.IACOE.CVTG.NPRDCNTB"
+        - "Team.Support.EIAP.READ"
+    

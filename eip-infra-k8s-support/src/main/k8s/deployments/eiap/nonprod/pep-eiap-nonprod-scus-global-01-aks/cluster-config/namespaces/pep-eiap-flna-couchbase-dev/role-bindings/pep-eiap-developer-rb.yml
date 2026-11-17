@@ -1,0 +1,20 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-flna-couchbase-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.HHNext.Couchbase.Admin
+    name: 71436262-8293-43bd-a4d1-ca2b30270ea3
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-flna-couchbase-sp
+    name: 86061b53-a306-401d-bdb5-6b8e7e27f643

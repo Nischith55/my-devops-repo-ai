@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-consumerprofile-history-ptr
+  name: dtcsrv-joy-runtime-consumerprofile-history-ptr-vs
+  namespace: pep-eiap-latam-cep-dev
+spec:
+  gateways:
+  - pep-eiap-latam-cep-dev/pep-eiap-latam-cep-dev-cv-gw
+  hosts:
+  - pep-joy-dtcruntimeconsumerhistoryptr-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-consumerprofile-history-ptr.pep-eiap-latam-cep-dev.svc.cluster.local
+        port:
+          number: 80

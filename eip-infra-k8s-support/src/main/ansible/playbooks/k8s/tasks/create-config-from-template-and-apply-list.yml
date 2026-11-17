@@ -1,0 +1,33 @@
+---
+# ##
+# Create config from same template for a list.
+# ##
+
+- name: CREATE_CONFIG_FROM_TEMPLATE_AND_APPLY_LIST_BLOCK
+  block:
+
+
+    - name: CREATE_CONFIG_FROM_TEMPLATE_AND_APPLY_INCLUDE_TASK
+      include_tasks:
+        file: tasks/cluster-config/create-config-from-template-and-apply.yml
+      vars:
+        # mute print_params
+        print_params: false
+        params_create_cfg:
+          params_cfg: "{{ cfg_obj }}"
+          output_base_dir: "{{ _output_base_dir }}"
+          kube_context: "{{ _kube_context }}"
+          template_src: "{{ _template_src }}"
+      loop: "{{ _cfg_obj_list }}"
+      loop_control:
+        loop_var: cfg_obj
+        label: "{{ cfg_obj['name'] }}"
+
+  # outermost block variables
+  vars:
+    print_params: false
+    _output_base_dir: "{{ params_cfg_obj_list['output_base_dir'] }}"
+    _template_src: |-
+      {{ params_cfg_obj_list['template_src'] }}
+    _cfg_obj_list: "{{ params_cfg_obj_list['cfg_obj_list'] }}"
+    _kube_context: "{{ params_cfg_obj_list['kube_context'] }}"

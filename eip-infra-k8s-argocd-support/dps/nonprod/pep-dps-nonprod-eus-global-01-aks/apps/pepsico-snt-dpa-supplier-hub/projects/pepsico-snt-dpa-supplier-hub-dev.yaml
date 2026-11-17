@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-snt-dpa-supplier-hub-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepsico-snt-dpa-supplier-hub-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pepsico-snt-dpa-supplier-hub-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-supplier-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-snt-dpa-supplier-hub-dev-admin
+    description: Admin privileges to pepsico-snt-dpa-supplier-hub-dev
+    policies:
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-admin, applications, *, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-admin, repositories, *, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-snt-dpa-supplier-hub-dev-user
+    description: Read-only privileges to pepsico-snt-dpa-supplier-hub-dev
+    policies:
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-user, applications, get, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-user, applications, sync, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-user, repositories, get, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-dev:pepsico-snt-dpa-supplier-hub-dev-user, applications, action/apps/Deployment/restart, pepsico-snt-dpa-supplier-hub-dev/*, allow
+    groups:
+    - "Team.App.SNT.PROC.SPHB.NonPROD.ContributorP"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,13 @@
+---
+# Any additional namespaces
+k8s_namespaces:
+  # indirect global variable names
+  - k8s_builtin_namespaces
+  - k8s_common_namespaces
+  - k8s_common_dev_namespaces
+  # add any specific to this cluster as a map (with name as required keys)
+  - name: jaeger-operator
+    config_defaults:   
+      - varname: k8s_namespaces_defaults
+        merge_strategy: list-append
+

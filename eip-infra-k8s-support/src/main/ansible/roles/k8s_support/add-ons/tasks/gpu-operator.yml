@@ -1,0 +1,52 @@
+- name: create temp directory for gpu
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gpu"
+    state: directory
+
+- template:
+    src: gpu-values.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gpu/helm-values.yaml"
+
+- name: Add nvidia gpu operator chart repo
+  kubernetes.core.helm_repository:
+    name: nvidia
+    repo_url: "https://nvidia.github.io/gpu-operator"
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Ensure GPU Operator namespace exists
+  kubernetes.core.k8s:
+    name: gpu-operator
+    api_version: v1
+    kind: Namespace
+    state: present
+  environment:
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Deploy GPU Operator 
+  kubernetes.core.helm:
+    name: gpu-operator
+    chart_ref: nvidia/gpu-operator
+    chart_version: "{{ gpuversion }}"
+    release_namespace: gpu-operator
+    values_files:
+      - "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gpu/helm-values.yaml"
+    state: present  
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/add-ons/{{ env }}/{{ functionalarea }}/{{ resourcename}}/gpu/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gpu/helm-values.yaml"
+    force: true
+  register: copy_gpuoperator
+
+
+
+
+
+

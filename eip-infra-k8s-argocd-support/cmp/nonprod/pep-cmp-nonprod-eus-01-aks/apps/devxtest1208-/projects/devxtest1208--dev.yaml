@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devxtest1208--dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devxtest1208--dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/devxtest1208--argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: devxtest1208--dev-admin
+    description: Admin privileges to devxtest1208--dev
+    policies:
+    - p, proj:devxtest1208--dev:devxtest1208--dev-admin, applications, *, devxtest1208--dev/*, allow
+    - p, proj:devxtest1208--dev:devxtest1208--dev-admin, repositories, *, devxtest1208--dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: devxtest1208--dev-user
+    description: Read-only privileges to devxtest1208--dev
+    policies:
+    - p, proj:devxtest1208--dev:devxtest1208--dev-user, applications, get, devxtest1208--dev/*, allow
+    - p, proj:devxtest1208--dev:devxtest1208--dev-user, applications, sync, devxtest1208--dev/*, allow
+    - p, proj:devxtest1208--dev:devxtest1208--dev-user, repositories, get, devxtest1208--dev/*, allow
+    - p, proj:devxtest1208--dev:devxtest1208--dev-user, *, delete, *, deny
+    groups:
+    - "[TEAM FOUNDATION]\\Team.Support.EIAP.Deployment.Approvers"
+    - "[TEAM FOUNDATION]\\Team.Support.EIAP.Deployment.Approvers"
+    - "Team.Support.EIAP.READ"

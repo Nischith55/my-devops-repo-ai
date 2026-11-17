@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tctsa-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app       
+spec:
+  description: Project for tctsa-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/tct-southafrica-tct-southafrica-argocd-configs
+  - pepcgfschprodsukacr.azurecr.io/helm
+  destinations:
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-cgf-tctsa-prod
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-ops-admin
+  roles:
+  - name: tctsa-prod-admin
+    description: Admin privileges to tctsa-prod
+    policies:
+    - p, proj:tctsa-prod:tctsa-prod-admin, applications, *, tctsa-prod/*, allow
+    - p, proj:tctsa-prod:tctsa-prod-admin, repositories, *, tctsa-prod/*, allow
+    - p, proj:tctsa-prod:tctsa-prod-admin, applications, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: tctsa-prod-user
+    description: Read-only privileges to tctsa-prod
+    policies:
+    - p, proj:tctsa-prod:tctsa-prod-user, applications, get, tctsa-prod/*, allow
+    - p, proj:tctsa-prod:tctsa-prod-user, applications, sync, tctsa-prod/*, allow
+    - p, proj:tctsa-prod:tctsa-prod-user, repositories, get, tctsa-prod/*, allow
+    - p, proj:tctsa-prod:tctsa-prod-user, applications, action/apps/Deployment/restart, tctsa-prod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.AMESATCT"
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"

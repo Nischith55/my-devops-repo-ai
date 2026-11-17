@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_btbprofile_dev:
+  
+  name: pep-dps-europe-btbprofile-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-btbprofile
+    sector: europe
+    project: btbprofile
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalprofileseuropenon-prod
+    pep-cmdb-app-service-id: "c1a4facd831a7e1401deb140feaad3f8"
+    pep-cmdb-bus-app-id: "e95ed977db7740106285d2984b96192e"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-btbprofile-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_btbprofile'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-btbprofile-dev-sa-token
+    namespace: pep-dps-europe-btbprofile-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-btbprofile-dev-sa"

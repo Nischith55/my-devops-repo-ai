@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: model-observability-framework-redis
+  name: model-observability-framework-redis-vs
+  namespace: pep-eiap-cgf-dlops-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-dlops-dev/pep-eiap-cgf-dlops-dev-cv-gw
+  hosts:
+  - model-observability-framework-redis.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: model-observability-framework-redis.pep-eiap-cgf-dlops-dev.svc.cluster.local
+        port:
+          number: 8000

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: f2b7802e-317b-4ab3-91df-0151e0166f06
+  name: pep-eiap-cgf-bsradius-qa-sa
+  namespace: pep-eiap-cgf-bsradius-qa

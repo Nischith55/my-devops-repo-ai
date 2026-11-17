@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-snt-nsgagent-dev
+  labels:
+    env-nonprod: "true"
+    project: nsgagent
+    sector: snt
+    team: snt-nsgagent
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: cloudaiops
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 6de1a729c321b21c476a900f050131fe
+    pep-cmdb-app-service-id: 40f1a769c321b21c476a900f05013147
+    pep-environment: Development
+    

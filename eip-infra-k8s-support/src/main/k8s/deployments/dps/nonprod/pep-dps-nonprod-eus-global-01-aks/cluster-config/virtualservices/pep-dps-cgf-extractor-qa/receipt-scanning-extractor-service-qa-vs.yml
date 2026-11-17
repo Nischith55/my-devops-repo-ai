@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receipt-scanning-extractor-service
+  name: receipt-scanning-extractor-service-qa-vs
+  namespace: pep-dps-cgf-extractor-qa
+spec:
+  gateways:
+  - pep-dps-cgf-extractor-qa/pep-dps-cgf-extractor-qa-cv-gw
+  hosts:
+  - receipt-scanning-extractor-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /receipt-scanning/extractorservice/extractdocument
+    route:
+    - destination:
+        host: receipt-scanning-extractor-service.pep-dps-cgf-extractor-qa.svc.cluster.local
+        port:
+          number: 8082

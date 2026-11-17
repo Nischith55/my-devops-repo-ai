@@ -1,0 +1,24 @@
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # . /opt/venv/python38-ansible211/bin/activate
+      ansible-galaxy collection install community.general
+      if [ "${{ parameters.resc_kind }}" == "namespace" ]; then
+        ansible-playbook -e '{"target":"${{ parameters.cluster }}", "run_task": "apply_resc", "resc_kind": "namespace", "resc_name": "${{ parameters.namespace }}", "skip_generate": false, "skip_kctl": true}' -i src/main/ansible/inventory/k8s/${{ parameters.department }}/$(env)/ -i src/main/ansible/inventory/k8s/defaults/ src/main/ansible/playbooks/k8s/cluster-setup-lifecycle.yml -vvvvv
+      elif [ "${{ parameters.resc_kind }}" == "rolebinding" ]; then
+        ansible-playbook -e '{"target":"${{ parameters.cluster }}", "run_task": "apply_resc", "resc_kind": "rolebinding", "resc_name": "$(role)", "resc_namespace": "${{ parameters.namespace }}", "skip_generate": false, "skip_kctl": true}' -i src/main/ansible/inventory/k8s/${{ parameters.department }}/$(env)/ -i src/main/ansible/inventory/k8s/defaults/ src/main/ansible/playbooks/k8s/cluster-setup-lifecycle.yml
+        if [ "${{ parameters.isspringbootapp }}" == "true" ]; then
+          ansible-playbook -e '{"target":"${{ parameters.cluster }}", "run_task": "apply_resc", "resc_kind": "rolebinding", "resc_name": "$(isspringbootapp)", "resc_namespace": "${{ parameters.namespace }}", "skip_generate": false, "skip_kctl": true}' -i src/main/ansible/inventory/k8s/${{ parameters.department }}/$(env)/ -i src/main/ansible/inventory/k8s/defaults/ src/main/ansible/playbooks/k8s/cluster-setup-lifecycle.yml 
+        fi
+      elif [ "${{ parameters.resc_kind }}" == "serviceaccount" ]; then
+        ansible-playbook -e '{"target":"${{ parameters.cluster }}", "run_task": "apply_resc", "resc_kind": "serviceaccount", "resc_name": "${{ parameters.namespace }}-sa", "resc_namespace": "${{ parameters.namespace }}", "skip_generate": false, "skip_kctl": true}' -i src/main/ansible/inventory/k8s/${{ parameters.department }}/$(env)/ -i src/main/ansible/inventory/k8s/defaults/ src/main/ansible/playbooks/k8s/cluster-setup-lifecycle.yml
+      elif [ "${{ parameters.resc_kind }}" == "secret" ]; then
+        ansible-playbook -e '{"target":"${{ parameters.cluster }}", "run_task": "apply_resc", "resc_kind": "secret", "resc_name": "${{ parameters.namespace }}-sa-token", "resc_namespace": "${{ parameters.namespace }}", "skip_generate": false, "skip_kctl": true}' -i src/main/ansible/inventory/k8s/${{ parameters.department }}/$(env)/ -i src/main/ansible/inventory/k8s/defaults/ src/main/ansible/playbooks/k8s/cluster-setup-lifecycle.yml
+      fi
+  displayName: '${{ parameters.resc_kind }}_manifest'
+  name: ${{ parameters.resc_kind }}_manifest  
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)  

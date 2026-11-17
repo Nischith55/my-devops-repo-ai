@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: b18dc591-09c5-4c04-ae79-401ca079167a
+  name: pep-cmp-cmp-ritester-dev-sa
+  namespace: pep-cmp-cmp-ritester-dev

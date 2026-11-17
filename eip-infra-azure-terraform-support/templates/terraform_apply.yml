@@ -1,0 +1,130 @@
+jobs:
+- job: Apply
+  displayName: 'terraform-apply'
+  steps:
+  - task: PythonScript@0
+    displayName: "Extract Azure KV secrets"
+    name: "GetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+      arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+    env:
+      PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+      NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+      PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+      NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+      PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+      PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+      PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+      NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+      PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp) 
+
+
+  - task: PythonScript@0
+    displayName: "Set Azure credentials"
+    name: "SetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+      arguments: "${{parameters.service_principal_backend}}"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+
+  - task: PythonScript@0
+    displayName: "Set Service Principal"
+    name: "SetServicePrincipal"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_config_spn.py'
+      arguments: "${{ parameters.service_principal }}"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+
+  - task: DownloadPipelineArtifact@2
+    displayName: 'download terraform plan'
+    inputs:
+      artifactName: 'tfplan'
+      downloadPath: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+
+  - task: Bash@3
+    displayName: "terraformversion"
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform -v
+
+  - task: DownloadSecureFile@1
+    displayName: "Download Certificate"
+    condition: eq('${{ parameters.DownloadCertificate }}', 'Yes')
+    inputs:
+      secureFile: '${{parameters.CertificateName}}'
+  
+  - task: Bash@3
+    displayName: "Copy certificate to working directory"
+    condition: eq('${{ parameters.DownloadCertificate }}', 'Yes') 
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+      script: |
+        cp $(Agent.TempDirectory)/${{parameters.CertificateName}} .
+
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+    displayName: Replace tokens in .tfvars file
+    condition: eq('${{ parameters.DownloadCertificate }}', 'Yes')
+    inputs:
+      rootDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{parameters.Region}}/${{parameters.ResourceType}}/${{parameters.resource_name}}'
+      targetFiles: '${{parameters.resource_name}}.tfvars'
+      encoding: 'auto'
+      tokenPattern: 'default'
+      writeBOM: true
+      actionOnMissing: 'warn'
+      keepToken: false
+      actionOnNoFiles: 'continue'
+      enableTransforms: false
+      enableRecursion: false
+      useLegacyPattern: false
+      enableTelemetry: true
+
+  - task: Bash@3
+    displayName: "Apply"
+    inputs:
+      targetType: 'inline'
+
+      workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+      script: |
+        set -e
+        echo "Current directory: $(pwd)"
+        if [[ "${{parameters.Functional_Area}}" == "pfna" ]] || [[ "${{parameters.Functional_Area}}" == "snt" ]] || [[ "${{parameters.Functional_Area}}" == "infratools" ]] || [[ "${{parameters.Functional_Area}}" == "infosectools" ]] || [[ "${{parameters.Functional_Area}}" == "cmp" ]] || [[ "${{parameters.Functional_Area}}" == "pbna" ]] || [[ "${{parameters.Functional_Area}}" == "dps" ]] || [[ "${{parameters.Functional_Area}}" == "globalit" ]] || [[ "${{parameters.Functional_Area}}" == "cmptest" ]] || [[ "${{parameters.Functional_Area}}" == "automation" ]] || [[ "${{parameters.Functional_Area}}" == "cgf" ]] || [[ "${{parameters.Functional_Area}}" == "aisp-sbox" ]] || [[ "${{parameters.Functional_Area}}" == "aisp" ]] || [[ "${{parameters.Functional_Area}}" == "pepgenx" ]]; then
+            export TF_VAR_subscription=$(subscription_id_others)
+            echo "subscription set to subscription_id_others"
+        elif ([[ "${{parameters.Region}}" == "suk" ]] || [[ "${{parameters.Region}}" == "ae" ]] || [[ "${{parameters.Region}}" == "gwc" ]]) && ([[ "${{parameters.env}}" == "nonprod" ]] || [[ "${{parameters.env}}" == "preprod" ]]); then
+            export TF_VAR_subscription=$(subscription_id_other_regions)
+            echo "subscription set to subscription_id_other_regions"
+        else
+            export TF_VAR_subscription=$SUBSCRIPTION
+            echo "subscription set to KV subscription"
+        fi
+        export TF_VAR_tenantid=$TENANTID
+        export TF_VAR_clientid=$CLIENTID
+        export TF_VAR_clientsecret=$CLIENTSECRET
+
+        git config --global http.$(terraform_modules_repo).extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+        if [[ "${{parameters.ResourceType}}" == "azure-kubernetes-services" ]]; then
+            rm kube-configs.tf
+        fi
+        terraform init -backend-config="storage_account_name=$(storage_account_name_for_backend)" \
+                       -backend-config="container_name=$(container_name_for_backend)" \
+                       -backend-config="key=$(key_for_backend)" \
+                       -backend-config="resource_group_name=$(resource_group_name_for_backend)"
+        
+        if [[ "${{parameters.ResourceType}}" == "azure-kubernetes-services" ]]; then
+            terraform apply -parallelism=2 $(Build.BuildNumber)
+        else
+            terraform apply $(Build.BuildNumber)
+        fi 
+
+
+

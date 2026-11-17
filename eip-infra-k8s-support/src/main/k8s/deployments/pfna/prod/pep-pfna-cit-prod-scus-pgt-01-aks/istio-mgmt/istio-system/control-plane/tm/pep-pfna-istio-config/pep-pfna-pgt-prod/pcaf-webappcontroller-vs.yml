@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-webappcontroller-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-webappcontroller.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-webappcontroller.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:   
+      allowOrigins:
+      - exact: https://api-pfna.mypepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      exposeHeaders:
+      - x-total-count
+      - x-source          

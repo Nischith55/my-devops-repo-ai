@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2022-03-21 11:03:50
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-springcloudk8s-rb
+  namespace: pep-eiap-flna-gtmgro-02-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-springcloudk8s-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-flna-gtmgro-02-dev
+    name: pep-eiap-flna-gtmgro-02-dev-sa

@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pep-hcmfar-prod-dbrext-dbr-vs
+  namespace: pep-aisp-cgf-hcmfar-prod
+spec:
+  gateways:
+  - pep-aisp-cgf-hcmfar-prod/pep-aisp-cgf-hcmfar-prod-cv-gw
+  hosts:
+  - pep-hcmfar-prd-csext-dcs-pg.aisp.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 2991
+    route:
+    - destination:
+        host: dbrext-dbr.pep-aisp-cgf-hcmfar-prod.svc.cluster.local
+        port:
+          number: 2991

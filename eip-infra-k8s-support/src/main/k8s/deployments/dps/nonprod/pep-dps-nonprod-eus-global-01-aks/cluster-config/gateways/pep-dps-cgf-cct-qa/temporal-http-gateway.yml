@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: temporal-http-gateway
+  namespace: pep-dps-cgf-cct-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - temporal-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+

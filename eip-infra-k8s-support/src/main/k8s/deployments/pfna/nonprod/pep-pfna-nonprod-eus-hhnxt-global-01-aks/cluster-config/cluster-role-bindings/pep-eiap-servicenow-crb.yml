@@ -1,0 +1,28 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-servicenow-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-servicenow-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: pep-pfna-servicenow-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.PFNA.RG.AKS.NONPROD.Admin
+    name: 61a86256-e3db-42d4-b54c-43bfa61b337f
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.Aks.Istio.Readonly
+    name: 5e966eab-73d1-4f14-861b-207b845f3154
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # Granted to Imran for AKS Federation activities
+    name: madimran@pepsico.com

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_pbna_pbnasckm_prod:
+  
+  name: pep-eiap-pbna-pbnasckm-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-pbnasckm
+    sector: pbna
+    project: pbnasckm
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: pbnasupplychainkm
+    pep-cmdb-app-service-id: "a7169abc832ef950f576d8426daad34d"
+    pep-cmdb-bus-app-id: "fef8f2199793a990bdf331021153af8b"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-pbnasckm-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_pbnasckm'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-pbna-pbnasckm-prod-sa-token
+    namespace: pep-eiap-pbna-pbnasckm-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pbna-pbnasckm-prod-sa"

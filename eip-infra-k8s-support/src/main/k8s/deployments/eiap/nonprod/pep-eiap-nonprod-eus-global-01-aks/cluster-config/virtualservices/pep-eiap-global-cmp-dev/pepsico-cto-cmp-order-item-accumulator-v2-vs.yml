@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-cto-cmp-order-item-accumulator-v2
+  name: pepsico-cto-cmp-order-item-accumulator-v2-vs
+  namespace: pep-eiap-global-cmp-dev
+spec:
+  gateways:
+  - pep-eiap-global-cmp-dev/pep-eiap-global-cmp-dev-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-item-accumulator-v2.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/order/item/accumulator-v2
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-item-accumulator-v2.pep-eiap-global-cmp-dev.svc.cluster.local
+        port:
+          number: 80

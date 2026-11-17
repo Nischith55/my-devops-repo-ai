@@ -1,0 +1,113 @@
+---
+# ##
+# kube-state-metrics : v1.9.x
+# ##
+
+# component name : also should match exactly the directory name in
+# add-ons/<app_name/<this name>
+ksm_1_9_name: v1.9.x
+
+# image tag override or change
+_ksm_1_9_tag: "1.9.7"
+
+# ##
+# component meta information
+# ##
+ksm_1_9_meta:
+
+  # component_name
+  name: "{{ ksm_1_9_name }}"
+
+  # namespace where this component will be targeted
+  namespace: "{{ kube_state_metrics_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+
+_ksm_1_9_component_kustomize_resource_base_dir: |-
+  {{ (ksm_source_app_root_dir, 'kustomize', ksm_1_9_meta['name'], 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_ksm_1_9_component_dest_root_dir: |-
+  {{ (ksm_deploy_app_root_dir, ksm_1_9_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_ksm_1_9_component_overlays_dest_dir: |-
+  {{ (_ksm_1_9_component_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_ksm_1_9_component_manifests_dest_dir: |-
+  {{ (_ksm_1_9_component_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_ksm_1_9_manifest_path: |-
+  {{ 
+    (_ksm_1_9_component_manifests_dest_dir,  
+      ksm_1_9_name + '.yml') | path_join 
+  }}
+
+# re-usable patch target
+__ksm_1_9_target:
+  group: apps
+  version: v1
+  kind: Deployment
+  # IMPORTANT: name is app_name not component name
+  name: "{{ kube_state_metrics_app_name }}"
+  # IMPORTANT: should be src namespace in base resource
+  namespace: "{{ ksm_1_9_meta['namespace'] }}"
+
+# build params
+_ksm_1_9_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _ksm_1_9_component_overlays_dest_dir }}"
+    output_path: "{{ _ksm_1_9_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_ksm_1_9_component_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _ksm_1_9_component_kustomize_resource_base_dir 
+            | relpath(_ksm_1_9_component_manifests_dest_dir) 
+        }}
+
+    images:
+      - name: &img001 quay.io/coreos/kube-state-metrics
+        newName: *img001
+        newTag: "{{ _ksm_1_9_tag }}"
+
+  patches:
+
+    - name: patch-node-selection-deployment
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_ksm_1_9_component_overlays_dest_dir, 'patch-merge-deployment.yml')
+          | path_join
+        }}
+      target: "{{ __ksm_1_9_target }}"
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+ksm_1_9_component_setting: |-
+  {{
+    ksm_1_9_meta
+    |
+    combine(_ksm_1_9_build_params, recursive=True)
+  }}
+

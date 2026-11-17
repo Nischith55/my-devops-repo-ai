@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dopapp-b2b-in-wbou-vs
+  namespace: pep-eiap-global-cep-dev
+  labels:
+      app: dopapp-b2b-in
+spec:
+  hosts:
+  - admin-cep-in-auto.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - admin-cep-in-auto.qa.pepsico.com
+  gateways:
+  - pep-eiap-global-cep-dev/pep-eiap-global-cep-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopapp-b2b-in.pep-eiap-global-cep-dev.svc.cluster.local
+        port:
+          number: 80
+  

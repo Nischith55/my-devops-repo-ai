@@ -1,0 +1,40 @@
+---
+ns_pep_snt_cgf_gssilabs_dev:
+  
+  name: pep-snt-cgf-gssilabs-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-gssilabs
+    sector: cgf
+    project: gssilabs
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: gssilabs
+    pep-cmdb-app-service-id: "3991d487-aaee-4a5b-9d06-e766f0837102"
+    pep-cmdb-bus-app-id: "7c9eadac8392da58282e47747daad3a"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-snt-cgf-gssilabs-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_gssilabs'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-snt-cgf-gssilabs-dev-sa-token
+    namespace: pep-snt-cgf-gssilabs-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-snt-cgf-gssilabs-dev-sa"

@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-invoice-ingest
+  name: pepsico-eip-latam-invoice-ingest-qa-vs
+  namespace: pep-eiap-latam-gtm-qa
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-qa/pep-eiap-latam-gtm-qa-cv-gw
+  hosts:
+  - invoice.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/invoice
+    route:
+    - destination:
+        host: pepsico-eip-latam-invoice-ingest.pep-eiap-latam-gtm-qa.svc.cluster.local

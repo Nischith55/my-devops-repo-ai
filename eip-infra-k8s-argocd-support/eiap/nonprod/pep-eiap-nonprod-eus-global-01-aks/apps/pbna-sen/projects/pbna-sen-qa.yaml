@@ -1,0 +1,44 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-sen-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-sen-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Smart_Equipment_Network_(SEN)/_git/pep-pbna-sen-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-senfsv-qa
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-quikpick-qa
+        server: https://kubernetes.default.svc        
+      roles:
+      - name: pbna-sen-qa-admin
+        description: Admin privileges to pbna-sen-qa
+        policies:
+        - p, proj:pbna-sen-qa:pbna-sen-qa-admin, applications, *, pbna-sen-qa/*, allow
+        - p, proj:pbna-sen-qa:pbna-sen-qa-admin, repositories, *, pbna-sen-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-sen-qa-user
+        description: Read-only privileges to pbna-sen-qa
+        policies:
+        - p, proj:pbna-sen-qa:pbna-sen-qa-user, applications, get, pbna-sen-qa/*, allow
+        - p, proj:pbna-sen-qa:pbna-sen-qa-user, applications, sync, pbna-sen-qa/*, allow
+        - p, proj:pbna-sen-qa:pbna-sen-qa-user, repositories, get, pbna-sen-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pbna-sen-qa:pbna-sen-qa-user, applications, action/apps/Deployment/restart, pbna-sen-qa/*, allow
+        groups:
+        - "Team.SUPPORT.QuickPick.Team"
+        - "Team.Support.EIAP.READ"
+    

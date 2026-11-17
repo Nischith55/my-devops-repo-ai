@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-3p-loyalty-ptr-qa-lwaa-vs
+  namespace: pep-eiap-latam-dtcjoy-qa
+  labels:
+      app: dtcsrv-joy-3p-loyalty-ptr-qa
+spec:
+  hosts:
+  - pep-joy-3pptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-dtcjoy-qa/pep-eiap-latam-dtcjoy-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-3p-loyalty-ptr-qa.pep-eiap-latam-dtcjoy-qa.svc.cluster.local
+        port:
+          number: 80
+  

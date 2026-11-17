@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-europe-amguidance-prod
+    pep-cmdb-app-service-id: 69ccc9f397f591542b3d7a121153af4c
+    pep-cmdb-bus-app-id: 25ccc9f397f591542b3d7a121153af4a
+    pep-environment: Production
+    project: amguidance
+    sector: europe
+    team: europe-amguidance
+  name: pep-eiap-europe-amguidance-prod

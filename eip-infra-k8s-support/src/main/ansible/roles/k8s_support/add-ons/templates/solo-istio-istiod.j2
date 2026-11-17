@@ -1,0 +1,214 @@
+#istiod-values.yaml
+autoscaleEnabled: true
+autoscaleMin: 3
+autoscaleMax: 6
+replicaCount: 3
+rollingMaxSurge: 100%
+rollingMaxUnavailable: 25%
+
+# Resources for a small pilot installation
+resources:
+  requests:
+    cpu: 500m
+    memory: 2048Mi
+
+env:
+  # Disable selecting workload entries for local service routing, so that Kubernetes 
+  # will not automatically match services to workload entries with matching selector labels.
+  # Required for Gloo Mesh VirtualDestination functionality.
+  # For more info, see https://istio.io/latest/docs/reference/commands/pilot-discovery/
+  PILOT_ENABLE_K8S_SELECT_WORKLOAD_ENTRIES: "false"
+  # Reload cacerts when it changes
+  AUTO_RELOAD_PLUGIN_CERTS: "true"
+  # The delay added to config/registry events for debouncing, which delays the push 
+  # by at least this interval. If no change is detected within this period, 
+  # the push occurs. Otherwise, the delay continues until no changes are detected,
+  # up to a max of PILOT_DEBOUNCE_MAX.
+  PILOT_DEBOUNCE_AFTER: 300ms
+  # The maximum amount of time to wait for events while debouncing.
+  PILOT_DEBOUNCE_MAX: 10s
+  # The number of push requests that istiod runs concurrently.
+  PILOT_PUSH_THROTTLE: "1000"
+  # As service mesh configurations grow in size and complexity (e.g., more services, complex 
+  # routing rules, detailed policies), the size of the configuration messages sent from istiod 
+  # to the data plane proxies via gRPC can exceed the default 4MB limit. When this happens, it 
+  # can lead to connection errors, failed configuration updates, and potential instability 
+  # within your service mesh.
+  # Increasing this limit to 8MB provides a larger buffer to accommodate these complex 
+  # configurations, preventing disruptions and ensuring reliable communication between 
+  # the control plane and data plane. We are working with the Istio community to have this 
+  # default value increased in a future release.
+  ISTIO_GPRC_MAXRECVMSGSIZE: "8388608"
+  # To use Kubernetes native sidecar containers
+  # Kubernetes v1.28: Introducing native sidecar containers: https://kubernetes.io/blog/2023/08/25/native-sidecar-containers/
+  # Sidecar containers in Kubernetes: https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+  # Kubernetes Native Sidecars in Istio: https://istio.io/latest/blog/2023/native-sidecars/
+  ENABLE_NATIVE_SIDECARS: "true"
+  # If enabled, Pilot will send only clusters that referenced in gateway virtual services attached to gateway.
+  PILOT_FILTER_GATEWAY_CLUSTER_CONFIG: "true"
+
+# --------- from existing AKS setup which might not be relevant for the new EKS setup ---------
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations:
+- key: CriticalAddonsOnly
+  operator: Exists
+# --------- from existing AKS setup which might not be relevant for the new EKS setup ---------
+
+topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app: istiod
+    maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule  
+
+# Pod anti-affinity
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - istiod
+      topologyKey: kubernetes.io/hostname
+
+# Main revision to create resources with
+revision: main
+
+# Mesh configuration options
+meshConfig:
+  # The administrative root namespace for Istio configuration
+  rootNamespace: istio-system
+  # The trust root of a system, which is the name of the cluster that 
+  # corresponds with the CA certificate CommonName identity.
+  # Required in multicluster environments.
+  trustDomain: {{ resourcename }}
+  # Enable access logging to standard output for observability
+  # Note: Access logging is enabled here globally for all sidecars.
+  # For ingress gateway specific logging, use Telemetry resources (see examples below).
+  accessLogFile: "/dev/stdout"
+  # Encoding for the proxy access log (TEXT or JSON). 
+  # TEXT format is more human-readable, JSON is better for log aggregation systems.
+  enableTracing: true
+  accessLogEncoding: TEXT
+  extensionProviders:
+  - name: file-log
+    envoyFileAccessLog:
+      path: /dev/stdout
+      logFormat:
+        text: |
+          "authority":"%REQ(:AUTHORITY)%" "bytes_received":"%BYTES_RECEIVED%" "bytes_sent":"%BYTES_SENT%" "connection_termination_details":"%CONNECTION_TERMINATION_DETAILS%" "downstream_local_address":"%DOWNSTREAM_LOCAL_ADDRESS%" "downstream_remote_address":"%DOWNSTREAM_REMOTE_ADDRESS%" "duration":"%DURATION%" "method":"%REQ(:METHOD)%" "path":"%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%" "protocol":"%PROTOCOL%" "request_id":"%REQ(X-REQUEST-ID)%" "requested_server_name":"%REQUESTED_SERVER_NAME%" "response_code":"%RESPONSE_CODE%" "response_code_details":"%RESPONSE_CODE_DETAILS%" "response_flags":"%RESPONSE_FLAGS%" "retries":"%REQ(X-ENVOY-ATTEMPT-COUNT)%" "route_name":"%ROUTE_NAME%" "start_time":"%START_TIME%" "traceID":"%TRACE_ID%" "upstream_cluster":"%UPSTREAM_CLUSTER%" "upstream_host":"%UPSTREAM_HOST%" "upstream_local_address":"%UPSTREAM_LOCAL_ADDRESS%" "upstream_service_time":"%REQ(x-envoy-upstream-service-time)%" "upstream_transport_failure_reason":"%UPSTREAM_TRANSPORT_FAILURE_REASON%" "user_agent":"%REQ(USER-AGENT)%" "x_forwarded_for":"%REQ(X-FORWARDED-FOR)%"
+  - name: otel-tracing
+    opentelemetry:
+      port: 4317
+      service: opentelemetry-collector.istio-system.svc.cluster.local
+      resource_detectors:
+        environment: {}
+      #labels:
+      #  "authority": "%REQ(:AUTHORITY)%"
+      #  "bytes_received": "%BYTES_RECEIVED%"
+      #  "bytes_sent": "%BYTES_SENT%"
+      #  "connection_termination_details": "%CONNECTION_TERMINATION_DETAILS%"
+      #  "downstream_local_address": "%DOWNSTREAM_LOCAL_ADDRESS%"
+      #  "downstream_remote_address": "%DOWNSTREAM_REMOTE_ADDRESS%"
+      #  "duration": "%DURATION%"
+      #  "method": "%REQ(:METHOD)%"
+      #  "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+      #  "protocol": "%PROTOCOL%"
+      #  "request_id": "%REQ(X-REQUEST-ID)%"
+      #  "requested_server_name": "%REQUESTED_SERVER_NAME%"
+      #  "response_code": "%RESPONSE_CODE%"
+      #  "response_code_details": "%RESPONSE_CODE_DETAILS%"
+      #  "response_flags": "%RESPONSE_FLAGS%"
+      #  "retries": "%REQ(X-ENVOY-ATTEMPT-COUNT)%"
+      #  "route_name": "%ROUTE_NAME%"
+      #  "start_time": "%START_TIME%"
+      #  "traceID": "%TRACE_ID%"
+      #  "upstream_cluster": "%UPSTREAM_CLUSTER%"
+      #  "upstream_host": "%UPSTREAM_HOST%"
+      #  "upstream_local_address": "%UPSTREAM_LOCAL_ADDRESS%"
+      #  "upstream_service_time": "%REQ(x-envoy-upstream-service-time)%"
+      #  "upstream_transport_failure_reason": "%UPSTREAM_TRANSPORT_FAILURE_REASON%"
+      #  "user_agent": "%REQ(USER-AGENT)%"
+      #  "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%"
+  # Enable metrics merging
+  enablePrometheusMerge: true
+  defaultConfig:
+    tracing:
+      sampling: 100
+      zipkin:
+        address: gloo-telemetry-collector.gloo-mesh.svc.cluster.local:9411
+    # Wait for the istio-proxy to start before starting application pods
+    holdApplicationUntilProxyStarts: true
+    # The amount of time allowed for connections to complete upon proxy shutdown.
+    # When istio-agent receives SIGTERM or SIGINT, it tells the active Envoy instance 
+    # to start draining, which prevents any new connections but allows existing
+    # connections to complete. Envoy then sleeps for the termination_drain_duration,
+    # and then kills any remaining active Envoy processes. If not set, a default of 
+    # 5s is applied.
+    # This process occurs after the preStop lifecycle hook.
+    # https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace
+    terminationDrainDuration: 10s
+    proxyMetadata:
+      # For known hosts, enable the Istio agent to handle DNS requests for any custom ServiceEntry, such as non-Kubernetes services.
+      # Unknown hosts are automatically resolved using upstream DNS servers in resolv.conf (for proxy-dns)
+      ISTIO_META_DNS_CAPTURE: "true"
+      # As service mesh configurations grow in size and complexity (e.g., more services, complex 
+      # routing rules, detailed policies), the size of the configuration messages sent from istiod 
+      # to the data plane proxies via gRPC can exceed the default 4MB limit. When this happens, it 
+      # can lead to connection errors, failed configuration updates, and potential instability 
+      # within your service mesh.
+      # Increasing this limit to 8MB provides a larger buffer to accommodate these complex 
+      # configurations, preventing disruptions and ensuring reliable communication between 
+      # the control plane and data plane. We are working with the Istio community to have this 
+      # default value increased in a future release.
+      ISTIO_GPRC_MAXRECVMSGSIZE: "8388608"
+
+global:
+  # Solo.io distribution of Istio repository.
+  # Required for Gloo Mesh Enterprise features.
+  # You get the repo key from your Solo Account Representative.
+  hub: us-docker.pkg.dev/gloo-mesh/istio-d11c80c0c3fc
+  # Any Solo distribution of Istio version and tags
+  tag: 1.27.5-patch0-solo-distroless
+  # Output all Istio components logs in JSON format by adding the 
+  # --log_as_json argument to each container argument.
+  logAsJson: false
+  # Comma-separated minimum per-scope logging level of messages to output, in the form of <scope>:<level>,<scope>:<level>
+  # The control plane has different scopes depending on component, but can configure default log level across all components.
+  # If empty, the default scope and level are used.
+  logging:
+    level: "default:info"
+  proxy:
+    # Log level for proxy gateways and sidecars.
+    # Supported values: trace|debug|info|warning|error|critical|off
+    logLevel: warning
+    # Sidecar resource settings.
+    # The Istio load tests mesh consists of 1000 services and 2000 sidecars with 70,000 mesh-wide requests
+    # per second and istio-proxy used 0.35 vCPU and 40 MB memory per 1000 requests per second.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 2000m
+        memory: 1024Mi
+  # Required for connecting VirtualMachines to the mesh.
+  # In multicluster setups, helps identify the networks
+  # that each set of workload pods exist in.
+  network: {{ resourcename }}
+  # Required in multicluster environments
+  # for annotating Istio metrics with the cluster name.
+  # Must match the trustDomain.
+  multiCluster:
+   clusterName: {{ resourcename }}
+
+# Solo specific configuration
+license:
+  secretRef:
+    name: solo-license
+    namespace: "istio-system"

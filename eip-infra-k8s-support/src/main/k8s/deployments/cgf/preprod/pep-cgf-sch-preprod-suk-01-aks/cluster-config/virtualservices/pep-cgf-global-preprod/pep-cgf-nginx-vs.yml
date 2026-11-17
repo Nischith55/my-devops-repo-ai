@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cgf-nginx-vs
+  namespace: pep-cgf-global-preprod
+spec:
+  gateways:
+  - pep-cgf-global-preprod/pep-cgf-global-preprod-cv-gw
+  hosts:
+  - pep-cgf-nginx.cgfsch.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cgf-nginx.pep-cgf-global-preprod.svc.cluster.local
+        port: 
+          number: 8080

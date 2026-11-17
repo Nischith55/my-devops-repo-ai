@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 900dad3e-cedf-4da4-bd4f-4b16a8f3c0e7
+  name: pep-cmp-cmp-strstora-dev-sa
+  namespace: pep-cmp-cmp-strstora-dev

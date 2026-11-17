@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tpo-tft-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tpo-tft-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/AAD/_git/tpo-tft-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-pfna-ipp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: tpo-tft-prod-admin
+        description: Admin privileges to tpo-tft-prod
+        policies:
+        - p, proj:tpo-tft-prod:tpo-tft-prod-admin, applications, *, tpo-tft-prod/*, allow
+        - p, proj:tpo-tft-prod:tpo-tft-prod-admin, repositories, *, tpo-tft-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tpo-tft-prod-user
+        description: Read-only privileges to tpo-tft-prod
+        policies:
+        - p, proj:tpo-tft-prod:tpo-tft-prod-user, applications, get, tpo-tft-prod/*, allow
+        - p, proj:tpo-tft-prod:tpo-tft-prod-user, applications, sync, tpo-tft-prod/*, allow
+        - p, proj:tpo-tft-prod:tpo-tft-prod-user, repositories, get, tpo-tft-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.GDA.IPP.Contributors"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cpe-automation-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Cloud_Platform_Enablement/_git/cpe-automation-argocd-config
+    targetRevision: develop
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: cpe-automation-dev
+      valueFiles:
+      - $values/dev/pep-eiap-nonprod-eus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-eiap-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'cpe-automation-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Cloud_Platform_Enablement/_git/cpe-automation-argocd-config
+              repoName: cpe-automation-argocd-config
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

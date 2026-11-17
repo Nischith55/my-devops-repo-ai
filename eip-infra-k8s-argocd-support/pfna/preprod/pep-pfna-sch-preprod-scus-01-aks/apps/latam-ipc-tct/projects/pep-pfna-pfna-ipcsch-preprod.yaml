@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: latamipc-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/LATAM_IPC_TC/_git/pepsico-manufacturing-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-pfna-ipcsch-preprod
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-ops-admin
+    server: https://kubernetes.default.svc     
+  roles:
+  - name: latamipc-preprod-admin
+    description: Admin privileges to latamipc-preprod
+    policies:
+    - p, proj:latamipc-preprod:latamipc-preprod-admin, applications, *, latamipc-preprod/*, allow
+    - p, proj:latamipc-preprod:latamipc-preprod-admin, repositories, *, latamipc-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: latamipc-preprod-user
+    description: Read-only privileges to latamipc-preprod
+    policies:
+    - p, proj:latamipc-preprod:latamipc-preprod-user, applications, get, latamipc-preprod/*, allow
+    - p, proj:latamipc-preprod:latamipc-preprod-user, applications, sync, latamipc-preprod/*, allow
+    - p, proj:latamipc-preprod:latamipc-preprod-user, repositories, get, latamipc-preprod/*, allow
+    - p, proj:latamipc-preprod:latamipc-preprod-user, applications, action/apps/Deployment/restart, latamipc-preprod/*, allow
+    groups:
+    - "Team.App.PFNA.NonProd.ipcsch"
+    - "Team.Support.PFNA.NonProd.ipcsch"

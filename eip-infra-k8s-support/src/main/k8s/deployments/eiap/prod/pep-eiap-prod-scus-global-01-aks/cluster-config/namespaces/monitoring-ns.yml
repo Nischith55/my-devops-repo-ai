@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: disabled
+    kubernetes.io/metadata.name: monitoring
+    project: eiap
+    sector: global
+    servicename_aks: sharedaks
+    team: eiap-ops
+  name: monitoring

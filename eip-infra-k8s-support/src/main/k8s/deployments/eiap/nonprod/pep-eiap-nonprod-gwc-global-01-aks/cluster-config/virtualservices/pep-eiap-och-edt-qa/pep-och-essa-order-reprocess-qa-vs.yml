@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-essa-order-reprocess
+  name: pep-och-essa-order-reprocess-qa-vs
+  namespace: pep-eiap-och-edt-qa
+spec:
+  gateways:
+  - pep-eiap-och-edt-qa/pep-eiap-och-edt-qa-cv-gw
+  hosts:
+  - pep-och-essa-order-reprocess-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-och-ui-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-essa-order-reprocess.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80

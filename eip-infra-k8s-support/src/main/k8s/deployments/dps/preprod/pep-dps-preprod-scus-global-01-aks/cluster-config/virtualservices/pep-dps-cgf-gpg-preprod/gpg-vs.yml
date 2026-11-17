@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: gpg
+  name: gpg-vs
+  namespace: pep-dps-cgf-gpg-preprod
+spec:
+  gateways:
+  - pep-dps-cgf-gpg-preprod/pep-dps-cgf-gpg-preprod-cv-gw
+  hosts:
+  - gpg.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: gpg.pep-dps-cgf-gpg-preprod.svc.cluster.local
+        port:
+          number: 8080

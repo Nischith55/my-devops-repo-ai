@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pbi-generator-dsi
+  name: pbi-generator-dsi-vs
+  namespace: pep-eiap-pfna-vct-dev
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-dev/pep-eiap-pfna-vct-dev-cv-gw
+  hosts:
+  - pbi-generator-dsi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pbi-generator-dsi.pep-eiap-pfna-vct-dev.svc.cluster.local

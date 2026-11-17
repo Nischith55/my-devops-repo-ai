@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cicdmaturity-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cicdmaturity-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  - https://myartifactory.mypepsico.com/artifactory/eiapplatform-helm-prod-virtual
+  destinations:
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-snt-cgf-cicd-dev
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-snt-cgf-cicd-qa
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: argocd

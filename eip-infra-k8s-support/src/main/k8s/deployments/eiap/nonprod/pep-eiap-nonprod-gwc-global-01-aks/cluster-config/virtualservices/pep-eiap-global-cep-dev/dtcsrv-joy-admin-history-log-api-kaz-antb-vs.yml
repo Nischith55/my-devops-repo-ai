@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-admin-history-log-api-kaz-antb-vs
+  namespace: pep-eiap-global-cep-dev
+  labels:
+      app: dtcsrv-joy-admin-history-log-api-kaz
+spec:
+  hosts:
+  - pep-joy-adminhistorylogapikaz-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cep-dev/pep-eiap-global-cep-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-admin-history-log-api-kaz.pep-eiap-global-cep-dev.svc.cluster.local
+        port:
+          number: 80
+  

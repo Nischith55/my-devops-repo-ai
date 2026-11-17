@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: bc009583-178a-4a58-85d4-850c71a45658
+  name: pep-eiap-latam-gtm-dev-sa
+  namespace: pep-eiap-latam-gtm-dev
+

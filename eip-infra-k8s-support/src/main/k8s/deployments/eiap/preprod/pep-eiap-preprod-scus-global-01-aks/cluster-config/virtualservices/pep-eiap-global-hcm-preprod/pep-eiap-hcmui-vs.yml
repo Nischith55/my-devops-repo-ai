@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-hcmui-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["hcmui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com","hcm.preprod.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"hcmui.pep-eiap-global-hcm-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: hcmui
+  name: pep-eiap-hcmui-vs
+  namespace: pep-eiap-global-hcm-preprod
+spec:
+  gateways:
+  - pep-eiap-global-hcm-preprod/pep-eiap-global-hcm-preprod-cv-gw
+  hosts:
+  - hcmui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - hcm.preprod.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: hcmui.pep-eiap-global-hcm-preprod.svc.cluster.local
+        port:
+          number: 80

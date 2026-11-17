@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-dps-cmp-keprtov-prod-cv-webdeploy
+  name: pep-dps-cmp-keprtov-prod-cv-vs
+  namespace: pep-dps-cmp-keprtov-prod
+spec:
+  gateways:
+  - pep-dps-cmp-keprtov-prod/pep-dps-cmp-keprtov-prod-cv-gw
+  hosts:
+  - pep-dps-cmp-keprtov-prod-cv.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dps-cmp-keprtov-prod-cv-webdeploy.pep-dps-cmp-keprtov-prod.svc.cluster.local
+        port:
+          number: 80

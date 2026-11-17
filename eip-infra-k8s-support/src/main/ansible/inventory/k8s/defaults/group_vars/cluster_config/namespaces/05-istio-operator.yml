@@ -1,0 +1,17 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+ns_istio_operator:
+
+  name: istio-operator
+
+  labels:
+    istio-injection: disabled
+

@@ -1,0 +1,23 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-wsp-mypep-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - newshub.mypepsico.com
+  - compass.mypepsico.com
+  http:
+  - timeout: 30s
+#    match:
+#    - ignoreUriCase: true
+#      uri:
+#        prefix: /
+    route:
+    - destination:
+        host: mypep.pep-eiap-global-wsp-prod.svc.cluster.local
+#        port:
+#          number: 80

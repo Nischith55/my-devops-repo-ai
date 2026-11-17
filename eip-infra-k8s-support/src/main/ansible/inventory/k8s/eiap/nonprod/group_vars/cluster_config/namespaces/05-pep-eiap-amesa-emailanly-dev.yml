@@ -1,0 +1,37 @@
+---
+ns_pep_eiap_amesa_emailanly_dev:
+  
+  name: pep-eiap-amesa-emailanly-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: amesa-emailanly
+    sector: amesa
+    project: emailanly
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: newspageindianon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-amesa-emailanly-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['amesa_emailanly'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-amesa-emailanly-dev-sa-token
+    namespace: pep-eiap-amesa-emailanly-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-amesa-emailanly-dev-sa"

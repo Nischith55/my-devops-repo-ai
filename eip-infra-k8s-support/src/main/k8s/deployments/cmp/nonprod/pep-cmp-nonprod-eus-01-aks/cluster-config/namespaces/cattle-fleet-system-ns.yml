@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-9gs6t
+    kubernetes.io/metadata.name: cattle-fleet-system
+    objectset.rio.cattle.io/hash: f399d0b310fbfb28e9667312fdc7a33954e2b8c8
+    servicename_aks: cmp
+  name: cattle-fleet-system

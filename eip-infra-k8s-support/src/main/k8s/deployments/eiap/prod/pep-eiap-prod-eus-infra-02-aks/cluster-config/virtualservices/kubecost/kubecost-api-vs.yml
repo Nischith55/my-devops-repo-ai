@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"kubecost-api-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["kubecost-cost-analyzer-api.infra.gw01.aks02.eus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"kubecost-cost-analyzer.kubecost.svc.cluster.local","port":{"number":9004}}}]}]}}
+  labels:
+    app: cost-analyzer
+  name: kubecost-api-vs
+  namespace: kubecost
+spec:
+  gateways:
+  - kubecost/kubecost-cv-gw
+  hosts:
+  - kubecost-cost-analyzer-api.infra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: kubecost-cost-analyzer.kubecost.svc.cluster.local
+        port:
+          number: 9004

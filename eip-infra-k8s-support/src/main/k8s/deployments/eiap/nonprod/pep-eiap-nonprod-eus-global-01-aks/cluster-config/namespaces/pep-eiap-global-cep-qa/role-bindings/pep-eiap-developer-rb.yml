@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2022-01-20 15:41:40
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-global-cep-qa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.CEP.Developer
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd

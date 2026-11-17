@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-europe-bfflylty-qa-sa
+  namespace: pep-eiap-europe-bfflylty-qa

@@ -1,0 +1,21 @@
+---
+- name: email notification
+  hosts: localhost
+  tasks:
+    - name: send email notification on pr creation success
+      include_role: 
+        name: k8s_support/email_notification
+      vars:
+        email_id: "{{ to_email }}"
+        subject: "Approve PR to merge develop to master branch for eip-infra-k8s-support"
+        body: "As a part of scheduled weekly job to merge the code from develop to master branch PR number: {{ pr_num }} PR link: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support/pullrequest/{{ pr_num }} "
+      when: check_var|length == 0
+
+    - name: send email notification on pr creation failure
+      include_role: 
+        name: k8s_support/email_notification
+      vars:
+        email_id: "{{ to_email }}"
+        subject: "PR creation pipeline to merge develop to master branch for eip-infra-k8s-support failed"
+        body: "As a part of scheduled weekly job to merge the code from develop to master branch failed"
+      when: check_var|length > 0

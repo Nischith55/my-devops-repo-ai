@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-fortify-prod-scus-01-aks
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-fortify-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    servicename_aks: fortify
+    team: eiap-admins
+  name: pep-fortify-ops-admin

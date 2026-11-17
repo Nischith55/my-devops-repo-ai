@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receipt-scanning-product-service
+  name: receipt-scanning-product-service-qa-vs
+  namespace: pep-dps-cgf-rsproduct-qa
+spec:
+  gateways:
+  - pep-dps-cgf-rsproduct-qa/pep-dps-cgf-rsproduct-qa-cv-gw
+  hosts:
+  - receipt-scanning-product-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: prefix_value
+    route:
+    - destination:
+        host: receipt-scanning-product-service.pep-dps-cgf-rsproduct-qa.svc.cluster.local
+        port:
+          number: 8083

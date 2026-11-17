@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-cgf-emdcicd-qa
+  labels:
+    env-nonprod: "true"
+    project: emdcicd
+    sector: cgf
+    team: cgf-emdcicd
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: eipcicdsupportserviceprod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-cmdb-app-service-id: 5d33ceab833ee214de0430226daad310
+    pep-environment: QA
+    

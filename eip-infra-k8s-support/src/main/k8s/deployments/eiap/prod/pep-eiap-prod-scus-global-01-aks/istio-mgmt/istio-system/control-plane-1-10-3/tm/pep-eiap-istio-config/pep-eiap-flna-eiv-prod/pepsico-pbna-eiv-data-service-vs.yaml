@@ -1,0 +1,21 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pbna-eiv-data-service-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pbna-eiv-data-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pbna/eiv/v1
+    route:
+    - destination:
+        host: pepsico-pbna-eiv-data-service.pep-eiap-flna-eiv-prod.svc.cluster.local
+        port:
+          number: 80

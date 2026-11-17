@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-cmp-cmp-qa08-dev-cv-gw
+  namespace: pep-cmp-cmp-qa08-dev
+spec:
+  selector:
+    istio: pep-cmp-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-cmp-cmp-qa08-dev.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-qa08-dev-cv-gw-tls-443
+    port:
+      name: https-pep-cmp-cmp-qa08-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-cmp-cmp-qa08-dev.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-qa08-dev-cv-gw-https-443
+    port:
+      name: https-pep-cmp-cmp-qa08-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-cmp-cmp-qa08-dev-80.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-qa08-dev-cv-gw-http-80
+    port:
+      name: http-pep-cmp-cmp-qa08-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

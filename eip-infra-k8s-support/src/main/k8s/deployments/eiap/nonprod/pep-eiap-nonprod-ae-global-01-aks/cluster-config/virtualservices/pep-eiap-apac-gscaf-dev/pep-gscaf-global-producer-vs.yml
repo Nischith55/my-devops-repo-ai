@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-gscaf-global-producer
+  name: pep-gscaf-global-producer-vs
+  namespace: pep-eiap-apac-gscaf-dev
+spec:
+  gateways:
+  - pep-eiap-apac-gscaf-dev/pep-eiap-apac-gscaf-dev-cv-gw
+  hosts:
+  - pep-gscaf-global-producer.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-gscaf-global-producer.pep-eiap-apac-gscaf-dev.svc.cluster.local
+        port:
+          number: 80

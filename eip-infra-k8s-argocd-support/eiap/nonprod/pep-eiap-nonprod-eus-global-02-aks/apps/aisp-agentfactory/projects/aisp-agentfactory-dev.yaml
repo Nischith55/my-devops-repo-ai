@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aisp-agentfactory-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for aisp-agentfactory-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CTO_AI_Agent_Factory/_git/pep-aisp-agentfactory-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-apac-agfactory-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: aisp-agentfactory-dev-admin
+    description: Admin privileges to aisp-agentfactory-dev
+    policies:
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-admin, applications, *, aisp-agentfactory-dev/*, allow
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-admin, repositories, *, aisp-agentfactory-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: aisp-agentfactory-dev-user
+    description: Read-only privileges to aisp-agentfactory-dev
+    policies:
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-user, applications, get, aisp-agentfactory-dev/*, allow
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-user, applications, sync, aisp-agentfactory-dev/*, allow
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-user, repositories, get, aisp-agentfactory-dev/*, allow # This line will be replaced by the pipeline script
+    - p, proj:aisp-agentfactory-dev:aisp-agentfactory-dev-user, applications, action/apps/Deployment/restart, aisp-agentfactory-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.EEGenAI"
+    - "Team.Support.EIAP.READ"
+    - "Team.App.myCert.EIAP.KUBERNETES.SUPPORT-Platform-Cert"

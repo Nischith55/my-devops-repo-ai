@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepci-askcyber-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepci-askcyber-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-askcyber-argocd-config
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-askcyber-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepci-askcyber-qa-admin
+        description: Admin privileges to pepci-askcyber-qa
+        policies:
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-admin, applications, *, pepci-askcyber-qa/*, allow
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-admin, repositories, *, pepci-askcyber-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepci-askcyber-qa-user
+        description: Read-only privileges to pepci-askcyber-qa
+        policies:
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-user, applications, get, pepci-askcyber-qa/*, allow
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-user, applications, sync, pepci-askcyber-qa/*, allow
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-user, repositories, get, pepci-askcyber-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepci-askcyber-qa:pepci-askcyber-qa-user, applications, action/apps/Deployment/restart, pepci-askcyber-qa/*, allow
+        groups:
+        - "Team.app.CGF.NonProd.askCyber"
+        - "Team.Support.EIAP.READ"
+        - "Team.App.EIAP.PEPCI.RG.Contributor"
+    

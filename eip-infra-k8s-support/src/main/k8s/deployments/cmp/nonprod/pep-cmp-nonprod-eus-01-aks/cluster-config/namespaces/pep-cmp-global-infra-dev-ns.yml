@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-cmp-global-infra-dev
+    servicename_aks: cmp
+  name: pep-cmp-global-infra-dev

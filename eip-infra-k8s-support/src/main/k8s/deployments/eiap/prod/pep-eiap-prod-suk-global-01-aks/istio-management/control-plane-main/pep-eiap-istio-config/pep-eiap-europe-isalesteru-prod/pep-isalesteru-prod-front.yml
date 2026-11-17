@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-isalesteru-prod-front-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-isalesteru-prod-front.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - mem-isales3pd.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-isalesteru-prod-front.pep-eiap-europe-isalesteru-prod.svc.cluster.local
+        port: 
+          number: 5006

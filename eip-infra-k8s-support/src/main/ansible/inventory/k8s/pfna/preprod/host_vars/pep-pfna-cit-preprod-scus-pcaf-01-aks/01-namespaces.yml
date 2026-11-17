@@ -1,0 +1,17 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_pfna_flna_wfm_preprod
+  - ns_pep_pfna_flna_app_preprod
+  - ns_pep_pfna_pfna_pogon_preprod
+  - ns_pep_pfna_pbna_walmartdsd_preprod
+  - ns_pep_pfna_pfna_walmartdsd_preprod
+  - ns_pep_pfna_flna_gtmothr_preprod
+  - ns_pep_pfna_flna_salesplus_preprod
+  - ns_pep_pfna_pcaf_preprod
+  - ns_pep_pfna_pcaf_pgt_preprod
+  - ns_pep_pfna_cgf_cle_preprod
+

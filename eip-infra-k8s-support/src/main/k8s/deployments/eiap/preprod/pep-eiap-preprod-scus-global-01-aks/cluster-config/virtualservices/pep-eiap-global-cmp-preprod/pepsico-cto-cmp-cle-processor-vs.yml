@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-cto-cmp-cle-processor
+  name: pepsico-cto-cmp-cle-processor-vs
+  namespace: pep-eiap-global-cmp-preprod
+spec:
+  gateways:
+  - pep-eiap-global-cmp-preprod/pep-eiap-global-cmp-preprod-cv-gw
+  hosts:
+  - pepsico-cto-cmp-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cto-cmp-cle-processor.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 80

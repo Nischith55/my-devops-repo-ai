@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: asdsd-operationteamkt01-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for asdsd-operationteamkt01-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/asdsd-operationteamkt01-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: asdsd-operationteamkt01-dev-admin
+    description: Admin privileges to asdsd-operationteamkt01-dev
+    policies:
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-admin, applications, *, asdsd-operationteamkt01-dev/*, allow
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-admin, repositories, *, asdsd-operationteamkt01-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: asdsd-operationteamkt01-dev-user
+    description: Read-only privileges to asdsd-operationteamkt01-dev
+    policies:
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-user, applications, get, asdsd-operationteamkt01-dev/*, allow
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-user, applications, sync, asdsd-operationteamkt01-dev/*, allow
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-user, repositories, get, asdsd-operationteamkt01-dev/*, allow
+    - p, proj:asdsd-operationteamkt01-dev:asdsd-operationteamkt01-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

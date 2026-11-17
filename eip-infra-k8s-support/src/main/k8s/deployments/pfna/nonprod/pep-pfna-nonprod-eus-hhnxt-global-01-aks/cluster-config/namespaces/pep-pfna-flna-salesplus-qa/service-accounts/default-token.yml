@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: default-token  # Naming convention followed is ServiceAccountName-token
+  namespace: pep-pfna-flna-salesplus-qa     # Namespace where the service account is created
+  annotations:
+    kubernetes.io/service-account.name: "default" # Service Account name to map the token
+type: kubernetes.io/service-account-token  # Secret type should be this

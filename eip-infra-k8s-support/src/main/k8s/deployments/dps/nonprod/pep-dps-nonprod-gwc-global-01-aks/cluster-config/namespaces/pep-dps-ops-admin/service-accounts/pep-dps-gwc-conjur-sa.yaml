@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-gwc-conjur-sa
+  namespace: pep-dps-ops-admin
+secrets:
+- name: pep-dps-gwc-conjur-sa-token

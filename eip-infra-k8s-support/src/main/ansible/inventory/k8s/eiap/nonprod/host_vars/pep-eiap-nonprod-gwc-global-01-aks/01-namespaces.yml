@@ -1,0 +1,50 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_llmaas_dev
+  - ns_pep_eiap_europe_pepconnind_dev
+  - ns_pep_eiap_europe_bffmerch_dev
+  - ns_pep_eiap_europe_bffmerch_qa
+  - ns_pep_eiap_europe_bfflylty_dev
+  - ns_pep_eiap_europe_bfflylty_qa
+  - ns_pep_eiap_amesa_nsgflip_dev
+  - ns_pep_eiap_europe_dtcjoykz_qa
+  - ns_pep_eiap_europe_dtcjoykz_dev
+  - ns_pep_eiap_europe_dtcjoyperf_qa
+  - ns_pep_eiap_europe_dtcjoy_qa
+  - ns_pep_eiap_europe_cep_dev
+  - ns_pep_eiap_europe_cepsit_qa
+  - ns_pep_eiap_europe_cep_qa
+  - ns_pep_eiap_europe_pepconnect_qa
+  - ns_pep_eiap_cgf_pepconnrou_qa
+  - ns_pep_eiap_cgf_pepconnrou_dev
+  - ns_pep_eiap_apac_ets_dev
+  - ns_pep_eiap_cgf_pepconnrus_qa
+  - ns_pep_eiap_cgf_pepconnrus_dev
+  - ns_pep_eiap_cgf_pepconntur_dev
+  - ns_pep_eiap_cgf_pepconntur_qa
+  - ns_pep_eiap_cgf_apprt_qa
+  - ns_pep_eiap_cgf_apprt_dev
+  - ns_pep_eiap_europe_eugscafqa_dev
+  - ns_pep_eiap_europe_eugscaf_dev
+  - ns_pep_eiap_europe_isalesteru_dev
+  - ns_pep_eiap_europe_isalesteru_qa
+  - ns_pep_eiap_europe_trgscafqa_dev
+  - ns_pep_eiap_europe_trgscafdev_dev
+  - ns_pep_eiap_cgf_pepconnect_qa
+  - ns_pep_eiap_cgf_pepconnect_dev
+  - ns_pep_eiap_europe_spaingscaf_dev
+  - ns_pep_eiap_europe_spaincafqa_dev
+  - ns_pep_eiap_europe_amguidance_dev
+  - ns_pep_eiap_europe_ukcccafpoc_dev
+  - ns_pep_eiap_pbna_cmp_dev
+  - ns_pep_eiap_global_infra_dev
+  - ns_pep_eiap_cgf_dop_dev
+  - ns_pep_eiap_global_cep_dev
+  - ns_pep_eiap_och_edt_dev
+  - ns_pep_eiap_och_edt_qa
+  - ns_pep_eiap_global_services_dev
+  - ns_pep_eiap_europe_anm_dev

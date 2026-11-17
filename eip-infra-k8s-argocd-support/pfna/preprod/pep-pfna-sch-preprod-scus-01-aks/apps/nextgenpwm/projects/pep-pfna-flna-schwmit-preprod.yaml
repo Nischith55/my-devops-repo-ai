@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nextgenpwm-preprod4
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-flna-schwmit-preprod
+    server: https://kubernetes.default.svc    
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: nextgenpwm-admin-preprod4
+    description: Admin privileges to nextgenpwm-preprod4
+    policies:
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-admin-preprod4, applications, *, nextgenpwm-preprod4/*, allow
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-admin-preprod4, repositories, *, nextgenpwm-preprod4/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: nextgenpwm-user-preprod4
+    description: Read-only privileges to nextgenpwm-preprod4
+    policies:
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-user-preprod4, applications, get, nextgenpwm-preprod4/*, allow
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-user-preprod4, applications, sync, nextgenpwm-preprod4/*, allow
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-user-preprod4, repositories, get, nextgenpwm-preprod4/*, allow
+    - p, proj:nextgenpwm-preprod4:nextgenpwm-user-preprod4, applications, action/apps/Deployment/restart, nextgenpwm-preprod4/*, allow
+    groups:
+    - "Team.Support.NGPWM.Admins"

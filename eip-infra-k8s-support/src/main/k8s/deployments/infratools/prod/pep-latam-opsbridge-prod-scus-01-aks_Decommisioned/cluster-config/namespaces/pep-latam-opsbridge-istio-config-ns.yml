@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-latam-opsbridge-istio-config
+    servicename_aks: operation-bridge
+  name: pep-latam-opsbridge-istio-config

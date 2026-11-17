@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Shakirat_Haritha_2021-08-027_09-51-07
+    app.kubernetes.io/managed-by: Manual
+    crosscharge_aks: crosscharge
+    istio-injection: disabled
+    istio-operator-managed: Reconcile
+    kubernetes.io/metadata.name: istio-operator
+    servicename_aks: sharedaks
+  name: istio-operator

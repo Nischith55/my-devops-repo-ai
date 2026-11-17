@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: r360-caf-auth-retailqa-qa-vs
+  namespace: pep-dps-cgf-retailqa-qa
+spec:
+  gateways:
+  - pep-dps-cgf-retailqa-qa/pep-dps-cgf-retailqa-qa-cv-gw
+  hosts:
+  - r360-caf-auth-retailqa-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: r360-caf-auth.pep-dps-cgf-retailqa-qa.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 515ed977db7740106285d2984b961929
+    pep-cmdb-bus-app-id: e95ed977db7740106285d2984b96192e
+    pep-environment: Production
+    project: indbtbprof
+    sector: europe
+    servicename_aks: distributororderportalprod
+    team: europe-indbtbprof
+  name: pep-dps-europe-indbtbprof-prod

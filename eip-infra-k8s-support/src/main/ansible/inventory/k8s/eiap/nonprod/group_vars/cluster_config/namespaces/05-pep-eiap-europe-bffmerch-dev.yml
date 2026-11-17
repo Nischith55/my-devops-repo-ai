@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_europe_bffmerch_dev:
+  
+  name: pep-eiap-europe-bffmerch-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-bffmerch
+    sector: europe
+    project: bffmerch
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalabffproductselectioneuropenon-prod
+    pep-cmdb-app-service-id: "7ad5773a83456e90602934b5eeaad34f"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-bffmerch-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_bffmerch'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-europe-bffmerch-dev-sa-token
+    namespace: pep-eiap-europe-bffmerch-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-europe-bffmerch-dev-sa"

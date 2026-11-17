@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pepgpt-web-app-host-qa:networking.istio.io/VirtualService:pep-eiap-cgf-pepgpt-qa/pepgpt-web-app-host
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pepgpt-web-app-host-qa:networking.istio.io/VirtualService:pep-eiap-cgf-pepgpt-qa/pepgpt-web-app-host"},"labels":{"app":"pepgpt-web-app-host","app.kubernetes.io/instance":"pepgpt-web-app-host","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pepgpt-web-app-host","namespace":"pep-eiap-cgf-pepgpt-qa"},"spec":{"gateways":["pep-eiap-cgf-pepgpt-qa/pep-eiap-cgf-pepgpt-qa-cv-gw"],"hosts":["pepgpt-web-app-host-qa.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepgpt-web-app-host.pep-eiap-cgf-pepgpt-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pepgpt-web-app-host
+        app.kubernetes.io/instance: pepgpt-web-app-host
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pepgpt-web-app-host
+    namespace: pep-eiap-cgf-pepgpt-qa
+spec:
+    gateways:
+    - pep-eiap-cgf-pepgpt-qa/pep-eiap-cgf-pepgpt-qa-cv-gw
+    hosts:
+    - pepgpt-web-app-host-qa.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - pepgpt-host-app.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepgpt-web-app-host.pep-eiap-cgf-pepgpt-qa.svc.cluster.local
+                port:
+                    number: 8080

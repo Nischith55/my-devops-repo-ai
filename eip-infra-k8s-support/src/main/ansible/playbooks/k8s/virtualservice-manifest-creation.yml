@@ -1,0 +1,20 @@
+---
+- name: Manifest generation
+  hosts: localhost
+  connection: local
+  collections:
+    - kubernetes.core
+    - community.general
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  # vars:
+  #   myenv: "{{ 'nonprod' if (env == 'dev') or (env == 'qa') else 'preprod' if env == 'preprod' else 'prod' }}"
+  tasks:
+    - name: Manifest generation of VirtualService
+      include_role: 
+        name: k8s_support/vsmanifestcreation

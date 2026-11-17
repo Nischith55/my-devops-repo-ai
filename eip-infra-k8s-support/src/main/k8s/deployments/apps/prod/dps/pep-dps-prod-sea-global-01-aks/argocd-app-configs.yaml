@@ -1,0 +1,13 @@
+global:
+  spec:
+    destination:
+      clusterName: pep-dps-prod-sea-global-01-aks
+
+argoCDApplications:
+  nginx-pep-dps-prod-sea-global-01-aks:  
+    enabled: true
+    namespace: pep-dps-global-infra-prod
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/prod/dps/pep-dps-prod-sea-global-01-aks/pep-dps-global-infra-prod_NGINX

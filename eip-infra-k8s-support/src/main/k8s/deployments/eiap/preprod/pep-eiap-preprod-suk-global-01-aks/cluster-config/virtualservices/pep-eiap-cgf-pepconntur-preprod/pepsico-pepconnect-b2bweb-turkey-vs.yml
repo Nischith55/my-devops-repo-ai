@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-pepconnect-b2bweb-turkey-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepsico-pepconnect-b2bweb-turkey.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com","dukkan-senin.preprod.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-pepconnect-b2bweb-turkey.pep-eiap-cgf-pepconntur-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pepsico-pepconnect-b2bweb-turkey
+  name: pepsico-pepconnect-b2bweb-turkey-vs
+  namespace: pep-eiap-cgf-pepconntur-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepconntur-preprod/pep-eiap-cgf-pepconntur-preprod-cv-gw
+  hosts:
+  - pepsico-pepconnect-b2bweb-turkey.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  - dukkan-senin.preprod.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-turkey.pep-eiap-cgf-pepconntur-preprod.svc.cluster.local
+        port:
+          number: 80

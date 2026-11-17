@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 0169f8d8-d10d-4b46-9f3e-b157f4dfc289
+  name: pep-automation-auto-cvipam-dev-sa
+  namespace: pep-automation-auto-cvipam-dev

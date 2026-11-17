@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-dps-nginx
+  namespace: pep-dps-infra-prod
+spec:
+  template:
+    spec:
+      containers:
+      - image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+      #- image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-bionic-2021.07.12
+        name: pep-dps-nginx
+        env: 
+        - name: FAIL_LINK
+          value: "https://google.com"
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: cert
+                path: gw01-tls.crt
+              - key: key
+                path: gw01-tls.key
+              name: pep-dps-prod-scus-global-01-aks-gw01-tls

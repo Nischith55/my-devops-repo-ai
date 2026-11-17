@@ -1,0 +1,40 @@
+---
+ns_pep_automation_cgf_cvopa_qa:
+  
+  name: pep-automation-cgf-cvopa-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cvopa
+    sector: cgf
+    project: cvopa
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: cloudautomationansibletowernon-prod
+    pep-cmdb-app-service-id: "e243a9b0472a151052293238436d4303"
+    pep-cmdb-bus-app-id: "481269621bb2f0d00773ddf2cc4bcb38"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-automation-cgf-cvopa-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-automation-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-automation-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cvopa'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-automation-cgf-cvopa-qa-sa-token
+    namespace: pep-automation-cgf-cvopa-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-automation-cgf-cvopa-qa-sa"

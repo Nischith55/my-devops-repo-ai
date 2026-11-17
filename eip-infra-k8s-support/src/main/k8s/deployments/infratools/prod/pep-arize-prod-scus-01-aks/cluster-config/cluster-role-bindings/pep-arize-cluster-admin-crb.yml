@@ -1,0 +1,24 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-arize-cluster-admin-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-arize-ops-admin
+    name: pep-arize-admin-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    #  Team.Support.EE.ARIZE.ADMINS
+    name: 9028b601-3be9-429d-9317-8fa1f3a818c6

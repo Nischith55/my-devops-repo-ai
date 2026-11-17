@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_nvingest_preprod:
+  
+  name: pep-eiap-cgf-nvingest-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-nvingest
+    sector: cgf
+    project: nvingest
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: daipepgenx
+    pep-cmdb-app-service-id: "841e42b8c3ba46d8b7498535990131f7"
+    pep-cmdb-bus-app-id: "7f0e42b8c3ba46d8b74985359901310f"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-nvingest-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_nvingest'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-nvingest-preprod-sa-token
+    namespace: pep-eiap-cgf-nvingest-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-nvingest-preprod-sa"

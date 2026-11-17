@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pepsico-pgt-och-hhnx-employeetocustroute-ingest-qa-vs
+  namespace: pep-eiap-flna-pgt-qa
+spec:
+  gateways:
+  - pep-eiap-flna-pgt-qa/pep-eiap-flna-pgt-qa-cv-gw
+  hosts:
+  - pepsico-pgt-och-hhnx-employeetocustroute-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pepsico-pgt-och-hhnx-employeetocustroute-ingest.pep-eiap-flna-pgt-qa.svc.cluster.local
+        port:
+          number: 80

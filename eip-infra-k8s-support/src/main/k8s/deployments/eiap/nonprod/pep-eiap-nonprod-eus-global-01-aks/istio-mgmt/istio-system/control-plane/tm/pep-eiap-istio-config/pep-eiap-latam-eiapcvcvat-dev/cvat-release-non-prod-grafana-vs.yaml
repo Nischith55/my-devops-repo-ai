@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cvat-release-non-prod-grafana-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - cvat-release-non-prod-grafana.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /analytics
+    route:
+    - destination:
+        host: cvat-release-non-prod-grafana.pep-eiap-latam-eiapcvcvat-dev.svc.cluster.local
+        port:
+          number: 80

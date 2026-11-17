@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-td-idm-service-v2
+  name: pep-eip-td-idm-service-v2-vs
+  namespace: pep-eiap-global-eip-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eip-preprod/pep-eiap-global-eip-preprod-cv-gw
+  hosts:
+  - pep-eip-td-idm-service-v2.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-td-idm-service-v2.pep-eiap-global-eip-preprod.svc.cluster.local
+        port:
+          number: 80

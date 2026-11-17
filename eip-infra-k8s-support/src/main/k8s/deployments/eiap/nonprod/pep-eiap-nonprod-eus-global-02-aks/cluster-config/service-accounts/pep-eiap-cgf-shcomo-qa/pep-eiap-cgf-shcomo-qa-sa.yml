@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 5dfb119c-813c-44cf-a1f1-7951f3b19e1f
+  name: pep-eiap-cgf-shcomo-qa-sa
+  namespace: pep-eiap-cgf-shcomo-qa

@@ -1,0 +1,5 @@
+---
+- name: populating template
+  template:
+    src: templates/k8s-kubeconfig.yml.j2
+    dest: /tmp/{{ cluster }}-user-ip.kcfg

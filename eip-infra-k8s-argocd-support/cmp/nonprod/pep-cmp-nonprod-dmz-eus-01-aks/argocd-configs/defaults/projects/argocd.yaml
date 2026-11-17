@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for dps   
+  sourceRepos:
+  - pepcmpnonproddmzeusacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/och-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/pep-eip-shared-argocd-config
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Consulting_KM/_git/cgf-ckms-argocd-configs
+  destinations:
+  - name: pep-cmp-nonprod-dmz-eus-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

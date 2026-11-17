@@ -1,0 +1,81 @@
+---
+# #
+# Playbook to generate various istio installtion manifests, like operator and
+# control plane, gateway stubs. NOTE: this is NOT istio configuration or
+# management. generally this will be used 1 time and should be host or 
+# cluster agnostic.
+# #
+
+- name: PLAY_ISTIO_INSTALL_GENERATOR
+  # cluster_name TODO really should be agnostic.
+  hosts: localhost
+  gather_facts: false
+  serial: 1
+
+  vars:
+    task_list: "{{ (run_task | default('')).split() }}"
+
+  tasks:
+
+    # special handling for istio-operator
+    - name: GENERATE_ISTIO_OPERATOR_BASE_MANIFEST_BLOCK
+      block:
+
+        - name: GENERATE_ISTIO_OP_INCLUDE_VARS {{ _iop_vars_dir }}
+          include_vars:
+            dir: vars/istio/operator
+            depth: 1
+            ignore_unknown_extensions: yes
+
+        - name: GENERATE_ISTIO_OPERATOR_BASE_FILES
+          include_tasks:
+            file: tasks/istio/generate-operator-manifest.yml
+          vars:
+            params_istio_op:
+              kube_context: "{{ kube_context_name | default('localhost') }}"
+              iop_params: "{{ istio_operator_generator_params }}"
+      vars:
+        _iop_vars_dir: vars/istio/operator
+      when: ('gen_base_iop' in task_list)
+
+    # TODO:
+    # - use the control-plane template + ingress gateway to generate a base
+    #   instance of control plane
+    #
+    # - name: GENERATE_ISTIO_INGRESS_GATEWAYS_BLOCK
+    #   block:
+
+    #     - name: PRINT_ISTIO_INGRESS_PARAMS
+    #       debug:
+    #         msg: |
+    #           ingress_gw_generator_params:
+    #             {{ ingress_gw_generator_params | to_nice_yaml(indent=2) 
+    #                 | trim | indent(2) }}
+    #       when: (play_print_params | default('false') | bool)
+          
+    #     - name: ENSURE_GENERATED_DIR {{ _template_out_dir }}
+    #       file:
+    #         path: "{{ _template_out_dir }}"
+    #         state: directory
+    #         mode: "u=rwx,g=rx,o=rx"
+
+    #     - name: GENERATE_ISTIO_INGRESS_GATEWAYS
+    #       template:
+    #         src: istio-install/control-plane/generate-ingress-gateway-settings.yml.j2
+    #         dest: "{{ (_template_out_dir, _filename) | path_join }}"
+    #       vars:
+    #         params_tmpl: "{{ gw_cfg }}"
+    #         _index: "{{ gw_cfg['index'] }}"
+    #         _filename: |-
+    #           {{ '40-ingress-gwy-' + _index + '-generated.yml' }}
+    #       loop: "{{ ingress_gw_generator_params }}"
+    #       loop_control:
+    #         loop_var: gw_cfg
+    #         label: "{{ gw_cfg['index'] }}"  
+    #   vars:
+    #     _template_out_dir: |-
+    #       {{ (host_inventory_dir, 'istio') | path_join }}
+
+    #   delegate_to: localhost
+    #   when: >-
+    #     ('gen_ingress_gw_cp' in task_list)          

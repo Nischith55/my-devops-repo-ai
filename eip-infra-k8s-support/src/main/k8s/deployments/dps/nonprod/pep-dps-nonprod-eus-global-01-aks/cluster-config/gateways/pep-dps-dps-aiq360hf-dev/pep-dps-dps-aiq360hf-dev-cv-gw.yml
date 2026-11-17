@@ -1,0 +1,144 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-aiq360hf-dev-cv-gw
+  namespace: pep-dps-dps-aiq360hf-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-aiq360hf-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-aiq360hf-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-aiq360hf-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-promotions-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-nginx-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-jbp-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-common-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-knowledge-rag-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-pepgenx-adapter-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-chatbot-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusai-document-ingestor-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-aiq360hf-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - usaiqhf.dev.pepsico.com
+    - pep-dps-dps-aiq360hf-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-promotions-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-nginx-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-frontend-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aiqassetshf.dev.pepsico.com
+    - gusr360-lite-jbp-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-common-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-knowledge-rag-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-pepgenx-adapter-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-chatbot-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusai-document-ingestor-hfdev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-aiq360hf-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - usaiqhf.dev.pepsico.com
+    name: pep-dps-dps-aiq360hf-dev-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-aiq360hf-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-aiq360hf-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - aiqassetshf.dev.pepsico.com
+    name: pep-dps-dps-aiq360hf-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-aiq360hf-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: aiqassetshf.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

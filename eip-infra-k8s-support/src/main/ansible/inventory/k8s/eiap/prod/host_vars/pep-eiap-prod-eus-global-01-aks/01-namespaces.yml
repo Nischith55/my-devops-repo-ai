@@ -1,0 +1,25 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_nvingest_prod
+  - ns_pep_eiap_latam_och_prod
+  - ns_pep_eiap_latam_cep_prod
+  # EIAP admin infra ns
+  - ns_pep_eiap_global_infra
+  - ns_pep_eiap_cgf_pdm_prod
+  - ns_pep_eiap_global_eipone_prod
+  - ns_pep_eiap_cgf_btb_prod
+  - ns_pep_eiap_global_eiotp_prod
+  - ns_pep_eiap_global_hcm_prod
+
+  # ECK - operator -- default namespace
+  - ns_elastic_system
+  
+  # ECK managed -- cluster-01
+  - ns_pep_eiap_elastic_cluster_01
+ 
+  
+  

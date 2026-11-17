@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: prometheus-grafana-vs
+  namespace: pep-pfna-flna-trmmrw-dev
+spec:
+  gateways:
+  - pep-pfna-flna-trmmrw-dev/pep-pfna-flna-trmmrw-dev-cv-gw
+  hosts:
+  - grafana.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: prometheus-grafana.pep-pfna-flna-trmmrw-dev.svc.cluster.local
+        port:
+          number: 80

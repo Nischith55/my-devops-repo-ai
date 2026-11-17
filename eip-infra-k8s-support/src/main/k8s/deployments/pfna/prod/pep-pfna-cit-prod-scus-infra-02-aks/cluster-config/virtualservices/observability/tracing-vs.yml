@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"tracing-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-pfna-jaegertracing.pfnainfra.gw01.aks02.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"uri":{"prefix":"/"}}],"name":"tracing-v1-route","route":[{"destination":{"host":"jaeger-backend-query.observability.svc.cluster.local","port":{"number":16686}}}]}]}}
+  labels:
+    app: jaeger
+  name: tracing-vs
+  namespace: observability
+spec:
+  gateways:
+  - observability/observability-cv-gw
+  hosts:
+  - pep-pfna-jaegertracing.pfnainfra.gw01.aks02.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    name: tracing-v1-route
+    route:
+    - destination:
+        host: jaeger-backend-query.observability.svc.cluster.local
+        port:
+          number: 16686

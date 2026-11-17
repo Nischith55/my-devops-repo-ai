@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-och-retailorderscamundaservice-qa-dr
+  namespace: pep-eiap-och-na-qa
+spec:
+  host: pep-och-retailorderscamundaservice.pep-eiap-och-na-qa.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: IstioSessionAffinity
+          ttl: 0s

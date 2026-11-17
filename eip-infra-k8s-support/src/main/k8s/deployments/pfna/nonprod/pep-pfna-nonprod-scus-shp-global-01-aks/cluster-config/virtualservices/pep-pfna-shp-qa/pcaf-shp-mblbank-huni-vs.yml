@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-mblbank-huni-vs
+  namespace: pep-pfna-shp-qa
+  labels:
+      app: pcaf-shp-mblbank
+spec:
+  hosts:
+  - pcaf-shp-mblbank.pfnashp.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-shp-qa/pep-pfna-shp-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-mblbank.pep-pfna-shp-qa.svc.cluster.local
+        port:
+          number: 80
+  

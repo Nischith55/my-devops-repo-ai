@@ -1,0 +1,44 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: nvingest-rag-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for nvingest-rag-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-aisp-nvingest-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nvingest
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nim-llm
+      - pepeiapnonprodglobalcommonacr.azurecr.io
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-nvingest-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: nvingest-rag-qa-admin
+        description: Admin privileges to nvingest-rag-qa
+        policies:
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-admin, applications, *, nvingest-rag-qa/*, allow
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-admin, repositories, *, nvingest-rag-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: nvingest-rag-qa-user
+        description: Read-only privileges to nvingest-rag-qa
+        policies:
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-user, applications, get, nvingest-rag-qa/*, allow
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-user, applications, sync, nvingest-rag-qa/*, allow
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-user, repositories, get, nvingest-rag-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:nvingest-rag-qa:nvingest-rag-qa-user, applications, action/apps/Deployment/restart, nvingest-rag-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+    

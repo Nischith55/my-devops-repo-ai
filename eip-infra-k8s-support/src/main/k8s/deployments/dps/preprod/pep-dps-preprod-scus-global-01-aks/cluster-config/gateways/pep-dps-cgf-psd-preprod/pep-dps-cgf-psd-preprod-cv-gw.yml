@@ -1,0 +1,104 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-psd-preprod-cv-gw
+  namespace: pep-dps-cgf-psd-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-psd-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-psd-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-global-psdreportapi.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-data-collector-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-global-psdreportapi-argocd-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ui-argocd-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-app-performance.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-common-service.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-widget-service.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ms-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-graph-federation.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-user-adoption.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-value-creation.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-psd-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-global-psdreportapi.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - success.preprod.mypepsico.com
+    - psd-data-collector-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-global-psdreportapi-argocd-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ui-argocd-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-app-performance.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-common-service.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-widget-service.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-psd-ms-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-graph-federation.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-user-adoption.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - psd-value-creation.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-psd-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - success.preprod.mypepsico.com
+    name: pep-dps-cgf-psd-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-psd-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-success-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

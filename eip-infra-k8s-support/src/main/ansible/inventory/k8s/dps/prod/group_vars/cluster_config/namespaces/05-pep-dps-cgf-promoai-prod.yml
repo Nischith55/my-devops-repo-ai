@@ -1,0 +1,37 @@
+---
+ns_pep_dps_cgf_promoai_prod:
+  
+  name: pep-dps-cgf-promoai-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-promoai
+    sector: cgf
+    project: promoai
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dpsdsdvisibilityappservice
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-promoai-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_promoai'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-promoai-prod-sa-token
+    namespace: pep-dps-cgf-promoai-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-promoai-prod-sa"

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-xpc-customerservice-ghim-vs
+  namespace: pep-pfna-flna-salesplus-prod
+  labels:
+      app: pcaf-xpc-customerservice
+spec:
+  hosts:
+  - pcaf-xpc-customerservice-prod-01.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-salesplus-prod/pep-pfna-flna-salesplus-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-xpc-customerservice.pep-pfna-flna-salesplus-prod.svc.cluster.local
+        port:
+          number: 80
+  

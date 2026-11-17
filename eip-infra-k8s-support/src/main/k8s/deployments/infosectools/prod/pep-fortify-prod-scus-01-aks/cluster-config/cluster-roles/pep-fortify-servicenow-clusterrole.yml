@@ -1,0 +1,37 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-fortify-servicenow-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    - apps
+    - autoscaling
+    - extensions
+    - batch
+    resources:
+    - endpoints
+    - daemonsets
+    - deployments
+    - jobs
+    - cronjobs
+    - namespaces
+    - nodes
+    - pods
+    - replicasets
+    - services
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - events
+    verbs:
+    - get
+    - list

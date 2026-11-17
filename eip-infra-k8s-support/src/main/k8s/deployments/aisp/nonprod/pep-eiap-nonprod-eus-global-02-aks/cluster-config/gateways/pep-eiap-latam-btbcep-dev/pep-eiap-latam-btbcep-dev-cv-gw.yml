@@ -1,0 +1,251 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: pep-eiap-latam-btbcep-dev-cv-gw
+    namespace: pep-eiap-latam-btbcep-dev
+spec:
+    selector:
+        istio: pep-eiap-ingress-gw01
+    servers:
+    -   hosts:
+        - dummy-passthrough-pep-eiap-latam-btbcep-dev.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-tls-443
+        port:
+            name: https-pep-eiap-latam-btbcep-dev-cv-gw-tls-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: PASSTHROUGH
+    -   hosts:
+        - dummy-pep-eiap-latam-btbcep-dev-443.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-co.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-do.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-mx.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-pe.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-ar.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-cl.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-na.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-ec.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-https-443
+        port:
+            name: https-pep-eiap-latam-btbcep-dev-cv-gw-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pep-eiap-nonprod-eus-global-02-aks-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - dummy-pep-eiap-latam-btbcep-dev-80.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-co.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-co.dev.pepsico.com
+        - admin-cep-do.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-do.dev.pepsico.com
+        - admin-cep-mx.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-mx.dev.pepsico.com
+        - admin-cep-pe.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-pe.dev.pepsico.com
+        - admin-cep-ar.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-ar.dev.pepsico.com
+        - admin-cep-cl.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-cl.dev.pepsico.com
+        - admin-cep-na.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-na.dev.pepsico.com
+        - admin-cep-ec.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - admin-cep-ec.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-http-80
+        port:
+            name: http-pep-eiap-latam-btbcep-dev-cv-gw-80
+            number: 80
+            protocol: http
+        tls:
+            httpsRedirect: true
+    -   hosts:
+        - admin-cep-co.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-3-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-3-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-co.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-do.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-4-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-4-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-do.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-mx.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-5-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-5-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-mx.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-pe.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-6-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-6-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-pe.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-ar.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-7-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-7-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-ar.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-cl.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-8-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-8-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-cl.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-na.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-9-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-9-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-na.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - admin-cep-ec.dev.pepsico.com
+        name: pep-eiap-latam-btbcep-dev-cv-gw-10-https-443
+        port:
+            name: pep-eiap-latam-btbcep-dev-cv-gw-10-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: admin-cep-ec.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE

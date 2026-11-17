@@ -1,0 +1,18 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-pfna-k8sautomation-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-k8sautomation-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+#   pep-eiap-preprod-k8s-sp
+    name: c93e3f5f-6cfa-4c4d-820e-ff53b9168f4a
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+#   Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd

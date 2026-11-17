@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-infosectools-fortify-preprod
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Preprod
+    project: infosectools
+    sector: fortify
+    servicename_aks: fortify
+    team: fortify-infosectools
+  name: pep-infosectools-fortify-preprod

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: och-pbna-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for och-pbna-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pbna-nonprod-eus-global-01-aks
+    namespace: pep-pbna-pbna-savvy-dev 
+  - name: pep-pbna-nonprod-eus-global-01-aks
+    namespace: pep-pbna-ops-admin
+  roles:
+  - name: och-pbna-dev-admin
+    description: Admin privileges to och-pbna-dev
+    policies:
+    - p, proj:och-pbna-dev:och-pbna-dev-admin, applications, *, och-pbna-dev/*, allow
+    - p, proj:och-pbna-dev:och-pbna-dev-admin, repositories, *, och-pbna-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: och-pbna-dev-user
+    description: Read-only privileges to och-pbna-dev
+    policies:
+    - p, proj:och-pbna-dev:och-pbna-dev-user, applications, get, och-pbna-dev/*, allow
+    - p, proj:och-pbna-dev:och-pbna-dev-user, applications, sync, och-pbna-dev/*, allow
+    - p, proj:och-pbna-dev:och-pbna-dev-user, repositories, get, och-pbna-dev/*, allow
+    groups:
+    - "Team.Support.OCH.NA.DigitalSales.Developer"
+    - "Team.Support.EIAP.READ"

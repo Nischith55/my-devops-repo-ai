@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Shakirat_2021_10_07
+    app.kubernetes.io/checked-by: Pushpam_Praseed_2021_10_07
+    istio-injection: disabled
+  name: appdynamics

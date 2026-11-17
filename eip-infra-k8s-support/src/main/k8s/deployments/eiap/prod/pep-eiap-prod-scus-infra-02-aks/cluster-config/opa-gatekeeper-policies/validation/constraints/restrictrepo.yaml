@@ -1,0 +1,66 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedRepos
+metadata:
+  name: restrictrepo
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlockp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-infra
+    - pep-eiap-istio-config
+    - elastic-system
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-client-03
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-cluster-03
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-prod
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    - pep-eiap-gremlin
+    - argocd    
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+    labelSelector:
+      matchExpressions: []
+    namespaceSelector:
+      matchExpressions: []
+    scope: '*'
+  parameters:
+    repos:
+    - pepeiapprodcommonacr.azurecr.io/
+    - docker.io/istio/
+    - cyberark/
+    - docker.elastic.co/observability/
+    - appdynamics/
+    - docker.io/appdynamics/
+    - rancher/
+    - wiziopublic.azurecr.io/wiz-app/
+    - wizio.azurecr.io/

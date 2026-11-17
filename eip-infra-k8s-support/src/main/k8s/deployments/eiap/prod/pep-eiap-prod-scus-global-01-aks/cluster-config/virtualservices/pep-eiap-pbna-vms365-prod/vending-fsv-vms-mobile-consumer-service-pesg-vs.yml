@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vending-fsv-vms-mobile-consumer-service-pesg-vs
+  namespace: pep-eiap-pbna-vms365-prod
+  labels:
+      app: vending-fsv-vms-mobile-consumer-service
+spec:
+  hosts:
+  - pep-pbna-prod-vending-fsv-vms-mobile-consumer-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-vms365-prod/pep-eiap-pbna-vms365-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vending-fsv-vms-mobile-consumer-service.pep-eiap-pbna-vms365-prod.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-tct-carrier-confirmation-processor-zjpz-vs
+  namespace: pep-eiap-global-services-qa
+  labels:
+      app: pep-eip-tct-carrier-confirmation-processor
+spec:
+  hosts:
+  - pep-eip-tct-carrier-confirmation-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-services-qa/pep-eiap-global-services-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-tct-carrier-confirmation-processor.pep-eiap-global-services-qa.svc.cluster.local
+        port:
+          number: 80
+  

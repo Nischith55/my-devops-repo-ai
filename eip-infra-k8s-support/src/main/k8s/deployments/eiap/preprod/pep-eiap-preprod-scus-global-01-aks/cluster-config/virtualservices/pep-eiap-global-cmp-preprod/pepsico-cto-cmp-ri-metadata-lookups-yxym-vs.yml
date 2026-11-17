@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-cto-cmp-ri-metadata-lookups-yxym-vs
+  namespace: pep-eiap-global-cmp-preprod
+  labels:
+      app: pepsico-cto-cmp-ri-metadata-lookups
+spec:
+  hosts:
+  - pepsico-cto-cmp-ri-metadata-lookups.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cmp-preprod/pep-eiap-global-cmp-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cto-cmp-ri-metadata-lookups.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-pepconnect-b2bweb-spain-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepsico-pepconnect-b2bweb-spain.global.gw01.aks01.suk.prod.azure.intra.pepsico.com","conectados24h.es","conectados24h.com","pepsiconectados.es","pepsiconectados.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-pepconnect-b2bweb-spain.pep-eiap-cgf-pepconnect-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pepsico-pepconnect-b2bweb-spain
+  name: pepsico-pepconnect-b2bweb-spain-vs
+  namespace: pep-eiap-cgf-pepconnect-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepconnect-prod/pep-eiap-cgf-pepconnect-prod-cv-gw
+  hosts:
+  - pepsico-pepconnect-b2bweb-spain.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - conectados24h.es
+  - conectados24h.com
+  - pepsiconectados.es
+  - pepsiconectados.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-spain.pep-eiap-cgf-pepconnect-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,9 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  name: {{ acr['acrname'] }}
+  namespace: {{ acr['prefix'] }}-ops-admin
+spec:
+  acrServer: {{ acr['acrname'] }}.azurecr.io
+  managedIdentityResourceID: {{ acr['ResourceId'] }}

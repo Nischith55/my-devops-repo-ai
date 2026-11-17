@@ -1,0 +1,31 @@
+---
+# ##
+# Custom service definition for Ingest Nodes
+# ##
+# IMPORTANT:
+#   CHANGE:
+#   - metadata.name
+#   - metadata.namespace
+#   - spec.selector...cluster-name
+#
+apiVersion: v1
+kind: Service
+metadata:
+  # should match the istio hostname
+  name: pep-eiap-ingest-01
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  type: ClusterIP
+  ports:
+    # The port name MUST be https for ECK xpack
+  - name: https
+    port: 9200
+    protocol: TCP
+    targetPort: 9200
+  selector:
+    elasticsearch.k8s.elastic.co/cluster-name: cluster-01-prod-scus
+    elasticsearch.k8s.elastic.co/node-master: "false"
+    elasticsearch.k8s.elastic.co/node-data: "false"
+    # ingest true
+    elasticsearch.k8s.elastic.co/node-ingest: "true"
+  sessionAffinity: None

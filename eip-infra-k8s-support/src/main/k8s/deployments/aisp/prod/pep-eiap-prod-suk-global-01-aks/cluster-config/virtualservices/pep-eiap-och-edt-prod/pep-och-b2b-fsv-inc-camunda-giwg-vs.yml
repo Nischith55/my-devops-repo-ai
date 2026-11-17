@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-b2b-fsv-inc-camunda-giwg-vs
+  namespace: pep-eiap-och-edt-prod
+  labels:
+      app: pep-och-b2b-fsv-inc-camunda
+spec:
+  hosts:
+  - pep-och-b2b-fsv-inc-camunda.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-b2b-fsv-inc-camunda.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 80
+  

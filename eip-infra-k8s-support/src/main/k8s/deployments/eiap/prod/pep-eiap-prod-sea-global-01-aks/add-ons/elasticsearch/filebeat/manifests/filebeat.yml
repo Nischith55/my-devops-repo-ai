@@ -1,0 +1,213 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: filebeat
+  name: filebeat
+  namespace: elasticsearch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    k8s-app: filebeat
+  name: filebeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - pods
+  verbs:
+  - get
+  - watch
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: filebeat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: filebeat
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: elasticsearch
+---
+apiVersion: v1
+data:
+  filebeat.yml: |
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    filebeat.autodiscover:
+      providers:
+      - hints.default_config:
+          paths:
+          - /var/log/containers/*${data.kubernetes.container.id}.log
+          type: container
+        hints.enabled: true
+        host: ${NODE_NAME}
+        type: kubernetes
+    logging:
+      level: info
+    output.elasticsearch:
+      hosts:
+      - ${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}
+      index: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-%{+yyyy.MM.dd}
+      password: ${ELASTICSEARCH_PASSWORD}
+      protocol: https
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+        enabled: true
+      username: ${ELASTICSEARCH_USERNAME}
+    processors:
+    - add_cloud_metadata: null
+    - add_host_metadata: null
+    setup.ilm:
+      enabled: false
+    setup.kibana:
+      hosts:
+      - ${KIBANA_HOST:elasticsearch}:${KIBANA_PORT:5601}
+      password: ${ELASTICSEARCH_PASSWORD}
+      protocol: https
+      setup.dashboards:
+        always_kibana: true
+        enabled: true
+        index: aks-filebeat-${K8S_CLUSTER_NAME}-*
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+        enabled: true
+      username: ${ELASTICSEARCH_USERNAME}
+    setup.template:
+      enabled: true
+      name: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}
+      overwrite: false
+      pattern: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-*
+      settings:
+        index:
+          number_of_replicas: 1
+          number_of_routing_shards: 64
+          number_of_shards: 2
+kind: ConfigMap
+metadata:
+  labels:
+    k8s-app: filebeat
+  name: filebeat-config
+  namespace: elasticsearch
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: filebeat
+  name: filebeat
+  namespace: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      k8s-app: filebeat
+  template:
+    metadata:
+      labels:
+        k8s-app: filebeat
+    spec:
+      containers:
+      - args:
+        - -c
+        - /etc/filebeat.yml
+        - -e
+        env:
+        - name: ELASTICSEARCH_HOST
+          valueFrom:
+            secretKeyRef:
+              key: host
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: elasticsearch-secret
+        - name: ELASTIC_CLOUD_ID
+        - name: ELASTIC_CLOUD_AUTH
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: KIBANA_HOST
+          valueFrom:
+            secretKeyRef:
+              key: kibana_host
+              name: elasticsearch-secret
+        - name: KIBANA_HOST
+          valueFrom:
+            secretKeyRef:
+              key: kibana_port
+              name: elasticsearch-secret
+        - name: PEP_CA_CERT_CHAIN
+          valueFrom:
+            secretKeyRef:
+              key: pep_ca_chain
+              name: elasticsearch-secret
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            secretKeyRef:
+              key: k8s_cluster_name
+              name: elasticsearch-secret
+        image: docker.elastic.co/beats/filebeat:7.10.0
+        name: filebeat
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /etc/filebeat.yml
+          name: config
+          readOnly: true
+          subPath: filebeat.yml
+        - mountPath: /usr/share/filebeat/data
+          name: data
+        - mountPath: /var/lib/docker/containers
+          name: varlibdockercontainers
+          readOnly: true
+        - mountPath: /var/log
+          name: varlog
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      serviceAccountName: filebeat
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 416
+          name: filebeat-config
+        name: config
+      - hostPath:
+          path: /var/lib/docker/containers
+        name: varlibdockercontainers
+      - hostPath:
+          path: /var/log
+        name: varlog
+      - hostPath:
+          path: /var/lib/filebeat-data
+          type: DirectoryOrCreate
+        name: data

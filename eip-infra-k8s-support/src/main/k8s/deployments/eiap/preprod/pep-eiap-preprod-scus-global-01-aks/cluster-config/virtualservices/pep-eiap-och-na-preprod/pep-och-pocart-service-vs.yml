@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-pocart-service-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-pocart-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Link","Content-Type","Access-Control-Allow-Origin"],"allowMethods":["POST","GET","PUT","DELETE"],"allowOrigins":[{"exact":"https://pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"},{"exact":"https://pepcommerce-ordermanagement.preprod.na.pepsico.com"}],"exposeHeaders":["x-total-count"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-och-pocart-service.pep-eiap-och-na-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-pocart-service
+  name: pep-och-pocart-service-vs
+  namespace: pep-eiap-och-na-preprod
+spec:
+  gateways:
+  - pep-eiap-och-na-preprod/pep-eiap-och-na-preprod-cv-gw
+  hosts:
+  - pep-och-pocart-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      allowOrigins:
+      - exact: https://pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.preprod.na.pepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-pocart-service.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    application: foundationone
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-pfna-foundone-dev
+    project: foundone
+    sector: pfna
+    servicename_aks: ics-inventorycontrolsystemnon-prod
+    team: pfna-foundone
+  name: pep-pfna-pfna-foundone-dev

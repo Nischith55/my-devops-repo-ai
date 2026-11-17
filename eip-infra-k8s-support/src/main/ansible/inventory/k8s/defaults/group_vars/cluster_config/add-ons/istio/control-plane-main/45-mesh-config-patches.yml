@@ -1,0 +1,64 @@
+---
+# ##
+# Additional common patches to Control Plane Main (make sure vars are named
+# appropriately by prefix)
+# GLOBALS:
+# - jaegertracing must be installed to use this patch
+#   var: jaeger_collector_url
+# ##
+
+# target is spec/meshConfig
+
+icpm_merge_mesh_config:
+
+  # Please read doc: https://istio.io/v1.7/docs/reference/config/istio.mesh.v1alpha1/
+  meshConfig:
+
+    # default: true
+    enablePrometheusMerge: true
+
+    # default: true
+    enableAutoMtls: true
+
+    # default is "*" (string value) otherwise a list of strings
+    # NOTE: this means every service in any namespace can talk to other
+    defaultServiceExportTo: 
+      - "*"
+    # default is "*" (string value) otherwise a list of strings
+    # NOTE: this means every service in any namespace can talk to other
+    defaultVirtualServiceExportTo:
+      - "*"
+    # default is "*" (string value) otherwise a list of strings
+    # NOTE: this means every service in any namespace can talk to other
+    defaultDestinationRuleExportTo: 
+      - "*"
+
+    # IMPORTANT: currently this should be istio-system, but we should check
+    # and see if it works
+    rootNamespace: "{{ istio_control_plane_root_namespace }}"
+
+    #: Specify if http1.1 connections should be upgraded to http2 by default
+    h2UpgradePolicy: DO_NOT_UPGRADE
+
+    # ##
+    # proxyConfig -- for injected sidecars
+    # ##
+
+    defaultConfig:
+      # REDIRECT|TPROXY 
+      # TODO# InboundInterceptionMode: REDIRECT
+      tracing:
+        # NOTE: we are using jaeger which accepts zipkin format traces
+        zipkin:
+          # collector address -- see add-ons/jaegertracing.
+          address: "{{ jaeger_collector_url }}"
+
+    # ## end proxyConfig
+
+    outboundTrafficPolicy: 
+      # TODO: default: ALLOWANY, depending on security policies we should
+      # monitor if this is ok. PCF it is allow any anyways
+      mode: ALLOW_ANY
+
+    # Default: true
+    disablePolicyChecks: true

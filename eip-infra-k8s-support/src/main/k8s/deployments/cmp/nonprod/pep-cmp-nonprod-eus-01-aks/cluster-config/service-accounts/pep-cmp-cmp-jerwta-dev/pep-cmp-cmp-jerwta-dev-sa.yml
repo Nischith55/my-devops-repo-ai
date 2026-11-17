@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: b0450f0f-067f-4fd5-b9f3-28775d1cf233
+  name: pep-cmp-cmp-jerwta-dev-sa
+  namespace: pep-cmp-cmp-jerwta-dev

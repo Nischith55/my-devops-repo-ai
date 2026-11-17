@@ -1,0 +1,43 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace GLOBAL DEVSECOPS
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_global_devsecops_preprod:
+
+  name: pep-eiap-global-devsecops-preprod
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: global-devsecops
+    sector: global
+    project: devsecops
+    # The build-agent jobs need to get completed. Istio proxy side-car prevents that & thus is disabled.
+    istio-injection: disabled
+    environment: preprod
+    env-preprod: "true"
+
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have devsecops role 
+    - name: pep-eiap-buildagent
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-devsecops-rb
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_devsecops'] }}"

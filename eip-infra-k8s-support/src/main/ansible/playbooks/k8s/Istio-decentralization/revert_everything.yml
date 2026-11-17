@@ -1,0 +1,45 @@
+---
+- name: Post Apply
+  hosts: localhost
+  connection: local
+  collections:
+    - kubernetes.core
+    - community.general
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks:
+    - debug:
+        msg: "Reverting everything back."
+    - name: read the gateway file content  
+      slurp:
+        src: "{{ mypath }}/Artifacts/manifests_backup/istio-in-gateway-01.yml"
+      register: yml_file_content
+    - name: decode the content 
+      set_fact: 
+        decoded_yml_temp: "{{ yml_file_content.content | b64decode | from_yaml }}"
+    - set_fact:
+        decoded_yml: "{{ decoded_yml_temp | ansible.utils.remove_keys(target=['resourceVersion', 'creationTimestamp', 'annotations', 'generation', 'managedFields', 'uid']) | to_nice_yaml}}"
+    
+    - name: debug after removing elements 
+      debug: var=decoded_yml
+
+    - name: creating central gateway
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ decoded_yml }}"
+
+    - name: delete newly applied services
+      include_tasks: ../../../roles/k8s_support/Istio-decentralization/sc_vs_dr_gw_apply/tasks/revert_applied.yml
+      with_filetree:
+      - "{{ mypath }}/Artifacts/applied/"
+      loop_control:
+          loop_var: inner_item
+      when:
+      - inner_item.state == 'file'
+
+    

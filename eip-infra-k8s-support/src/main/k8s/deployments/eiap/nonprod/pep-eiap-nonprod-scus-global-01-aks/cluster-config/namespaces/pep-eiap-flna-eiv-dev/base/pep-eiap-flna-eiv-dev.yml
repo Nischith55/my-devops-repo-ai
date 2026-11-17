@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-eiv-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: eiv
+    sector: flna
+    team: flna-eiv
+    pep-cmdb-app-service: ENTERPRISE-INVENTORY-VISIBILITY

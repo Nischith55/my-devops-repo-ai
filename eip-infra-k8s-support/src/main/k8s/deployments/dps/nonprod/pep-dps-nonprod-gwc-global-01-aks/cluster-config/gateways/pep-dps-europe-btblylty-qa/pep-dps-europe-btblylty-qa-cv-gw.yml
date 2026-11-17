@@ -1,0 +1,508 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-btblylty-qa-cv-gw
+  namespace: pep-dps-europe-btblylty-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-btblylty-qa.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-btblylty-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-btblylty-qa-443.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - admin-cep-eg.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-qa2-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa2.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-eu-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-eu-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-rewards-admin-ui-am-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-btblylty-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-btblylty-qa-80.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - admin-cep-eg.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - admin-cep-eg.qa.pepsico.com
+    - b2b-lylty-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-eu.qa.mypepsico.com
+    - b2b-loyalty-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-qa2-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-qa2.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-eu.qa.pepsico.com
+    - b2b-lylty-admin-ui-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-eu-ta.qa.pepsico.com
+    - rewards-eu-ta.qa.mypepsico.com
+    - b2b-profile-admin-ui-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-pl-uat.qa.mypepsico.com
+    - rewards-b2b-pl-auto.qa.mypepsico.com
+    - rewards-b2b-am-uat.qa.mypepsico.com
+    - b2b-lylty-admin-ui-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-eu-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-am-auto.qa.mypepsico.com
+    - rewards-b2b-pl-hf.qa.mypepsico.com
+    - rewards-b2b-am-hf.qa.mypepsico.com
+    - b2b-loyalty-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-pl.qa.mypepsico.com
+    - b2b-loyalty-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-in-auto.qa.pepsico.com
+    - rewards-b2b-in-auto.qa.mypepsico.com
+    - b2b-loyalty-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-eu-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-loyalty-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-ui-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-rewards-admin-ui-am-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-eu-ta.qa.mypepsico.com
+    - b2b-profile-admin-ui-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-in-uat.qa.mypepsico.com
+    - profile-b2b-in-uat.qa.pepsico.com
+    - b2b-profile-admin-bff-in-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-btblylty-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - admin-cep-eg.qa.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-eg.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-eu.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-eu-qa-mypepsico-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-eu.qa.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-6-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-eu.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-eu-ta.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-5-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-eu-ta.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-eu-uat.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-7-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-eu-uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-pl-uat.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-8-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-8-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-pl-uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-pl-auto.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-9-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-9-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-pl-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-am-uat.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-10-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-10-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-am-uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-am-auto.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-11-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-11-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-am-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-pl-hf.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-12-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-12-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-pl-hf.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-am-hf.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-13-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-13-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-am-hf.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-pl.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-14-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-14-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-pl.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-in-auto.qa.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-15-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-15-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-in-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-in-auto.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-16-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-16-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-in-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-eu-ta.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-17-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-17-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-eu-ta.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - rewards-b2b-in-uat.qa.mypepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-18-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-18-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: rewards-b2b-in-uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-in-uat.qa.pepsico.com
+    name: pep-dps-europe-btblylty-qa-cv-gw-19-https-443
+    port:
+      name: pep-dps-europe-btblylty-qa-cv-gw-19-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-in-uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

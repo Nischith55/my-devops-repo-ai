@@ -1,0 +1,29 @@
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     flagger
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     flux-system
+  
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     gitops-connector-system
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     mission-control
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     reloader
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     snyk-monitor

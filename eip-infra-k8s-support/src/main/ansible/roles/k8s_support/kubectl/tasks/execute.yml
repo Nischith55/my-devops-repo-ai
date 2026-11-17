@@ -1,0 +1,68 @@
+---
+# ##
+# INPUTS:
+#   kube_context: (required - context name)
+#   kctl_action: (required - the kubectl action command)
+#   kctl_action_args: (required - argument for command action)
+#   kube_config: (optional - kubeconfig file to look for)
+#   kctl_options: (optional -- global options to pass)
+# ##
+# Execute arbitrary kubectl command (note: can be dangerous)
+- name: KCTL_EXEC_BLOCK
+  block:
+
+    - name: |-
+        KCTL_EXEC_PRE_CONDITIONS ({{ ____kube_context }})
+      assert:
+        that:
+          - ____kube_context is defined
+
+    - name: |-
+        KCTL_EXEC ({{ ____kctl_action }} {{ ____kctl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      shell: |
+        set -eou pipefail
+        {{ kubectl_cmd }} \
+        {{ ____kctl_options }} \
+        {% if ____kube_config is defined and ____kube_config != '' %}
+         --kubeconfig={{ ____kube_config | expanduser | expandvars | realpath }} \
+        {% endif %}
+          --context="{{ ____kube_context }}" \
+          {{ ____kctl_action }} {{ ____kctl_action_args }}
+      args:
+        executable: /bin/bash
+      register: kctl_exec_result
+      changed_when: 
+        - kctl_exec_result.rc == 0
+        - kctl_exec_result.stdout is defined
+      failed_when: false
+
+    - name: |-
+        KCTL_EXEC_MSG ({{ ____kctl_action }} {{ ____kctl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      debug:
+        msg: "{{ kctl_exec_result.stdout }}"
+      when: >-
+        (kctl_exec_result.stdout is defined)
+        and
+        (print_resp | default('true') | bool)
+
+    - name: |-
+        KCTL_EXEC_ASSERT ({{ ____kctl_action }} {{ ____kctl_action_args }}) (kube_config:[{{ ____kube_config }}])
+      assert:
+        that:
+          - kctl_exec_result.rc == 0
+        # MUST be a string
+        fail_msg: "{{ kctl_exec_result | to_nice_yaml }}"
+      vars:
+        kctl_exec_assert: |-
+          {{ kctl_exec_assert_ovrd | default('true') | bool }}
+      when: >-
+        (not (kctl_exec_skip_assert | default('false') | bool))
+  
+  vars:
+    ____kube_context: "{{ kube_context }}"
+    ____kctl_action: "{{ kctl_action }}"
+    ____kctl_action_args: "{{ kctl_action_args }}"
+    ____kube_config: "{{ kube_config | default('') }}"
+    ____kctl_options: "{{ kctl_options | default('') }}"
+  # always delegate to controller
+  delegate_to: localhost

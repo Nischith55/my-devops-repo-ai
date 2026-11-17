@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: quikpick
+    sector: pbna
+    servicename_aks: quikpickbypepsicocommercializationprod
+    team: pbna-quikpick
+  name: pep-eiap-pbna-quikpick-qa

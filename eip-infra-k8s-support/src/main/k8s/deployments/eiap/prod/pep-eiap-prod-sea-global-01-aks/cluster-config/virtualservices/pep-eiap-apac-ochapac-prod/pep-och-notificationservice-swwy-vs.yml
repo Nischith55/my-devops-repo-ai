@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-notificationservice-swwy-vs
+  namespace: pep-eiap-apac-ochapac-prod
+  labels:
+      app: pep-och-notificationservice
+spec:
+  hosts:
+  - pep-och-notificationservice.global.gw01.aks01.sea.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-prod/pep-eiap-apac-ochapac-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-notificationservice.pep-eiap-apac-ochapac-prod.svc.cluster.local
+        port:
+          number: 80
+  

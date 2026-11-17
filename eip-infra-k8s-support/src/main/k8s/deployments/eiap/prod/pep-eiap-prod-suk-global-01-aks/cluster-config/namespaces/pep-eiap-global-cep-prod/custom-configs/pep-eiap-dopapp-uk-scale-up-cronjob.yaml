@@ -1,0 +1,28 @@
+#######################################################################################################
+#        KUBERNETES CRON JOB TEMPLATE that scales up instances of dopapp deployment
+#                         in pep-eiap-global-cep-prod namespace 
+#######################################################################################################
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+    name: pep-eiap-dopapp-uk-scale-up-cronjob
+    namespace: pep-eiap-global-cep-prod
+spec:
+  schedule: "0 7 * * *"
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: pep-eiap-dopapp-uk-cronjob
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          serviceAccountName: pep-eiap-global-cep-prod-sa
+          containers:
+          - name: scaler
+            image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/base/java/jre-headless:8u252-zulu-ubuntu-18.04.4-curl-7.78.0
+            command: ['sh', '-c', 'curl -s -X PATCH  --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default.svc.cluster.local:443/apis/apps/v1/namespaces/pep-eiap-global-cep-prod/deployments/dopapp-uk/scale -H "Content-Type: application/strategic-merge-patch+json" -d "{\"spec\":{\"replicas\":3}}"']
+            imagePullPolicy: Always
+          restartPolicy: "OnFailure"

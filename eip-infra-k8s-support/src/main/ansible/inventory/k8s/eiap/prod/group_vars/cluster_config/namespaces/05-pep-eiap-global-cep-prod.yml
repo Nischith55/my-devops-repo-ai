@@ -1,0 +1,56 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace Global cep
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_global_cep_prod:
+  
+  name: pep-eiap-global-cep-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-cep
+    sector: global
+    project: cep
+    istio-injection: enabled
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_cep'] }}"
+        # - "{{ k8s_sup_subjects['global_cep_sp'] }}"
+        # - "{{ k8s_sup_subjects['global_cep_prod_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _global_cep_spn_name }}"
+      registries: 
+        - pepdopgwc.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _global_cep_spn_name }}"
+      # Any contents apart from what is in secret        
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have deployment scaler role 
+    - name: pep-eiap-global-cep-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-scaler-rb

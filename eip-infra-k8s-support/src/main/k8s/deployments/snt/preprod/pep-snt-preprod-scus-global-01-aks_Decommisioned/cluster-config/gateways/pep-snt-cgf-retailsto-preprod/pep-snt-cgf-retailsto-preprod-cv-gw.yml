@@ -1,0 +1,82 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-snt-cgf-retailsto-preprod-cv-gw
+  namespace: pep-snt-cgf-retailsto-preprod
+spec:
+  selector:
+    istio: pep-snt-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-snt-cgf-retailsto-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-snt-cgf-retailsto-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-snt-cgf-retailsto-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pepsico-retail-360-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-snt-cgf-retailsto-preprod-cv-gw-https-443
+    port:
+      name: https-pep-snt-cgf-retailsto-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-snt-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - retail360.preprod.pepsico.com
+    - pepsico-retail-360-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-snt-cgf-retailsto-preprod-cv-gw-http-80
+    port:
+      name: http-pep-snt-cgf-retailsto-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - retail360.preprod.pepsico.com
+    name: pep-snt-cgf-retailsto-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-snt-cgf-retailsto-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-snt-preprod-scus-retail360-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

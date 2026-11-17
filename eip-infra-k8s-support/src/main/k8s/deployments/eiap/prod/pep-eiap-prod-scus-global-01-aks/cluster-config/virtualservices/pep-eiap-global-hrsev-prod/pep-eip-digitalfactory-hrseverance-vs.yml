@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-digitalfactory-hrseverance-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-digitalfactory-hrseverance.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Link","Content-Type","Access-Control-Allow-Origin","Access-Control-Allow-Methods","Access-Control-Allow-Headers"],"allowMethods":["POST","GET","PUT","DELETE","OPTIONS"],"allowOrigins":[{"exact":"https://pep-eip-digitalfactory-hrseverance-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"}],"exposeHeaders":["x-total-count"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-digitalfactory-hrseverance.pep-eiap-global-hrsev-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eip-digitalfactory-hrseverance
+  name: pep-eip-digitalfactory-hrseverance-vs
+  namespace: pep-eiap-global-hrsev-prod
+spec:
+  gateways:
+  - pep-eiap-global-hrsev-prod/pep-eiap-global-hrsev-prod-cv-gw
+  hosts:
+  - pep-eip-digitalfactory-hrseverance.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Methods
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-eip-digitalfactory-hrseverance-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-digitalfactory-hrseverance.pep-eiap-global-hrsev-prod.svc.cluster.local
+        port:
+          number: 80

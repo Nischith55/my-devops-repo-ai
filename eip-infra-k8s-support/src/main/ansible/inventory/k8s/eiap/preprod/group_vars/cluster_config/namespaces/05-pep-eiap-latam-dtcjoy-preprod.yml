@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_latam_dtcjoy_preprod:
+  
+  name: pep-eiap-latam-dtcjoy-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-dtcjoy
+    sector: latam
+    project: dtcjoy
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: distributororderportalnon-prod
+    pep-cmdb-app-service-id: "117d51304766151052293238436d4308"
+    pep-cmdb-bus-app-id: "e95ed977db7740106285d2984b96192e"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-dtcjoy-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_dtcjoy'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-latam-dtcjoy-preprod-sa-token
+    namespace: pep-eiap-latam-dtcjoy-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-latam-dtcjoy-preprod-sa"

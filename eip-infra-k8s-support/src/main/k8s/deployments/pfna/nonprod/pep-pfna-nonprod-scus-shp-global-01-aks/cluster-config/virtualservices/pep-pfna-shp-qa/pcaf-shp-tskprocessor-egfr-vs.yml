@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-tskprocessor-egfr-vs
+  namespace: pep-pfna-shp-qa
+  labels:
+      app: pcaf-shp-tskprocessor
+spec:
+  hosts:
+  - pcaf-shp-tskprocessor.pfnashp.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-shp-qa/pep-pfna-shp-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-tskprocessor.pep-pfna-shp-qa.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-pbna-svtbot-dev-sa
+  namespace: pep-eiap-pbna-svtbot-dev

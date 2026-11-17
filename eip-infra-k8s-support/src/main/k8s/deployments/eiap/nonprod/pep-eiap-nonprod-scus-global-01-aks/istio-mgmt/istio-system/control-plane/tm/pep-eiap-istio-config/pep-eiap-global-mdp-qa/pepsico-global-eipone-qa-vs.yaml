@@ -1,0 +1,134 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-global-eipone-qa-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-global-eipone-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /live/eipone/backend
+    route:
+    - destination:
+        host: pep-eiap-global-eip-live.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/access-management
+    route:
+    - destination:
+        host: pep-eiap-global-eip-access.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/api-management
+    route:
+    - destination:
+        host: pep-eiap-global-eip-api.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/sandbox/backend
+    route:
+    - destination:
+        host: pep-eiap-global-eip-sandbox.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/frontend
+    route:
+    - destination:
+        host: pep-eiap-global-eipui.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /live/eipone/frontend
+    route:
+    - destination:
+        host: pep-eiap-global-eipui-live.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/sandbox/frontend
+    route:
+    - destination:
+        host: pep-eiap-global-eipui-sandbox.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /mdp/admin
+    route:
+    - destination:
+        host: pep-eiap-global-mdp.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /mdp/test/admin
+    route:
+    - destination:
+        host: pep-eiap-global-mdp-test.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/backend
+    route:
+    - destination:
+        host: pep-eiap-global-eip.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/mdp/admin
+    route:
+    - destination:
+        host: pep-eiap-global-eip-mdp.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /eipone/ami-service
+    route:
+    - destination:
+        host: pep-eiap-global-eip-ami.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/cmp
+    route:
+    - destination:
+        host: pep-eiap-global-cmp.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/ddh
+    route:
+    - destination:
+        host: pepsico-eip-eipone-ddh-integration.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/iai
+    route:
+    - destination:
+        host: pep-eiap-global-iai.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 80          

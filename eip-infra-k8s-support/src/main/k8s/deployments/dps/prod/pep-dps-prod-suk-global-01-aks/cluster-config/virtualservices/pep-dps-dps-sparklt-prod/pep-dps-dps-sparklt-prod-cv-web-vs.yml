@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-sparklt-prod-cv-web-vs
+  namespace: pep-dps-dps-sparklt-prod
+  labels:
+    app: pep-dps-dps-sparklt-prod-cv-web
+spec:
+  hosts:
+    - sparklite.mypepsico.com
+    - pep-dps-dps-sparklt-prod-cv.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-sparklt-prod/pep-dps-dps-sparklt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-sparklt-prod-cv-web.pep-dps-dps-sparklt-prod.svc.cluster.local
+        port:
+          number: 80

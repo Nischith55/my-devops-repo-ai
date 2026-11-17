@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-aisp-astra-nvingest-helm-datastax-ingestion-wzes-vs
+  namespace: pep-eiap-cgf-nvingest-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-aisp-astra-nvingest-datastax-ingestion.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-nvingest-dev/pep-eiap-cgf-nvingest-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-aisp-astra-nvingest-helm-datastax-ingestion.pep-eiap-cgf-nvingest-dev.svc.cluster.local
+        port:
+          number: 8080
+  

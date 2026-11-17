@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: opsconsole-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for opsconsole-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+      - peppfnaschnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-flna-schservice-dev
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-sch-ops-admin
+      roles:
+      - name: opsconsole-dev-admin
+        description: Admin privileges to opsconsole-dev
+        policies:
+        - p, proj:opsconsole-dev:opsconsole-dev-admin, applications, *, opsconsole-dev/*, allow
+        - p, proj:opsconsole-dev:opsconsole-dev-admin, repositories, *, opsconsole-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: opsconsole-dev-user
+        description: Read-only privileges to opsconsole-dev
+        policies:
+        - p, proj:opsconsole-dev:opsconsole-dev-user, applications, get, opsconsole-dev/*, allow
+        - p, proj:opsconsole-dev:opsconsole-dev-user, applications, sync, opsconsole-dev/*, allow
+        - p, proj:opsconsole-dev:opsconsole-dev-user, repositories, get, opsconsole-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:opsconsole-dev:opsconsole-dev-user, applications, action/apps/Deployment/restart, opsconsole-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.PFNA.SCH.Contributor"
+        - "Team.Support.EIAP.READ"
+    

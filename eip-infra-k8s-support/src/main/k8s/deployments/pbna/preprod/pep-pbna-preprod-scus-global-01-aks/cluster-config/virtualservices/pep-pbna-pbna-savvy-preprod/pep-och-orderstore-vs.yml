@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-orderstore
+  name: pep-och-orderstore-vs
+  namespace: pep-pbna-pbna-savvy-preprod
+spec:
+  gateways:
+  - pep-pbna-pbna-savvy-preprod/pep-pbna-pbna-savvy-preprod-cv-gw
+  hosts:
+  - pep-och-orderstore.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    - ignoreUriCase: true
+      uri:
+        prefix: /management    
+    route:
+    - destination:
+        host: pep-och-orderstore.pep-pbna-pbna-savvy-preprod.svc.cluster.local
+        port:
+          number: 80

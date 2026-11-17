@@ -1,0 +1,29 @@
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'), eq(parameters.Region, 'scus')) }}:
+      value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'), eq(parameters.Region, 'eus')) }}:
+      value: pep-pfna-cit-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-preprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents

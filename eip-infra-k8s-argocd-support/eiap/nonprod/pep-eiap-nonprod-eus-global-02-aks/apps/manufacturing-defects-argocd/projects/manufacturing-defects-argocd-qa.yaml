@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: manufacturing-defects-argocd-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for manufacturing-defects-argocd-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/manufacturing-defects-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-manudef-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: manufacturing-defects-argocd-qa-admin
+        description: Admin privileges to manufacturing-defects-argocd-qa
+        policies:
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-admin, applications, *, manufacturing-defects-argocd-qa/*, allow
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-admin, repositories, *, manufacturing-defects-argocd-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: manufacturing-defects-argocd-qa-user
+        description: Read-only privileges to manufacturing-defects-argocd-qa
+        policies:
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-user, applications, get, manufacturing-defects-argocd-qa/*, allow
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-user, applications, sync, manufacturing-defects-argocd-qa/*, allow
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-user, repositories, get, manufacturing-defects-argocd-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:manufacturing-defects-argocd-qa:manufacturing-defects-argocd-qa-user, applications, action/apps/Deployment/restart, manufacturing-defects-argocd-qa/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.ManuDef"
+        - "Team.Support.EIAP.READ"
+    

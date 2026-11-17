@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test123-test123-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test123-test123-prod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test123-test123-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-cgf-devx-prod
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test123-test123-prod-admin
+    description: Admin privileges to test123-test123-prod
+    policies:
+    - p, proj:test123-test123-prod:test123-test123-prod-admin, applications, *, test123-test123-prod/*, allow
+    - p, proj:test123-test123-prod:test123-test123-prod-admin, repositories, *, test123-test123-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: test123-test123-prod-user
+    description: Read-only privileges to test123-test123-prod
+    policies:
+    - p, proj:test123-test123-prod:test123-test123-prod-user, applications, get, test123-test123-prod/*, allow
+    - p, proj:test123-test123-prod:test123-test123-prod-user, applications, sync, test123-test123-prod/*, allow
+    - p, proj:test123-test123-prod:test123-test123-prod-user, repositories, get, test123-test123-prod/*, allow
+    - p, proj:test123-test123-prod:test123-test123-prod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.Prod.devX"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,40 @@
+---
+ns_pep_cmp_cgf_decvh_dev:
+  
+  name: pep-cmp-cgf-decvh-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-decvh
+    sector: cgf
+    project: decvh
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: cloudmarketplace-cmp-non-prod
+    pep-cmdb-app-service-id: "dc4d9d7c4726151052293238436d4327"
+    pep-cmdb-bus-app-id: "7b16ee101b6cb410fa1cb99f034bcb87"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-cmp-cgf-decvh-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-cmp-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-cmp-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_decvh'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-cmp-cgf-decvh-dev-sa-token
+    namespace: pep-cmp-cgf-decvh-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-cmp-cgf-decvh-dev-sa"

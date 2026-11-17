@@ -1,0 +1,31 @@
+# ##
+# Only Pepsico Root CA certs all
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scus-remote-certs-config
+  namespace: pep-eiap-elastic-cluster-02
+data:
+  scusremote.ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDVTCCAj2gAwIBAgIQAvcyrRM7OcQgkfoHPdmN7jANBgkqhkiG9w0BAQsFADA0
+    MRMwEQYDVQQLEwpjbHVzdGVyLTAyMR0wGwYDVQQDExRjbHVzdGVyLTAyLXRyYW5z
+    cG9ydDAgFw0yMjA0MjExNzEyMjRaGA8yMDYyMDQxMTE3MjIyNFowNDETMBEGA1UE
+    CxMKY2x1c3Rlci0wMjEdMBsGA1UEAxMUY2x1c3Rlci0wMi10cmFuc3BvcnQwggEi
+    MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDdpixY/c1YuPlohAeUIgMASZJ2
+    ybYQUUWjFFbnt+JbNYGbYBbM8Q8/JHwRp8DURtobe5ktGkUs6mJPDB7wqVa7Av9Z
+    h5AA9/1INVdTwBJffiJ2lTdZdvSnYeRlxGKdtra1NGea6z8FlSOxJjLr/ZEsAnvN
+    bSCeeOqVME7kFFkuoS1G8Wlwl/XP8+mKFfzpaUoOs5OOcs7P00F4UVG85CD1dSnp
+    Sz14+HGL/eHFzx8GQAsUKDMspXY8UL0m2j86G9g3M+Ejo/G4mKlnBUSPYkjcWw2a
+    vj34wIaciwAuQ3g9+1QAKxSSNfrDMYK2jk914oeQrm+IWwkqPLdAEPteWa0DAgMB
+    AAGjYTBfMA4GA1UdDwEB/wQEAwIChDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYB
+    BQUHAwIwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUFTyJ7KfTJ8/3VlIzgqDu
+    LRchG6AwDQYJKoZIhvcNAQELBQADggEBAAUxt0Q1sC2gKFJYvZF0F/FvN2x5MgLZ
+    9bz8ZFUpsqswus/eBQCx7nOMG+T37SjZmTR6TrJMKKyJt109eI+tmcvt3dfWvQBv
+    4hn2CtvYebKZR2udmFVHP/6HA0DcArLaFkYnaJTjH2KnvmNqva6X64sL6SdCqj0L
+    tcb3vPIQjPfY30dPIdGvoR4SJ5N53D8fgYQ/Rjl8MtCdilqVl1bN/ykLh1521ym2
+    sG/xQ/126HlV0ulkXea5uQXDWZ+RluEwqzF4qUuZx0sWgmUSkK4fGw3FGmQv8wIH
+    ZV08i34ILxnzYlBXv3Busird9tCEkzZdcUCiqWgJrP1ZbGo7sb7FLxM=
+    -----END CERTIFICATE-----

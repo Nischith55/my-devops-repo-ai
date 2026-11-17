@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-cle-admin-data-service-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-cgf-cle-admin-data-service.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-admin-data-service.pep-eiap-cgf-cle-preprod.svc.cluster.local
+        port:
+          number: 80
+          

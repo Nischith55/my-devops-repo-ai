@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger: 
+- none
+pr: 
+- none 
+parameters:
+  - name: env
+    displayName: env (Prod and Preprod are using same acr)
+    type: string
+    values:
+      - nonprod
+      - prod
+variables:
+  - group: acr_list_mahesh
+  - name: poolname
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: 'pep-eiap-prod-scus-infra-02-aks-agents'
+    ${{ else }}:
+      value: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+
+stages:
+- stage: copy_images
+  displayName: copy_images
+  pool: 
+      name: pep-eiap-preprod-scus-infra-02-aks-agents
+      #name: pep-dps-nonprod-eus-global-01-aks-agents
+  jobs:
+  - job: copy_images
+    displayName: copy_images
+    steps:
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          crane auth login $(nonprodcommonacr) -u $(nonprodcommonacr_acr_nonprod_usr) -p $(nonprodcommonacr_acr_nonprod_pwd)
+          crane auth login $(prodcommonacr) -u $(prodcommonacr_usr) -p $(prodcommonacr_pwd)
+          crane cp pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/base/java/jdk:17-ms-openjdk-ubuntu pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/base/java/jdk:17-ms-openjdk-ubuntu

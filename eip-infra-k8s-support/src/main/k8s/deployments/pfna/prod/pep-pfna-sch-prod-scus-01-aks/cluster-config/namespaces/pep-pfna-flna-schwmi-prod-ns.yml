@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: e1b054e9831e16106a4357d0deaad3e6
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-environment: Production
+    project: schwmi
+    sector: flna
+    servicename_aks: scwarehouseintegratorprod
+    team: flna-schwmi
+  name: pep-pfna-flna-schwmi-prod

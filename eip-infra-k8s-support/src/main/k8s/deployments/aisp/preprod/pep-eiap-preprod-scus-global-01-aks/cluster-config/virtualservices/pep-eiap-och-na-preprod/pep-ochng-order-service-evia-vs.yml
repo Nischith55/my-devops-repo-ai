@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-ochng-order-service-evia-vs
+  namespace: pep-eiap-och-na-preprod
+  labels:
+      app: pep-ochng-order-service
+spec:
+  hosts:
+  - pep-ochng-order-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-na-preprod/pep-eiap-och-na-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-ochng-order-service.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80
+  

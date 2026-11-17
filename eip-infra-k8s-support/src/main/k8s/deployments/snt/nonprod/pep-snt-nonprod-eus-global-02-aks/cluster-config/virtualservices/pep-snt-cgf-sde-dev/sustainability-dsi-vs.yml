@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: sustainability-dsi
+  name: sustainability-dsi-vs
+  namespace: pep-snt-cgf-sde-dev
+spec:
+  gateways:
+  - pep-snt-cgf-sde-dev/pep-snt-cgf-sde-dev-cv-gw
+  hosts:
+  - sustainability-dsi.snt.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: sustainability-dsi.pep-snt-cgf-sde-dev.svc.cluster.local
+        port:
+          number: 80

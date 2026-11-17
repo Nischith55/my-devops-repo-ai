@@ -1,0 +1,30 @@
+cluster_vnet_snet_resource_group_name   = "pep-network-nonprod-snt-scus-01-rg"
+cluster_vnet_name                       = "pep-paas-nonprod-snt-01-scus-vnet"
+cluster_snet_name                       = "pep-aks-global-01-subnet"
+managed_identity_name                   = "pep-snt-preprod-scus-global-01-aks-01-mi"
+managed_identity_resource_group_name    = "pep-dps-preprod-scus-k8s-01-rg"
+cluster_resource_group_name             = "pep-dps-preprod-scus-k8s-01-rg"
+cluster_location                        = "southcentralus"
+active_directory_admin_group_object_ids = ["367dfb5d-8aed-4dcf-9366-6024024bfb94"]
+private_dns_zone_id                     = "/subscriptions/463c7676-c9ae-45e7-98c7-cd83065a4fb1/resourceGroups/pep-network-privatednszone-01-rg/providers/Microsoft.Network/privateDnsZones/privatelink.southcentralus.azmk8s.io"
+kubernetes_version                      = "1.31.7"
+default_node_pool_resource_group        = "pep-snt-preprod-scus-global-01-aks-rg"
+cluster_tags = {
+  ModifiedData    = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-07-08T05:14:39\", \"ExecuteHost\": \"pepsico-pfna-global-devsecops-agent-batchjob-k7gx7-6tdww\", \"build\": \"1826373\"}"
+  department      = "snt"
+  description     = "Global 01 AKS Cluster"
+  environment     = "preprod"
+  financialTag    = "H-######"
+  serviceName     = "dps-eip"
+  spn             = "pep-eiap-preprod-k8s-sp"
+  crosscharge_aks = "direct"
+}
+default_node_pool_tags = {
+  ModifiedData = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-07-08T06:17:00\", \"ExecuteHost\": \"pepsico-pfna-global-devsecops-agent-batchjob-85slc-ptglz\", \"build\": \"1826398\"}"
+  department   = "snt"
+  description  = "Global 01 AKS Cluster"
+  environment  = "preprod"
+  financialTag = "H-######"
+  serviceName  = "snt"
+  spn          = "pep-eiap-preprod-k8s-sp"
+}

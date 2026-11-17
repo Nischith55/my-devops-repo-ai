@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    pep-cmdb-app-service-id: 070dba9397782e14bec13ae8c253af5c
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Preprod
+    project: btblylty
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalloyaltyeuropenon-prod
+    team: europe-btblylty
+  name: pep-eiap-europe-btblylty-preprod

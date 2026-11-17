@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-global-wsp-servicecontentfeedback-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-global-wsp-servicecontentfeedback.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"servicecontentfeedback.pep-eiap-global-wsp-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: servicecontentfeedback
+  name: pep-eiap-global-wsp-servicecontentfeedback-vs
+  namespace: pep-eiap-global-wsp-prod
+spec:
+  gateways:
+  - pep-eiap-global-wsp-prod/pep-eiap-global-wsp-prod-cv-gw
+  hosts:
+  - pep-eiap-global-wsp-servicecontentfeedback.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: servicecontentfeedback.pep-eiap-global-wsp-prod.svc.cluster.local
+        port:
+          number: 80

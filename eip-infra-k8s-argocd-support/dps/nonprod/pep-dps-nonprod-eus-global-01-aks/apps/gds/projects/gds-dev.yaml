@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gds-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gds-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gds-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-peacock-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gds-dev-admin
+    description: Admin privileges to gds-dev
+    policies:
+    - p, proj:gds-dev:gds-dev-admin, applications, *, gds-dev/*, allow
+    - p, proj:gds-dev:gds-dev-admin, applications, get, argocd/*, allow
+    - p, proj:gds-dev:gds-dev-admin, repositories, *, gds-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gds-dev-user
+    description: Read-only privileges to gds-dev
+    policies:
+    - p, proj:gds-dev:gds-dev-user, applications, get, gds-dev/*, allow
+    - p, proj:gds-dev:gds-dev-user, applications, sync, gds-dev/*, allow
+    - p, proj:gds-dev:gds-dev-user, repositories, get, gds-dev/*, allow
+    - p, proj:gds-dev:gds-dev-user, applications, action/apps/Deployment/restart, gds-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.EIAP.READ"

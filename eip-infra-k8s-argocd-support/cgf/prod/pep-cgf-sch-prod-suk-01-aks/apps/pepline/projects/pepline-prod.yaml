@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepline-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app       
+spec:
+  description: Project for pepline-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_PEPLINE/_git/pep-europe-pepline-argocd-configs
+  - pepcgfschprodsukacr.azurecr.io/helm
+  destinations:
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-cgf-pepln-prod
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-ops-admin
+  roles:
+  - name: pepline-prod-admin
+    description: Admin privileges to pepline-prod
+    policies:
+    - p, proj:pepline-prod:pepline-prod-admin, applications, *, pepline-prod/*, allow
+    - p, proj:pepline-prod:pepline-prod-admin, repositories, *, pepline-prod/*, allow
+    - p, proj:pepline-prod:pepline-prod-admin, applications, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepline-prod-user
+    description: Read-only privileges to pepline-prod
+    policies:
+    - p, proj:pepline-prod:pepline-prod-user, applications, get, pepline-prod/*, allow
+    - p, proj:pepline-prod:pepline-prod-user, applications, sync, pepline-prod/*, allow
+    - p, proj:pepline-prod:pepline-prod-user, repositories, get, pepline-prod/*, allow
+    - p, proj:pepline-prod:pepline-prod-user, applications, action/apps/Deployment/restart, pepline-prod/*, allow
+    groups:
+    - "Team.App.Support.Pepline.Admins"
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.Prod.dsxdevop"

@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: csk
+    sector: apac
+    team: apac-csk
+  name: pep-eiap-apac-csk-dev

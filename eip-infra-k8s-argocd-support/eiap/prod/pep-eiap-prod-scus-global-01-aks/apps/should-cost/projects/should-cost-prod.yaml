@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: should-cost-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for should-cost-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/should-cost-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-aiscm-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: should-cost-prod-admin
+        description: Admin privileges to should-cost-prod
+        policies:
+        - p, proj:should-cost-prod:should-cost-prod-admin, applications, *, should-cost-prod/*, allow
+        - p, proj:should-cost-prod:should-cost-prod-admin, repositories, *, should-cost-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: should-cost-prod-user
+        description: Read-only privileges to should-cost-prod
+        policies:
+        - p, proj:should-cost-prod:should-cost-prod-user, applications, get, should-cost-prod/*, allow
+        - p, proj:should-cost-prod:should-cost-prod-user, applications, sync, should-cost-prod/*, allow
+        - p, proj:should-cost-prod:should-cost-prod-user, repositories, get, should-cost-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.Prod.aiscm"
+        - "Team.Support.EIAP.READ"
+    

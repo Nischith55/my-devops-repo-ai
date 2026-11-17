@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-cfg-vantagex-pepops-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pepops.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: vantagex-frontend-ui.pep-eiap-cgf-vantagex-dev.svc.cluster.local

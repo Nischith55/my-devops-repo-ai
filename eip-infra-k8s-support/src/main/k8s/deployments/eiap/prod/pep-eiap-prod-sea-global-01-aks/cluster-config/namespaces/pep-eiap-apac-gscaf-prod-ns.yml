@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-eiap-apac-gscaf-prod
+    pep-cmdb-app-service-id: da58ecfd8720bd90f0d5fd57dabb35d6
+    pep-cmdb-bus-app-id: 41f219211b658dd004a96465ec4bcb58
+    pep-environment: Production
+    project: gscaf
+    sector: apac
+    servicename_aks: gscafglobalproducerapacprod
+    team: apac-gscaf
+  name: pep-eiap-apac-gscaf-prod

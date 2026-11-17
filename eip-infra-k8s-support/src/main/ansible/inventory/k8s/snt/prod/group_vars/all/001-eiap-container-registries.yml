@@ -1,0 +1,6 @@
+---
+# EIAP Container Registries
+
+# The following would need to set for each environment.
+eiap_env_common_acr: "{{ eiap_prod_common_acr }}"
+

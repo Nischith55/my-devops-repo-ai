@@ -1,0 +1,359 @@
+githubConfigUrl: "https://github.com/PepsiCo-AISP"
+
+# Secret must pre-exist in the release namespace (pep-eiap-global-devsecops-dev)
+# with keys: github_app_id, github_app_installation_id, github_app_private_key.
+githubConfigSecret: arc-github-app
+
+# Per-sector convention: dps-aks-runners-group, pfna-aks-runners-group. The
+# group must already exist in the Global-SnT org; registration fails if it does
+# not.
+runnerGroup: eiap-aks-runners-group
+
+# The chart caps this at 45 chars.
+# NOTE: this is the `runs-on` label workflows must target.
+runnerScaleSetName: "eiap-nonprod-eus-infra-02-arc"
+
+minRunners: 0
+maxRunners: 10
+
+# Pinned because ArgoCD renders this chart offline (helm template), where the
+# chart's `lookup` of the controller ServiceAccount returns nothing and the
+# render fails. Value = the SA the controller chart produces under the release
+# name setup.sh installs (arc-controller-${CLUSTER}), truncated to 63 chars.
+# Re-derive with:
+#   helm template arc-controller-pep-eiap-nonprod-eus-infra-02-aks \
+#     oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller \
+#     --version 0.14.2 -n arc-systems | grep -A2 '^kind: ServiceAccount'
+controllerServiceAccount:
+  name: arc-controller-pep-eiap-nonprod-eus-infra-02-aks-gha-rs-control
+  namespace: arc-systems
+
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "managed-csi"
+    resources:
+      requests:
+        storage: 10Gi
+
+template:
+  spec:
+    # Same SA the eiap devsecops agent Job uses. It carries the Azure
+    # workload-identity federated credential; the chart's auto-created kube-mode
+    # SA does not (AADSTS700213). Overriding it means the kube-mode
+    # pod/job/secret permissions must be granted explicitly
+    # -> runner-set/kube-mode-rbac.yaml.
+    serviceAccountName: pep-eiap-buildagent
+    securityContext:
+      fsGroup: 1000
+    # Matches pepsico-eip-global-devsecops-agent, which runs in this namespace.
+    # Verified on-cluster: 3 BuildAgentPools nodes (npbp01), alongside
+    # System01ZonedPools and User01ZonedPools.
+    nodeSelector:
+      kubernetes.io/os: linux
+      balance-group: BuildAgentPools
+    tolerations:
+      - key: "BuildAgentPool"
+        operator: "Exists"
+        effect: "NoSchedule"
+    # The cluster's AcrPullBinding for pepeiapnonprodcommonacr is bound to
+    # pep-eiap-ops-admin only, so this namespace authenticates the pull with the
+    # same regcred the devsecops agent Job uses.
+    imagePullSecrets:
+      - name: pep-eiap-svc-global-devsecops-sp-regcred
+    containers:
+      - name: runner
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/github-runner:20260814.4
+        imagePullPolicy: IfNotPresent
+        # The eiap devsecops agent Job consumes this secret wholesale via
+        # envFrom, and the repo does not record its key names, so the whole
+        # secret is projected rather than naming keys that may not exist (a
+        # missing secretKeyRef key fails the pod at container creation).
+        # Narrow this to explicit secretKeyRefs once the key list is confirmed.
+        envFrom:
+          - secretRef:
+              name: pep-eiap-svc-global-devsecops-azdevops
+        env:
+          - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+            value: "false"
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: AAD-SERVICE-PRINCIPAL-CLIENT-ID
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: AAD-SERVICE-PRINCIPAL-CLIENT-SECRET
+
+
+          # NEW — ACR credentials from your new SPC-synced Kubernetes secret
+          - name: EIAP_SVC_DEVOPS
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: svceipazdevops
+
+          - name: pepeiapnonprodcommonacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodcommonacr-username
+
+          - name: pepeiapnonprodcommonacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodcommonacr-password
+
+          - name: pepeiapnonprodglobalcommonacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodglobalcommonacr-username
+
+          - name: pepeiapnonprodglobalcommonacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodglobalcommonacr-password
+
+          - name: pepnonprodsntacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepnonprodsntacr-username
+
+          - name: pepnonprodsntacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepnonprodsntacr-password
+
+          - name: pepinfratoolsnonprodcommonacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepinfratoolsnonprodcommonacr-username
+
+          - name: pepinfratoolsnonprodcommonacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepinfratoolsnonprodcommonacr-password
+
+          - name: pepeiapeusnonprodaispacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapeusnonprodaispacr-username
+
+          - name: pepeiapeusnonprodaispacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiapeusnonprodaispacr-password
+
+          - name: pepeiotpnonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiotpnonprodacr-username
+
+          - name: pepeiotpnonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiotpnonprodacr-password
+
+          - name: pepeiotpnonprodpriacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiotpnonprodpriacr-username
+
+          - name: pepeiotpnonprodpriacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepeiotpnonprodpriacr-password
+
+          - name: pepcmpansibleqaacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepcmpansibleqaacr-username
+
+          - name: pepcmpansibleqaacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepcmpansibleqaacr-password
+
+          - name: pepvisionacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepvisionacr-username
+
+          - name: pepvisionacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepvisionacr-password
+
+          - name: pepsntnonproddsnotesacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepsntnonproddsnotesacr-username
+
+          - name: pepsntnonproddsnotesacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepsntnonproddsnotesacr-password
+
+          - name: pepdevapigeeacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepdevapigeeacr-username
+
+          - name: pepdevapigeeacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepdevapigeeacr-password
+
+          - name: pepapigeenonprodaeacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepapigeenonprodaeacr-username
+
+          - name: pepapigeenonprodaeacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepapigeenonprodaeacr-password
+
+          - name: pepapigeenonprodgwcacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepapigeenonprodgwcacr-username
+
+          - name: pepapigeenonprodgwcacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepapigeenonprodgwcacr-password
+
+          - name: osacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: osacr-username
+
+          - name: osacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: osacr-password
+
+          - name: pepljoygwcnonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepljoygwcnonprodacr-username
+
+          - name: pepljoygwcnonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepljoygwcnonprodacr-password
+
+          - name: peployaltyjoydevacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: peployaltyjoydevacr-username
+
+          - name: peployaltyjoydevacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: peployaltyjoydevacr-password
+
+          - name: peparizenonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: peparizenonprodacr-username
+
+          - name: peparizenonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: peparizenonprodacr-password
+            
+          - name: pepcvdevacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepcvdevacr-username
+
+          - name: pepcvdevacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: pepcvdevacr-password
+                
+          - name: latampackodevamlacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: latampackodevamlacr-username
+
+          - name: latampackodevamlacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-eiap-svc-global-devsecops-acr-individual-creds
+                key: latampackodevamlacr-password
+        volumeMounts:
+          - name: work
+            mountPath: /azp/runners/_work
+          - name: azure-build-scratch
+            mountPath: /mnt/azure
+          - name: acr-secret
+            mountPath: "/home/neipd999/.docker"
+            readOnly: true
+          - name: acr-cred-secret
+            mountPath: "/mnt/acr-creds"
+        # Matches the devsecops agent Job container resources.
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+          limits:
+            cpu: "8000m"
+            memory: "16Gi"
+    volumes:
+      - name: azure-build-scratch
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops
+      - name: acr-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: acr-secretproviderclass
+      - name: acr-cred-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: acr-cred-secretproviderclass

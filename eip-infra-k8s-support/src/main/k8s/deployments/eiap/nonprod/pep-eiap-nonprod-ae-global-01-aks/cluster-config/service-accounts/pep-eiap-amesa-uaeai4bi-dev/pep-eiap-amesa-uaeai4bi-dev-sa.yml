@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: deebe248-3a80-4297-9c08-2166e3180110
+  name: pep-eiap-amesa-uaeai4bi-dev-sa
+  namespace: pep-eiap-amesa-uaeai4bi-dev

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dswreact
+  name: dswreact-dev-vs
+  namespace: pep-eiap-pfna-vct-dev
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-dev/pep-eiap-pfna-vct-dev-cv-gw
+  hosts:
+  - dswreact-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dswreact.pep-eiap-pfna-vct-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for apigee 
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/Microservices_Development_Portal/_git/pepsico-eip-eipone-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-apigee-preprod-scus-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  roles:  
+  - name: argocd-user
+    description: Read-only privileges to argocd
+    policies:
+    - p, proj:argocd:argocd-user, applications, get, argocd/*, allow
+    - p, proj:argocd:argocd-user, applications, sync, argocd/*, allow
+    - p, proj:argocd:argocd-user, repositories, get, argocd/*, allow
+    groups:
+    - "Team.Support.Apigee.Read"

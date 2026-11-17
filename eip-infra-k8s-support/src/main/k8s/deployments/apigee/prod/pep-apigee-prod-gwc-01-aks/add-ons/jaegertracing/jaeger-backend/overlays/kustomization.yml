@@ -1,0 +1,17 @@
+---
+# generated file please do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: observability
+resources:
+  - ../../../../../../add-ons/jaegertracing/kustomize/jaeger-backend/base
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-jaeger-all-spec.yml
+# All json6902 patches
+# only filename not full path
+patches:
+ 
+ 

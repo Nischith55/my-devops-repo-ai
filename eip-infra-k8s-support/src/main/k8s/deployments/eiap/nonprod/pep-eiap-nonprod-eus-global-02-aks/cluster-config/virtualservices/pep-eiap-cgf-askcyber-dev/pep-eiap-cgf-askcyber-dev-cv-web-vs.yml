@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-askcyber-dev-cv-web-vs
+  namespace: pep-eiap-cgf-askcyber-dev
+  labels:
+    app: pep-eiap-cgf-askcyber-dev-cv-web
+spec:
+  hosts:
+    - askcyber.dev.mypepsico.com
+    - pep-eiap-cgf-askcyber-dev-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-askcyber-dev/pep-eiap-cgf-askcyber-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-askcyber-dev-cv-web.pep-eiap-cgf-askcyber-dev.svc.cluster.local
+        port:
+          number: 80

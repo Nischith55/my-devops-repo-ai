@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: r360-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for r360-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-r360-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: r360-dev-admin
+    description: Admin privileges to r360-dev
+    policies:
+    - p, proj:r360-dev:r360-dev-admin, applications, *, r360-dev/*, allow
+    - p, proj:r360-dev:r360-dev-admin, applications, get, argocd/*, allow
+    - p, proj:r360-dev:r360-dev-admin, repositories, *, r360-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: r360-dev-user
+    description: Read-only privileges to r360-dev
+    policies:
+    - p, proj:r360-dev:r360-dev-user, applications, get, r360-dev/*, allow
+    - p, proj:r360-dev:r360-dev-user, applications, sync, r360-dev/*, allow
+    - p, proj:r360-dev:r360-dev-user, repositories, get, r360-dev/*, allow
+    - p, proj:r360-dev:r360-dev-user, applications, action/apps/Deployment/restart, r360-dev/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

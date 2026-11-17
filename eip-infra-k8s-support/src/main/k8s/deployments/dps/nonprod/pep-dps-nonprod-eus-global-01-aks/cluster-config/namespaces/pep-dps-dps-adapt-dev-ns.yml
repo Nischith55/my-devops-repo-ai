@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-adapt-dev
+  labels:
+    env-nonprod: "true"
+    project: adapt
+    sector: dps
+    team: dps-adapt
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: dsx_adapter_non-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: f0624479c3cc7e107e0cfbdf050131fd
+    pep-cmdb-app-service-id: c051c257c3487e50476a900f050131eb
+    pep-environment: Development
+    

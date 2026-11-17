@@ -1,0 +1,82 @@
+---
+# ##
+# Default TLS settings mainly for istio ingress
+# INPUTS:
+#   istio_tls_mode: [optional]
+#   istio_tls_min_protocol_version: [optional]
+#   istio_tls_max_protocol_version: [optional]
+#   istio_tls_cipher_suites: [optional] 
+#                            [default: istio_tls_1_2_1_3_cipher_suites]
+# ##
+
+istio_tls_fips_140_2_cipher_suites:
+  # TLS 1.2
+  - ECDHE-ECDSA-AES128-GCM-SHA256
+  - ECDHE-ECDSA-AES256-GCM-SHA384
+  - ECDHE-RSA-AES128-GCM-SHA256
+  - ECDHE-RSA-AES256-GCM-SHA384
+  # 2021/ appears envoy does not need it
+  # # TLS 1.3
+  # - TLS_AES_128_GCM_SHA256
+  # - TLS_AES_256_GCM_SHA384 
+  # - TLS_CHACHA20_POLY1305_SHA256
+
+# TODO: consult with InfoSec what should be allowed
+# 2021/updated
+# Adding mapping information at least from TLS 1.2
+istio_tls_1_2_1_3_cipher_suites:
+  # TLS 1.2
+  # IANA NAME: TLS_RSA_WITH_AES_128_GCM_SHA256
+  - AES128-GCM-SHA256
+  # IANA NAME: TLS_RSA_WITH_AES_256_GCM_SHA384
+  - AES256-GCM-SHA384
+  # IANA NAME: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+  - ECDHE-ECDSA-AES128-SHA
+  # IANA NAME: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+  - ECDHE-ECDSA-AES256-SHA
+  # IANA NAME: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+  - ECDHE-ECDSA-AES128-GCM-SHA256
+  # IANA NAME: TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+  - ECDHE-ECDSA-AES256-GCM-SHA384
+  # IANA NAME: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+  - ECDHE-RSA-AES128-GCM-SHA256
+  # IANA NAME: TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+  - ECDHE-RSA-AES256-GCM-SHA384
+  # 05/2021 added these ones
+  # # IANA name: TLS_RSA_WITH_AES_128_CBC_SHA256
+  # # Currently envoy does NOT support it
+  # - AES128-SHA256
+  # # IANA name: TLS_RSA_WITH_AES_256_CBC_SHA256
+  # # Currently envoy does NOT support it
+  # - AES256-SHA256
+  # IANA name: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+  # - ECDHE-RSA-AES128-SHA
+  # IANA name: TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+  # - ECDHE-RSA-AES256-SHA
+  # # IANA name: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+  # - ECDHE-ECDSA-AES128-SHA256
+  # # IANA name: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+  # - ECDHE-ECDSA-AES256-SHA384
+  # # Following ciphersuites are flagged as WEAK by PEP Fortify scan and 
+  # # hence removed
+  # # IANA NAME: TLS_RSA_WITH_AES_128_CBC_SHA
+  #  - AES128-SHA
+  # # IANA NAME: TLS_RSA_WITH_AES_256_CBC_SHA
+  #  - AES256-SHA
+  #: ##
+  # # ##
+  # # TLS 1.3 (Envoy does not need explicit config)
+  # - TLS_AES_128_GCM_SHA256
+  # - TLS_AES_256_GCM_SHA384 
+  # - TLS_CHACHA20_POLY1305_SHA256
+
+# SSL termination at ingress
+istio_default_tls_settings:
+  mode: "{{ istio_tls_mode | default('SIMPLE') }}"
+  minProtocolVersion: |-
+    {{ istio_tls_min_protocol_version | default('TLSV1_2') }}
+  maxProtocolVersion: |-
+    {{ istio_tls_max_protocol_version | default('TLSV1_3') }}
+
+  cipherSuites: |-
+    {{ istio_tls_cipher_suites | default(istio_tls_1_2_1_3_cipher_suites) }}

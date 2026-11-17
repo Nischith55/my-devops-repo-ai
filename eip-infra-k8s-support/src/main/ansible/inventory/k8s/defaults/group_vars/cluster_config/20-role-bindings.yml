@@ -1,0 +1,15 @@
+---
+# ##
+# DEPERECATED:: Once Python refactor is done this file should be deleted
+# ##
+# ##
+# Generate a list of role binding objects. Note is HAS to be a list since with
+# uniqueness determined by name and namespace
+# ##
+
+# All role binding configuraiton objects
+role_binding_config_all: |-
+  {{ q('vars', *q('varnames', '^pep_eiap_.+_rb_cfg$')) }}
+
+role_bindings: |-
+  {{ namespaces | build_k8s('role_binding', role_binding_config_all) }}

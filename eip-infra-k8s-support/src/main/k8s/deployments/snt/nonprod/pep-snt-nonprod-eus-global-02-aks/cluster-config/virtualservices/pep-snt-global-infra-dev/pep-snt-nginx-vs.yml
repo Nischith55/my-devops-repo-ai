@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-snt-nginx
+  name: pep-snt-nginx-vs
+  namespace: pep-snt-global-infra-dev
+spec:
+  gateways:
+  - pep-snt-global-infra-dev/pep-snt-global-infra-dev-cv-gw
+  hosts:
+  - pep-snt-nginx.snt.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-snt-nginx.pep-snt-global-infra-dev.svc.cluster.local
+        port:
+          number: 8080

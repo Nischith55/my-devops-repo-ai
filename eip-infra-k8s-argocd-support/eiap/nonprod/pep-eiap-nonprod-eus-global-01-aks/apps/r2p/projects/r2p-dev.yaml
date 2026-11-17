@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: r2p-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for r2p-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r2p-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-cataiagent-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: r2p-dev-admin
+        description: Admin privileges to r2p-dev
+        policies:
+        - p, proj:r2p-dev:r2p-dev-admin, applications, *, r2p-dev/*, allow
+        - p, proj:r2p-dev:r2p-dev-admin, repositories, *, r2p-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: r2p-dev-user
+        description: Read-only privileges to r2p-dev
+        policies:
+        - p, proj:r2p-dev:r2p-dev-user, applications, get, r2p-dev/*, allow
+        - p, proj:r2p-dev:r2p-dev-user, applications, sync, r2p-dev/*, allow
+        - p, proj:r2p-dev:r2p-dev-user, repositories, get, r2p-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:r2p-dev:r2p-dev-user, applications, action/apps/Deployment/restart, r2p-dev/*, allow
+        groups:
+        - "Team.app.Pepvigil.developers"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.AZURE.CGF.NONPROD.CATAIAGENT1"
+    

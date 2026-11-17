@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receipt-scanning-admin-ui
+  name: receipt-scanning-admin-ui-qa-vs
+  namespace: pep-dps-cgf-rsadmin-qa
+spec:
+  gateways:
+  - pep-dps-cgf-rsadmin-qa/pep-dps-cgf-rsadmin-qa-cv-gw
+  hosts:
+  - receipt-scanning-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-admin-ui.pep-dps-cgf-rsadmin-qa.svc.cluster.local
+        port:
+          number: 8090

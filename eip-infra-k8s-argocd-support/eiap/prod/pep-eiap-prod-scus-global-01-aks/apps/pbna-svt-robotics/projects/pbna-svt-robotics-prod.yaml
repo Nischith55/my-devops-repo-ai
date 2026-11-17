@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-svt-robotics-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-svt-robotics-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_Automated_Case_Picking_ACP/_git/PFNA-Automated-Case-Picking-ACP-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-qfna-acp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pbna-svt-robotics-prod-admin
+        description: Admin privileges to pbna-svt-robotics-prod
+        policies:
+        - p, proj:pbna-svt-robotics-prod:pbna-svt-robotics-prod-admin, applications, *, pbna-svt-robotics-prod/*, allow
+        - p, proj:pbna-svt-robotics-prod:pbna-svt-robotics-prod-admin, repositories, *, pbna-svt-robotics-prod/*, allow
+        groups:
+        - "Team.App.SVTRobotics.Developers"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-svt-robotics-prod-user
+        description: Read-only privileges to pbna-svt-robotics-prod
+        policies:
+        - p, proj:pbna-svt-robotics-prod:pbna-svt-robotics-prod-user, applications, get, pbna-svt-robotics-prod/*, allow
+        - p, proj:pbna-svt-robotics-prod:pbna-svt-robotics-prod-user, applications, sync, pbna-svt-robotics-prod/*, allow
+        - p, proj:pbna-svt-robotics-prod:pbna-svt-robotics-prod-user, repositories, get, pbna-svt-robotics-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.SVTRobotics.Developers"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: dialogue-with-data-frontend
+        meta.helm.sh/release-namespace: pep-eiap-cgf-dwd-prod
+    labels:
+        app: dialogue-with-data-frontend
+        app.kubernetes.io/instance: dialogue-with-data-frontend
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250220.6'
+        environment: prod
+        helm.sh/chart: platform-chart-1.0.2
+    name: dialogue-with-data-frontend
+    namespace: pep-eiap-cgf-dwd-prod
+spec:
+    gateways:
+    - pep-eiap-cgf-dwd-prod/pep-eiap-cgf-dwd-prod-cv-gw
+    hosts:
+    - dialogue-with-data-frontend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - dwd.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: dialogue-with-data-frontend.pep-eiap-cgf-dwd-prod.svc.cluster.local
+                port:
+                    number: 3000

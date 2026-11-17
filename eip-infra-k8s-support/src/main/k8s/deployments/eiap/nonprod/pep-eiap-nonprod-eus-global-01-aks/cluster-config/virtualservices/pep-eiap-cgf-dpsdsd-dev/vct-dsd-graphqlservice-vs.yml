@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: vct-dsd-graphqlservice
+  name: vct-dsd-graphqlservice-vs
+  namespace: pep-eiap-cgf-dpsdsd-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-dpsdsd-dev/pep-eiap-cgf-dpsdsd-dev-cv-gw
+  hosts:
+  - vct-dsd-graphqlservice.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /vct-dsd-graphqlservice/tripSummaryDetails
+    route:
+    - destination:
+        host: vct-dsd-graphqlservice.pep-eiap-cgf-dpsdsd-dev.svc.cluster.local
+        port:
+          number: 80

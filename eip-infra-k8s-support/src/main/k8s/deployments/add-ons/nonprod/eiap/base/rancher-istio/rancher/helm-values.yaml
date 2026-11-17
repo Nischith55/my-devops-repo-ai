@@ -1,0 +1,70 @@
+---
+base:
+  enabled: true
+cni:
+  enabled: false
+  excludeNamespaces:
+    - istio-system
+    - kube-system
+  logLevel: info
+  repository: pepeiapnonprodcommonacr.azurecr.io/rancher/mirrored-istio-install-cni
+  tag: 1.18.2-distroless
+dns:
+  enabled: false
+egressGateways:
+  enabled: false
+  hpaSpec: {}
+  podDisruptionBudget: {}
+  type: NodePort
+forceInstall: false
+global:
+  cattle:
+    psp:
+      enabled: false
+    systemProjectId: p-jj7wc
+  defaultPodDisruptionBudget:
+    enabled: true
+  proxy:
+    repository: pepeiapnonprodcommonacr.azurecr.io/rancher/mirrored-istio-proxyv2
+    tag: 1.18.2-distroless
+  proxy_init:
+    repository: pepeiapnonprodcommonacr.azurecr.io/rancher/mirrored-istio-proxyv2
+    tag: 1.18.2-distroless
+ingressGateways:
+  enabled: false
+  hpaSpec: {}
+  podDisruptionBudget: {}
+  type: NodePort
+installer:
+  debug:
+    secondsSleep: 0
+  releaseMirror:
+    enabled: false
+  repository: pepeiapnonprodcommonacr.azurecr.io/rancher/istio-installer
+  tag: 1.18.2-rancher1
+istiodRemote:
+  enabled: false
+kiali:
+  auth:
+    strategy: openid
+    openid:
+      additional_request_params:
+        resource: 6dae42f8-4368-4678-94ff-3960e28e3630
+      api_token: access_token
+      client_id: 63353001-94fc-4c9f-a197-5c52c5888b53
+      issuer_uri: https://sts.windows.net/42cc3295-cd0e-449c-b98e-5ce5b560c1d3/
+      username_claim: preferred_username
+  deployment:
+    ingress_enabled: false
+  enabled: false
+  external_services:
+    grafana:
+      in_cluster_url: http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80
+      url: http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80
+    prometheus:
+      custom_metrics_url: http://prometheus-headless.monitoring.svc:9090
+      url: http://prometheus-headless.monitoring.svc:9090
+    tracing:
+      in_cluster_url: http://tracing.istio-system.svc:16686/jaeger
+      use_grpc: false
+nodeSelector: {}

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: prometheus-vs
+  namespace: prometheus
+spec:
+  gateways:
+  - prometheus/prometheus-cv-gw
+  hosts:
+  - prometheus.infra.gw01.aks02.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: prometheus-server-headless.prometheus.svc.cluster.local
+        port:
+          number: 80

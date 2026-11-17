@@ -1,0 +1,354 @@
+- name: set namespace fact 
+  set_fact:
+    namespace: "{{ item.metadata.name }}"
+    # namespace: "{{ item }}"
+- debug:
+    msg: "namespace is {{ namespace }}"
+
+### check for namespace gateway status
+- name: Get the gateway
+  kubernetes.core.k8s_info:
+    kind: Gateway 
+    api_version: networking.istio.io/v1beta1
+    namespace: "{{ namespace }}"
+    name: "{{ namespace }}-cv-gw"
+  register: gateway_ns
+
+# - debug: var=gateway_ns 
+
+- name: gateway already present  
+  block: 
+    - name: initialize lists - cmp
+      set_fact:
+        vs_list: []
+        hosts_list: []
+        tls_hosts_list: []
+        tls_present: false
+        common_http_list: []
+        custom_http_list: []
+        ns_cred_list: {}
+        final_custom_https: []
+        cust_domain_status: false
+        space: "\n"
+        cred_fail: false 
+    - name: Get list of virtual services - cmp
+      kubernetes.core.k8s_info:
+        api_version: networking.istio.io/v1beta1
+        kind: VirtualService 
+        namespace: "{{ namespace }}"
+      register: virtualservices_ns
+    - name: get ns from vs destination with http - cmp
+      set_fact:
+        hosts_list: "{{ hosts_list + inner_item.spec.hosts }}"
+      with_items: "{{ virtualservices_ns.resources }}"
+      when: inner_item.spec.http is defined
+      loop_control:
+        loop_var: inner_item
+    
+    - set_fact:
+        hosts_list: "{{ hosts_list| unique }}"
+    - name: gather credential names - cmp
+      set_fact:
+        cred_names_ns: "{{ cred_names_ns | default([]) + [{'cred_name': inner_item.tls.credentialName , 'hosts': inner_item.hosts }] }}"
+      with_items: 
+      - "{{ gateway_ns.resources[0].spec.servers }}"
+      when: 
+      - inner_item.tls.credentialName is defined
+      loop_control:
+        loop_var: inner_item
+    - name: get common http list - cmp
+      set_fact:
+        common_http_list: "{{ common_http_list + [ inner_item ] }}"
+      when: '"azure.intra.pepsico.com" in inner_item'
+      with_items: "{{ hosts_list }}"
+      loop_control:
+        loop_var: inner_item
+    
+    - set_fact:
+        common_http_list: "{{ common_http_list| unique }}"
+
+    - name: get custom http list - cmp
+      set_fact:
+        custom_http_list: "{{ custom_http_list + [ inner_item ] }}"
+      when: '"azure.intra.pepsico.com" not in inner_item'
+      with_items: "{{ hosts_list }}"
+      loop_control:
+        loop_var: inner_item
+
+    - name: custom domains exist - cmp
+      block:
+      - name: custom domains status - cmp
+        set_fact:
+          cust_domain_status: true 
+      - name: get cred of custom domain host - cmp
+        set_fact:
+          ns_cred_list: "{{ ns_cred_list | combine({ inner_item[0] : inner_item[1].cred_name  }) }}"
+        with_nested: 
+        - "{{ custom_http_list }}"
+        - "{{ cred_names_ns }}"
+        when: inner_item[0] in inner_item[1].hosts
+        loop_control:
+          loop_var: inner_item
+      - debug: var=ns_cred_list
+      
+      - name: validate if hosts credentials exists - cmp
+        kubernetes.core.k8s_info:
+          kind: secret
+          namespace: istio-system
+          name: "{{ inner_item.value }}"
+        with_items: "{{ ns_cred_list | dict2items }}"
+        loop_control:
+          loop_var: inner_item
+        register: cluster_secret_status
+        ignore_errors: true
+        # failed_when:
+        #   - cluster_secret_status.resources is defined
+        #   - cluster_secret_status.resources | length == 0
+      
+      #- debug: var=cluster_secret_status
+
+      - name: check if any secret missing
+        debug: 
+          msg: "The credential not present {{ inner_item.inner_item.value }} in istio-system namespace. " 
+        with_items: "{{ cluster_secret_status.results }}"
+        when: inner_item.resources | length == 0
+        loop_control:
+          loop_var: inner_item
+      # - name: debug 
+      #   debug: var=cluster_secret_status
+      # - fail:
+      #     msg: "test fail"      
+      
+      - name: remove custom hosts without creds in gateway - cmp
+        set_fact: 
+          final_custom_https: "{{ final_custom_https + [ inner_item ] }}"
+        with_items: "{{ custom_http_list }}"
+        when: inner_item in ns_cred_list
+        loop_control:
+            loop_var: inner_item
+      - name: printing final custom domains list - cmp
+        debug: var=final_custom_https
+      
+      when: custom_http_list is defined and ( custom_http_list | length > 0)
+
+    # - name: Handle the error - cmp
+    #   block:
+    # - name: validate if hosts credentials exists - cmp
+    #   kubernetes.core.k8s_info:
+    #     kind: secret
+    #     namespace: istio-system
+    #     name: "{{ inner_item.value }}" 
+    #   register: cluster_secret_status
+    #   with_items: "{{ ns_cred_list | dict2items }}"
+    #   loop_control:
+    #       loop_var: inner_item
+    #   failed_when: cluster_secret_status.resources is defined and (cluster_secret_status.resources | length == 0)
+  # rescue:
+    #     - name: set fact as failed - cmp
+    #       set_fact:
+    #         cred_fail: true
+    #     - debug: 
+    #         msg: "One of the credentials for the custom domains is not present in cluster for namespace {{ namespace }}. Reach AKS Ops team."
+
+    # - name: Run only when cred_fail is false 
+    #   block:
+    # - name: remove custom hosts without creds in gateway - cmp
+    #   set_fact: 
+    #     final_custom_https: "{{ final_custom_https + [ inner_item ] }}"
+    #   with_items: "{{ custom_http_list }}"
+    #   when: inner_item in ns_cred_list
+    #   loop_control:
+    #       loop_var: inner_item
+    # - name: printing final custom domains list - cmp
+    #   debug: var=final_custom_https
+    - name: generate manifest - cmp
+      template:
+        src: templates/gateway_manifest.j2
+        dest: '{{ mypath }}/Artifacts/gw-manifests/{{ namespace }}-cv-gw-patch.yml'
+    - name: print manifest - cmp
+      debug:
+        var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/gw-manifests/{{ namespace }}-cv-gw-patch.yml')
+
+      # when: not cred_fail
+
+  when: gateway_ns.resources is defined and (gateway_ns.resources | length > 0)
+
+- name: block if gateway not present only 
+  block:
+  ### initializing all lists to empty for each namespace
+  - name: initialize lists
+    set_fact:
+      vs_list: []
+      hosts_list: []
+      tls_hosts_list: []
+      tls_present: false
+      common_http_list: []
+      custom_http_list: []
+      ns_cred_list: {}
+      final_custom_https: []
+      cust_domain_status: false
+      space: "\n"
+      cred_fail: false 
+
+  ### getting all virtual services in http blocks for this namespace only
+  - name: get virtual services in the namespace - http 
+    set_fact:
+      vs_list: "{{ vs_list + inner_item['vs_name'] }}"
+      hosts_list: "{{ hosts_list + inner_item['hosts'] }}"
+    with_items: "{{ vs_http_list }}"
+    when: 
+      - inner_item['ns_name'] == namespace
+    loop_control:
+      loop_var: inner_item
+    no_log: True
+
+  - set_fact:
+      hosts_list: "{{ hosts_list | unique}}"
+
+  ### getting all virtual services in tls block for this namespace
+  - name: get virtual services in the namespace - tls 
+    set_fact:
+      vs_list: "{{ vs_list + inner_item['vs_name'] }}"
+      tls_hosts_list: "{{ tls_hosts_list + inner_item['hosts'] }}"
+      tls_present: true
+    with_items: "{{ vs_tls_list }}"
+    when: 
+      - inner_item['ns_name'] == namespace
+    loop_control:
+      loop_var: inner_item
+  
+  - set_fact:
+      tls_hosts_list: "{{ tls_hosts_list | unique}}"
+
+  ### getting common hosts list with ending azure.intra.pepsico.com
+  - name: get common http list 
+    set_fact:
+      common_http_list: "{{ common_http_list + [ inner_item ] }}"
+    when: '"azure.intra.pepsico.com" in inner_item'
+    with_items: "{{ hosts_list }}"
+    loop_control:
+      loop_var: inner_item
+    no_log: True
+  
+  - set_fact:
+      common_http_list: "{{ common_http_list| unique }}"
+
+  ### getting custom domain hosts list
+  - name: get custom domain http list 
+    set_fact:
+      custom_http_list: "{{ custom_http_list + [ inner_item ] }}"
+    when: '"azure.intra.pepsico.com" not in inner_item'
+    with_items: "{{ hosts_list }}"
+    loop_control:
+      loop_var: inner_item
+    no_log: True
+
+
+  ### getting credentials of each custom domain host
+  - name: custom domains exist
+    block:
+    - name: custom domains status 
+      set_fact:
+        cust_domain_status: true 
+    - name: get cred of custom domain host 
+      set_fact:
+        ns_cred_list: "{{ ns_cred_list | combine({ inner_item[0] : inner_item[1].cred_name  }) }}"
+      with_nested: 
+      - "{{ custom_http_list }}"
+      - "{{ cred_names_full }}"
+      when: inner_item[0] in inner_item[1].hosts
+      loop_control:
+        loop_var: inner_item
+    - debug: var=ns_cred_list
+
+    # - name: Handle the error
+    #   block:
+    - name: validate if hosts credentials exists
+      kubernetes.core.k8s_info:
+        kind: secret
+        namespace: istio-system
+        name: "{{ inner_item.value }}" 
+      register: cluster_secret_status
+      with_items: "{{ ns_cred_list | dict2items}}"
+      loop_control:
+          loop_var: inner_item
+    
+    #- debug: var=cluster_secret_status
+
+    - name: check if any secret missing
+      debug: 
+        msg: "The credential not present {{ inner_item.inner_item.value }} in istio-system namespace. " 
+      with_items: "{{ cluster_secret_status.results }}"
+      when: inner_item.resources | length == 0
+      loop_control:
+        loop_var: inner_item
+      # failed_when: 
+      #   - cluster_secret_status.resources is defined
+      #   - cluster_secret_status.resources | length == 0
+      # rescue:
+      # - name: set fact as failed 
+      #   set_fact:
+      #     cred_fail: true
+      # - debug: 
+      #     msg: "One of the credentials for the custom domains is not present in cluster for namespace {{ namespace }}. Reach AKS Ops team."
+
+    
+    - name: remove custom hosts without creds in gateway 
+      set_fact: 
+        final_custom_https: "{{ final_custom_https + [ inner_item ] }}"
+      with_items: "{{ custom_http_list }}"
+      when: inner_item in ns_cred_list
+      loop_control:
+          loop_var: inner_item
+    
+    - set_fact:
+        final_custom_https: "{{ final_custom_https | unique }}"
+    - name: printing final custom domains list 
+      debug: var=final_custom_https
+    when: custom_http_list is defined and ( custom_http_list | length > 0)
+
+  ### check each credential of the custom domain
+  # - name: Handle the error
+  #   block:
+  # - name: validate if hosts credentials exists
+  #   kubernetes.core.k8s_info:
+  #     kind: secret
+  #     namespace: istio-system
+  #     name: "{{ inner_item.value }}" 
+  #   register: cluster_secret_status
+  #   with_items: "{{ ns_cred_list | dict2items}}"
+  #   loop_control:
+  #       loop_var: inner_item
+  #   failed_when: cluster_secret_status.resources is defined and (cluster_secret_status.resources | length == 0)
+  #   no_log: True 
+    # rescue:
+    #   - name: set fact as failed 
+    #     set_fact:
+    #       cred_fail: true
+    #   - debug: 
+    #       msg: "One of the credentials for the custom domains is not present in cluster for namespace {{ namespace }}. Reach AKS Ops team."
+
+  # - name: Run only when cred_fail is false 
+  #   block:
+    ### remove custom hosts without credential
+  # - name: remove custom hosts without creds in gateway 
+  #   set_fact: 
+  #     final_custom_https: "{{ final_custom_https + [ inner_item ] }}"
+  #   with_items: "{{ custom_http_list }}"
+  #   when: inner_item in ns_cred_list
+  #   loop_control:
+  #       loop_var: inner_item
+  # - name: printing final custom domains list 
+  #   debug: var=final_custom_https
+
+  - name: generate manifest
+    template:
+      src: templates/gateway_manifest.j2
+      dest: '{{ mypath }}/Artifacts/gw-manifests/{{ namespace }}-cv-gw.yml'
+
+  - name: print manifest 
+    debug:
+      var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/gw-manifests/{{ namespace }}-cv-gw.yml')
+
+    # when: not cred_fail
+  when: gateway_ns.resources is defined and (gateway_ns.resources | length == 0)

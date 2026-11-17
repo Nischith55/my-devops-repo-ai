@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test020-testingoctqualitynewrepooct-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test020-testingoctqualitynewrepooct-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test020-testingoctqualitynewrepooct-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-devx-test-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: test020-testingoctqualitynewrepooct-dev-admin
+    description: Admin privileges to test020-testingoctqualitynewrepooct-dev
+    policies:
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-admin, applications, *, test020-testingoctqualitynewrepooct-dev/*, allow
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-admin, repositories, *, test020-testingoctqualitynewrepooct-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: test020-testingoctqualitynewrepooct-dev-user
+    description: Read-only privileges to test020-testingoctqualitynewrepooct-dev
+    policies:
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-user, applications, get, test020-testingoctqualitynewrepooct-dev/*, allow
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-user, applications, sync, test020-testingoctqualitynewrepooct-dev/*, allow
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-user, repositories, get, test020-testingoctqualitynewrepooct-dev/*, allow
+    - p, proj:test020-testingoctqualitynewrepooct-dev:test020-testingoctqualitynewrepooct-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

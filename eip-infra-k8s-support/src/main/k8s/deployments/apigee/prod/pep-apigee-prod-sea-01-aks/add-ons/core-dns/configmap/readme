@@ -1,0 +1,66 @@
+# This ConfigMap for CoreDNS is designed to add support for hostname to
+# loopback resolution on AKS clusters in Azure Virtual Networks that have
+# custom DNS enabled.
+#
+# When custom DNS is enabled in an Azure Virtual Network, the standard search
+# domain `<vpc-unique-string>.<two-letter-string>.internal.cloudapp.net` is
+# replaced with `reddog.microsoft.com`. Queries for Azure hostnames walk
+# through the search domains and end up failing with NXDOMAIN due to not having
+# the proper subdomain, in addition to potentially not being forwarded to Azure
+# DNS.
+#
+# This ConfigMap configures CoreDNS to do three things: rewrite those hostname
+# queries to a common query, query itself with this common query, and resolve
+# this common query to the loopback address 127.0.0.1. 
+#
+# For example, the query for
+# `aks-agentpool-39289873-vmss00000C.reddog.microsoft.com` would follow the
+# following steps, where `q=` is the query and `a=` is the answer:
+#
+# 1. Query received: q=aks-agentpool-39289873-vmss00000C.reddog.microsoft.com
+# 2. Query matches the `reddog.microsoft.com` server block and is rewritten:
+#    q=localhost.hostname
+# 3. Query matches the forward rule and is forwarded to itself:
+#    q=localhost.hostname
+# 4. Query matches the default server block and matches the local plugin:
+#    a=localhost.hostname IN A 127.0.0.1
+# 5. Answer is returned to itself:
+#    a=localhost.hostname IN A 127.0.0.1
+# 6. Answer matches the `answer auto` rewrite rule and is rewritten:
+#    a=aks-agentpool-39289873-vmss00000C.reddog.microsoft.com IN A 127.0.0.1
+# 7. Answer is returned to client:
+#    a=aks-agentpool-39289873-vmss00000C.reddog.microsoft.com IN A 127.0.0.1
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  # This filename ends with `.override`, which will include it in the default
+  # server block (see configmap `coredns` in the `kube-system` namespace).
+  hostname.override: |
+    # `local` plugin will resolve any query with localhost.<domain> to the
+    # loopback address.
+    local
+  # This filename ends with `.server`, which will include it outside of the
+  # default server block.
+  hostname.server: |
+    # `reddog.microsoft.com` server block will match any queries ending in this
+    # subdomain.
+    reddog.microsoft.com {
+       # This rewrite rule rewrites queries for Azure AKS node hostnames to
+       # `localhost.hostname`. In addition, it automatically rewrites the
+       # answer.
+       rewrite stop {
+         name regex ^aks-[a-z]([a-zA-Z0-9]){1,12}-[0-9]{4,12}-vmss[0-9a-zA-Z]{4,8}\.reddog\.microsoft\.com\.?$ localhost.hostname
+         answer auto
+       }
+       # This `forward` rule will forward queries that end in `.hostname` to
+       # itself. This allows a complete re-evaluation of the plugins and
+       # defined rules, and specifically causes re-evaluation of AKS hostname
+       # queries after being rewritten by the rewrite rule above. Queries that
+       # do not end in `.hostname` will be forwarded based on /etc/resolv.conf
+       forward hostname 127.0.0.1
+       forward . /etc/resolv.conf
+    }
+

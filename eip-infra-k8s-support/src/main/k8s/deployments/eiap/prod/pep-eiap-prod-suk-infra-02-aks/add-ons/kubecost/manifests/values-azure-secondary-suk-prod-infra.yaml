@@ -1,0 +1,42 @@
+kubecostProductConfigs:
+  clusterName: "pep-eiap-prod-suk-infra-02-aks"   
+  productKey:
+    secretname: productkey
+    enabled: true
+  azureBillingRegion: US
+kubecostModel:
+  federatedStorageConfigSecret: federated-store
+  etlBucketConfigSecret: "" # make sure ETL backups are disabled on secondary clusters; only to be used by primary for multi cluster data
+  etl: true
+  containerStatsEnabled: true
+  warmCache: false
+  warmSavingsCache: false
+global:
+  grafana:
+    enabled: false
+    proxy: false
+  alertmanager:
+    enabled: false
+prometheus:
+  server:
+    retention: 15d
+    global:
+      external_labels:
+        cluster_id: "pep-eiap-prod-suk-infra-02-aks"
+  nodeExporter:
+    enabled: false
+    tolerations: 
+    - operator: "Exists"
+networkCosts:
+  enabled: true
+  services:
+    azure-cloud-services: true
+  config:
+    destinations: 
+      in-zone:       
+        - "127.0.0.1"  
+  tolerations: 
+  - operator: "Exists"        
+federatedETL:
+  federatedCluster: true
+  agentOnly: true

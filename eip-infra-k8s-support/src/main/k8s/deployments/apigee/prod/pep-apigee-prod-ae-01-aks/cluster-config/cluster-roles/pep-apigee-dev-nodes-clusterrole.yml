@@ -1,0 +1,138 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-apigee-dev-nodes-clusterrole
+rules:
+# Core namespace-scoped resources
+- apiGroups: [""]
+  resources:
+    - pods
+    - pods/log
+    - services
+    - endpoints
+    - configmaps
+    - secrets
+    - serviceaccounts
+    - persistentvolumeclaims
+    - persistentvolumes
+    - events
+  verbs:
+    - get
+    - list
+    - watch
+
+# Core cluster-scoped resources
+- apiGroups: [""]
+  resources:
+    - nodes
+    - nodes/status
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups: ["coordination.k8s.io"]
+  resources:
+    - leases
+  verbs:
+    - get
+    - list
+    - watch
+
+# Apps
+- apiGroups: ["apps"]
+  resources:
+    - deployments
+    - replicasets
+  verbs:
+    - get
+    - list
+    - watch
+
+# RBAC namespace-scoped
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+    - roles
+    - rolebindings
+  verbs:
+    - get
+    - list
+    - watch
+
+# RBAC cluster-scoped
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+    - clusterroles
+    - clusterrolebindings
+  verbs:
+    - get
+    - list
+    - watch
+
+
+# cert-manager namespaced
+- apiGroups: ["cert-manager.io"]
+  resources:
+    - certificates
+    - certificaterequests
+    - issuers
+  verbs:
+    - get
+    - list
+    - watch
+
+# cert-manager cluster-scoped
+- apiGroups: ["cert-manager.io"]
+  resources:
+    - clusterissuers
+  verbs:
+    - get
+    - list
+    - watch
+
+
+# Admission webhooks
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources:
+    - validatingwebhookconfigurations
+    - mutatingwebhookconfigurations
+  verbs:
+    - get
+    - list
+    - watch
+
+# Scheduling
+- apiGroups: ["scheduling.k8s.io"]
+  resources:
+    - priorityclasses
+  verbs:
+    - get
+    - list
+    - watch
+
+# CRDs
+- apiGroups: ["apiextensions.k8s.io"]
+  resources:
+    - customresourcedefinitions
+  verbs:
+    - get
+    - list
+    - watch
+
+# Storage classes
+- apiGroups: ["storage.k8s.io"]
+  resources:
+    - storageclasses
+  verbs:
+    - get
+    - list
+    - watch
+
+# Volume Snapshot Classes
+- apiGroups: ["snapshot.storage.k8s.io"]
+  resources:
+    - volumesnapshotclasses
+    - volumesnapshotcontents
+  verbs:
+    - get
+    - list
+    - watch

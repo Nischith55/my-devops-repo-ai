@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_dsnotes_dev:
+  
+  name: pep-eiap-cgf-dsnotes-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-dsnotes
+    sector: cgf
+    project: dsnotes
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: datasciencenotes
+    pep-cmdb-app-service-id: "38cd7ccb9791ead04584b1aad053afee"
+    pep-cmdb-bus-app-id: "04cd7ccb9791ead04584b1aad053afc7"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-dsnotes-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_dsnotes'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-dsnotes-dev-sa-token
+    namespace: pep-eiap-cgf-dsnotes-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-dsnotes-dev-sa"

@@ -1,0 +1,22 @@
+---
+# ##
+# Common variables that will be overridden AZ Disk and File
+#
+# ##
+
+# ##
+# All Azure file Service type parameters
+# ##
+_sc_az_file_mnt_options:
+  # ubuntu 16.04+
+  - vers=3.0
+  - dir_mode=0777
+  - file_mode=0644
+  - mfsymlinks
+  # validate as may break for rwx
+  - nobrl
+  - cache=strict
+  # default 1
+  - actimeo=30
+  - uid=1000
+  - gid=1000

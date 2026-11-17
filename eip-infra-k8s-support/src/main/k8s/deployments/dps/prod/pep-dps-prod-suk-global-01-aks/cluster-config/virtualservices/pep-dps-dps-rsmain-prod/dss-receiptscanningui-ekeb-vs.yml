@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dss-receiptscanningui-ekeb-vs
+  namespace: pep-dps-dps-rsmain-prod
+  labels:
+      app: dss-receiptscanningui
+spec:
+  hosts:
+  - pep-dps-prod-dss-receiptscanningui.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - receiptscanning-eu.mypepsico.com
+  gateways:
+  - pep-dps-dps-rsmain-prod/pep-dps-dps-rsmain-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dss-receiptscanningui.pep-dps-dps-rsmain-prod.svc.cluster.local
+        port:
+          number: 8080
+  

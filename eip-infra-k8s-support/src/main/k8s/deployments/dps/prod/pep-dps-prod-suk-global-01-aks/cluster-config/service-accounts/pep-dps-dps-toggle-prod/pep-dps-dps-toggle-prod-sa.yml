@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 3b6066ef-fad0-4463-805f-05b052be853b
+  name: pep-dps-dps-toggle-prod-sa
+  namespace: pep-dps-dps-toggle-prod

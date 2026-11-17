@@ -1,0 +1,234 @@
+---
+base:
+  enabled: true
+cni:
+  enabled: false
+  excludeNamespaces:
+    - istio-system
+    - kube-system
+  logLevel: info
+  repository: rancher/mirrored-istio-install-cni
+  tag: 1.24.1
+dns:
+  enabled: false
+egressGateways:
+  enabled: false
+  hpaSpec: {}
+  podDisruptionBudget: {}
+  type: NodePort
+forceInstall: false
+global:
+  cattle:
+    psp:
+      enabled: false
+      defaultPodDisruptionBudget:
+    enabled: true
+  proxy:
+    repository: rancher/mirrored-istio-proxyv2
+    tag: 1.24.1
+  proxy_init:
+    repository: rancher/mirrored-istio-proxyv2
+    tag: 1.24.1
+ingressGateways:
+  enabled: false
+  hpaSpec: {}
+  podDisruptionBudget: {}
+  type: NodePort
+installer:
+  debug:
+    secondsSleep: 0
+  releaseMirror:
+    enabled: false
+  repository: rancher/istio-installer
+  tag: 1.24.1-rancher1
+istiodRemote:
+  enabled: false
+kiali:
+  auth:
+    strategy: openid
+    openid:
+      additional_request_params:
+        resource: 6dae42f8-4368-4678-94ff-3960e28e3630
+      api_token: access_token
+      client_id: 63353001-94fc-4c9f-a197-5c52c5888b53
+      issuer_uri: https://sts.windows.net/42cc3295-cd0e-449c-b98e-5ce5b560c1d3/
+      username_claim: preferred_username
+  deployment:
+    ingress_enabled: false
+  enabled: false
+  external_services:
+    grafana:
+      in_cluster_url: http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80
+      url: http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80
+    prometheus:
+      custom_metrics_url: http://prometheus-headless.monitoring.svc:9090
+      url: http://prometheus-headless.monitoring.svc:9090
+    tracing:
+      in_cluster_url: http://tracing.istio-system.svc:16686/jaeger
+      use_grpc: false
+nodeSelector: {}
+overlayFile: |-
+  apiVersion: install.istio.io/v1alpha1
+  kind: IstioOperator
+  metadata:
+    name: rancher-overlay
+  spec:
+    meshConfig:
+      proxyListenPort: 15001
+      connectTimeout: 10s
+      protocolDetectionTimeout: 5s
+      ingressService: pep-eiap-ingress-gw01
+      ingressSelector: pep-eiap-ingress-gw01
+      accessLogFile: /dev/stdout
+      accessLogEncoding: TEXT
+      enableAutoMtls: true
+      defaultServiceExportTo:
+        - "*"
+      defaultVirtualServiceExportTo:
+        - "*"
+      defaultDestinationRuleExportTo:
+        - "*"
+      rootNamespace: istio-system
+      h2UpgradePolicy: DO_NOT_UPGRADE
+      enablePrometheusMerge: true
+      outboundTrafficPolicy:
+        mode: ALLOW_ANY
+      defaultConfig:
+        statusPort: 15020
+        drainDuration: 45s
+        terminationDrainDuration: 5s
+        proxyAdminPort: 15000
+        controlPlaneAuthPolicy: MUTUAL_TLS
+        holdApplicationUntilProxyStarts: true
+    values:
+      cni:
+        image: rancher/mirrored-istio-install-cni:1.24.1
+        excludeNamespaces:
+          - istio-system
+          - kube-system
+        logLevel: info
+        cniBinDir: /opt/cni/bin
+        cniConfDir: /etc/cni/net.d
+    components:
+      base:
+        enabled: true
+      cni:
+        enabled: true
+        k8s:
+          tolerations:
+            - operator: Exists
+          overlays:
+            - apiVersion: apps/v1
+              kind: DaemonSet
+              name: istio-cni-node
+              patches:
+                - path: spec.template.spec.containers.[name:install-cni].securityContext.privileged
+                  value: true
+      pilot:
+        enabled: true
+        k8s:
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 6
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+            - operator: Exists
+          overlays:
+            - kind: Deployment
+              name: istiod
+              patches:
+                - path: spec.template.spec.topologySpreadConstraints
+                  value:
+                    - labelSelector:
+                        matchLabels:
+                          operator.istio.io/component: Pilot
+                      maxSkew: 1
+                      topologyKey: topology.kubernetes.io/zone
+                      whenUnsatisfiable: DoNotSchedule
+      ingressGateways:
+        - name: istio-ingressgateway
+          enabled: false
+        - name: pep-eiap-ingress-gw01
+          enabled: true
+          k8s:
+            nodeSelector:
+              kubernetes.azure.com/mode: system
+              kubernetes.io/os: linux
+            tolerations:
+              - key: CriticalAddonsOnly
+                operator: Exists
+            hpaSpec:
+              minReplicas: 3
+              maxReplicas: 6
+            serviceAnnotations:
+              service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+              service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "30"
+            overlays:
+              - kind: HorizontalPodAutoscaler
+                name: pep-eiap-ingress-gw01
+                patches:
+                  - path: metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.scaleTargetRef.name
+                    value: pep-eiap-ingress-gw01
+              - kind: Deployment
+                name: pep-eiap-ingress-gw01
+                patches:
+                  - path: metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.matchLabels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.matchLabels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.template.metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.template.metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.template.spec.topologySpreadConstraints
+                    value:
+                      - labelSelector:
+                          matchLabels:
+                            app: pep-eiap-ingress-gw01
+                        maxSkew: 1
+                        topologyKey: topology.kubernetes.io/zone
+                        whenUnsatisfiable: DoNotSchedule
+              - apiVersion: v1
+                kind: Service
+                name: pep-eiap-ingress-gw01
+                patches:
+                  - path: metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.app
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.loadBalancerIP
+                    value: 172.24.137.94
+                  - path: spec.type
+                    value: LoadBalancer
+              - kind: ServiceAccount
+                name: pep-eiap-ingress-gw01-service-account
+                patches:
+                  - path: metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+              - kind: PodDisruptionBudget
+                name: pep-eiap-ingress-gw01
+                patches:
+                  - path: metadata.labels.app
+                    value: pep-eiap-ingress-gw01
+                  - path: metadata.labels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.matchLabels.istio
+                    value: pep-eiap-ingress-gw01
+                  - path: spec.selector.matchLabels.app
+                    value: pep-eiap-ingress-gw01

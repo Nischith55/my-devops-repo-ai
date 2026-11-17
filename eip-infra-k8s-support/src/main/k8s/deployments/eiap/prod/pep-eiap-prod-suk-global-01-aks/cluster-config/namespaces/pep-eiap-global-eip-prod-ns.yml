@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-eip-prod
+    pep-cmdb-app-service-id: 5e3a6d5e1bb33090b1db6535624bcb8b
+    pep-cmdb-bus-app-id: dcaec8b9db3e8c10c2b5f38139961946
+    pep-environment: Production
+    project: eip
+    sector: global
+    team: global-eip
+  name: pep-eiap-global-eip-prod

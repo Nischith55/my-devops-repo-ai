@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-control-message-services-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-pfna-vct-dev-control-message-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: control-message-services.pep-eiap-pfna-vct-dev.svc.cluster.local  
+    corsPolicy:
+      allowOrigins:
+      - exact: https://api-na.dev.mypepsico.com/it/vct/
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Timeout
+      - x-functions-key
+      - Access-Control-Allow-Headers
+      exposeHeaders:
+      - x-total-count
+      - x-source 

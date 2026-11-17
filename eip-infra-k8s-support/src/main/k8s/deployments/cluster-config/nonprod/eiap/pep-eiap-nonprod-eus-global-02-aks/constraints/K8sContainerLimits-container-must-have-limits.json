@@ -1,0 +1,75 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sContainerLimits",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/K8sContainerLimits:default/container-must-have-limits"
+    },
+    "name": "container-must-have-limits"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "cert-manager-system",
+        "reloader",
+        "policy-system",
+        "default",
+        "keda",
+        "local",
+        "gpu-operator",
+        "pep-eiap-ops-admin",
+        "falcon-kac",
+        "falcon-system",
+        "pep-eiap-global-infra-dev",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-dev",
+        "pep-eiap-snowdiscovery-nonprod"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "cpu": "2",
+      "exemptImages": [
+        "cyberark/secrets-provider-for-k8s*",
+        "docker.io/istio/*",
+        "docker.elastic.co/observability/*",
+        "appdynamics/*",
+        "docker.io/appdynamics/*"
+      ],
+      "memory": "4Gi"
+    }
+  }
+}

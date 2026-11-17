@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: revman-manualupload-ui
+  name: revman-manualupload-ui-vs
+  namespace: pep-eiap-latam-lassot-prod
+spec:
+  gateways:
+  - pep-eiap-latam-lassot-prod/pep-eiap-latam-lassot-prod-cv-gw
+  hosts:
+  - revman-manualupload-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: revman-manualupload-ui.pep-eiap-latam-lassot-prod.svc.cluster.local
+        port:
+          number: 80

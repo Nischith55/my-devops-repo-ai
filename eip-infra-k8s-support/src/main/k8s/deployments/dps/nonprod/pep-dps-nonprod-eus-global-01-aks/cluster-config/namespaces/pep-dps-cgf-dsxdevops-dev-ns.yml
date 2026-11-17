@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 86f547f5838c3250f132cfefeeaad30d
+    pep-cmdb-bus-app-id: f0624479c3cc7e107e0cfbdf050131fd
+    pep-environment: Development
+    project: dsxdevops
+    sector: cgf
+    servicename_aks: dsx_devops_non-prod
+    team: cgf-dsxdevops
+  name: pep-dps-cgf-dsxdevops-dev

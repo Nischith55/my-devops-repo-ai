@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-aisp-cgf-ckpmcp-preprod-sa
+  namespace: pep-aisp-cgf-ckpmcp-preprod

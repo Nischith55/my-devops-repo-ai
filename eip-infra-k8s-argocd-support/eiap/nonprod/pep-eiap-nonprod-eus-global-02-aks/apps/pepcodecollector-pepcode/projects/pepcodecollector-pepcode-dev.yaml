@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepcodecollector-pepcode-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pepcodecollector-pepcode-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_AISP_Engineering_COE/_git/pepcodecollector-pepcode-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-combrain-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepcodecollector-pepcode-dev-admin
+    description: Admin privileges to pepcodecollector-pepcode-dev
+    policies:
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-admin, applications, *, pepcodecollector-pepcode-dev/*, allow
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-admin, repositories, *, pepcodecollector-pepcode-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: pepcodecollector-pepcode-dev-user
+    description: Read-only privileges to pepcodecollector-pepcode-dev
+    policies:
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-user, applications, get, pepcodecollector-pepcode-dev/*, allow
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-user, applications, sync, pepcodecollector-pepcode-dev/*, allow
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-user, repositories, get, pepcodecollector-pepcode-dev/*, allow
+    - p, proj:pepcodecollector-pepcode-dev:pepcodecollector-pepcode-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.combrain"
+    - "Team.Support.EIAP.READ"

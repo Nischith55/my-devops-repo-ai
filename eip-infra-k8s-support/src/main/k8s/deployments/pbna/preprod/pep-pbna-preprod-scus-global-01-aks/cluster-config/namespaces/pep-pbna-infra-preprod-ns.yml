@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pbna-infra-preprod
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Preprod
+    project: infra
+    sector: pbna
+    servicename_aks: pbna
+    team: pbna-infra
+  name: pep-pbna-infra-preprod

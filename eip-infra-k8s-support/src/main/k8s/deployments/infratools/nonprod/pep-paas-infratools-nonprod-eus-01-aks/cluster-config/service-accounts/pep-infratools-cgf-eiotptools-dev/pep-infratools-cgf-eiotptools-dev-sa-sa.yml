@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-cgf-eiotptools-dev-sa
+  namespace: pep-infratools-cgf-eiotptools-dev

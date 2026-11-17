@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-snt-nginx
+  name: pep-snt-nginx
+  namespace: pep-snt-global-infra-dev
+spec:
+  template:
+    spec:
+      containers:
+      - image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+        name: pep-snt-nginx
+        env: 
+        - name: FAIL_LINK
+          value: "https://google.com"
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: cert
+                path: gw01-tls.crt
+              - key: key
+                path: gw01-tls.key
+              name: pep-snt-nonprod-eus-snt-02-aks-gw01-tls
+          - secret:
+              items:
+              - key: cert
+                path: gw02-tls.crt
+              - key: key
+                path: gw02-tls.key
+              name: pep-snt-nonprod-eus-snt-02-aks-gw01-tls

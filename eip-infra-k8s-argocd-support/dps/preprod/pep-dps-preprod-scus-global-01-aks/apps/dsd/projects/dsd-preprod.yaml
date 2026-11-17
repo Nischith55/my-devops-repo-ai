@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsd-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for dsd-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsd-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-cgf-dsd-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin    
+  roles:
+  - name: dsd-preprod-admin
+    description: Admin privileges to dsd-preprod
+    policies:
+    - p, proj:dsd-preprod:dsd-preprod-admin, applications, *, dsd-preprod/*, allow
+    - p, proj:dsd-preprod:dsd-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:dsd-preprod:dsd-preprod-admin, repositories, *, dsd-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsd-preprod-user
+    description: Read-only privileges to dsd-preprod
+    policies:
+    - p, proj:dsd-preprod:dsd-preprod-user, applications, get, dsd-preprod/*, allow
+    - p, proj:dsd-preprod:dsd-preprod-user, applications, sync, dsd-preprod/*, allow
+    - p, proj:dsd-preprod:dsd-preprod-user, repositories, get, dsd-preprod/*, allow
+    - p, proj:dsd-preprod:dsd-preprod-user, applications, action/apps/Deployment/restart, dsd-preprod/*, allow
+    groups:
+    - "Team.App.DPS.DSD.prod.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

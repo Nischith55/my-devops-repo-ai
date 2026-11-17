@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-devx-daily-ui-axyd-vs
+  namespace: pep-eiap-cgf-daily-qa
+  labels:
+      app: pepsico-devx-daily-ui
+spec:
+  hosts:
+  - pep-cgf-qa-devx-daily.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - devx-daily.qa.mypepsico.com
+  gateways:
+  - pep-eiap-cgf-daily-qa/pep-eiap-cgf-daily-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-devx-daily-ui.pep-eiap-cgf-daily-qa.svc.cluster.local
+        port:
+          number: 80
+  

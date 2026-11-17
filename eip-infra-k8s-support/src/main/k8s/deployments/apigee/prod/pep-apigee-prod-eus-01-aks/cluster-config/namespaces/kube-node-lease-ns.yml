@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-4jg65
+    kubernetes.io/metadata.name: kube-node-lease
+    servicename_aks: apigee
+  name: kube-node-lease

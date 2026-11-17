@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-dc-proxy
+  name: pcaf-dc-proxy-vs
+  namespace: pep-pfna-pcaf-preprod
+spec:
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  hosts:
+  - pcaf-dc-proxy.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-dc-proxy.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-pfna-nginx
+  namespace: pep-pfna-global-infra
+spec:
+  template:
+    spec:
+      containers:
+      - image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+        name: pep-pfna-nginx
+        env: 
+        - name: FAIL_LINK
+          value: "https://google.com"
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: gw01-tls.crt
+              - key: tls.key
+                path: gw01-tls.key
+              name: pep-pfna-cit-prod-eus-hhnxt-01-aks-gw01-tls

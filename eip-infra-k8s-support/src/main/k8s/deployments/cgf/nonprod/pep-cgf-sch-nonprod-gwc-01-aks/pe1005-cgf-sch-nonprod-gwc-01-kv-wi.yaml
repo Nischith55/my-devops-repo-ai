@@ -1,0 +1,36 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: pe1005-cgf-sch-nonprod-gwc-01-kv-wi
+  namespace: istio-system
+spec:
+  parameters:
+    clientID: b7955b31-5c7e-4114-b81a-370521f2357d
+    cloudName: ""
+    keyvaultName: pe1001-eiap-infra-01-kv
+    objects: |
+      array:
+        - |
+          objectName: -cgfsch-gw01-aks01-gwc-nonprod-azure-intra-pepsico-com
+          objectType: secret
+        - |
+          objectName: argocd-cgf-gwc-nonprod-intra-pepsico-com
+          objectType: secret
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    usePodIdentity: "false"
+  provider: azure
+  secretObjects:
+  - data:
+    - key: tls.key
+      objectName: -cgfsch-gw01-aks01-gwc-nonprod-azure-intra-pepsico-com
+    - key: tls.crt
+      objectName: -cgfsch-gw01-aks01-gwc-nonprod-azure-intra-pepsico-com
+    secretName: pep-cgf-sch-nonprod-gwc-01-aks-gw01-tls
+    type: kubernetes.io/tls
+  - data:
+    - key: tls.key
+      objectName: argocd-cgf-gwc-nonprod-intra-pepsico-com
+    - key: tls.crt
+      objectName: argocd-cgf-gwc-nonprod-intra-pepsico-com
+    secretName: argocd-secret
+    type: kubernetes.io/tls

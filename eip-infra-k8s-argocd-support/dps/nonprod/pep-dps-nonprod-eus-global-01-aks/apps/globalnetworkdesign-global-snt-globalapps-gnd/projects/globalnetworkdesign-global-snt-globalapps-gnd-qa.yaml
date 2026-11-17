@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: globalnetworkdesign-global-snt-globalapps-gnd-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for globalnetworkdesign-global-snt-globalapps-gnd-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_GlobalApps_GND/_git/globalnetworkdesign-global-snt-globalapps-gnd-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-gnd-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: globalnetworkdesign-global-snt-globalapps-gnd-qa-admin
+    description: Admin privileges to globalnetworkdesign-global-snt-globalapps-gnd-qa
+    policies:
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-admin, applications, *, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-admin, repositories, *, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: globalnetworkdesign-global-snt-globalapps-gnd-qa-user
+    description: Read-only privileges to globalnetworkdesign-global-snt-globalapps-gnd-qa
+    policies:
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-user, applications, get, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-user, applications, sync, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-user, repositories, get, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:globalnetworkdesign-global-snt-globalapps-gnd-qa:globalnetworkdesign-global-snt-globalapps-gnd-qa-user, applications, action/apps/Deployment/restart, globalnetworkdesign-global-snt-globalapps-gnd-qa/*, allow
+
+    groups:
+    - "Team.Support.DPS.NonProd.GNDDATA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"receipt-scanning-service-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"receipt-scanning-service","namespace":"pep-dps-cgf-rsmaster-prod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["receipt-scanning-service.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"receipt-scanning-service.pep-dps-cgf-rsmaster-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: receipt-scanning-service
+    app.kubernetes.io/instance: receipt-scanning-service-prod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: receipt-scanning-service
+  namespace: pep-dps-cgf-rsmaster-prod
+spec:
+  gateways:
+  - pep-dps-cgf-rsmaster-prod/pep-dps-cgf-rsmaster-prod-cv-gw
+  hosts:
+  - receipt-scanning-service.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-service.pep-dps-cgf-rsmaster-prod.svc.cluster.local
+        port:
+          number: 8080

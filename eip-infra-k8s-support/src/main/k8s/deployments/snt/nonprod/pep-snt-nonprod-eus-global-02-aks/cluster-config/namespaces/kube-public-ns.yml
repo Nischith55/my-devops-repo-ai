@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-pstth
+    kubernetes.io/metadata.name: kube-public
+    servicename_aks: dps-sharedaks
+  name: kube-public

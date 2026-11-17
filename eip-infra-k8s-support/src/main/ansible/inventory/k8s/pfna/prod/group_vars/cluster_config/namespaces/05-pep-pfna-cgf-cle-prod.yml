@@ -1,0 +1,29 @@
+---
+ns_pep_pfna_cgf_cle_prod:
+  
+  name: pep-pfna-cgf-cle-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cle
+    sector: cgf
+    project: cle
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-pfna-cgf-cle-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cle'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

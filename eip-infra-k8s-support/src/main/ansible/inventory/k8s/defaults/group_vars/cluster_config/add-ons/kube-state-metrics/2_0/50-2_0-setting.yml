@@ -1,0 +1,138 @@
+---
+# ##
+# kube-state-metrics : v2.0.x stream
+# ##
+
+# component name : also should match exactly the directory name in
+# add-ons/<app_name/<this name>
+ksm_2_0_name: v2.0.x
+
+# NOTE: we need to be at v2.0.0-alpha-1 see docs, once k8s 1.17 and 1.18 are
+# versions are available we can move!
+_ksm_2_0_tag: "{{ ksm_2_0_image_tag | default('v2.0.0-alpha.1') }}"
+
+# ##
+# component meta information
+# ##
+ksm_2_0_meta:
+
+  # component_name
+  name: "{{ ksm_2_0_name }}"
+
+  # namespace where this component will be targeted
+  namespace: "{{ kube_state_metrics_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+
+_ksm_2_0_component_kustomize_resource_base_dir: |-
+  {{ (ksm_source_app_root_dir, 'kustomize', ksm_2_0_meta['name'], 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_ksm_2_0_component_dest_root_dir: |-
+  {{ (ksm_deploy_app_root_dir, ksm_2_0_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_ksm_2_0_component_overlays_dest_dir: |-
+  {{ (_ksm_2_0_component_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_ksm_2_0_component_manifests_dest_dir: |-
+  {{ (_ksm_2_0_component_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_ksm_2_0_manifest_path: |-
+  {{ 
+    (_ksm_2_0_component_manifests_dest_dir,  
+      kube_state_metrics_app_name + '-' + ksm_2_0_name + '.yml') | path_join 
+  }}
+
+# re-usable patch target
+__ksm_2_0_target:
+  group: apps
+  version: v1
+  kind: Deployment
+  # IMPORTANT: name is app_name not component name
+  name: "{{ kube_state_metrics_app_name }}"
+  # IMPORTANT: should be src namespace in base resource
+  namespace: "{{ kube_state_metrics_src_namespace }}"
+
+# build params
+_ksm_2_0_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _ksm_2_0_component_overlays_dest_dir }}"
+    output_path: "{{ _ksm_2_0_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_ksm_2_0_component_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # overide the label to match the image tag, kube-state-metrics does this
+    commonLabels:
+      app.kubernetes.io/version: "{{ _ksm_2_0_tag }}"
+
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _ksm_2_0_component_kustomize_resource_base_dir 
+            | relpath(_ksm_2_0_component_manifests_dest_dir) 
+        }}
+
+    images:
+      - name: &img001 quay.io/coreos/kube-state-metrics
+        newName: *img001
+        newTag: "{{ _ksm_2_0_tag }}"
+
+  patches:
+
+    - name: patch-node-selection-deployment
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_ksm_2_0_component_overlays_dest_dir, 'patch-merge-deployment.yml')
+          | path_join
+        }}
+      target: "{{ __ksm_2_0_target }}"
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+
+    - name: patch-json-cluster-role
+      target:
+        group: rbac.authorization.k8s.io
+        version: v1
+        kind: ClusterRole
+        # IMPORTANT: name is app_name not component name
+        name: "{{ kube_state_metrics_app_name }}"
+        
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ 
+          (_ksm_2_0_component_overlays_dest_dir, 'patch-json-cluster-role.yml')
+          |
+          path_join
+        }}
+
+      # any json patches
+      json6902: |-
+        {{ ksm_common_cluster_role_json_patch }}
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+ksm_2_0_component_setting: |-
+  {{
+    ksm_2_0_meta
+    |
+    combine(_ksm_2_0_build_params, recursive=True)
+  }}
+

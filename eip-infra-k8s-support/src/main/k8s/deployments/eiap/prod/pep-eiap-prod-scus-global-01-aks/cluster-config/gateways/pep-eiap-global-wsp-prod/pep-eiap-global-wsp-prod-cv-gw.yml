@@ -1,0 +1,246 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-global-wsp-prod-cv-gw
+  namespace: pep-eiap-global-wsp-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-global-wsp-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - mypep.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-cmsauthor.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-cmsreview.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestdistributionbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestdstrservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestprocessingapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubservicescheduler.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-enterprisenotificationadmin.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-enterprisenotificationapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ownerdashboard.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-people.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peopledetail.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peopleorgservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplephotomservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplequeryservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplereport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peopleupdate.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecmsreviewbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecohortreportbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecontentfeedback.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecontentfeedbackbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicedigestreport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicefeaturetoggle.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicegoogleanalytics.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-serviceuserinfo.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-serviceuserpreferences.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-sharepointutility.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-stockticker.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-subscriptionreport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-userpersona.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldaphome-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapusermgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapgroupmgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapfoldermgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherpermission-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherhome-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherfilemgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherupload-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherdownload-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - mypep.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - newshub.mypepsico.com
+    - compass.mypepsico.com
+    - ldapgrouptool.mypepsico.com
+    - pep-eiap-global-wsp-cmsauthor.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-cmsreview.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestdistributionbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestdstrservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubdigestprocessingapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-contenthubservicescheduler.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-enterprisenotificationadmin.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-enterprisenotificationapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ownerdashboard.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-people.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - people.mypepsico.com
+    - pep-eiap-global-wsp-peopledetail.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peopleorgservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplephotomservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplequeryservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peoplereport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-peopleupdate.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecmsreviewbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecohortreportbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecontentfeedback.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicecontentfeedbackbatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicedigestreport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicefeaturetoggle.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-servicegoogleanalytics.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-serviceuserinfo.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-serviceuserpreferences.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-sharepointutility.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-stockticker.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-subscriptionreport.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-userpersona.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldaphome-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapusermgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapgroupmgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-ldapfoldermgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherpermission-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherhome-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherfilemgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherupload-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-eiap-global-wsp-publisherdownload-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - publisher.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-global-wsp-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - newshub.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-1-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-aks-gw01-global-wsp-entrust-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - compass.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-2-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-aks-gw01-global-compass-entrust-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - people.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-3-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-people-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ldapgrouptool.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-4-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-ldapgrouptool-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - publisher.mypepsico.com
+    name: pep-eiap-global-wsp-prod-cv-gw-5-https-443
+    port:
+      name: https-pep-eiap-global-wsp-prod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-publisher-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

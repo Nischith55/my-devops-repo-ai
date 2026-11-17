@@ -1,0 +1,49 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+- argocd_ha_install_2.11.4.yaml
+
+patches:
+
+- path: patch_argocd_redis.yaml
+  target:
+    kind: Deployment
+    name: argocd-redis-ha-haproxy
+    
+- path: patch_nodepool_tolerations.yaml
+  target:
+    kind: Deployment
+
+- path: patch_nodepool_tolerations.yaml
+  target:
+    kind: StatefulSet
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-dex-server-network-policy
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-redis-ha-server-network-policy
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-redis-ha-proxy-network-policy
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: argocd-notifications-secret
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: argocd-secret

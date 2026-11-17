@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-pbna-quikpick-vdiapi-biic-vs
+  namespace: pep-eiap-pbna-quikpick-prod
+  labels:
+      app: pep-eiap-pbna-quikpick-vdiapi
+spec:
+  hosts:
+  - pep-eiap-pbna-quikpick-vdiapi.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-quikpick-prod/pep-eiap-pbna-quikpick-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-pbna-quikpick-vdiapi.pep-eiap-pbna-quikpick-prod.svc.cluster.local
+        port:
+          number: 80
+  

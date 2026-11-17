@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: a1385eb4-782a-4de0-953e-b2db4eaa35c8
+  name: pep-cmp-cmp-ajan2-dev-sa
+  namespace: pep-cmp-cmp-ajan2-dev

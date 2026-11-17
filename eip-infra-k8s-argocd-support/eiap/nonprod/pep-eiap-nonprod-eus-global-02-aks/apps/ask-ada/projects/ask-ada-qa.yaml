@@ -1,0 +1,44 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ask-ada-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ask-ada-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ask-ada-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-askadaa-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ask-ada-qa-admin
+        description: Admin privileges to ask-ada-qa
+        policies:
+        - p, proj:ask-ada-qa:ask-ada-qa-admin, applications, *, ask-ada-qa/*, allow
+        - p, proj:ask-ada-qa:ask-ada-qa-admin, repositories, *, ask-ada-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "hpedapro@pepsico.com"
+
+      - name: ask-ada-qa-user
+        description: Read-only privileges to ask-ada-qa
+        policies:
+        - p, proj:ask-ada-qa:ask-ada-qa-user, applications, get, ask-ada-qa/*, allow
+        - p, proj:ask-ada-qa:ask-ada-qa-user, applications, sync, ask-ada-qa/*, allow
+        - p, proj:ask-ada-qa:ask-ada-qa-user, repositories, get, ask-ada-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:ask-ada-qa:ask-ada-qa-user, applications, action/apps/Deployment/restart, ask-ada-qa/*, allow
+        groups:
+        - "Team.App.CGF.NonProd.AskADAA"
+        - "Team.Support.EIAP.READ"
+        - "hpedapro@pepsico.com"
+        - "Team.Support.CGF.NonProd.AskADAA"
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: cto-eventapp
+  name: cto-eventapp-vs
+  namespace: pep-eiap-global-eventapp-prod
+spec:
+  gateways:
+  - pep-eiap-global-eventapp-prod/pep-eiap-global-eventapp-prod-cv-gw
+  hosts:
+  - cto-eventapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cto-eventapp.pep-eiap-global-eventapp-prod.svc.cluster.local
+        port:
+          number: 8081

@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pcaf-people-genp
+  name: pcaf-people-genp-qa-vs
+  namespace: pep-pfna-pcaf-qa
+spec:
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  hosts:
+  - pcaf-people-genp-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowOrigins:
+      - exact: https://d1.uap.pepenv.com/
+      - exact: https://t1.uap.pepenv.com/
+      - exact: https://d1.pfnaweb.mypepsico.com/
+      - exact: https://q1.pfnaweb.mypepsico.com/
+      - exact: http://localhost:3000/
+      - exact: https://api-na.qa.mypepsico.com/flna/pgt/pcaf/v1/people
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-people-genp.pep-pfna-pcaf-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    field.cattle.io/projectId: p-62w6s
+    kubernetes.io/metadata.name: default
+    servicename_aks: infratools
+  name: default

@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-batch-data-service
+  name: pep-eip-batch-data-service-vs
+  namespace: pep-eiap-global-eip-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eip-preprod/pep-eiap-global-eip-preprod-cv-gw
+  hosts:
+  - pep-eip-batch-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-batch-data-service.pep-eiap-global-eip-preprod.svc.cluster.local

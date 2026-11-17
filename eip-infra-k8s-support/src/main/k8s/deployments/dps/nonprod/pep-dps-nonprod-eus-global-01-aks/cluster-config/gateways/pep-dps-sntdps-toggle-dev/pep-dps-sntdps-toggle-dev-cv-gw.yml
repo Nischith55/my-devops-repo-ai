@@ -1,0 +1,124 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-sntdps-toggle-dev-cv-gw
+  namespace: pep-dps-sntdps-toggle-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-sntdps-toggle-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-sntdps-toggle-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-sntdps-toggle-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-sntdps-toggle-dev-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-backend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep1-feature-toggle-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-rev-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-sntdps-toggle-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-sntdps-toggle-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-sntdps-toggle-dev-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-backend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep1-feature-toggle-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-feature-toggle-rev-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - toggle-eus.dev.mypepsico.com
+    - featuretoggle.dev.mypepsico.com
+    name: pep-dps-sntdps-toggle-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-sntdps-toggle-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - toggle-eus.dev.mypepsico.com
+    name: pep-dps-sntdps-toggle-dev-cv-gw-3-https-443
+    port:
+      name: pep-dps-sntdps-toggle-dev-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: toggle-eus.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - featuretoggle.dev.mypepsico.com
+    name: pep-dps-sntdps-featuretoggle-dev-cv-gw-9-https-443
+    port:
+      name: pep-dps-sntdps-featuretoggle-dev-cv-gw-9-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: featuretoggle-eus.dev-gw05-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

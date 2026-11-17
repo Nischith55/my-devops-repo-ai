@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-snt-nginx
+  name: pep-snt-nginx
+  namespace: pep-snt-global-infra-dev
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pep-snt-nginx
+  template:
+    metadata:
+      labels:
+        app: pep-snt-nginx
+    spec:
+      containers:
+      - command:
+        - sudo
+        - nginx
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+        env:
+        - name: FAIL_LINK
+          value: "https://google.com"
+        imagePullPolicy: Always
+        name: pep-snt-nginx
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+          - $patch: delete
+            mountPath: /secrets
+            name: all-gw-secrets
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsUser: 1000
+      volumes:
+      - $patch: delete
+        name: all-gw-secrets

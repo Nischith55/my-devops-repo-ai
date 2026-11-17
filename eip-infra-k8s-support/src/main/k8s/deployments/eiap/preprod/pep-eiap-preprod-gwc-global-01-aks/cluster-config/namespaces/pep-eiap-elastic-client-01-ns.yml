@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Urvashi
+    app.kubernetes.io/managed-by: manual
+    eck-managed: 'false'
+    istio-injection: enabled
+  name: pep-eiap-elastic-client-01

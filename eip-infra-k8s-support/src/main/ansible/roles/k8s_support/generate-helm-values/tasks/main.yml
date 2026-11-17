@@ -1,0 +1,517 @@
+- name: get deployment 
+  debug: var=outer_item
+
+# - name: block for deployment exists 
+#   block: 
+###### get image and tag ############################
+- name: set default vars 
+  include_tasks: set_default_vars.yml
+
+###### get service account name #####################
+- name: get service account vars 
+  set_fact: 
+    sa_name: "{{ outer_item.spec.template.spec.serviceAccountName }}"
+  when: outer_item.spec.template.spec.serviceAccountName is defined 
+
+###### get liveness and readiness probe details ####################
+- name: probes status 
+  set_fact: 
+    probe_status: true
+  when: 
+  - outer_item.spec.template.spec.containers[0].readinessProbe is defined or 
+    outer_item.spec.template.spec.containers[0].livenessProbe is defined
+
+- name: liveness probe values 
+  set_fact:
+    live_status: true
+    live_initialDelaySeconds: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.initialDelaySeconds }}"
+    live_periodSeconds: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.periodSeconds }}"
+    live_timeoutSeconds: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.timeoutSeconds }}"
+  when: probe_status and (outer_item.spec.template.spec.containers[0].livenessProbe is defined)
+
+- name: liveness probe httpget 
+  set_fact: 
+    live_httpGet: true
+    live_path: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.httpGet.path }}"
+    live_port: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.httpGet.port }}"
+  when: 
+  - live_status
+  - outer_item.spec.template.spec.containers[0].livenessProbe.httpGet is defined
+
+- name: liveness probe command 
+  set_fact: 
+    live_exec: true
+    live_command: "{{ outer_item.spec.template.spec.containers[0].livenessProbe.exec.command }}"
+  when: 
+  - live_status
+  - outer_item.spec.template.spec.containers[0].livenessProbe.exec is defined
+
+- name: readiness probe values 
+  set_fact:
+    readiness_status: true
+    readiness_initialDelaySeconds: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.initialDelaySeconds | default(None) }}"
+    readiness_periodSeconds: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.periodSeconds }}"
+    readiness_timeoutSeconds: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.timeoutSeconds }}"
+  when: probe_status and (outer_item.spec.template.spec.containers[0].readinessProbe is defined)
+
+- name: readiness probe httpget 
+  set_fact: 
+    readiness_httpGet: true
+    readiness_path: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.httpGet.path }}"
+    readiness_port: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.httpGet.port }}"
+  when: 
+  - readiness_status
+  - outer_item.spec.template.spec.containers[0].readinessProbe.httpGet is defined
+
+- name: readiness probe command 
+  set_fact: 
+    readiness_exec: true
+    readiness_command: "{{ outer_item.spec.template.spec.containers[0].readinessProbe.exec.command }}"
+  when: 
+  - readiness_status
+  - outer_item.spec.template.spec.containers[0].readinessProbe.exec is defined
+
+#########  get resource limits ########################################
+- name: resources status 
+  set_fact: 
+    resources_status: true
+    resources_data: "{{ outer_item.spec.template.spec.containers[0].resources }}"
+  when: 
+  - outer_item.spec.template.spec.containers[0].resources is defined
+  - outer_item.spec.template.spec.containers[0].resources.keys() | length > 0
+
+######## get env secret refs ######################################
+- name: envFrom values 
+  block: 
+  - name: set envFrom secretRef 
+    set_fact: 
+      secretRefList: "{{ secretRefList + [item.secretRef.name] }}"
+    with_items: "{{ outer_item.spec.template.spec.containers[0].envFrom }}"
+    when: item.secretRef is defined
+  
+  - name: set envFrom configmapRef
+    set_fact: 
+      configmapRefList: "{{ configmapRefList | default([]) + [item.configMapRef.name] }}"
+    with_items: "{{ outer_item.spec.template.spec.containers[0].envFrom }}"
+    when: item.configMapRef is defined
+
+  when: outer_item.spec.template.spec.containers[0].envFrom is defined
+
+
+- name: get env values 
+  block: 
+  - name: set env key values 
+    set_fact: 
+      env_list: "{{ env_list | default([]) + [{ 'name': item.name, 'value': item.value }] }}"
+    with_items: "{{ outer_item.spec.template.spec.containers[0].env }}"
+    when: item.value is defined
+  
+  - name: set env key refs 
+    set_fact: 
+      env_key_list: "{{ env_key_list | default([]) + [{'main_name': item.name, 'name': item.valueFrom.secretKeyRef.name, 'key': item.valueFrom.secretKeyRef.key }] }}"
+    with_items: "{{ outer_item.spec.template.spec.containers[0].env }}"
+    when: item.valueFrom.secretKeyRef is defined
+  
+  when: outer_item.spec.template.spec.containers[0].env is defined
+
+######## Secret Provide class and PVC details ###############################
+- name: SPC details 
+  block: 
+    - name: set SPC 
+      set_fact: 
+        spc_enable: true 
+        spc_name: "{{ item.csi.volumeAttributes.secretProviderClass }}"
+        spc_localname: "{{ item.name }}"
+      with_items: "{{ outer_item.spec.template.spec.volumes }}"
+      when: item.csi.volumeAttributes.secretProviderClass is defined
+
+    - name: get SPC Mount path 
+      set_fact:
+        spc_mountPath: "{{ item.mountPath }}"
+      with_items: "{{ outer_item.spec.template.spec.containers[0].volumeMounts }}"
+      when: 
+      - spc_localname != None
+      - item.name == spc_localname
+
+    - name: get SPC to get further details.
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: SecretProviderClass
+        name: "{{ spc_name }}"
+        namespace: "{{ namespace }}"
+      register: spc_data
+      when: spc_enable
+
+    - name: get object details 
+      set_fact:
+        spc_clientid: "{{ spc_data.resources[0].spec.parameters.clientID }}"
+        spc_keyvault: "{{ spc_data.resources[0].spec.parameters.keyvaultName }}"
+        spc_tenantid: "{{ spc_data.resources[0].spec.parameters.tenantId }}"
+        spc_object: "{{ spc_data.resources[0].spec.secretObjects }}"
+        spc_obj_array: "{{ spc_data.resources[0].spec.parameters.objects }}"
+      when: spc_data.resources is defined and (spc_data.resources | length > 0)
+
+    - name: set PVC 
+      set_fact: 
+        pvc_enable: true 
+        pvc_claimName: "{{ item.persistentVolumeClaim.claimName }}"
+        pvc_localName: "{{ item.name }}"
+      when: item.persistentVolumeClaim is defined
+      with_items: "{{ outer_item.spec.template.spec.volumes }}"
+    
+    - name: get PVC to get further details.
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: "{{ pvc_claimName }}"
+        namespace: "{{ namespace }}"
+      register: pvc_data
+      when: pvc_enable is defined and pvc_enable
+
+    - name: set PVC vars 
+      set_fact: 
+        pvc_accessModes: "{{ pvc_data.resources[0].spec.accessModes }}"
+        pvc_storageRequest: "{{ pvc_data.resources[0].spec.resources.requests.storage }}"
+        pvc_status: "{{ pvc_data.resources[0].status.phase }}"
+        pvc_volumeName: "{{ pvc_data.resources[0].spec.volumeName }}"
+      when: pvc_data.resources is defined and (pvc_data.resources | length > 0)
+    
+    - name: set PVC storage class 
+      set_fact: 
+        pvc_storageClass: "{{ pvc_data.resources[0].spec.storageClassName }}"
+      when: 
+      - pvc_data.resources is defined and (pvc_data.resources | length > 0)
+      - pvc_data.resources[0].spec.storageClassName is defined
+
+    - name: get pvc mount path 
+      set_fact: 
+        pvc_mountpath: "{{ item.mountPath }}"
+      with_items: "{{ outer_item.spec.template.spec.containers[0].volumeMounts }}"
+      when: 
+      - pvc_data.resources is defined and (pvc_data.resources | length > 0)
+      - item.name == pvc_localName
+
+    - name: get PV volume 
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolume
+        name: "{{ pvc_volumeName }}"
+        namespace: "{{ namespace }}"
+      register: pv_data
+      when: pvc_volumeName != None
+    
+    - name: get pv vars 
+      set_fact:
+        pv_shareName: "{{ pv_data.resources[0].spec.csi.volumeAttributes.shareName | default(None) }}"
+        pv_accessSecret: "{{ pv_data.resources[0].spec.csi.nodeStageSecretRef.name | default(None) }}"
+        pv_storageClass: "{{ pv_data.resources[0].spec.storageClassName | default(None) }}"
+        pv_resourceGroup: "{{ pv_data.resources[0].spec.csi.volumeAttributes.resourceGroup | default(None) }}"
+        pv_storageAccount: "{{ pv_data.resources[0].spec.csi.volumeAttributes.storageAccount | default(None) }}"
+      when: pv_data.resources is defined and (pv_data.resources | length > 0)
+
+    - name: get storage class status  
+      kubernetes.core.k8s_info:
+        api_version: storage.k8s.io/v1
+        kind: StorageClass
+        name: "{{ pv_storageClass }}"
+      register: sc_data
+      when: 
+      - pv_data.resources is defined and (pv_data.resources | length > 0)
+      - pv_storageClass != None
+    
+    - name: set SC vars 
+      set_fact: 
+        sc_mountOptions: "{{ sc_data.resources[0].mountOptions }}"
+        sc_name: "{{ sc_data.resources[0].metadata.name }}"
+        sc_resourceGroup: "{{ sc_data.resources[0].parameters.resourceGroup }}"
+        sc_sku: "{{ sc_data.resources[0].parameters.skuName }}"
+        sc_storageAccount: "{{ sc_data.resources[0].parameters.storageAccount }}"
+        sc_reclaimPolicy: "{{ sc_data.resources[0].reclaimPolicy }}"
+        sc_volumeBindingMode: "{{ sc_data.resources[0].volumeBindingMode }}"
+        sc_allowVolumeExpansion: "{{ sc_data.resources[0].allowVolumeExpansion }}"
+      when: sc_data.resources is defined and (sc_data.resources | length > 0)
+
+  when: outer_item.spec.template.spec.volumes is defined
+
+###### hpa data ###############################################
+
+- name: look for hpa 
+  command: kubectl get hpa -n {{ namespace }} -o jsonpath='{.items[?(@.spec.scaleTargetRef.name=="{{ deployment_name }}")].metadata.name}'
+  register: hpa_status
+
+- debug: var=hpa_status
+
+- name: get hpa 
+  kubernetes.core.k8s_info:
+    api_version: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    name: "{{ hpa_status.stdout }}"
+    namespace: "{{ namespace }}"
+  register: hpa_data
+  when: not hpa_status.failed
+
+- name: set hpa values
+  block:
+  - name: set hpa values 
+    set_fact:
+      hpaConfigMaxReplicas: "{{ hpa_data.resources[0].spec.maxReplicas }}"
+      hpaConfigMinReplicas: "{{ hpa_data.resources[0].spec.minReplicas }}"
+      autoscalingEnabled: true
+  
+  - name: set hpa cpu
+    set_fact: 
+      hpa_cpu_enable: true 
+      targetCPUUtilizationPercentage: "{{ item.resource.target.averageUtilization }}"
+    with_items: "{{ hpa_data.resources[0].spec.metrics }}"
+    when: item.resource.name == 'cpu'
+  
+  - name: set hpa memory
+    set_fact: 
+      hpa_memory_enable: true 
+      targetMemoryUtilizationPercentage: "{{ item.resource.target.averageUtilization }}"
+    with_items: "{{ hpa_data.resources[0].spec.metrics }}"
+    when: item.resource.name == 'memory'
+
+  when: hpa_data.resources is defined and (hpa_data.resources | length > 0)
+
+###### pdb data ##########################################################
+- name: look for pdb 
+  command: kubectl get pdb -n {{ namespace }} -o jsonpath='{.items[?(@.spec.selector.matchLabels.app=="{{ deployment_name }}")].metadata.name}'
+  register: pdb_status
+
+- debug: var=pdb_status
+
+- name: get pdb 
+  kubernetes.core.k8s_info:
+    api_version: policy/v1
+    kind: PodDisruptionBudget
+    name: "{{ pdb_status.stdout }}"
+    namespace: "{{ namespace }}"
+  register: pdb_data
+  when: not pdb_status.failed
+
+- name: set pdb values 
+  set_fact:
+    pdbEnabled: true 
+    pdbSelector: "{{ pdb_data.resources[0].spec.selector.matchLabels.app }}"
+  when: pdb_data.resources is defined and (pdb_data.resources | length > 0)
+
+- name: set pdb max 
+  set_fact: 
+    pdbMaxUnavailable: "{{ pdb_data.resources[0].spec.maxUnavailable }}"
+  when: 
+  - pdb_data.resources is defined and (pdb_data.resources | length > 0)
+  - pdb_data.resources[0].spec.maxUnavailable is defined 
+
+- name: set pdb min 
+  set_fact: 
+    pdbMinAvailable: "{{ pdb_data.resources[0].spec.minAvailable }}"
+  when: 
+  - pdb_data.resources is defined and (pdb_data.resources | length > 0)
+  - pdb_data.resources[0].spec.minAvailable is defined
+
+####### Virtual service data ########################################################
+
+- name: look for virtual service 
+  command: kubectl get virtualservice -n {{ namespace }} -o jsonpath='{.items[?(@.spec.http[].route[0].destination.host=="{{ deployment_name }}.{{ namespace }}.svc.cluster.local")].metadata.name}'
+  register: vs_status
+  ignore_errors: true
+
+- name: get virtual service name 
+  set_fact: 
+    vs_name: "{{ vs_status.stdout.split(' ')[0] }}"
+  when: not vs_status.failed and vs_status.stdout != ''
+
+- name: get virtual service 
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService
+    name: "{{ vs_name }}"
+    namespace: "{{ namespace }}"
+  register: vs_data
+  when: vs_name != None
+
+- name: set VS vars http 
+  set_fact: 
+    vs_enable: true 
+    vs_hosts: "{{ vs_data.resources[0].spec.hosts }}"
+    vs_routes: "{{ vs_data.resources[0].spec.http }}"
+  when: 
+  - vs_data.resources is defined and (vs_data.resources | length > 0)
+  - vs_data.resources[0].spec.http is defined 
+
+- name: set VS vars tls
+  set_fact: 
+    vs_enable: true 
+    vs_tls_status: true 
+    vs_hosts: "{{ vs_data.resources[0].spec.hosts }}"
+    vs_routes: "{{ vs_data.resources[0].spec.tls }}"
+  when: 
+  - vs_data.resources is defined and (vs_data.resources | length > 0)
+  - vs_data.resources[0].spec.tls is defined 
+
+- name: set vs routes http
+  set_fact: 
+    vs_routes_list: "{{ vs_routes_list | default([]) + [{'prefix': item.1.uri.prefix, 'port': item.0.route[0].destination.port.number, 'destination': item.0.route[0].destination.host.split('.')[0], 'rewrite': item.0.rewrite | default(''), 'corsPolicy': item.0.corsPolicy | default('') }]}}"
+  with_subelements: 
+  - "{{ vs_routes }}"
+  - match
+  when: 
+  - vs_routes | length > 0
+  - not vs_tls_status 
+
+- name: set vs routes tls
+  set_fact: 
+    vs_routes_list: "{{ vs_routes_list | default([]) + [{'prefix': '/', 'port': item.route[0].destination.port.number, 'destination': item.0.route[0].destination.host.split('.')[0], 'rewrite': '', 'corsPolicy': '' }]}}"
+  with_items: "{{ vs_routes }}"
+  when: 
+  - vs_routes | length > 0
+  - vs_tls_status 
+
+######### container ports ################################################
+
+- name: get container ports data 
+  set_fact: 
+    ports_list: "{{ ports_list | default([]) + [{'name': item.name | default(None), 'port': item.containerPort }] }}"
+  with_items: "{{ outer_item.spec.template.spec.containers[0].ports }}"
+  when: outer_item.spec.template.spec.containers[0].ports is defined
+
+######### strategies #####################################################
+
+- name: set strategy vars 
+  block: 
+  - set_fact: 
+      strategy_status: true 
+  - name: set rolling update vars 
+    set_fact: 
+      rolling_maxSurge: "{{ outer_item.spec.strategy.rollingUpdate.maxSurge }}"
+      rolling_maxUnavailable: "{{ outer_item.spec.strategy.rollingUpdate.maxUnavailable }}"
+    when: outer_item.spec.strategy.type == 'RollingUpdate'
+
+  - name: set recreate vars 
+    set_fact: 
+      rolling_recreate: true
+    when: outer_item.spec.strategy.type == 'Recreate'
+
+  when: outer_item.spec.strategy is defined  
+
+####### destination rules data ###########################################
+
+- name: look for destination rule if any 
+  command: kubectl get destinationrules -n {{ namespace }} -o jsonpath='{.items[?(@.spec.host=="{{ deployment_name }}.{{ namespace }}.svc.cluster.local")].metadata.name}'
+  register: dr_status
+
+- name: get destination rule if present 
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule
+    name: "{{ dr_status.stdout }}"
+    namespace: "{{ namespace }}"
+  register: dr_data
+  when: (not dr_status.failed) and (dr_status.stdout != '')  
+
+- name: set destination rule vars 
+  set_fact: 
+    dr_enable: true
+    dr_name: "{{ dr_data.resources[0].metadata.name }}"
+    dr_namespace: "{{ dr_data.resources[0].metadata.namespace }}"
+    dr_trafficpolicy_tls: "{{ dr_data.resources[0].spec.trafficPolicy.tls | default(None) }}"
+    dr_trafficpolicy_outlier: "{{ dr_data.resources[0].spec.trafficPolicy.outlierDetection | default(None) }}"
+  when: dr_data.resources is defined and (dr_data.resources | length > 0)
+
+- name: set destination rule sessionAffinity
+  set_fact: 
+    dr_sessionAffinity: true
+  when: 
+  - dr_data.resources is defined and (dr_data.resources | length > 0)
+  - dr_data.resources[0].spec.trafficPolicy.loadBalancer.consistentHash.httpCookie.name is defined 
+  - dr_data.resources[0].spec.trafficPolicy.loadBalancer.consistentHash.httpCookie.name == "IstioSessionAffinity"
+
+######### configmaps values retrieval ######################################
+- name: look for configmap input 
+  set_fact:
+    configmapref_fullList: "{{ configmapref_fullList | default([]) + [configmap_input] }}"
+  when: configmap_input is defined and configmap_input != ' '
+
+- name: look for volumes for configmap 
+  set_fact: 
+    configmapref_fullList: "{{ configmapref_fullList | default([]) + [item.configMap.name] }}"
+  with_items: "{{ outer_item.spec.template.spec.volumes }}"
+  when: item.configMap is defined
+
+- name: add existing configmapRefList if any 
+  set_fact: 
+    configmapref_fullList: "{{ configmapref_fullList | default([]) + configmapRefList }}"
+  when: configmapRefList is defined and (configmapRefList | length > 0)
+
+- name: get configmap 
+  include_tasks: env_configmap.yml
+  with_items: "{{ configmapref_fullList }}"
+
+######## appd or apm initcontainers related data #########################
+
+- name: set initContainers status 
+  set_fact:
+    initContainersStatus: true
+    initContainerImage: "{{ outer_item.spec.template.spec.initContainers}}"
+  when: outer_item.spec.template.spec.initContainers is defined 
+
+- name: get initContainers data 
+  block: 
+    - name: set appd data 
+      set_fact:
+        appd_status: true 
+        appd_image: "{{ item.image | default('docker.io/appdynamics/java-agent:21.11.4')}}"
+      with_items: "{{ outer_item.spec.template.spec.initContainers }}"
+      when: "'appdynamics/java-agent' in item.image"
+    
+    - name: set appd resources 
+      set_fact: 
+        appd_resources: true 
+        appd_resources_data: "{{ item.resources }}"
+      with_items: "{{ outer_item.spec.template.spec.initContainers }}"
+      when: 
+      - "'appdynamics/java-agent' in item.image"
+      - item.resources is defined 
+
+    - name: set apm data 
+      set_fact:
+        apm_status: true
+        apm_resources: "{{ item.resources | default({}) }}" 
+      with_items: "{{ outer_item.spec.template.spec.initContainers }}"
+      when: "'apm-agent-java' in item.image"
+    
+    - name: set apm resources 
+      set_fact: 
+        apm_resources: true 
+      with_items: "{{ outer_item.spec.template.spec.initContainers }}"
+      when: 
+      - "'apm-agent-java' in item.image"
+      - item.resources is defined 
+
+    - name: set initContainers 
+      set_fact: 
+        initContainersList: "{{ initContainersList | default([]) + [item]}}"
+      with_items: "{{ outer_item.spec.template.spec.initContainers }}"
+      when: 
+      - "'apm-agent-java' not in item.image"
+      - "'appdynamics/java-agent' not in item.image"
+        
+  when: initContainersStatus
+
+##########################################################################
+- name: set variable
+  set_fact:
+    replica_count: "{{ outer_item.spec.replicas }}"
+    selector: "{{ outer_item.spec.selector.matchLabels.app | default('') }}"
+    image_name: "{{ image.split(':')[0] }}"
+    image_tag: "{{ image.split(':')[1] | default('latest') }}"
+    # port_num: "{{ outer_item.spec.template.spec.containers[0].ports[0].containerPort }}"
+    # port_name: "{{ outer_item.spec.template.spec.containers[0].ports[0].name }}"
+    
+- name: generate helm values 
+  template:
+    src: templates/helm-values-template.j2
+    dest: '{{ script_dir }}/helm-values-{{ outer_item.metadata.name }}.yml'
+  ignore_errors: true
+  # when: deployment.resources is defined and (deployment.resources | length > 0)

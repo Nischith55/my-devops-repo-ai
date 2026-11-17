@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-b2badmin-preprod-cv-web-vs
+  namespace: pep-dps-dps-b2badmin-preprod
+  labels:
+    app: pep-dps-dps-b2badmin-preprod-cv-web
+spec:
+  hosts:
+    - b2b-admin.preprod.mypepsico.com
+    - pep-dps-dps-b2badmin-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-b2badmin-preprod/pep-dps-dps-b2badmin-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-b2badmin-preprod-cv-web.pep-dps-dps-b2badmin-preprod.svc.cluster.local
+        port:
+          number: 80

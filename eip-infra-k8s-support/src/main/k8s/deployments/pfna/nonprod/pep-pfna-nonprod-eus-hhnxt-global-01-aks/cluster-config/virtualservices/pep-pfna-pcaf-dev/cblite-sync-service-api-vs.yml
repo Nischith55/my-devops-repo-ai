@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: cblite-sync-service-api-vs
+  namespace: pep-pfna-pcaf-dev
+spec:
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  hosts:
+  - cblite-sync-service-api.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: cblite-sync-service-api.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 80

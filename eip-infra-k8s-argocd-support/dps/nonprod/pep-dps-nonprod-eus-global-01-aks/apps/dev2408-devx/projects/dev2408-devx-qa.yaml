@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev2408-devx-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dev2408-devx-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dev2408-devx-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-devx-test-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dev2408-devx-qa-admin
+    description: Admin privileges to dev2408-devx-qa
+    policies:
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-admin, applications, *, dev2408-devx-qa/*, allow
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-admin, repositories, *, dev2408-devx-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dev2408-devx-qa-user
+    description: Read-only privileges to dev2408-devx-qa
+    policies:
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-user, applications, get, dev2408-devx-qa/*, allow
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-user, applications, sync, dev2408-devx-qa/*, allow
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-user, repositories, get, dev2408-devx-qa/*, allow
+    - p, proj:dev2408-devx-qa:dev2408-devx-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.READ"

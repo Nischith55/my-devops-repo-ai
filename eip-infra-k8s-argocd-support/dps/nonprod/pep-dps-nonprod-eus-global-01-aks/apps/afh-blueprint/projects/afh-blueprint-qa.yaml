@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: afh-blueprint-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for afh-blueprint-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/afh-blueprint-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-afhblue-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: afh-blueprint-qa-admin
+    description: Admin privileges to afh-blueprint-qa
+    policies:
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-admin, applications, *, afh-blueprint-qa/*, allow
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-admin, repositories, *, afh-blueprint-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: afh-blueprint-qa-user
+    description: Read-only privileges to afh-blueprint-qa
+    policies:
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-user, applications, get, afh-blueprint-qa/*, allow
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-user, applications, sync, afh-blueprint-qa/*, allow
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-user, repositories, get, afh-blueprint-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:afh-blueprint-qa:afh-blueprint-qa-user, applications, action/apps/Deployment/restart, afh-blueprint-qa/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.AFHMenuPro"
+    - "Team.Support.EIAP.READ"

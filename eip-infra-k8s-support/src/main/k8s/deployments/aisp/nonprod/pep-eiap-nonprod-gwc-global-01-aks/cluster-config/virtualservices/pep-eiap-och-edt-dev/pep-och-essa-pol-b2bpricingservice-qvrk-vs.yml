@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-essa-pol-b2bpricingservice-qvrk-vs
+  namespace: pep-eiap-och-edt-dev
+  labels:
+      app: pep-och-essa-pol-b2bpricingservice
+spec:
+  hosts:
+  - pep-och-essa-pol-b2bpricingservice-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-dev/pep-eiap-och-edt-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-essa-pol-b2bpricingservice.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 8080
+  

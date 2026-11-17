@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receiver
+  name: receiver-otlp-vs
+  namespace: pep-infratools-cgf-arize-dev
+spec:
+  gateways:
+  - pep-infratools-cgf-arize-dev/pep-infratools-cgf-arize-dev-cv-gw
+  hosts:
+  - receiver-otlp.arize.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receiver.pep-infratools-cgf-arize-dev.svc.cluster.local
+        port:
+          number: 4317

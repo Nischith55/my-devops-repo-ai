@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-dtcloyalty-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-dtcloyalty-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PEPCommerce_Loyalty/_git/pep-dtcloyalty-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-peployalty-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-dtcloyalty-prod-admin
+    description: Admin privileges to pep-dtcloyalty-prod
+    policies:
+    - p, proj:pep-dtcloyalty-prod:pep-dtcloyalty-prod-admin, applications, *, pep-dtcloyalty-prod/*, allow
+    - p, proj:pep-dtcloyalty-prod:pep-dtcloyalty-prod-admin, repositories, *, pep-dtcloyalty-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-dtcloyalty-prod-user
+    description: Read-only privileges to pep-dtcloyalty-prod
+    policies:
+    - p, proj:pep-dtcloyalty-prod:pep-dtcloyalty-prod-user, applications, get, pep-dtcloyalty-prod/*, allow
+    - p, proj:pep-dtcloyalty-prod:pep-dtcloyalty-prod-user, applications, sync, pep-dtcloyalty-prod/*, allow
+    - p, proj:pep-dtcloyalty-prod:pep-dtcloyalty-prod-user, repositories, get, pep-dtcloyalty-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CEP.Developer"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

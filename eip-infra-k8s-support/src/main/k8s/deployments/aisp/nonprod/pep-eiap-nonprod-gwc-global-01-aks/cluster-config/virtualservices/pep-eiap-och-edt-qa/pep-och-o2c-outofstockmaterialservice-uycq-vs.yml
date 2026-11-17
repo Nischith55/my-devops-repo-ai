@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-o2c-outofstockmaterialservice-uycq-vs
+  namespace: pep-eiap-och-edt-qa
+  labels:
+      app: pep-och-o2c-outofstockmaterialservice
+spec:
+  hosts:
+  - pep-och-o2c-outofstockmaterialservice-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-qa/pep-eiap-och-edt-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-o2c-outofstockmaterialservice.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80
+  

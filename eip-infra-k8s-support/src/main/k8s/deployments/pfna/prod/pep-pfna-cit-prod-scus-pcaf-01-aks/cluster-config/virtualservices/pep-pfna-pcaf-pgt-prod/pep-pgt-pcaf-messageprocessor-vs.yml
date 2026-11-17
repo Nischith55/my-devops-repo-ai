@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pgt-pcaf-messageprocessor
+  name: pep-pgt-pcaf-messageprocessor-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pep-pgt-pcaf-messageprocessor.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pgt-pcaf-messageprocessor.pep-pfna-pcaf-pgt-prod.svc.cluster.local
+        port:
+          number: 80

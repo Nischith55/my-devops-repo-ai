@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-dsdntfn-asn-v3-jwfq-vs
+  namespace: pep-pfna-flna-salesplus-prod
+  labels:
+      app: pcaf-dsdntfn-asn-v3
+spec:
+  hosts:
+  - pcaf-dsdntfn-asn-v3.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-salesplus-prod/pep-pfna-flna-salesplus-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-dsdntfn-asn-v3.pep-pfna-flna-salesplus-prod.svc.cluster.local
+        port:
+          number: 8080
+  

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tct-southafrica-tct-southafrica-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for tct-southafrica-tct-southafrica-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/tct-southafrica-tct-southafrica-argocd-configs
+  - pepcgfschnonprodgwcacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cgf-sch-nonprod-gwc-01-aks
+    namespace: pep-cgf-cgf-tctsa-dev
+  - name: pep-cgf-sch-nonprod-gwc-01-aks
+    namespace: pep-cgf-ops-admin
+  roles:
+  - name: tct-southafrica-tct-southafrica-dev-admin
+    description: Admin privileges to tct-southafrica-tct-southafrica-dev
+    policies:
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-admin, applications, *, tct-southafrica-tct-southafrica-dev/*, allow
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-admin, repositories, *, tct-southafrica-tct-southafrica-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: tct-southafrica-tct-southafrica-dev-user
+    description: Read-only privileges to tct-southafrica-tct-southafrica-dev
+    policies:
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-user, applications, get, tct-southafrica-tct-southafrica-dev/*, allow
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-user, applications, sync, tct-southafrica-tct-southafrica-dev/*, allow
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-user, repositories, get, tct-southafrica-tct-southafrica-dev/*, allow
+    - p, proj:tct-southafrica-tct-southafrica-dev:tct-southafrica-tct-southafrica-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.DPS.NonProd.AMESATCT"
+    - "Team.Support.EIAP.READ"

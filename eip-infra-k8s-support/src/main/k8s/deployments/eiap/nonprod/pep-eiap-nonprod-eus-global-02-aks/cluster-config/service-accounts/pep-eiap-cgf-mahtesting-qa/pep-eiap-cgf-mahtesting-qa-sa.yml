@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 033131dd-de89-45ae-b835-cbfd73d6e30f
+  name: pep-eiap-cgf-mahtesting-qa-sa
+  namespace: pep-eiap-cgf-mahtesting-qa

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-pcaf-ui-webapps-trm-vs
+  namespace: pep-pfna-hhnext-dev
+spec:
+  gateways:
+  - pep-pfna-hhnext-dev/pep-pfna-hhnext-dev-cv-gw
+  hosts:
+  - pep-pcaf-ui-webapps-trm.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-ui-webapps-trm.pep-pfna-hhnext-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-dcs-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for rd-dcs-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-dcs-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-dcs-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: rd-dcs-preprod-admin
+    description: Admin privileges to rd-dcs-preprod
+    policies:
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-admin, applications, *, rd-dcs-preprod/*, allow
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-admin, repositories, *, rd-dcs-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-dcs-preprod-user
+    description: Read-only privileges to rd-dcs-preprod
+    policies:
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-user, applications, get, rd-dcs-preprod/*, allow
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-user, applications, sync, rd-dcs-preprod/*, allow
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-user, repositories, get, rd-dcs-preprod/*, allow
+    - p, proj:rd-dcs-preprod:rd-dcs-preprod-user, applications, action/apps/Deployment/restart, rd-dcs-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.DCS"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

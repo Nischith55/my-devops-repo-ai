@@ -1,0 +1,416 @@
+---
+# ##
+# - Setup heartbeat configuration (note: This is a Deployment) so only
+#   cluster wide metrics are applicable
+# ##
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # NOTE: change this for instance of elastic running
+  name: cluster-03-prod-scus-k8s-heartbeat-config
+  namespace: pep-eiap-elastic-client-03
+
+data:
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # heartbeat environment variables change here
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  K8S_CLUSTER_NAME: pep-eiap-prod-scus-infra-02-aks
+  # Important we are using inCluster URL (change to gw url if remote)
+  # please make sure the scheme is correct
+  ELASTICSEARCH_OUTPUT_URL: https://pep-eiap-ingest-03.pep-eiap-elastic-cluster-03.svc.cluster.local:9200
+  # sending data to our monitoring cluster
+  # please make sure the scheme is correct
+  MONITORING_CLUSTER_URL: https://monitor-01-prod-scus-es-http.pep-eiap-elastic-monitor-01.svc.cluster.local:9200
+  # Change the template name appropriately if required
+  TEMPLATE_NAME: heartbeat-aks-cluster
+  INDEX_PATTERN_PREFIX: hb-aks
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # heartbeat processor stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  heartbeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+
+    processors:
+
+    # ~~
+    # Add EIAP fields
+    # ~~
+    - add_fields:
+        target: eiap
+        fields:
+          cluster_name: ${K8S_CLUSTER_NAME}
+
+    - add_fields:
+        target: ""
+        fields:
+          index_name_add: ${K8S_CLUSTER_NAME}
+
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        # this will dump metrics sent
+        enabled: true
+        period: 1m
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # heartbeat standard k8s stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  heartbeat.yml: |
+
+    # --------------------
+    # All outputs
+    # --------------------
+    output:
+      elasticsearch:
+        index: ${INDEX_PATTERN_PREFIX}-%{[index_name_add]}-%{[agent.version]}-%{+yyyy.MM.dd}
+        hosts:
+          - ${ELASTICSEARCH_OUTPUT_URL}
+        username: ${ELASTICSEARCH_USERNAME}
+        password: ${ELASTICSEARCH_PASSWORD}
+        # should equal to number of ingest nodes
+        workers: 3
+        ssl: &pep_ca_ssl
+          enabled: true
+          # The following 2 must be mounted at paths shown below from
+          # pep-ca-certs-config ConfigMap
+          certificate_authorities:
+            - /projected/etc/certs/PepsiCoCA01.pem
+            - /projected/etc/certs/PepsiCoRootCA.pem
+          supported_protocols:
+            - TLSv1.2
+            - TLSv1.3
+          verification_mode: certificate
+
+    # --------------------
+    # Setup all index patterns
+    # --------------------
+    setup:
+      ilm:
+        enabled: false
+      template:
+        enabled: true
+        name: ${TEMPLATE_NAME}-%{[agent.version]}
+        overwrite: false
+        pattern: ${INDEX_PATTERN_PREFIX}-*
+        settings:
+          index:
+            codec: best_compression
+            number_of_replicas: ${INDEX_REPLICAS:1}
+            number_of_shards: ${INDEX_SHARDS:1}
+
+    # --------------------
+    # send our own metrics itself to our monitoring cluster
+    # --------------------
+    monitoring:
+      enabled: true
+      elasticsearch:
+        metrics:
+          period: 1m
+        hosts:
+          - ${MONITORING_CLUSTER_URL}
+        # IMPORTANT we are re-using the usernae and password
+        username: ${MONITORING_CLUSTER_USERNAME}
+        password: ${MONITORING_CLUSTER_PASSWORD}
+        ssl: *pep_ca_ssl
+
+    # --------------------
+    # disable seccomp
+    # --------------------
+    seccomp:
+      enabled: false
+
+
+    # ---------------------------------------------------------------------
+    # Setup heartbeat configuration (Common K8S stuff)
+    # ---------------------------------------------------------------------
+    heartbeat:
+
+      # ~~
+      # modules
+      # ~~
+      modules:
+
+      # Since this is a cluster wide scoped heartbeat disable the system
+      # module which is enabled by default
+      - module: system
+        enabled: false
+
+      # ~~
+      # Autodiscover kubernetes cluster wide heartbeats
+      # ~~
+      autodiscover:
+
+        providers:
+        # Autodiscover nodes (is ssh right?)
+        - type: kubernetes
+          scope: cluster
+          # first get the node resource
+          resource: node
+          node: ${NODE_NAME}
+          period: 5m
+          hints:
+            enabled: true
+          templates:
+            - condition: ~
+              config:
+                - hosts:
+                  - ${data.host}:22
+                  name: ${data.kubernetes.node.name}
+                  schedule: '@every 1m'
+                  timeout: 5s
+                  type: tcp
+
+        # Autodiscover services
+        # Important: hints enabled which means annotations must be present
+        - type: kubernetes
+          resource: service
+          scope: cluster
+          node: ${NODE_NAME}
+          period: 1m
+          hints:
+            enabled: true
+
+        # Autodiscover pods
+        # Important: hints enabled which means annotations must be present
+        - type: kubernetes
+          resource: pod
+          scope: cluster
+          node: ${NODE_NAME}
+          period: 1m
+          hints:
+            enabled: true
+
+        # Autodiscover pods that have the istio-proxy sidecar
+        - type: kubernetes
+          resource: pod
+          scope: cluster
+          node: ${NODE_NAME}
+          period: 1m
+          templates:
+          - condition:
+              equals:
+                kubernetes.container.name: istio-proxy
+            config:
+            - type: http
+              name: istio-healthcheck
+              urls:
+              - http://${data.kubernetes.pod.ip}:15021/healthz/ready
+              schedule: "@every 30s"
+              timeout: 1s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # name format: <output-eck-cluster>-k8s
+  name: &app_name cluster-03-prod-scus-k8s-heartbeat
+  namespace: pep-eiap-elastic-client-03
+  labels:
+    app.kubernetes.io/name: *app_name
+    app.kubernetes.io/version: &vers 7.14.0
+    app: *app_name
+    # match the  ES server version (beats is not backward compatible)
+    version: *vers
+spec:
+
+  # For cluster wide heartbeat we use recreate, so we don't run into locks
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app_name
+      app.kubernetes.io/version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app_name
+        app.kubernetes.io/version: *vers
+
+    spec:
+      # PEP:
+      # - Deployment run only on system node pool taints
+      # - also lock down the node selector
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+
+      serviceAccountName: heartbeat
+      # some older Beat versions are depending on this settings presence
+      # in k8s context
+      automountServiceAccountToken: true
+      securityContext:
+        runAsUser: 0
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # All volumes
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      volumes:
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+          - configMap:
+              name: &beats_config cluster-03-prod-scus-k8s-heartbeat-config
+              optional: false
+              items:
+                - key: heartbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: heartbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      containers:
+      # PEP: args removed sysfs it's a deployment
+      - name: heartbeat
+        image: docker.elastic.co/beats/heartbeat:7.14.0
+        args:
+        - -environment
+        - container
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+        # - -d
+        # - "processors"
+        # - "monitoring"
+        # - index-management,processors
+
+        resources:
+          # limits:
+          #   cpu: 100m
+          #   memory: 200Mi
+          requests:
+            # cpu: 200m
+            memory: 512Mi
+        env:
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: K8S_CLUSTER_NAME
+
+        - name: TEMPLATE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: TEMPLATE_NAME
+
+        - name: INDEX_PATTERN_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: INDEX_PATTERN_PREFIX
+
+        - name: ELASTICSEARCH_OUTPUT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: ELASTICSEARCH_OUTPUT_URL
+
+        # All secrets from elastic-client-shared
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: &shared_sec elastic-client-shared
+              key: BEATS_INGEST_USER_01
+
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: BEATS_INGEST_PASSWORD_01
+
+        # Monitoring cluster url for ingesting stack monitoring data
+        - name: MONITORING_CLUSTER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: MONITORING_CLUSTER_URL
+
+        - name: MONITORING_CLUSTER_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              # re-use
+              key: BEATS_MONITOR_INGEST_USER_01
+
+        - name: MONITORING_CLUSTER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              # re-use
+              key: BEATS_MONITOR_INGEST_PASSWORD_01
+
+        # NOTE: this is only if we use it (stack_collector)
+        - name: MONITOR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: MONITOR_COMMON_USER_01
+
+        - name: MONITOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: MONITOR_COMMON_PASSWORD_01
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_NAMESPACE
+          value: monitoring
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_PORT
+          value: "8080"
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
+        # ~~
+        # volumemounts
+        # ~~
+        volumeMounts:
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

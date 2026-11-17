@@ -1,0 +1,340 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: metricbeat
+  name: metricbeat
+  namespace: elasticsearch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    k8s-app: metricbeat
+  name: metricbeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  - secrets
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: metricbeat
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: elasticsearch
+---
+apiVersion: v1
+data:
+  metricbeat.yml: |
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    metricbeat.autodiscover:
+      providers:
+      - node: ${NODE_NAME}
+        scope: cluster
+        templates:
+        - config:
+          - add_metadata: true
+            hosts:
+            - kube-state-metrics.monitoring:8080
+            metricsets:
+            - state_node
+            - state_deployment
+            - state_daemonset
+            - state_replicaset
+            - state_pod
+            - state_container
+            - state_cronjob
+            - state_resourcequota
+            - state_statefulset
+            - state_service
+            - state_persistentvolume
+            - state_persistentvolumeclaim
+            - state_storageclass
+            module: kubernetes
+            period: 10s
+          - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            hosts:
+            - https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}
+            metricsets:
+            - apiserver
+            module: kubernetes
+            period: 30s
+            ssl.certificate_authorities:
+            - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - metricsets:
+            - event
+            module: kubernetes
+        type: kubernetes
+        unique: true
+    metricbeat.config.modules:
+      path: ${path.config}/modules.d/*.yml
+      reload.enabled: false
+    output.elasticsearch:
+      hosts:
+      - ${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}
+      index: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-%{+yyyy.MM.dd}
+      password: ${ELASTICSEARCH_PASSWORD}
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+      username: ${ELASTICSEARCH_USERNAME}
+    processors:
+    - add_cloud_metadata: null
+    setup.ilm:
+      enabled: false
+    setup.template:
+      enabled: true
+      name: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}
+      overwrite: false
+      pattern: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-*
+      settings:
+        index:
+          number_of_replicas: 1
+          number_of_routing_shards: 64
+          number_of_shards: 2
+      setup.dashboards:
+        enabled: false
+        index: aks-metricbeat-${K8S_CLUSTER_NAME}-*
+kind: ConfigMap
+metadata:
+  labels:
+    k8s-app: metricbeat
+  name: metricbeat-daemonset-config
+  namespace: elasticsearch
+---
+apiVersion: v1
+data:
+  kubernetes.yml: |
+    - add_metadata: true
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      enabled: true
+      host: ${NODE_NAME}
+      hosts:
+      - https://${NODE_NAME}:10250
+      metricsets:
+      - node
+      - system
+      - pod
+      - container
+      - volume
+      module: kubernetes
+      period: 10s
+      ssl.verification_mode: none
+    - enabled: true
+      host: ${NODE_NAME}
+      hosts:
+      - localhost:10249
+      metricsets:
+      - proxy
+      module: kubernetes
+      period: 10s
+  system.yml: |
+    - core.metrics:
+      - percentages
+      cpu.metrics:
+      - percentages
+      - normalized_percentages
+      metricsets:
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - uptime
+      - core
+      module: system
+      period: 10s
+      process.include_top_n:
+        by_cpu: 5
+        by_memory: 5
+      processes:
+      - .*
+    - metricsets:
+      - filesystem
+      - fsstat
+      module: system
+      period: 1m
+      processors:
+      - drop_event.when.regexp:
+          system.filesystem.mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib|snap)($|/)
+kind: ConfigMap
+metadata:
+  labels:
+    k8s-app: metricbeat
+  name: metricbeat-daemonset-modules
+  namespace: elasticsearch
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: metricbeat
+  name: metricbeat
+  namespace: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metricbeat
+  template:
+    metadata:
+      labels:
+        k8s-app: metricbeat
+    spec:
+      containers:
+      - args:
+        - -c
+        - /etc/metricbeat.yml
+        - -e
+        - -system.hostfs=/hostfs
+        env:
+        - name: ELASTICSEARCH_HOST
+          valueFrom:
+            secretKeyRef:
+              key: host
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_PORT
+          valueFrom:
+            secretKeyRef:
+              key: port
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: elasticsearch-secret
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: elasticsearch-secret
+        - name: ELASTIC_CLOUD_ID
+        - name: ELASTIC_CLOUD_AUTH
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: KIBANA_HOST
+          valueFrom:
+            secretKeyRef:
+              key: kibana_host
+              name: elasticsearch-secret
+        - name: KIBANA_HOST
+          valueFrom:
+            secretKeyRef:
+              key: kibana_port
+              name: elasticsearch-secret
+        - name: PEP_CA_CERT_CHAIN
+          valueFrom:
+            secretKeyRef:
+              key: pep_ca_chain
+              name: elasticsearch-secret
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            secretKeyRef:
+              key: k8s_cluster_name
+              name: elasticsearch-secret
+        image: docker.elastic.co/beats/metricbeat:7.10.0
+        name: metricbeat
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /etc/metricbeat.yml
+          name: config
+          readOnly: true
+          subPath: metricbeat.yml
+        - mountPath: /usr/share/metricbeat/data
+          name: data
+        - mountPath: /usr/share/metricbeat/modules.d
+          name: modules
+          readOnly: true
+        - mountPath: /hostfs/proc
+          name: proc
+          readOnly: true
+        - mountPath: /hostfs/sys/fs/cgroup
+          name: cgroup
+          readOnly: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      serviceAccountName: metricbeat
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - operator: Exists
+      volumes:
+      - hostPath:
+          path: /proc
+        name: proc
+      - hostPath:
+          path: /sys/fs/cgroup
+        name: cgroup
+      - configMap:
+          defaultMode: 416
+          name: metricbeat-daemonset-config
+        name: config
+      - configMap:
+          defaultMode: 416
+          name: metricbeat-daemonset-modules
+        name: modules
+      - hostPath:
+          path: /var/lib/metricbeat-data
+          type: DirectoryOrCreate
+        name: data

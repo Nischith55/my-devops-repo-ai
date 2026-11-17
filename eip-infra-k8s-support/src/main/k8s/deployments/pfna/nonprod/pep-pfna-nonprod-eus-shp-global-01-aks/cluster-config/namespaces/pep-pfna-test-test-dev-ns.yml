@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: b57263dd4751d61c2d960d05f16d43dd
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Development
+    project: test
+    sector: test
+    servicename_aks: b2bpepsiconnectportalcartsamericasnon-prod
+    team: test-test
+  name: pep-pfna-test-test-dev

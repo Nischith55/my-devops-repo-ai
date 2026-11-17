@@ -1,0 +1,50 @@
+---
+
+### create a folder to store generated virtual service manifest files
+- set_fact:
+    full_ns_list_temp: []
+
+- name: Get list of namespaces
+  kubernetes.core.k8s_info:
+    kind: namespace 
+  register: namespaces
+  no_log: True
+
+- name: store all namespaces names 
+  set_fact:
+    full_ns_list_temp: "{{ full_ns_list_temp + [item.metadata.name] }}"
+  with_items: "{{ namespaces.resources }}"
+  no_log: True
+
+- debug: var=full_ns_list_temp
+
+- name: Creates directory to store manifest
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/vs-manifests/"
+    state: directory
+  
+- name: Get list of all virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+  register: virtualservices
+  no_log: True
+
+- name: loop through each virtual service 
+  include_tasks: vsmanifestcreation.yml
+  with_items: "{{ virtualservices.resources }}"
+  vars:
+    full_ns_list: "{{ full_ns_list_temp }}"
+  when: item.metadata.name != "bookinfo"
+
+- name: printing skipped VS 
+  debug:
+    msg: "Skipping vs {{ item.metadata.name }}."
+  with_items: "{{ virtualservices.resources }}"
+  when: item.metadata.name == "bookinfo"
+  
+
+
+  
+
+

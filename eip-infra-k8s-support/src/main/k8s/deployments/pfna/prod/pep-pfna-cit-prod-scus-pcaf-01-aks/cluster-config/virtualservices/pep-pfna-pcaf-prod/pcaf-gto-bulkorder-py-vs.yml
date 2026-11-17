@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pcaf-gto-bulkorder-py-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-gto-bulkorder-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pfna/gto/gobulk/v1
+    route:
+    - destination:
+        host: pcaf-gto-bulkorder-py.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:   
+      allowOrigins:
+      - exact: https://shp.pfna.mypepsico.com
+      - exact: https://d1.uap.pepenv.com
+      - exact: https://t1.uap.pepenv.com
+      - exact: hhttp://localhost:3001
+      - exact: http://127.0.0.1:8000
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - x-operation-name
+      - x-operation-type
+      exposeHeaders:
+      - x-total-count

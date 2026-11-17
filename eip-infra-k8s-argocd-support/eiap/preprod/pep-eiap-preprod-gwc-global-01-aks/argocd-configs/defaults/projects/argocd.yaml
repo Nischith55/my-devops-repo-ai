@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for dps   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CMP_CMP_Test_Oct_08/_git/react-srikala-nonprod4-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - https://dev.azure.com/PepsiCoIT2/EUROPE_iSales_Replatforming/_git/isale-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Projects/_git/pep-global-snt-argocd-config
+  - https://dev.azure.com/PepsiCoIT/Hand_Held_Next/_git/pep-pfna-shp-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/access-bridge-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/LATAM_DPRF_SRE/_git/dprf-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-eiap-preprod-gwc-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-devserv-ado-devsecops-rb
+  namespace: pep-devserv-ado-aks-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-devsecops-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-devserv-ado-aks-dev
+    name: pep-devserv-ado-buildagent

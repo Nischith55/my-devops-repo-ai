@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-pepconnect-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for b2b-pepconnect-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btbcarts-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-bfflylty-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btboms-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btbproduct-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btbpromo-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-pgcsbff-dev
+    server: https://kubernetes.default.svc  
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-pgcsdomain-dev
+    server: https://kubernetes.default.svc     
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-pgcsui-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btblylty-dev
+    server: https://kubernetes.default.svc 
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-bffckout-dev
+    server: https://kubernetes.default.svc 
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-btbprofile-dev
+    server: https://kubernetes.default.svc     
+
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-latam-btblylty-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-latam-btboms-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-latam-btbproduct-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-bffmerch-dev
+    server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: 'PersistentVolume'
+  roles:
+  - name: b2b-pepconnect-dev-admin
+    description: Admin privileges to b2b-pepconnect-dev
+    policies:
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-admin, applications, *, b2b-pepconnect-dev/*, allow
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-admin, applications, get, argocd/*, allow
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-admin, repositories, *, b2b-pepconnect-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Role.App.B2BArgo.PepsiConnect.Admin"
+
+  - name: b2b-pepconnect-dev-user
+    description: Read-only privileges to b2b-pepconnect-dev
+    policies:
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-user, applications, get, b2b-pepconnect-dev/*, allow
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-user, applications, sync, b2b-pepconnect-dev/*, allow
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-user, repositories, get, b2b-pepconnect-dev/*, allow
+    - p, proj:b2b-pepconnect-dev:b2b-pepconnect-dev-user, applications, action/apps/Deployment/restart, b2b-pepconnect-dev/*, allow
+    groups:
+    - "Team.Support.LATAM.NonProd.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

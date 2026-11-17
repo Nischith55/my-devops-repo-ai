@@ -1,0 +1,73 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: falcon-dev-pep-eiap-nonprod-eus-global-02-aks
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for falcon-dev-pep-eiap-nonprod-eus-global-02-aks  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: falcon-system
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: falcon-kac
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: ''
+      clusterResourceWhitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+      namespaceResourceWhitelist:
+      - group: rbac.authorization.k8s.io
+        kind: Role
+      - group: rbac.authorization.k8s.io
+        kind: RoleBinding
+      - group: ""
+        kind: ResourceQuota
+      - group: ""
+        kind: ConfigMap
+      - group: ""
+        kind: Secret
+      - group: ""
+        kind: Service
+      - group: ""
+        kind: ServiceAccount
+      - group: apps
+        kind: Deployment
+      - group: apps
+        kind: DaemonSet
+      - group: apps
+        kind: ReplicaSet
+      - group: ""
+        kind: Pod
+      roles:
+      - name: falcon-dev-pep-eiap-nonprod-eus-global-02-aks-admin
+        description: Admin privileges to falcon-dev-pep-eiap-nonprod-eus-global-02-aks
+        policies:
+        - p, proj:falcon-dev-pep-eiap-nonprod-eus-global-02-aks:falcon-dev-pep-eiap-nonprod-eus-global-02-aks-admin, applications, *, falcon-dev-pep-eiap-nonprod-eus-global-02-aks/*, allow
+        - p, proj:falcon-dev-pep-eiap-nonprod-eus-global-02-aks:falcon-dev-pep-eiap-nonprod-eus-global-02-aks-admin, repositories, *, falcon-dev-pep-eiap-nonprod-eus-global-02-aks/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: falcon-dev-pep-eiap-nonprod-eus-global-02-aks-user
+        description: Read-only privileges to falcon-dev-pep-eiap-nonprod-eus-global-02-aks
+        policies:
+        - p, proj:falcon-dev-pep-eiap-nonprod-eus-global-02-aks:falcon-dev-pep-eiap-nonprod-eus-global-02-aks-user, applications, get, falcon-dev-pep-eiap-nonprod-eus-global-02-aks/*, allow
+        - p, proj:falcon-dev-pep-eiap-nonprod-eus-global-02-aks:falcon-dev-pep-eiap-nonprod-eus-global-02-aks-user, applications, sync, falcon-dev-pep-eiap-nonprod-eus-global-02-aks/*, allow
+        - p, proj:falcon-dev-pep-eiap-nonprod-eus-global-02-aks:falcon-dev-pep-eiap-nonprod-eus-global-02-aks-user, repositories, get, falcon-dev-pep-eiap-nonprod-eus-global-02-aks/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:falcon-dev:falcon-dev-user, applications, action/apps/Deployment/restart, falcon-dev/*, allow
+        groups:
+        - "Team.App.AZURE.FalconADO.GSE.corppvt"
+        - "Team.Support.EIAP.READ"
+    

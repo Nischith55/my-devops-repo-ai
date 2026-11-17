@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 3a1a43ce-85f3-4f60-8139-392b2cd7d942
+  name: pep-pfna-pfna-schwmi2-preprod-sa
+  namespace: pep-pfna-pfna-schwmi2-preprod

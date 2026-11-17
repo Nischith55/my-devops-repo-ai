@@ -1,0 +1,22 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+ns_pep_eiap_test_demo_dev:
+
+  name: pep-eiap-test-demo-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: eiap-developers
+    sector: Global
+    project: eiap
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+

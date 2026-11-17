@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-orders-admin-ui-na-preprod:networking.istio.io/VirtualService:pep-dps-latam-btboms-preprod/b2b-orders-admin-ui-na
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-orders-admin-ui-na-preprod:networking.istio.io/VirtualService:pep-dps-latam-btboms-preprod/b2b-orders-admin-ui-na"},"labels":{"app":"b2b-orders-admin-ui-na","app.kubernetes.io/instance":"b2b-orders-admin-ui-na","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-orders-admin-ui-na","namespace":"pep-dps-latam-btboms-preprod"},"spec":{"gateways":["pep-dps-latam-btboms-preprod/pep-dps-latam-btboms-preprod-cv-gw"],"hosts":["b2b-oms-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com","orders-b2b.preprod.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-orders-admin-ui-na.pep-dps-latam-btboms-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-orders-admin-ui-na
+        app.kubernetes.io/instance: b2b-orders-admin-ui-na
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-orders-admin-ui-na
+    namespace: pep-dps-latam-btboms-preprod
+spec:
+    gateways:
+    - pep-dps-latam-btboms-preprod/pep-dps-latam-btboms-preprod-cv-gw
+    hosts:
+    - b2b-oms-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - orders-b2b.preprod.pepsico.com
+    - orders-b2b-na.preprod.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-orders-admin-ui-na.pep-dps-latam-btboms-preprod.svc.cluster.local
+                port:
+                    number: 8080

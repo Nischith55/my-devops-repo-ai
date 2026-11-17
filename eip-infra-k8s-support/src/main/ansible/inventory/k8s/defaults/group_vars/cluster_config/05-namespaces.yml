@@ -1,0 +1,70 @@
+---
+# #
+# ### DEPERECATED FORMAT : Please put a backlog to remove everything below ###
+# #
+# #############################################################################
+# IMPORTANT:
+# - 03/2021: deprecating all below in favor of using python based
+#    configuration.
+# #############################################################################
+# ##
+# Consolidation of all namespaces (variable names)
+#
+# GLOBALS:
+# - cli_namespaces_varname: [list] a variable name that points to a list of
+#                           namespaces
+# ##
+
+#: Built-in namespaces SHOULD never ever be deleted or added to
+#: common_namespace_vars, except for default
+#: NEVER make it part of host_vars, use cli_namespaces_varname to pick it up.
+built_in_namespace_vars:
+  - ns_kube_node_lease
+  - ns_kube_system
+  - ns_public
+
+#:
+# only use this by specifying a varname in CLI, to pick up namespaces in an
+# adhoc manner.
+__cli_varname_regex: |-
+  {{ '^' + (cli_namespaces_varname | default('_NON_EXISTENT_VAR_')) + '$' }}
+
+#: another lookup to pick up the namespace names, we need to flatten the
+#: list. since each varname will be a list of namespaces and if we have
+#: multiple varnames match we will get a list of list of strings.
+cli_namespace_vars: |-
+  {{ q('vars', *q('varnames', __cli_varname_regex)) | flatten }}
+
+# A list of namespace VARIABLE NAMES -- see the individual files
+# DO not include system default namespaces
+common_namespace_vars:
+  # Only built-in namespace var that we include is the 'default'
+  - ns_default
+  # All EIAP namespaces mainly for add-ons
+  - ns_appdynamics
+  # Aqua namespace
+  - aqua_ns_cfg
+  # DO NOT USE: Deprecated
+  - ns_elasticsearch
+  - ns_istio_operator
+  - ns_istio_system
+  - ns_pep_eiap_istio_config
+  - ns_kubernetes_dashboard
+  - ns_msi_acrpull_system
+  - ns_observability
+  - ns_pep_eiap_ops_admin
+  - ns_monitoring
+
+# ##
+# Instance Namespace Variables -- each cluster should override!!!
+# ##
+
+instance_namespace_vars: []
+
+# cli_namespace_vars is convenience to pick up dynamically
+__all_ns__: |-
+  {{ cli_namespace_vars + common_namespace_vars + instance_namespace_vars }}
+
+# NOTE: we have to use python list expander *
+namespaces: |-
+  {{ q('vars', *q('varnames', *__all_ns__)) | build_k8s('namespace') }}

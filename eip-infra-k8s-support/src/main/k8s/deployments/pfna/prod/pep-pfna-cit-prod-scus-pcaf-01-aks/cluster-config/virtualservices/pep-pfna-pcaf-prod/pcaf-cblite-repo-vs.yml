@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pcaf-cblite-repo-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pcaf-cblite-repo.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pcaf-cblite-repo.pep-pfna-pcaf-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pcaf-cblite-repo
+  name: pcaf-cblite-repo-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-cblite-repo.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-cblite-repo.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

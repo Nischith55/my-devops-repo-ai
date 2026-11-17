@@ -1,0 +1,23 @@
+---
+# Any kustomize overrides for ECK operator generation here
+
+# ECK - Operator Config Map Overrides
+eck_operator_cm:
+  # namespaces to monitor comma separated string
+  # TODO: Cannot have quotes in the generated operator this is not accepeted
+  # by eck operator
+  namespaces: [pep-eiap-elastic-cluster-01,pep-eiap-elastic-cluster-02,pep-eiap-elastic-monitor-01]
+  log-verbosity: 2
+
+eck_operator_webhook_patch:
+  # make it false to turn it off completely
+  enabled: true
+  #start_idx: 0
+  #end_idx: 8
+  #value: Fail
+
+eck_operator_webhook_api_version_patch:
+  enabled: false
+  # start_idx: 0
+  #end_idx: 8
+

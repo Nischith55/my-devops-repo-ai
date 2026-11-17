@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-pepgenx-cgf-project-12ss3445-dev-sa
+  namespace: pep-pepgenx-cgf-project-12ss3445-dev

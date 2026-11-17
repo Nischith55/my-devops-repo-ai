@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "pep-cmp-cmp-certad3-dev-cv-web"
+  namespace: "pep-cmp-cmp-certad3-dev"
+  labels:
+    app: "pep-cmp-cmp-certad3-dev-cv-web"
+spec:
+  progressDeadlineSeconds: 3600
+  selector:
+    matchLabels:
+      app: "pep-cmp-cmp-certad3-dev-cv-web"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "pep-cmp-cmp-certad3-dev-cv-web"
+    spec:
+      serviceAccountName: "pep-cmp-cmp-certad3-dev-sa"
+      automountServiceAccountToken: true
+      containers:
+      - name: hello-world-cmp-deploy
+        image: "pepeiapnonprodcommonacr.azurecr.io/pep/cto/cmp/pepsico-cto-cmp-helloworld-webapp:20231024.26"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 10000
+        ports:
+        - containerPort: 8080
+        livenessProbe:                             # section for liveness probe
+          httpGet:  
+            path: /healthcheck        # http path for liveness probe
+            port: 8080                         # app port/name where the probing should be done
+          initialDelaySeconds: 30                 # initial delay period before probes kicks in
+          periodSeconds: 5                         # frequency of probe
+        readinessProbe:                            # section for readiness probe
+          httpGet:  
+            path: /healthcheck       # http path for readiness probe
+            port: 8080                
+          initialDelaySeconds: 30  
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "pep-cmp-cmp-certad3-dev-cv-web"
+  namespace: "pep-cmp-cmp-certad3-dev"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: "pep-cmp-cmp-certad3-dev-cv-web"

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-cgf-awxtest-qa-sa
+  namespace: pep-infratools-cgf-awxtest-qa

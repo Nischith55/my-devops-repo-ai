@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepsico-eip-eipone-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepsico-eip-eipone-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Microservices_Development_Portal/_git/pepsico-eip-eipone-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-apigee-preprod-scus-01-aks
+        namespace: api-marketplace
+      - name: pep-apigee-preprod-scus-01-aks
+        namespace: pep-apigee-ops-admin
+      roles:
+      - name: pepsico-eip-eipone-preprod-admin
+        description: Admin privileges to pepsico-eip-eipone-preprod
+        policies:
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-admin, applications, *, pepsico-eip-eipone-preprod/*, allow
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-admin, repositories, *, pepsico-eip-eipone-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepsico-eip-eipone-preprod-user
+        description: Read-only privileges to pepsico-eip-eipone-preprod
+        policies:
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-user, applications, get, pepsico-eip-eipone-preprod/*, allow
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-user, applications, sync, pepsico-eip-eipone-preprod/*, allow
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-user, repositories, get, pepsico-eip-eipone-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepsico-eip-eipone-preprod:pepsico-eip-eipone-preprod-user, applications, action/apps/Deployment/restart, pepsico-eip-eipone-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.MDP.AppSupport"
+        - "Team.Support.EIAP.READ"
+    

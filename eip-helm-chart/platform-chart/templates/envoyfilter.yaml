@@ -1,0 +1,34 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- if (.Values.envoyfilter.enabled)}}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Values.envoyfilter.name }}
+  namespace: {{ $namespace }}
+spec:
+  workloadSelector:
+    {{- with .Values.global.labels }}
+    labels:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- include "platform-chart.labels" . | nindent 6 }}
+  configPatches:
+    - applyTo: {{ .Values.envoyfilter.applyto }}
+      match:
+        context: {{ .Values.envoyfilter.context }}
+        listener:
+          portNumber: {{ .Values.envoyfilter.portnumber }}
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router" 
+      patch:
+        operation: {{ .Values.envoyfilter.patchOperation }}
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua" 
+            inlineCode: |
+              {{ .Values.envoyfilter.filterConfig.inlineCode | nindent 14 }}
+{{- end }}

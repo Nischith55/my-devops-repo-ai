@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-flna-dxpicasso-netcoreapi
+  name: netcoreapi-vs
+  namespace: pep-eiap-flna-dxpicasso-dev
+spec:
+  gateways:
+  - pep-eiap-flna-dxpicasso-dev/pep-eiap-flna-dxpicasso-dev-cv-gw
+  hosts:
+  - netcoreapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-flna-dxpicasso-netcoreapi.pep-eiap-flna-dxpicasso-dev.svc.cluster.local
+        port:
+          number: 80

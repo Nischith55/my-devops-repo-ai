@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-addcut-frontend-vs
+  namespace: pep-pfna-sch-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-addcut-frontend.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - addcut.prd.intra.pepsico.com
+  - addcut.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-addcut-frontend.pep-pfna-flna-scopt-prod.svc.cluster.local
+        port:
+          number: 8000

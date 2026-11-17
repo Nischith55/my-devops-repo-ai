@@ -1,0 +1,17 @@
+---
+# WARNING: manually generated.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api-marketplace
+  labels:
+    istio-injection: disabled
+    environment: preprod
+    cluster-name: pep-apigee-preprod-scus-01-aks
+    pep-cmdb-app-service: APIGEE-API-GATEWAY-NA-PREPROD
+    namespace: api-marketplace
+    region: scus
+    costcenter: PR00002831
+    hcode: H009288
+    program: API-Marketplace
+    business-group: CTO

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-dvrsts-tmap-to-metadatamstr-cosmos-kafconsumer-fnzj-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-dvrsts-tmap-to-metadatamstr-cosmos-kafconsumer
+spec:
+  hosts:
+  - pep-pfna-transp-dvrsts-tmap-to-metadatamstr-cosmos-kafconsumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/driverstatus/bronze-feed
+    route:
+    - destination:
+        host: pep-pfna-transp-dvrsts-tmap-to-metadatamstr-cosmos-kafconsumer.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

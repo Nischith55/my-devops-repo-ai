@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: otdsws-ixrk-vs
+  namespace: pep-eiap-cgf-pepsar-dev
+  labels:
+      app: dctm-rest
+spec:
+  hosts:
+  - pep-pepsar-dev-otdsws.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-pepsar-dev/pep-eiap-cgf-pepsar-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otds-admin/
+    route:
+    - destination:
+        host: otdsws.pep-eiap-cgf-pepsar-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otdsws/
+    route:
+    - destination:
+        host: otdsws.pep-eiap-cgf-pepsar-dev.svc.cluster.local
+        port:
+          number: 80
+  

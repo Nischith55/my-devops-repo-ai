@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aigronomist-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aigronomist-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_Global_Digital_Agro/_git/aigronomist-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-aigron-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aigronomist-dev-admin
+        description: Admin privileges to aigronomist-dev
+        policies:
+        - p, proj:aigronomist-dev:aigronomist-dev-admin, applications, *, aigronomist-dev/*, allow
+        - p, proj:aigronomist-dev:aigronomist-dev-admin, repositories, *, aigronomist-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aigronomist-dev-user
+        description: Read-only privileges to aigronomist-dev
+        policies:
+        - p, proj:aigronomist-dev:aigronomist-dev-user, applications, get, aigronomist-dev/*, allow
+        - p, proj:aigronomist-dev:aigronomist-dev-user, applications, sync, aigronomist-dev/*, allow
+        - p, proj:aigronomist-dev:aigronomist-dev-user, repositories, get, aigronomist-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:aigronomist-dev:aigronomist-dev-user, applications, action/apps/Deployment/restart, aigronomist-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.AIGRON"
+        - "Team.App.CGF.NonProd.AIGRON admin(s)"
+        - "Team.Support.EIAP.READ"
+    

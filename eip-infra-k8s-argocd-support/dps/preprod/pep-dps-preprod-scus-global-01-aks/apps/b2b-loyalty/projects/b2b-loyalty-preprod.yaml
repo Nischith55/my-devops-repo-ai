@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-loyalty-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for b2b-loyalty-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-latam-btblylty-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+    
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-latam-btboms-preprod
+    server: https://kubernetes.default.svc
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-latam-btbproduct-preprod
+    server: https://kubernetes.default.svc
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-latam-bfflylty-preprod
+    server: https://kubernetes.default.svc
+      
+  roles:
+  - name: b2b-loyalty-preprod-admin
+    description: Admin privileges to b2b-loyalty-preprod
+    policies:
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-admin, applications, *, b2b-loyalty-preprod/*, allow
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-admin, repositories, *, b2b-loyalty-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: b2b-loyalty-preprod-user
+    description: Read-only privileges to b2b-loyalty-preprod
+    policies:
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-user, applications, get, b2b-loyalty-preprod/*, allow
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-user, applications, sync, b2b-loyalty-preprod/*, allow
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-user, repositories, get, b2b-loyalty-preprod/*, allow
+    - p, proj:b2b-loyalty-preprod:b2b-loyalty-preprod-user, applications, action/apps/Deployment/restart, b2b-loyalty-preprod/*, allow
+    groups:
+    - "Team.Support.LATAM.NonProd.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

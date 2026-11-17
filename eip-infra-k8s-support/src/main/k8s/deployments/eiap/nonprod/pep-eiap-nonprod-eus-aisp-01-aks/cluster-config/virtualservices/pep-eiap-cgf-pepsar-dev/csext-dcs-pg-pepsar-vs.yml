@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: csext-dcs-pg-pepsar-vs
+  namespace: pep-eiap-cgf-pepsar-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pepsar-dev/pep-eiap-cgf-pepsar-dev-cv-gw
+  hosts:
+  - pep-pepsar-dev-csext-dcs-pg.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 1791
+    route:
+    - destination:
+        host: csext-dcs-pg.pep-eiap-cgf-pepsar-dev.svc.cluster.local
+        port:
+          number: 1791
+  

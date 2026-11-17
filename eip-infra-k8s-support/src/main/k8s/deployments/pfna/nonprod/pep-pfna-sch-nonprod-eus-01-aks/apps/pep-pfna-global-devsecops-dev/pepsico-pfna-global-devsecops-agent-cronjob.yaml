@@ -1,0 +1,73 @@
+#######################################################################################################
+#        KUBERNETES CRON JOB TEMPLATE that creates cron Job which scales up and scales down the  
+#        Azure Devops agents and cleans up the Offline agents
+#######################################################################################################
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+    name: pepsico-pfna-devopsagent-scaler-cronjob
+    namespace: pep-pfna-global-devsecops-dev     # Kubernetes Namespace in which the deployment will be perfomed. Example: pep-pfna-latam-akv-dev-ns
+spec:
+  schedule: "* * * * *"
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: pepsico-pfna-devopsagent-scaler-cronjob
+        spec:
+          imagePullSecrets: 
+          - name: pep-pfna-svc-global-devsecops-acr-creds
+          serviceAccountName: pep-pfna-buildagent
+          containers:
+          - args:            # Pass the Azure Devops Organization, Token, Pool ID and K8S Namesapce to the python script
+            - -c
+            - python3 ./scaler.py -o $AZP_ORG -t $AZP_TOKEN --pool-id $AZP_POOLID autoscale -n $K8S_NAMESPACE && python3 ./scaler.py -o $AZP_ORG -t $AZP_TOKEN --pool-id $AZP_POOLID clean -n $K8S_NAMESPACE
+            command:
+            - /bin/sh
+            name: scaler
+            image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsscaler:20230412.6
+            imagePullPolicy: IfNotPresent
+            env:            # Store the Azure Devops Organization, Token, Pool ID and K8S Namesapce in the environment variables
+              - name: AZP_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: "pep-pfna-svc-global-devsecops-azdevops"
+                    key: AZP_TOKEN
+              - name: AZP_ORG
+                valueFrom:
+                  secretKeyRef:
+                    name: "pep-pfna-svc-global-devsecops-azdevops"
+                    key: AZP_ORG               
+              - name: AZP_POOLID
+                valueFrom:
+                  secretKeyRef:
+                    name: "pep-pfna-svc-global-devsecops-azdevops"
+                    key: AZP_POOLID
+              - name: AZURE_DEVOPS_EXT_PAT
+                valueFrom:
+                  secretKeyRef:
+                    name: "pep-pfna-svc-global-devsecops-azdevops"
+                    key: AZP_TOKEN
+              - name: K8S_NAMESPACE
+                value: pep-pfna-global-devsecops-dev
+            volumeMounts:
+            - mountPath: "/app/batchjob"
+              name: batchjobvolume
+          nodeSelector:         # Agent pool restriction
+            balance-group: FoundationonebuildagentZonedpools
+          tolerations:
+          - key: "Foundationonebuildagentpool"
+            operator: "Exists"
+            effect: "NoSchedule"
+          restartPolicy: "OnFailure"                    
+          volumes:
+          - name: batchjobvolume
+            configMap:
+              name: pepsico-pfna-global-devsecops-agent-batchjob
+              items:
+              - key: "pepsico-pfna-global-devsecops-agent-batchjob.yaml"
+                path: "pepsico-eip-global-devsecops-agent-batchjob.yaml"
+                
+      backoffLimit: 0

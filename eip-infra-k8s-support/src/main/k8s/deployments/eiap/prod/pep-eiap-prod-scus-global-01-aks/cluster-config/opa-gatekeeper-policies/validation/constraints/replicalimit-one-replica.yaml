@@ -1,0 +1,19 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sReplicaLimits
+metadata:
+  name: replicalimit-one-replica
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: pep-eiap-global-eip-prod
+  parameters:
+    ranges:
+    - max_replicas: 1
+      min_replicas: 0

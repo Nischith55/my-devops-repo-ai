@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepsico-manufacturing-consolidation-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepsico-manufacturing-consolidation-dev  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SNT_MFG_Consolidation_HUB/_git/pepsico-manufacturing-consolidation-argocd-configs
+      - pepcgfschnonprodgwcacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-europe-mfgcons-dev
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: pepsico-manufacturing-consolidation-dev-admin
+        description: Admin privileges to pepsico-manufacturing-consolidation-dev
+        policies:
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-admin, applications, *, pepsico-manufacturing-consolidation-dev/*, allow
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-admin, repositories, *, pepsico-manufacturing-consolidation-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepsico-manufacturing-consolidation-dev-user
+        description: Read-only privileges to pepsico-manufacturing-consolidation-dev
+        policies:
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-user, applications, get, pepsico-manufacturing-consolidation-dev/*, allow
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-user, applications, sync, pepsico-manufacturing-consolidation-dev/*, allow
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-user, repositories, get, pepsico-manufacturing-consolidation-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepsico-manufacturing-consolidation-dev:pepsico-manufacturing-consolidation-dev-user, applications, action/apps/Deployment/restart, pepsico-manufacturing-consolidation-dev/*, allow
+        groups:
+        - "Team.App.CGF.NonProd.pepln"
+        - "Team.App.Support.Pepline.Admins"
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.READ"
+    

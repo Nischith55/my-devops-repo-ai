@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eip-pbna-breadcrumbs-inbound-vs
+  namespace: pep-eiap-pbna-halo-dev
+spec:
+  gateways:
+  - pep-eiap-pbna-halo-dev/pep-eiap-pbna-halo-dev-cv-gw
+  hosts:
+  - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-breadcrumbs-inbound.pep-eiap-pbna-halo-dev.svc.cluster.local

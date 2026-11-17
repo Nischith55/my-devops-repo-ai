@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aksnode01-aksnodetest0012026-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for aksnode01-aksnodetest0012026-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/aksnode01-aksnodetest0012026-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: aksnode01-aksnodetest0012026-dev-admin
+    description: Admin privileges to aksnode01-aksnodetest0012026-dev
+    policies:
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-admin, applications, *, aksnode01-aksnodetest0012026-dev/*, allow
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-admin, repositories, *, aksnode01-aksnodetest0012026-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: aksnode01-aksnodetest0012026-dev-user
+    description: Read-only privileges to aksnode01-aksnodetest0012026-dev
+    policies:
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-user, applications, get, aksnode01-aksnodetest0012026-dev/*, allow
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-user, applications, sync, aksnode01-aksnodetest0012026-dev/*, allow
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-user, repositories, get, aksnode01-aksnodetest0012026-dev/*, allow
+    - p, proj:aksnode01-aksnodetest0012026-dev:aksnode01-aksnodetest0012026-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

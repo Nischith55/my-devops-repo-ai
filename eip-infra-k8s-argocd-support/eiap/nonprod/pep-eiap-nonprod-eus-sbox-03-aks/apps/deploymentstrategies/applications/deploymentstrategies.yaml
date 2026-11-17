@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: deploymentstrategies-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: deploymentstrategies
+  syncPolicy:    
+    # automated:
+    #   prune: false
+    #   selfHeal: true
+    #   allowEmpty: false
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-azure-terraform-support
+    targetRevision: canary
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.1.3
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: deploymentstrategies
+      valueFiles:
+      - $values/nonprod/pep-eiap-nonprod-eus-sbox-03-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/helm
+            chart: deploymentstrategies
+            revision: 0.1.5
+          spec:
+            project: 'deploymentstrategies' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-azure-terraform-support
+              repoName: eip-infra-azure-terraform-support
+              targetRevision: canary
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:             
+              teamsChannel: argo-notification

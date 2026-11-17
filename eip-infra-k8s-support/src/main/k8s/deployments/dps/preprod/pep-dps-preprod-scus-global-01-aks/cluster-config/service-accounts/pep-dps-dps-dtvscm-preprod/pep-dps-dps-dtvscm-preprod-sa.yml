@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-dps-dtvscm-preprod-sa
+  namespace: pep-dps-dps-dtvscm-preprod

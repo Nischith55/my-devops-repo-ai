@@ -1,0 +1,9 @@
+---
+# ##
+# All default root level variables
+# ##
+
+ini_file: |-
+  {{ (('~', '.azure', 'credentials') | path_join) 
+     | expanduser | expandvars | realpath
+  }}

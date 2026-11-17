@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devx-test-testing-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devx-test-testing-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-test-testing-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: devx-test-testing-dev-admin
+    description: Admin privileges to devx-test-testing-dev
+    policies:
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-admin, applications, *, devx-test-testing-dev/*, allow
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-admin, repositories, *, devx-test-testing-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: devx-test-testing-dev-user
+    description: Read-only privileges to devx-test-testing-dev
+    policies:
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-user, applications, get, devx-test-testing-dev/*, allow
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-user, applications, sync, devx-test-testing-dev/*, allow
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-user, repositories, get, devx-test-testing-dev/*, allow
+    - p, proj:devx-test-testing-dev:devx-test-testing-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-oms-admin-ui-global-hotfix-preprod:networking.istio.io/VirtualService:pep-dps-latam-btboms-preprod/b2b-oms-admin-ui-global-hf
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-oms-admin-ui-global-hotfix-preprod:networking.istio.io/VirtualService:pep-dps-latam-btboms-preprod/b2b-oms-admin-ui-global-hf"},"labels":{"app":"b2b-oms-admin-ui-global-hf","app.kubernetes.io/instance":"b2b-oms-admin-ui-global-hotfix","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","country":"global","env":"hotfix","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-oms-admin-ui-global-hf","namespace":"pep-dps-latam-btboms-preprod"},"spec":{"gateways":["pep-dps-latam-btboms-preprod/pep-dps-latam-btboms-preprod-cv-gw"],"hosts":["b2b-oms-admin-ui-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-oms-admin-ui-global-hf.pep-dps-latam-btboms-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-oms-admin-ui-global-hf
+        app.kubernetes.io/instance: b2b-oms-admin-ui-global-hotfix
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        country: global
+        env: hotfix
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-oms-admin-ui-global-hf
+    namespace: pep-dps-latam-btboms-preprod
+spec:
+    gateways:
+    - pep-dps-latam-btboms-preprod/pep-dps-latam-btboms-preprod-cv-gw
+    hosts:
+    - b2b-oms-admin-ui-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - orders-b2b-glob-hf.preprod.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-oms-admin-ui-global-hf.pep-dps-latam-btboms-preprod.svc.cluster.local
+                port:
+                    number: 8080

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: genai-agent-itcontrols-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for genai-agent-itcontrols-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/IT_Generative_AI_Initiatives/_git/pep-genai-agent-itcontrols-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-itcagent-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: genai-agent-itcontrols-qa-admin
+        description: Admin privileges to genai-agent-itcontrols-qa
+        policies:
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-admin, applications, *, genai-agent-itcontrols-qa/*, allow
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-admin, repositories, *, genai-agent-itcontrols-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: genai-agent-itcontrols-qa-user
+        description: Read-only privileges to genai-agent-itcontrols-qa
+        policies:
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-user, applications, get, genai-agent-itcontrols-qa/*, allow
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-user, applications, sync, genai-agent-itcontrols-qa/*, allow
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-user, repositories, get, genai-agent-itcontrols-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:genai-agent-itcontrols-qa:genai-agent-itcontrols-qa-user, applications, action/apps/Deployment/restart, genai-agent-itcontrols-qa/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.ITCAgent"
+        - "Team.Support.EIAP.READ"
+    

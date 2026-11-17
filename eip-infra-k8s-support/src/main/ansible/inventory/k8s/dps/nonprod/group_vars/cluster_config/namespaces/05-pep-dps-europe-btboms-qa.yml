@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_btboms_qa:
+  
+  name: pep-dps-europe-btboms-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-btboms
+    sector: europe
+    project: btboms
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalomsamericasnon-prod
+    pep-cmdb-app-service-id: "af42a79997d1d250bec13ae8c253af1d"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-btboms-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_btboms'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-btboms-qa-sa-token
+    namespace: pep-dps-europe-btboms-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-btboms-qa-sa"

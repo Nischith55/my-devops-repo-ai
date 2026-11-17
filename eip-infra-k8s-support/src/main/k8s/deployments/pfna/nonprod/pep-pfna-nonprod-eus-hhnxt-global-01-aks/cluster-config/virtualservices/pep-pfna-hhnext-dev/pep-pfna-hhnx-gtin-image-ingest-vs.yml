@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-hhnx-gtin-image-ingest
+  name: pep-pfna-hhnx-gtin-image-ingest-vs
+  namespace: pep-pfna-hhnext-dev
+spec:
+  gateways:
+  - pep-pfna-hhnext-dev/pep-pfna-hhnext-dev-cv-gw
+  hosts:
+  - pep-pfna-hhnx-gtin-image-ingest.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - headers:
+      request:
+        add:
+          Content-Type: application/xml
+        remove:
+        - Content-Type
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pep-pfna-hhnx-gtin-image-ingest.pep-pfna-hhnext-dev.svc.cluster.local
+        port:
+          number: 80

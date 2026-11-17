@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nginx-dev-apxr-vs
+  namespace: pep-eiap-och-na-dev
+  labels:
+      app: nginx-dev
+spec:
+  hosts:
+  - nginx-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-na-dev/pep-eiap-och-na-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: nginx-dev.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eip-services-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for eip-services-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-services-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-global-services-dev
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eip-services-dev-admin
+        description: Admin privileges to eip-services-dev
+        policies:
+        - p, proj:eip-services-dev:eip-services-dev-admin, applications, *, eip-services-dev/*, allow
+        - p, proj:eip-services-dev:eip-services-dev-admin, repositories, *, eip-services-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: eip-services-dev-user
+        description: Read-only privileges to eip-services-dev
+        policies:
+        - p, proj:eip-services-dev:eip-services-dev-user, applications, get, eip-services-dev/*, allow
+        - p, proj:eip-services-dev:eip-services-dev-user, applications, sync, eip-services-dev/*, allow
+        - p, proj:eip-services-dev:eip-services-dev-user, repositories, get, eip-services-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:eip-services-dev:eip-services-dev-user, applications, action/apps/Deployment/restart, eip-services-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.SERVICES.Developer"
+        - "Team.Support.EIAP.READ"
+    

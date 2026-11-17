@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-latam-opsbridge-elastic-client-01
+  labels:
+    app.kubernetes.io/created-by: Prasad_2022-08-29
+    app.kubernetes.io/managed-by: manual
+    istio.io/rev: prod-stable
+    eck-managed: 'false'

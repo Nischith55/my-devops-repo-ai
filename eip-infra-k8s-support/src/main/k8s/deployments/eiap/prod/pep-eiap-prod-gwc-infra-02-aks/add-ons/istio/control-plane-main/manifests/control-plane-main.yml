@@ -1,0 +1,180 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: control-plane-main
+  namespace: istio-system
+spec:
+  addonComponents:
+    grafana:
+      enabled: false
+    kiali:
+      enabled: false
+    prometheus:
+      enabled: false
+    tracing:
+      enabled: false
+  components:
+    base:
+      enabled: true
+    ingressGateways:
+    - enabled: false
+      name: istio-ingressgateway
+    - enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+          kubernetes.azure.com/mode: system
+        overlays:
+        - kind: HorizontalPodAutoscaler
+          name: pep-eiap-ingress-gw01
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw01
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw01
+          - path: spec.scaleTargetRef.name
+            value: pep-eiap-ingress-gw01
+        - kind: Deployment
+          name: pep-eiap-ingress-gw01
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw01
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw01
+          - path: spec.selector.matchLabels.app
+            value: pep-eiap-ingress-gw01
+          - path: spec.selector.matchLabels.istio
+            value: pep-eiap-ingress-gw01
+          - path: spec.template.metadata.labels.app
+            value: pep-eiap-ingress-gw01
+          - path: spec.template.metadata.labels.istio
+            value: pep-eiap-ingress-gw01
+        - apiVersion: v1
+          kind: Service
+          name: pep-eiap-ingress-gw01
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw01
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw01
+          - path: spec.selector.app
+            value: pep-eiap-ingress-gw01
+          - path: spec.selector.istio
+            value: pep-eiap-ingress-gw01
+          - path: spec.loadBalancerIP
+            value: 172.28.212.126
+        - kind: ServiceAccount
+          name: pep-eiap-ingress-gw01-service-account
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw01
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw01
+        serviceAnnotations:
+          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+          service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "15"
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+      name: pep-eiap-ingress-gw01
+    - enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+          kubernetes.azure.com/mode: system
+        overlays:
+        - kind: HorizontalPodAutoscaler
+          name: pep-eiap-ingress-gw02
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw02
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw02
+          - path: spec.scaleTargetRef.name
+            value: pep-eiap-ingress-gw02
+        - kind: Deployment
+          name: pep-eiap-ingress-gw02
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw02
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw02
+          - path: spec.selector.matchLabels.app
+            value: pep-eiap-ingress-gw02
+          - path: spec.selector.matchLabels.istio
+            value: pep-eiap-ingress-gw02
+          - path: spec.template.metadata.labels.app
+            value: pep-eiap-ingress-gw02
+          - path: spec.template.metadata.labels.istio
+            value: pep-eiap-ingress-gw02
+        - apiVersion: v1
+          kind: Service
+          name: pep-eiap-ingress-gw02
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw02
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw02
+          - path: spec.selector.app
+            value: pep-eiap-ingress-gw02
+          - path: spec.selector.istio
+            value: pep-eiap-ingress-gw02
+          - path: spec.loadBalancerIP
+            value: 172.28.212.125
+        - kind: ServiceAccount
+          name: pep-eiap-ingress-gw02-service-account
+          patches:
+          - path: metadata.labels.app
+            value: pep-eiap-ingress-gw02
+          - path: metadata.labels.istio
+            value: pep-eiap-ingress-gw02
+        serviceAnnotations:
+          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+          service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: "15"
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+      name: pep-eiap-ingress-gw02
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 4
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+          kubernetes.azure.com/mode: system
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+  meshConfig:
+    defaultConfig:
+      tracing:
+        zipkin:
+          address: jaeger-backend-collector.observability.svc.cluster.local:9411
+    defaultDestinationRuleExportTo:
+    - '*'
+    defaultServiceExportTo:
+    - '*'
+    defaultVirtualServiceExportTo:
+    - '*'
+    disablePolicyChecks: true
+    enableAutoMtls: true
+    enablePrometheusMerge: true
+    h2UpgradePolicy: DO_NOT_UPGRADE
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY
+    rootNamespace: pep-eiap-istio-config
+  profile: default
+  tag: 1.7.7
+  values:
+    global:
+      defaultNodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      defaultTolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

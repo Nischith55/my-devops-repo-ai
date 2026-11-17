@@ -1,0 +1,25 @@
+---
+- name: Manifest generation
+  hosts: localhost
+  connection: local
+  collections:
+    - community.kubernetes
+    - community.general
+    - azure.azcollection
+    - ansible.utils
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_TENANT_ID' ) }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks:
+    - name: set variables
+      set_fact:
+        script_dir: "{{ lookup('env', 'script_dir') }}"
+    - name: Manifest generation of Gateway
+      include_role: 
+        name: k8s_support/gatewaycreation

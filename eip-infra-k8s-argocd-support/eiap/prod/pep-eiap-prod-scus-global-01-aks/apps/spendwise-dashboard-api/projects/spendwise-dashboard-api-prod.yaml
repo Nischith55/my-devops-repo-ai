@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: spendwise-dashboard-api-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for spendwise-dashboard-api-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/spendwise-dashboard-api-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-sworch-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: spendwise-dashboard-api-prod-admin
+        description: Admin privileges to spendwise-dashboard-api-prod
+        policies:
+        - p, proj:spendwise-dashboard-api-prod:spendwise-dashboard-api-prod-admin, applications, *, spendwise-dashboard-api-prod/*, allow
+        - p, proj:spendwise-dashboard-api-prod:spendwise-dashboard-api-prod-admin, repositories, *, spendwise-dashboard-api-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: spendwise-dashboard-api-prod-user
+        description: Read-only privileges to spendwise-dashboard-api-prod
+        policies:
+        - p, proj:spendwise-dashboard-api-prod:spendwise-dashboard-api-prod-user, applications, get, spendwise-dashboard-api-prod/*, allow
+        - p, proj:spendwise-dashboard-api-prod:spendwise-dashboard-api-prod-user, applications, sync, spendwise-dashboard-api-prod/*, allow
+        - p, proj:spendwise-dashboard-api-prod:spendwise-dashboard-api-prod-user, repositories, get, spendwise-dashboard-api-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.Prod.SWORCH"
+        - "Team.Support.EIAP.READ"
+    

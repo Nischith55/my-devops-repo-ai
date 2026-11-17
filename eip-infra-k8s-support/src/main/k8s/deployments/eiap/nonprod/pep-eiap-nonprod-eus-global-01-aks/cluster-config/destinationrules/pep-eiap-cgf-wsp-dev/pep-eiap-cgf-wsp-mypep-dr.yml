@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-eiap-cgf-wsp-mypep-dr
+  namespace: pep-eiap-cgf-wsp-dev
+spec:
+  host: mypep.pep-eiap-cgf-wsp-dev.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        connectTimeout: 30ms
+        maxConnections: 100
+        tcpKeepalive:
+          interval: 75s
+          time: 7200s

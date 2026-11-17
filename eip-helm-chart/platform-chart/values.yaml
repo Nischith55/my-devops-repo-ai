@@ -1,0 +1,87 @@
+# Default values for platform-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  fullnameOverride: "pepsico-app"
+  namespace: "default"
+  pvc:
+    enabled: false
+  secretManagement:
+    enabled: false
+  awsSecretManagement:
+    enabled: false
+    roleArn: ""
+
+  deployment:
+    enabled: true
+
+  service:
+    enabled: true
+
+  rollout:
+    enabled: false
+
+  statefulset:
+    enabled: false
+
+destination:
+  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+  jobNS: pep-eiap-ops-admin
+  jobServiceAccount: gw-update-sa
+
+pv:
+  enabled: false
+  isFileShare: true
+  isDisk: false
+  mountOptions:
+  - dir_mode=0777
+  - file_mode=0644
+  - mfsymlinks
+  - nobrl
+  - cache=strict
+  - actimeo=30
+  - uid=1000
+  - gid=1000
+
+storageClass:
+  enabled: false
+  isFileShare: true
+  isDisk: false
+  mountOptions:
+  - dir_mode=0777
+  - file_mode=0644
+  - mfsymlinks
+  - nobrl
+  - cache=strict
+  - actimeo=30
+  - uid=1000
+  - gid=1000
+
+autoscalingEnabled: false
+
+pdbEnabled: false
+
+virtualService:
+  enabled: false
+
+envoyfilter:
+  enabled: false
+destinationRule:
+  enabled: false
+keda:
+  enabled: false
+
+awsStorageClass:
+  enabled: false
+  isEBS: false
+  isEFS: true
+
+awsPV:
+  enabled: false
+  # AWS PV type selectors - set exactly one of the below to true
+  isEBS: false
+  isEFS: false
+  # isS3 - mount an existing Amazon S3 bucket through the Mountpoint for Amazon S3 CSI driver (s3.csi.aws.com).
+  # Amazon S3 supports static provisioning only (no StorageClass / dynamic provisioning).
+  isS3: false

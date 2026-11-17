@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: nginx
+  name: promoai-admin-vs
+  namespace: pep-dps-cgf-promoai-preprod
+spec:
+  gateways:
+  - pep-dps-cgf-promoai-preprod/pep-dps-cgf-promoai-preprod-cv-gw
+  hosts:
+  - promoai-admin.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: promoai-admin.pep-dps-cgf-promoai-preprod.svc.cluster.local
+        port:
+          number: 80

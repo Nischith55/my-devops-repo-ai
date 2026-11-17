@@ -1,0 +1,32 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-pbna-halo-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-pbna-halo-sp
+    name: 0811018b-8f42-42e2-83ef-37a28996e673
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.PBNA.HALO.Developer
+    name: 6456152d-39e8-4d97-bd21-167521b36312
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.PBNA.HALO.Developer
+    name: Team.Support.EIAP.PBNA.HALO.Developer
+ # - apiGroup: rbac.authorization.k8s.io
+ #   kind: User
+    # 0004fd5e-d171-49a1-9a9e-436860d16989
+ #   name: cgolla01@pepsico.com
+  #- apiGroup: rbac.authorization.k8s.io
+  #  kind: Group
+  #  name: 367dfb5d-8aed-4dcf-9366-6024024bfb94

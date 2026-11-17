@@ -1,0 +1,471 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+  namespace: pep-eiap-elastic-askadaa-01
+  labels:
+    k8s-app: metricbeat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat
+  # should be the namespace where metricbeat is running
+  namespace: pep-eiap-elastic-askadaa-01
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs: ["get", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: pep-eiap-elastic-askadaa-01
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    resourceNames:
+      - kubeadm-config
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: pep-eiap-elastic-askadaa-01
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: pep-eiap-elastic-client-01
+roleRef:
+  kind: ClusterRole
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat
+  namespace: pep-eiap-elastic-askadaa-01
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: pep-eiap-elastic-askadaa-01
+roleRef:
+  kind: Role
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: pep-eiap-elastic-askadaa-01
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: pep-eiap-elastic-askadaa-01
+roleRef:
+  kind: Role
+  name: metricbeat-kubeadm-config
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+data:
+  PepsiCoCA01.pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIG4jCCBcqgAwIBAgITeAAAAA4Q3a6mda3qewAAAAAADjANBgkqhkiG9w0BAQsF
+    ADA7MQswCQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMT
+    DVBlcHNpQ29Sb290Q0EwHhcNMjAwOTIxMjAyOTI2WhcNMzAwOTIxMjAzOTI2WjBW
+    MRMwEQYKCZImiZPyLGQBGRYDcHZ0MRMwEQYKCZImiZPyLGQBGRYDcGVwMRQwEgYK
+    CZImiZPyLGQBGRYEY29ycDEUMBIGA1UEAxMLUGVwc2lDb0NBMDEwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+weVFlzME+jhiJCx9ZES4yG7bt5tZ+mDI
+    nWPqn6KAqAGTGUbhLNkMY5MjXBqGkXAVapmbrMTcnsLGWV9o3ClX9gpRyZ/AzSNz
+    c47EDQRtk3geY7Ttsje00ZgOcTKdN8rtWsPL4mb8UktDFFwlgcCbDuR/zVLrdYna
+    OQxCF1S5+SxTYuJJMKGAwOGXGGS59mQdePedu6tzfAam2Pj4x889tU4Aj3ZLB9fD
+    rq1/AehSQas1VFDe7cgJxKj2SUtqVn7kNuv3+sh/l3PB67q340fsKCpCSZCzQ7Ff
+    ynjYY1SrYTbuarn/H8NRh6Yu3AXCcu717b9a2MkJeIiE8shJk2jJAgMBAAGjggPC
+    MIIDvjAOBgNVHQ8BAf8EBAMCAYYwEAYJKwYBBAGCNxUBBAMCAQIwIwYJKwYBBAGC
+    NxUCBBYEFOaT3eRcSJLUZZCrdQB0iUNn5aDRMB0GA1UdDgQWBBRYp0p0oyEn44Xz
+    tgGaTQc2CH96zDCCAlMGA1UdIASCAkowggJGMIICQgYLKwYBBAGBgjyDfQEwggIx
+    MIIB/gYIKwYBBQUHAgIwggHwHoIB7ABUAGgAaQBzACAAQwBlAHIAdABpAGYAaQBj
+    AGEAdABpAG8AbgAgAEEAdQB0AGgAbwByAGkAdAB5ACAAKABDAEEAKQAgAGkAcwAg
+    AGEAbgAgAGkAbgB0AGUAcgBuAGEAbAAgAFAAZQBwAHMAaQBDAG8AIAByAGUAcwBv
+    AHUAcgBjAGUALgAgAEMAZQByAHQAaQBmAGkAYwBhAHQAZQBzACAAaQBzAHMAdQBl
+    AGQAIABiAHkAIAB0AGgAaQBzACAAQwBBACAAYQByAGUAIABmAG8AcgAgAGkAbgB0
+    AGUAcgBuAGEAbAAgAFAAZQBwAHMAaQBDAG8AIABvAG4AbAB5AC4AIABGAG8AcgAg
+    AG0AbwByAGUAIABpAG4AZgBvAHIAbQBhAHQAaQBvAG4ALAAgAHAAbABlAGEAcwBl
+    ACAAcgBlAGYAZQByACAAdABvACAAdABoAGUAIABQAGUAcABzAGkAQwBvACAAQwBl
+    AHIAdABpAGYAaQBjAGEAdABpAG8AbgAgAFAAcgBhAGMAdABpAGMAZQAgAFMAdABh
+    AHQAZQBtAGUAbgB0ACAAYQB0ACAAaAB0AHQAcAA6AC8ALwBwAGsAaQAuAGMAbwBy
+    AHAALgBwAGUAcAAuAHAAdgB0AC8AYwBwAHMALgBoAHQAbTAtBggrBgEFBQcCARYh
+    aHR0cDovL2FpYS5teXBlcHNpY28uY29tL2Nwcy50eHQAMBkGCSsGAQQBgjcUAgQM
+    HgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUODCI
+    a55UbSh4EZeJVl/FHiXDYkAwOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5t
+    eXBlcHNpY28uY29tL1BlcHNpQ29Sb290Q0EuY3JsMHIGCCsGAQUFBwEBBGYwZDA2
+    BggrBgEFBQcwAoYqaHR0cDovL2FpYS5teXBlcHNpY28uY29tL1BlcHNpQ29Sb290
+    Q0EuY3J0MCoGCCsGAQUFBzABhh5odHRwOi8vb2NzcC5teXBlcHNpY28uY29tL29j
+    c3AwDQYJKoZIhvcNAQELBQADggEBAGET6imjTRWn6JBEM8tSw2iCiwYI1Cj55+sg
+    L9bkcRpHKj6ioMRMMVdU8veJlCoGWB3wzBu2kukmcCFQ/56LzCXRPZ0dPnHmY9aN
+    8fmwIshjh660rCwvPtY9l4BwxP5h4yRD5qZuNOj2f3suv+TLNBK22WGvCK6d+uwI
+    FDuZ6gNBhq+Vzuw7PTmREEsgJLcit6YLCivYlo1nWULzAbduZFrob8Z9/5OlhibN
+    PM6ogoc4XkphqhftQnO4njvn5BIgmr99wiPx3T0KzQkYdvOj/m66LKFzCCUomN4/
+    T8LOrtnq1ZV/qPHFxRupWjLetfj9e40in+O/rd8LvMxP0m8sN7s=
+    -----END CERTIFICATE-----
+  PepsiCoRootCA.pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIDVDCCAjygAwIBAgIQGMjWESYDLpVMtN3463GkazANBgkqhkiG9w0BAQsFADA7
+    MQswCQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMTDVBl
+    cHNpQ29Sb290Q0EwHhcNMTcwNDE0MTY1NTA3WhcNMzcwNDE0MTcwNDU3WjA7MQsw
+    CQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMTDVBlcHNp
+    Q29Sb290Q0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+ga0bPWdq
+    fI/QrPA+yFXZH3HjN/yZ6Znmx6wndjDn3AhNotaxi6M2A9F/+QX/Pj6MWoi4uCv+
+    3XuONE9XC+dSbysseiutX0rftmq430fyUzm5CM1w+a/7Hk3jC5kDtzZTPUwhTrzS
+    +3VIdSz8OOptqcolPTcRCvmAxMP9SboBK5qkWjFDnsNPw28VOAUClmX5OXi8JYD+
+    1PK0ZxP+XOthPunnAABrM0ij9ROP2ryu+4iUTmWKRNQdom2+i+tcZ9+VTj84NoTR
+    YXkEd9/fbf1DEfVGamVDclyj74goUpybBkVg2sFviUHpDNfcVE1ah35NfJ2lSyPG
+    UfqLfzB3EomrAgMBAAGjVDBSMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTAD
+    AQH/MB0GA1UdDgQWBBQ4MIhrnlRtKHgRl4lWX8UeJcNiQDAQBgkrBgEEAYI3FQEE
+    AwIBADANBgkqhkiG9w0BAQsFAAOCAQEApuV0Bd4cEN/yX8S0F7dSXEaCHG4JCwnW
+    SPUquzh+COUdLDn6sfpW/0d8ejUhvLj1xDv5Qj8zmrEdsN+WxsYuwaycB4NEFz7H
+    93qSy6OuXAArIUKKeccd5dOtYZXXzYoTtBXP9zjaEbaavMMuCXgrfDM7bIWjjIw2
+    HKP8wJOX2EtM6oGgk/hweHX9IFRncmIfDo6Zf5n5AlQSgdQfj/DjemSHScLBRqpW
+    xKKMsXaOs1BbaQLfjPYgF9YEboq+gsJ+209SNpC/bzTKpAKX6nZiGB+C6lOJlUox
+    HpFB474coTnKJXP/0o57A5pkQI//d9AeT1UT3k1tJvdiaCi5KbKrOg==
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: pep-ca-certs-config
+  namespace: pep-eiap-elastic-askadaa-01
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # NOTE: change this for instance of elastic running
+  name: nonprod-eus-global-02-aks-k8s-metricbeat-config
+  namespace: pep-eiap-elastic-askadaa-01
+
+data:
+
+  K8S_CLUSTER_NAME: pep-eiap-nonprod-eus-global-02-aks
+
+  metricbeat-processor.yml: |
+
+    processors:
+
+    - drop_event:
+        when:
+          not:
+            or:
+              - equals:
+                  kubernetes.node.labels.elastic-group: AskAdaZonedPools
+              - equals:
+                  event.module: prometheus
+
+
+    - add_fields:
+        fields:
+          ls-destination: "EUS"
+          pep-aks-cluster: ${K8S_CLUSTER_NAME}
+
+    - add_host_metadata: {}
+    - add_cloud_metadata: {}
+    - add_kubernetes_metadata: {}
+
+    - add_tags:
+        tags: ["NONPROD-EUS-Shared", "retain-logs"]
+
+    - script:
+        lang: javascript
+        source: >
+          function process(event) {
+            event.Put("fields.sn-application", "metrics-pep-eiap-nonprod-eus-global-02-aks" + "-" + event.Get("kubernetes.namespace"));
+            return event;
+          }   
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  metricbeat.yml: |
+    setup.template.name: "metrics-kubernetes-tsds"
+    setup.template.pattern: "metrics-*"
+    setup.ilm.enabled: false     
+
+    output.elasticsearch:
+        hosts: [https://pepaskadadev-2769af.es.privatelink.eastus.azure.elastic-cloud.com:443]
+        api_key: "qh1S9Z8BR5NJfQSJ2bvN:-WWXV6NU_bNF9YyMHuTsYw"
+        index: "%{[fields][sn-application]}"
+        # worker: 2
+        # bulk_max_size: 1000
+        ssl.verification_mode: none
+        timeout: 90s
+    metricbeat:
+
+      # ~~
+      # modules
+      # ~~
+      modules:
+
+      - module: system
+        enabled: false
+
+      - module: kubernetes
+        enabled: true
+        add_metadata: true
+        period: 30s
+        hosts:
+        - kube-state-metrics.${KUBE_STATE_METRICS_NAMESPACE}.svc:${KUBE_STATE_METRICS_PORT}
+        metricsets:
+        - state_node
+        - state_deployment
+        - state_daemonset
+        - state_replicaset
+        - state_pod
+        - state_container
+        - state_cronjob
+        - state_resourcequota
+        - state_statefulset
+        - state_service
+        - state_persistentvolume
+        - state_persistentvolumeclaim
+        - state_storageclass
+        # k8s events
+        - event
+
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://nvidia-dcgm-exporter.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-metrics-nemoretriever-page-elements-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-metrics-nemoretriever-table-structure-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-metrics-embedqa-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-metrics-nv-ingest-ocr-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-pepgenx-nim-vlm-image-captioning.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-metrics-llama-32-nv-rerankqa-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+      - module: prometheus
+        period: 60s
+        hosts: ["https://pep-aisp-pepgenx-nv-ingest-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"]
+        metrics_path: /v1/ingest/metrics
+        ssl.verification_mode: "none"
+        metricsets: ["collector"]
+
+
+      # autodiscover:
+      #   providers:
+      #   # stack monitoring
+      #   - type: kubernetes
+      #     scope: cluster
+      #     resource: pod
+      #     node: ${NODE_NAME}
+      #     hints:
+      #       enabled: true
+      #     templates:
+      #       - condition:
+      #           equals:
+      #             kubernetes.node.labels.elastic-group: AskAdaZonedPools
+      #           contains:
+      #             # (we use std. istio injected annotation)
+      #             kubernetes.annotations.prometheus.io/path: "/stats/prometheus"
+      #         config:
+      #           - module: istio
+      #             enabled: true
+      #             period: 30s
+      #             metricsets:
+      #             - proxy
+      #             # undocumented seems to work for slow system
+      #             timeout: 90s
+      #             hosts:
+      #             # istio proxy port
+      #             - http://${data.kubernetes.pod.ip}:15020
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # name format: <output-eck-cluster>-k8s
+  name: &app_name nonprod-eus-global-02-aks-k8s-metricbeat
+  namespace: pep-eiap-elastic-askadaa-01
+  labels:
+    app.kubernetes.io/name: *app_name
+    app.kubernetes.io/version: &vers 9.4.4
+spec:
+
+  # For cluster wide metricbeat we use recreate, so we don't run into locks
+  strategy:
+    type: Recreate
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app_name
+      app.kubernetes.io/version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app_name
+        app.kubernetes.io/version: *vers
+        app: *app_name
+        version: *vers
+
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+
+      serviceAccountName: metricbeat
+      automountServiceAccountToken: true
+      securityContext:
+        runAsUser: 0
+
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # All volumes
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      volumes:
+
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+          - configMap:
+              name: &beats_config nonprod-eus-global-02-aks-k8s-metricbeat-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      containers:
+      # PEP: args removed sysfs it's a deployment
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:9.4.4
+        securityContext:
+          capabilities:
+            add:
+              - SYS_PTRACE
+        args:
+        - --environment
+        - container
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+
+        resources:
+          requests:
+            # cpu: 200m
+            memory: 512Mi
+        env:
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: K8S_CLUSTER_NAME
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_NAMESPACE
+          value: monitoring
+
+        # PEP: change
+        - name: KUBE_STATE_METRICS_PORT
+          value: "8080"
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
+        # ~~
+        # volumemounts
+        # ~~
+        volumeMounts:
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

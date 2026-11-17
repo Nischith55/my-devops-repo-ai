@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-apac-notify-dev-cv-web-vs
+  namespace: pep-eiap-apac-notify-dev
+  labels:
+    app: pep-eiap-apac-notify-dev-cv-web
+spec:
+  hosts:
+    - notify-apac.dev.mypepsico.com
+    - pep-eiap-apac-notify-dev-cv.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-notify-dev/pep-eiap-apac-notify-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-apac-notify-dev-cv-web.pep-eiap-apac-notify-dev.svc.cluster.local
+        port:
+          number: 80

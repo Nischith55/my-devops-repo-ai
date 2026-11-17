@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: cmp-engineeringexcellence-cloudvelocity-http
+  name: pep-eiap-cgf-eecmp-dev-cv-cdn-vs
+  namespace: pep-eiap-cgf-eecmp-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-dev/pep-eiap-cgf-eecmp-dev-cv-gw
+  hosts:
+  - cvp.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cmp-engineeringexcellence-cloudvelocity-http.pep-eiap-cgf-eecmp-dev.svc.cluster.local
+        port:
+          number: 443

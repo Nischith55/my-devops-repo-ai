@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-gpay-prod
+  labels:
+    env-prod: "true"
+    project: gpay
+    sector: dps
+    team: dps-gpay
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: global-payment-gateway-dps
+    istio.io/rev: prod-stable
+    environment: prod
+    

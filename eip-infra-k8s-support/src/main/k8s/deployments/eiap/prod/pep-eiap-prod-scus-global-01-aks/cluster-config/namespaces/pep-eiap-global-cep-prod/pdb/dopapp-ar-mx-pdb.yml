@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: dopapp-ar-mx
+  namespace: pep-eiap-global-cep-prod
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: dopapp-ar-mx     

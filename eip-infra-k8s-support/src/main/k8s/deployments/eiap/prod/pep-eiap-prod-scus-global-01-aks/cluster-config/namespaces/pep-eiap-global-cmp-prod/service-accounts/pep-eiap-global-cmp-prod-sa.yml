@@ -1,0 +1,5 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-global-cmp-prod-sa
+  namespace: pep-eiap-global-cmp-prod

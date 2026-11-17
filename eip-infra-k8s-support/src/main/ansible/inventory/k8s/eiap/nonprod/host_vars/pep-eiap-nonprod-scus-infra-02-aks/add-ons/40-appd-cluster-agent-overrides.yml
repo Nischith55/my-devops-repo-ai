@@ -1,0 +1,18 @@
+---
+# ##
+# Overrides for appd cluster agent.
+# SPECIFICATION:
+#   - appd_ca_host_cfg:
+#       nsToInstrumentRegex: [Required] ['|' seperated string NO spaces]
+# ##
+
+__appd_ns_to_monitor__:
+  - pep-eiap-global-infra-dev
+
+appd_ca_host_cfg:
+
+  nsToMonitor: "{{ __appd_ns_to_monitor__ }}"
+
+  # We use our custom filter that is enhanced for null values
+  nsToInstrumentRegex: |-
+    {{ __appd_ns_to_monitor__ | join_trim('|') }}

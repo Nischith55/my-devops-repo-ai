@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: commercial-brain-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for commercial-brain-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/commercial-brain-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-combrain-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: commercial-brain-qa-admin
+        description: Admin privileges to commercial-brain-qa
+        policies:
+        - p, proj:commercial-brain-qa:commercial-brain-qa-admin, applications, *, commercial-brain-qa/*, allow
+        - p, proj:commercial-brain-qa:commercial-brain-qa-admin, repositories, *, commercial-brain-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: commercial-brain-qa-user
+        description: Read-only privileges to commercial-brain-qa
+        policies:
+        - p, proj:commercial-brain-qa:commercial-brain-qa-user, applications, get, commercial-brain-qa/*, allow
+        - p, proj:commercial-brain-qa:commercial-brain-qa-user, applications, sync, commercial-brain-qa/*, allow
+        - p, proj:commercial-brain-qa:commercial-brain-qa-user, repositories, get, commercial-brain-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:commercial-brain-qa:commercial-brain-qa-user, applications, action/apps/Deployment/restart, commercial-brain-qa/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.combrain"
+        - "Team.Support.EIAP.READ"
+    

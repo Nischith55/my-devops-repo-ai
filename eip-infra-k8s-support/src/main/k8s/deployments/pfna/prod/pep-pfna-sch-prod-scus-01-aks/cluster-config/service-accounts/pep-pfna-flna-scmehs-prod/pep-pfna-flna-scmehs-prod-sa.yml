@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    annotations:
+      azure.workload.identity/client-id: 05c3dcdb-bf74-4552-8e42-3274441cb275
+  name: pep-pfna-flna-scmehs-prod-sa
+  namespace: pep-pfna-flna-scmehs-prod

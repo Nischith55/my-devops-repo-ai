@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 346af61b-7d55-4245-8a95-20977b4dccfd
+  name: pep-dps-dps-ruleng-qa-sa
+  namespace: pep-dps-dps-ruleng-qa

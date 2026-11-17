@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: k8s-resources
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+     argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for k8s platform components   
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+  - https://charts.rancher.io
+  destinations:  
+  - name: pep-snt-nonprod-eus-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+       
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: cattle-gatekeeper-system
+    server: https://pep-snt-nonprod-eus-global-02-aks-fhuawstj.privatelink.eastus.azmk8s.io:443

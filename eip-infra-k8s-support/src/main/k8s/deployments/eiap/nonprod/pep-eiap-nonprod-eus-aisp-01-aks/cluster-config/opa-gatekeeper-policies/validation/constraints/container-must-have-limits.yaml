@@ -1,0 +1,76 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: container-must-have-limits
+spec:
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlockp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-infra
+    - pep-eiap-istio-config
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-prod
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    - pep-eiap-gremlin
+    # CMP OPA Exception Request 
+    - pep-eiap-global-cmp-prod  
+    - pep-eiap-pfna-ipp-prod
+    - pep-eiap-cgf-pepgenx-dev
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    scope: '*'
+  parameters:
+    cpu: "4"
+    memory: "8Gi"
+    exemptImages:
+    - cyberark/secrets-provider-for-k8s*
+    - docker.io/istio/*
+    - docker.elastic.co/observability/*
+    - appdynamics/*
+    - docker.io/appdynamics/*
+    # OPA Exception RITM4519539 contenthubdigest
+    - pepeiapprodcommonacr.azurecr.io/contenthubdigestdistributionservice*
+    # OPA Exception RITM4559167 latam-gtm       
+    - pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/*
+    # OPA Exception RITM4600570 pep-eiap-och-na-prod
+    - otel/opentelemetry-collector*
+    # OPA Exception RITM4801549  pep-eiap-cgf-labelright-prod
+    - pepeiapprodcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*
+    # OPA Exception RITM5374140
+    - pepeiapprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*
+    # OPA Exception RITM5479678
+    - pepeiapprodcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*
+    # OPA Exception - CTASK1281630 for pep-eiap-cgf-rmispecs-prod
+    - pepeiapprodcommonacr.azurecr.io/pep/eip/specification-digitization*
+    # OPA Exception - CTASK1463419 for pep-eiap-qfna-acp-prod
+    - pepeiapprodcommonacr.azurecr.io/pbna/svt/svt-softbot-platform*
+    # OPA Exception - CTASK1522733 for pep-och-essa-poland-pricing-batch
+    - pepeiapprodcommonacr.azurecr.io/pep/eiap/iai-cv-pepiris-inference-ray-service*

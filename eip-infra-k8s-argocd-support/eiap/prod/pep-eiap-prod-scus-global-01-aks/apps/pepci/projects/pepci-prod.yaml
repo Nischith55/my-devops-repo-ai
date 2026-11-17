@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepci-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app     
+spec:
+  description: Project for pepci-prod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-cgf-peppci-prod
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepci-prod-admin
+    description: Admin privileges to pepci-prod
+    policies:
+    - p, proj:pepci-prod:pepci-prod-admin, applications, *, pepci-prod/*, allow
+    - p, proj:pepci-prod:pepci-prod-admin, repositories, *, pepci-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepci-prod-user
+    description: Read-only privileges to pepci-prod
+    policies:
+    - p, proj:pepci-prod:pepci-prod-user, applications, get, pepci-prod/*, allow
+    - p, proj:pepci-prod:pepci-prod-user, applications, sync, pepci-prod/*, allow
+    - p, proj:pepci-prod:pepci-prod-user, repositories, get, pepci-prod/*, allow
+    - p, proj:pepci-prod:pepci-prod-user, *, delete, *, deny
+    groups:
+    - "Team.App.AI.PepGpt.Admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.App.EIAP.PEPCI.RG.Contributor"

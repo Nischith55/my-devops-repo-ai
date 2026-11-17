@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: och-bees-fetch-order-batch
+  name: och-bees-fetch-order-batch-qa-vs
+  namespace: pep-eiap-och-na-qa
+spec:
+  gateways:
+  - pep-eiap-och-na-qa/pep-eiap-och-na-qa-cv-gw
+  hosts:
+  - och-bees-fetch-order-batch-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: och-bees-fetch-order-batch.pep-eiap-och-na-qa.svc.cluster.local
+        port:
+          number: 80

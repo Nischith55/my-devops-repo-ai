@@ -1,0 +1,435 @@
+# ##
+# Non-ECK deployment.
+# IMPORTANT:
+# - This is meant to send all AKS logs to our primary cluster (cluster-01)
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nonprod-eus-global-01-aks-logs-filebeat-config
+  namespace: pep-pfna-elastic-client-01
+data:
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat environment variables change here
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  K8S_CLUSTER_NAME: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+  # Important we are using inCluster URL (change to gw url if remote)
+  # please make sure the scheme is correct
+  # We are sending all logs to our main cluster
+  ELASTICSEARCH_OUTPUT_URL: https://pep-pfna-ingest-01.pfnainfra.gw01.aks02.eus.nonprod.azure.intra.pepsico.com:443
+  # sending data to our monitoring cluster
+  # please make sure the scheme is correct
+  #MONITORING_CLUSTER_URL: https://pep-pfna-elastic-monitor-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com:443
+  # Change the template name appropriately if required
+  TEMPLATE_NAME: filebeat-aks-cluster
+  INDEX_PATTERN_PREFIX: fb-aks
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat processor stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  filebeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+
+    processors:
+
+    - add_fields:
+        target: pfna
+        fields:
+          cluster_name: ${K8S_CLUSTER_NAME}
+
+    - add_cloud_metadata:
+        # **
+        # Only augment for system level data
+        # **
+        when:
+          equals:
+            event.module: system
+
+    - add_host_metadata: {}
+
+    - add_kubernetes_metadata:
+        # we need this since we disabled hostNetwork
+        host: ${NODE_NAME}
+        # NOTE: default_indexer: container and default_matcher: logs_path
+        # but logs_path matcher is wrong! so we disable it
+        default_indexers:
+          enabled: false
+        default_matchers:
+          enabled: false
+
+    # Enable processor for dynamic indexing to namespace
+    - if:
+        has_fields:
+        - kubernetes.namespace
+      then:
+      - copy_fields:
+          fields:
+          - from: kubernetes.namespace
+            to: index_name_add
+      else:
+      - add_fields:
+          target: ""
+          fields:
+            index_name_add: ${K8S_CLUSTER_NAME}
+
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  filebeat.yml: |-
+
+    # --------------------
+    # All outputs
+    # IMPORTANT:
+    # - This is for stack monitoring gather all ES, Beats etc.
+    # - By default they go to monitoring-* index CANNOT configure it
+    # --------------------
+    output:
+      elasticsearch:
+        index: ${INDEX_PATTERN_PREFIX}-%{[index_name_add]}-%{[agent.version]}-%{+yyyy.MM.dd}
+        hosts:
+          - ${ELASTICSEARCH_OUTPUT_URL}
+        username: ${ELASTICSEARCH_USERNAME}
+        password: ${ELASTICSEARCH_PASSWORD}
+        # should equal to number of ingest nodes
+        workers: 3
+        ssl: &pep_ca_ssl
+          enabled: true
+          # The following 2 must be mounted at paths shown below from
+          # pep-ca-certs-config ConfigMap
+          certificate_authorities:
+            - /projected/etc/certs/PepsiCoCA01.pem
+            - /projected/etc/certs/PepsiCoRootCA.pem
+          supported_protocols:
+            - TLSv1.2
+            - TLSv1.3
+          verification_mode: certificate
+
+    # --------------------
+    # Setup all index patterns
+    # --------------------
+    setup:
+      ilm:
+        enabled: false
+      template:
+        enabled: true
+        name: ${TEMPLATE_NAME}-%{[agent.version]}
+        overwrite: false
+        pattern: ${INDEX_PATTERN_PREFIX}-*
+        settings:
+          index:
+            codec: best_compression
+            number_of_replicas: ${INDEX_REPLICAS:1}
+            number_of_shards: ${INDEX_SHARDS:1}
+
+    # --------------------
+    # send metricbeat metrics itself to our monitoring cluster
+    # --------------------
+    # monitoring:
+    #   enabled: true
+    #   elasticsearch:
+    #     hosts:
+    #       - ${MONITORING_CLUSTER_URL}
+    #     # IMPORTANT we are re-using the usernae and password
+    #     username: ${MONITORING_CLUSTER_USERNAME}
+    #     password: ${MONITORING_CLUSTER_PASSWORD}
+    #     ssl: *pep_ca_ssl
+
+    # --------------------
+    # Setup filebeat configuration
+    # --------------------
+    filebeat:
+
+      # ~~
+      # All enabled modules. NOTE: This requires an ingest-node to be
+      # available OTHERWISE it will fail!!!
+      # ~~
+      modules:
+      - module: system
+        syslog:
+          enabled: true
+          # Default: Configured paths: [/var/log/messages* /var/log/syslog*]
+          var:
+            paths:
+            - /var/log/syslog
+            - /var/log/messages
+            - /var/log/waagent.log
+            - /var/log/azure/*.log
+        auth:
+          enabled: true
+          # Default: Configured paths: [/var/log/auth.log* /var/log/secure*]
+          var:
+            paths:
+            - /var/log/auth.log
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #  autodiscover via hints (pod annotations)
+      # NOTE: Only stack monitoring.
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      autodiscover:
+        providers:
+        - type: kubernetes
+          scope: node
+          resource: pod
+          node: ${NODE_NAME}
+          hints:
+            enabled: true
+          templates:
+            - condition:
+                not:
+                  has_fields:
+                  # ignore all logs from elastic pods since we are shipping
+                  # it to monitoring cluster
+                  - kubernetes.labels.common.k8s.elastic.co/type
+              # ##
+              # Container input has a lot of config options. Please refer to
+              # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-container.html#filebeat-input-container
+              # for all the options
+              # ##
+              config:
+              - type: container
+                paths:
+                - /var/log/containers/*${data.kubernetes.container.id}.log
+                # Supporting apparently pep java shared common library
+                # output
+                multiline:
+                  type: pattern
+                  pattern: '^(\[|[0-9]{4}-[0-9]{2}-[0-9]{2} | [[:space:]])'
+                  negate: true
+                  match: after
+
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: &app_name nonprod-eus-global-01-aks-logs-filebeat
+  namespace: pep-pfna-elastic-client-01
+  labels:
+    app.kubernetes.io/name: *app_name
+    app.kubernetes.io/version: &vers 8.0.1
+    app: *app_name
+    # match the  ES server version (beats is not backward compatible)
+    version: *vers
+spec:
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app_name
+      app.kubernetes.io/version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app_name
+        app.kubernetes.io/version: *vers
+
+    spec:
+
+      # Run only on linux nodes, not that we have non linux nodes :)
+      nodeSelector:
+        kubernetes.io/os: linux
+      # PEP: DaemonSet we need to run it on EVERY node. so tolerate all
+      # taints
+      tolerations:
+      - operator: Exists
+
+      serviceAccountName: filebeat
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsUser: 0
+
+      # ~~~
+      # All volumes
+      # ~~~
+      volumes:
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+          - configMap:
+              name: &beats_config nonprod-eus-global-01-aks-logs-filebeat-config
+              optional: false
+              items:
+                - key: filebeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: filebeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+
+      - name: varlog
+        hostPath:
+          path: /var/log
+
+      # data folder stores a registry of read status for all files,
+      # so we don't send everything again on a Filebeat pod restart
+      - name: data
+        hostPath:
+          path: /var/lib/pep-pfna-elastic-client-01/nonprod-eus-global-01-aks-logs-filebeat/filebeat-data
+          type: DirectoryOrCreate
+
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+
+      # ##
+      # All Containers
+      # ##
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:8.0.1
+        args:
+        - -environment
+        - container
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+        # - -d
+        # - "monitoring"
+        # - index-management,processors
+
+        resources:
+          # limits:
+          #   cpu: 100m
+          #   memory: 200Mi
+          requests:
+            # cpu: 200m
+            memory: 512Mi
+
+        env:
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: K8S_CLUSTER_NAME
+
+        - name: TEMPLATE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: TEMPLATE_NAME
+
+        - name: INDEX_PATTERN_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: INDEX_PATTERN_PREFIX
+
+        - name: ELASTICSEARCH_OUTPUT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: ELASTICSEARCH_OUTPUT_URL
+
+        # All secrets from elastic-client-shared
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: &shared_sec elastic-client-shared
+              key: BEATS_INGEST_USER_01
+
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *shared_sec
+              key: BEATS_INGEST_PASSWORD_01
+
+        # - name: MONITORING_CLUSTER_URL
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: *beats_config
+        #       key: MONITORING_CLUSTER_URL
+
+        # - name: MONITORING_CLUSTER_USERNAME
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: *shared_sec
+        #       # re-use
+        #       key: BEATS_MONITOR_INGEST_USER_01
+
+        # - name: MONITORING_CLUSTER_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: *shared_sec
+        #       # re-use
+        #       key: BEATS_MONITOR_INGEST_PASSWORD_01
+
+        # - name: MONITOR_USERNAME
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: *shared_sec
+        #       key: MONITOR_COMMON_USER_01
+
+        # - name: MONITOR_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: *shared_sec
+        #       key: MONITOR_COMMON_PASSWORD_01
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
+        volumeMounts:
+
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true
+
+        - name: data
+          mountPath: /usr/share/filebeat/data
+
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+
+        - name: varlog
+          mountPath: /var/log
+          readOnly: true
+
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+

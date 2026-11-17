@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"rd-ppsi-api","app.kubernetes.io/instance":"rd-ppsi-api-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"rd-ppsi-api-vs","namespace":"pep-snt-cgf-ppsi-dev"},"spec":{"gateways":["pep-snt-cgf-ppsi-dev/pep-snt-cgf-ppsi-dev-cv-gw"],"hosts":["rd-ppsi-api.snt.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"rd-ppsi-api.pep-snt-cgf-ppsi-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: rd-ppsi-api
+        app.kubernetes.io/instance: rd-ppsi-api-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: rd-ppsi-api-vs
+    namespace: pep-snt-cgf-ppsi-dev
+spec:
+    gateways:
+    - pep-snt-cgf-ppsi-dev/pep-snt-cgf-ppsi-dev-cv-gw
+    hosts:
+    - rd-ppsi-api.snt.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - ppsi.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: rd-ppsi-api.pep-snt-cgf-ppsi-dev.svc.cluster.local
+                port:
+                    number: 8080

@@ -1,0 +1,20 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-pfna-appsupport-rb
+  namespace: pep-pfna-pcaf-pgt-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-appsupport-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.PFNA.RG.AKS.PROD.Contributor
+    name: b994e070-4005-45d6-8c5d-88238e1b0709
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.PFNA.RG.AKS.PROD.Reader
+    name: 3ab5bc26-0e5f-4a75-b223-f43f70289a7f

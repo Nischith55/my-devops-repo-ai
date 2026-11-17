@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_latam_pepgpt_qa:
+  
+  name: pep-eiap-latam-pepgpt-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-pepgpt
+    sector: latam
+    project: pepgpt
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: iaiconversationaistudioprod
+    pep-cmdb-app-service-id: "e03f35e11bd2b4905e6e54ae034bcb98"
+    pep-cmdb-bus-app-id: "283f35e11bd2b4905e6e54ae034bcbb6"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-pepgpt-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_pepgpt'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-latam-pepgpt-qa-sa-token
+    namespace: pep-eiap-latam-pepgpt-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-latam-pepgpt-qa-sa"

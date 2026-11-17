@@ -1,0 +1,46 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace CGF F2P
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_f2p_dev:
+  
+  name: pep-eiap-cgf-f2p-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-f2p
+    sector: cgf
+    project: f2p
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_f2p'] }}"
+        - "{{ k8s_sup_subjects['cgf_f2p_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _cgf_f2p_spn_name }}"
+      registries: 
+        - pepeiapnonprodcgff2pacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _cgf_f2p_spn_name }}"
+      # Any contents apart from what is in secret        
+

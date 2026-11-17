@@ -1,0 +1,74 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sRequiredProbes",
+  "metadata": {
+    "annotations": {},
+    "name": "must-have-probes"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "falcon-kac",
+        "falcon-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "pep-dps-ops-admin",
+        "pep-dps-infra-preprod",
+        "pep-dps-istio-config",
+        "pep-dps-elastic-client-01",
+        "pep-dps-global-devsecops-preprod",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "policy-system",
+        "gitops-connector-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": [
+          {
+            "key": "app",
+            "operator": "Exists"
+          }
+        ]
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "probeTypes": [
+        "tcpSocket",
+        "httpGet",
+        "exec"
+      ],
+      "probes": [
+        "readinessProbe"
+      ]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-dtvscm-preprod-cv-cdn-vs
+  namespace: pep-dps-dps-dtvscm-preprod
+spec:
+  hosts:
+    - scm.preprod.mypepsico.com
+  gateways:
+  - "pep-dps-dps-dtvscm-preprod/pep-dps-dps-dtvscm-preprod-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "dtv-should-cost-ui.pep-dps-dps-dtvscm-preprod.svc.cluster.local"
+        port:
+          number: 8080

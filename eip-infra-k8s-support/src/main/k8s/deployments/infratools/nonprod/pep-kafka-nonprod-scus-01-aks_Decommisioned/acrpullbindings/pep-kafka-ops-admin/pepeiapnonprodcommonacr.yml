@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapnonprodcommonacr
+  namespace: pep-kafka-ops-admin
+spec:
+  acrServer: pepeiapnonprodcommonacr.azurecr.io
+  managedIdentityResourceID:  /subscriptions/86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc/resourceGroups/pep-kafka-nonprod-scus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-kafka-nonprod-scus-01-aks-agentpool
+  # serviceAccountName: <add if different than default>

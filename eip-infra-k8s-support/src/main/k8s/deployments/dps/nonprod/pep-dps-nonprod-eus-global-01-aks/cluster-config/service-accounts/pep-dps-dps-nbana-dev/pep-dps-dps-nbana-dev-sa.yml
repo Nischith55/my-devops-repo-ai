@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: b74afa04-ceaa-42e8-b37e-9e56bb7682fd
+  name: pep-dps-dps-nbana-dev-sa
+  namespace: pep-dps-dps-nbana-dev

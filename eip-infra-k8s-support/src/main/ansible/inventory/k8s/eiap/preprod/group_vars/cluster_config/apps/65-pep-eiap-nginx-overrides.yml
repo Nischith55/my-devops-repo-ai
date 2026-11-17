@@ -1,0 +1,61 @@
+---
+# Overrides for pep-eiap-nginx app 
+
+# namespace is different
+pe_nginx_namespace: pep-eiap-global-infra
+
+# ##
+# Overrides for pep-eiap-nginx app deployments
+# ##
+
+# TODO: the secret names DON'T need to be hard-coded we already have them
+
+__gw_sec_vol_name__: all-gw-secrets
+__gw_sec_vol_mount__: /secrets
+
+__gw01_secret_name__: "{{ inventory_hostname }}-gw01-tls"
+__gw02_secret_name__: "{{ inventory_hostname }}-gw02-tls"
+
+# Merge -- add volume for secrets
+pep_eiap_nginx_default_merge_patch_ovrd_container_01:
+  spec:
+    template:
+
+      spec:
+        imagePullSecrets:
+          - name: "{{ _eiap_infra_spn_name }}-regcred"
+
+        volumes:
+          - name: "{{ __gw_sec_vol_name__ }}"
+            projected:
+              defaultMode: 0400
+              sources:
+                - secret:
+                    name: "{{ __gw01_secret_name__ }}"
+                    items:
+                      - key: tls.crt
+                        # must be relative path
+                        path: gw01-tls.crt
+                      - key: tls.key
+                        # must be relative path
+                        path: gw01-tls.key
+                - secret:
+                    name: "{{ __gw02_secret_name__ }}"
+                    items:
+                      - key: tls.crt
+                        # must be relative path
+                        path: gw02-tls.crt
+                      - key: tls.key
+                        # must be relative path
+                        path: gw02-tls.key
+
+# json patch (a LIST)
+pep_eiap_nginx_default_json_patch_ovrd_container_01:
+
+  # Append first container -- volume mounts, we don't have any in base 
+  - op: add
+    path: /spec/template/spec/containers/0/volumeMounts
+    value:
+      - mountPath: /secrets
+        name: "{{ __gw_sec_vol_name__ }}"
+        readOnly: true

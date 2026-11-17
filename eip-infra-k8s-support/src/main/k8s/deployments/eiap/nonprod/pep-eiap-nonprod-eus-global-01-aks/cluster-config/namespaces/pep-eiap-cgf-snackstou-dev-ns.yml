@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-snackstou-dev
+    project: snackstou
+    sector: cgf
+    servicename_aks: ecommercecgfitsupport
+    team: cgf-snackstou
+  name: pep-eiap-cgf-snackstou-dev

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-appservices-kams-calendar-pt-ynub-vs
+  namespace: pep-pfna-pcaf-preprod
+  labels:
+      app: pep-pcaf-api-appservices-kams-calendar-pt
+spec:
+  hosts:
+  - pep-pcaf-api-appservices-kams-calendar-pt.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-api-appservices-kams-calendar-pt.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80
+  

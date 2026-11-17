@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace GLOBAL HCM
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa, prod or preprod etc}
+
+ns_pep_eiap_global_hcm_prod:
+  
+  name: pep-eiap-global-hcm-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-hcm
+    sector: global
+    project: hcm
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_hcmprod'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-global-hcm-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb

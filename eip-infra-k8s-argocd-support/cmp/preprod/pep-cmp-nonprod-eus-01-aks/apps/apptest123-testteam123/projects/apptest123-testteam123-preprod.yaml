@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apptest123-testteam123-apptest123-testteam123-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for apptest123-testteam123-apptest123-testteam123-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/apptest123-testteam123-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: eiap-ops-admin
+  roles:
+  - name: apptest123-testteam123-apptest123-testteam123-preprod-admin
+    description: Admin privileges to apptest123-testteam123-apptest123-testteam123-preprod
+    policies:
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-admin, applications, *, apptest123-testteam123-apptest123-testteam123-preprod/*, allow
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-admin, repositories, *, apptest123-testteam123-apptest123-testteam123-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: apptest123-testteam123-apptest123-testteam123-preprod-user
+    description: Read-only privileges to apptest123-testteam123-apptest123-testteam123-preprod
+    policies:
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-user, applications, get, apptest123-testteam123-apptest123-testteam123-preprod/*, allow
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-user, applications, sync, apptest123-testteam123-apptest123-testteam123-preprod/*, allow
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-user, repositories, get, apptest123-testteam123-apptest123-testteam123-preprod/*, allow
+    - p, proj:apptest123-testteam123-apptest123-testteam123-preprod:apptest123-testteam123-apptest123-testteam123-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

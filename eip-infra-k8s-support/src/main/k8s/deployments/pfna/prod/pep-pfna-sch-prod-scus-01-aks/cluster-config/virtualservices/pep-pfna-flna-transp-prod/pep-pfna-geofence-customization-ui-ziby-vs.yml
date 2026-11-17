@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-geofence-customization-ui-ziby-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-geofence-customization-ui
+spec:
+  hosts:
+  - pep-pfna-geofence-customization-ui.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-geofence-customization-ui.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

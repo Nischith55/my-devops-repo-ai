@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: schrts-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://github.com/Global-SnT/tsep-supplychainhub-rts-sampleservice-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-schrts-dev
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: schrts-admin-dev
+    description: Admin privileges to schrts-dev
+    policies:
+    - p, proj:schrts-dev:schrts-admin-dev, applications, *, schrts-dev/*, allow
+    - p, proj:schrts-dev:schrts-admin-dev, repositories, *, schrts-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: schrts-user-dev
+    description: Read-only privileges to schrts-develop
+    policies:
+    - p, proj:schrts-dev:schrts-user-dev, applications, get, schrts-dev/*, allow
+    - p, proj:schrts-dev:schrts-user-dev, applications, sync, schrts-dev/*, allow
+    - p, proj:schrts-dev:schrts-user-dev, repositories, get, schrts-dev/*, allow
+    - p, proj:schrts-dev:schrts-user-dev, applications, action/apps/Deployment/restart, schrts-dev/*, allow
+    groups:
+    - "Team.Support.NGPWM.Admins"
+    - "Team.Support.NGPWM.Dev"

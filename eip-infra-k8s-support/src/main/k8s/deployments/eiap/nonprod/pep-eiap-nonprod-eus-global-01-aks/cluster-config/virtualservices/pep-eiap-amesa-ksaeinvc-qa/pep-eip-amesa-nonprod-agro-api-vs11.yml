@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-amesa-nonprod-agro-api
+  name: pep-eip-amesa-nonprod-agro-api-vs11
+  namespace: pep-eiap-amesa-ksaeinvc-qa
+spec:
+  gateways:
+  - pep-eiap-amesa-ksaeinvc-qa/pep-eiap-amesa-ksaeinvc-qa-cv-gw
+  hosts:
+  - api-pep-eip-amesa-nonprod-agro1.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-nonprod-agro-api.pep-eiap-amesa-ksaeinvc-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-nonprod-agro-api.pep-eiap-amesa-ksaeinvc-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-cgf-cgf-tctsa-qa-sa
+  namespace: pep-cgf-cgf-tctsa-qa

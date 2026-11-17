@@ -1,0 +1,152 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-developer-clusterrole
+rules:
+
+  - apiGroups: 
+      - ""
+    resources: 
+      - persistentvolumeclaims
+    verbs: 
+      - get
+      - list
+      - watch
+
+  - apiGroups:
+      - ""
+    resources: 
+      - configmaps
+    verbs:
+      - create
+      - get
+      - list
+      - update
+      - watch
+
+  - apiGroups:
+      -  ""
+      - apps
+      - extensions
+    resources:
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      -  ""
+    resources:
+      - podtemplates
+      - pods
+      - pods/attach
+      - pods/binding
+      - pods/eviction
+      - pods/exec
+      - pods/log
+      - pods/portforward
+      - pods/proxy
+      - pods/status
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - services/proxy
+      - services/status
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+  - apiGroups:
+      - extensions
+    resources:
+      - deployments/rollback
+    verbs:
+      - create
+
+  - apiGroups:
+      - extensions
+    resources:
+      - ingresses
+      - ingresses/status
+    verbs:
+      - get
+      - list
+      - patch
+      - update
+      - watch
+
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets/status
+      - deployments/status
+      - deployments/scale
+      - replicasets/scale
+      - replicasets/status
+      - statefulsets/scale
+      - statefulsets/status
+    verbs:
+      - get
+      - patch
+      - update
+
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+      - horizontalpodautoscalers/status
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+      - jobs/status
+      - cronjobs
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
+
+  # istio
+  - apiGroups:
+      - networking.istio.io
+    resources:
+      - virtualservices
+      - destinationrules
+    verbs:
+      - "*"

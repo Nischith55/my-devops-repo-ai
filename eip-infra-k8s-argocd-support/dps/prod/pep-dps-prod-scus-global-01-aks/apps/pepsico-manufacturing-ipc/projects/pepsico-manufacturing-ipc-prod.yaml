@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-manufacturing-ipc-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-manufacturing-ipc-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/LATAM_IPC_TC/_git/pepsico-manufacturing-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-latamipc-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-manufacturing-ipc-prod-admin
+    description: Admin privileges to pepsico-manufacturing-ipc-prod
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-admin, applications, *, pepsico-manufacturing-ipc-prod/*, allow
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-admin, applications, get, argocd/*, allow
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-admin, repositories, *, pepsico-manufacturing-ipc-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-manufacturing-ipc-prod-user
+    description: Read-only privileges to pepsico-manufacturing-ipc-prod
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-user, applications, get, pepsico-manufacturing-ipc-prod/*, allow
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-user, applications, sync, pepsico-manufacturing-ipc-prod/*, allow
+    - p, proj:pepsico-manufacturing-ipc-prod:pepsico-manufacturing-ipc-prod-user, repositories, get, pepsico-manufacturing-ipc-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.IPC"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

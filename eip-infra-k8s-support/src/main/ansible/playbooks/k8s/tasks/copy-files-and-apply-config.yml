@@ -1,0 +1,53 @@
+---
+# ##
+# Generic Task to copy and apply config [can be a single file or directory]
+#
+# INPUT:
+#  params_task:
+#    kube_context:
+#    src:
+#    dest:
+#    apply_src:
+#    mode: (optional)
+#    skip_copy: (optional) (default: false)
+# OUTPUT:
+# ##
+
+- name: PRINT_PARAMS
+  debug:
+    msg: |
+      params_task: {{ params_task |
+        to_nice_yaml }}
+
+- name: COPY_FILE_OR_DIRECTORY {{ params_task['src'] }}
+  copy:
+    src: "{{ params_task['src'] }}"
+    dest: "{{ params_task['dest'] }}"
+    directory_mode: "{{ params_task['directory_mode'] | default('0755') }}"
+    mode: "{{ params_task['mode'] | default('0644') }}"
+    # always force copy
+    force: true
+  delegate_to: localhost
+  when: >-
+    (not (params_task['skip_copy'] | default('false') | bool) )
+
+- name: COPY_FILE_OR_DIRECTORY_KCTL_APPLY
+  block:
+
+    - name: COPY_FILE_OR_DIRECTORY_KCTL_PRINT_PARAMS
+      debug:
+        msg: |
+          kctl_action_args: {{ kctl_action_args }}
+
+    - name: COPY_FILE_OR_DIRECTORY_KCTL_APPLY
+      include_role:
+        name: k8s_support/kubectl
+        tasks_from: execute
+
+  vars:
+    _apply_files_or_dir: |-
+      {{ params_task['apply_src'] | default(params_task['dest']) }}
+    kube_context: "{{ params_task['kube_context'] }}"
+    kctl_action: apply
+    kctl_action_args: "{{ params_task['ktcl_opts'] | default('') }} \
+                      -f {{ _apply_files_or_dir }}" 

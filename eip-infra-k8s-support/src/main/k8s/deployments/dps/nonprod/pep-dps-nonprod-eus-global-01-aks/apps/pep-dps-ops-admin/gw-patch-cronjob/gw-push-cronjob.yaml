@@ -1,0 +1,245 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gw-patch-script-cm
+  namespace: pep-dps-ops-admin
+data:
+  gw-patch-script.sh: |        
+    #!/bin/bash
+    echo "Checking if the GW exists";
+    credName=$clusterName-gw01-tls;
+    gwExists=$(kubectl get gateway $gwName -n $gwNS -o=jsonpath='{.metadata.name}');
+    if [ "$gwExists" == "" ] ; then
+      echo "Gateway does not exist in the cluster, exiting the job";
+      exit 1;
+    else 
+      echo "Gateway exists in the cluster, proceeding with host check ";
+    
+      echo "Check for uniqueness of  VS Host in the cluster"
+      hostexists=$(kubectl get virtualservices --all-namespaces -o=json | jq -r '.items[] | select(.spec.hosts != null) | .spec.hosts[]' | grep "'"$vshost"'");
+      if [ "$hostexists" != "" ] ; then       
+          echo "there is a vs already existing in the cluster with the same host name, exiting the job"; 
+          exit 1;       
+      else 
+          echo "valid host name; good to continue";  
+          if [ "$tls" == "true" ] ; then 
+              echo "tls termination on pod is set to true";  
+              echo "=====patching the host on passthrough section of gw=====" ;
+              index=$(kubectl get gateway $gwName -n $gwNS -o json | jq '.spec.servers | to_entries | .[] | select(.value.port.number == 443 and .value.tls.mode == "PASSTHROUGH" ) |.key');              
+              passthroughHosts=$(kubectl get gateway $gwName -n $gwNS -o jsonpath="{.spec.servers[$index].hosts}"); 
+              host_toadd=("$vshost");
+              
+              if printf '%s\0' "${passthroughHosts[@]}" | grep -qw "$host_toadd"; 
+              then
+                echo "host exists; No need to patch the gw";
+              else 
+                echo "continuing to patch the gw";  
+                echo "hosts block before patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+                
+                kubectl patch gw $gwName -n $gwNS --type=json -p='[{"op": "add", "path": "/spec/servers/'$index'/hosts/-", "value": "'"$host_toadd"'" }]';
+                echo "=====patched passthrough block of gw====";
+                echo "hosts block after patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+              fi
+          else
+              echo "tls termination is to be done on gw" ;              
+              echo "=====1. patching the host on tls section of gw=====" ;
+              
+              index=$(kubectl get gateway $gwName -n $gwNS -o json | jq '.spec.servers | to_entries | .[] | select(.value.port.number == 443 and .value.tls.credentialName == "'"$credName"'") |.key');
+              tlshosts=$(kubectl get gateway $gwName -n $gwNS -o jsonpath="{.spec.servers[$index].hosts}");
+              host_toadd=("$vshost");
+              if printf '%s\0' "${tlshosts[@]}" | grep -qw "$host_toadd"; 
+              then
+                echo "host exists; No need to patch the gw";
+              else 
+                echo "continuing to patch the gw";  
+                echo "tls hosts block before patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+                
+                kubectl patch gw $gwName -n $gwNS --type=json -p='[{"op": "add", "path": "/spec/servers/'$index'/hosts/-", "value": "'"$host_toadd"'" }]';
+                echo "=====patched tls block of gw====";                
+                echo "tls hosts block after patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+              fi
+              echo "=====2. patching the host on tls section of gw=====" ;
+              index=$(kubectl get gateway $gwName -n $gwNS -o json | jq '.spec.servers | to_entries | .[] | select(.value.port.number == 80) |.key');
+              
+              httphosts=$(kubectl get gateway $gwName -n $gwNS -o jsonpath="{.spec.servers[$index].hosts}");
+              host_toadd=("$vshost");
+              if printf '%s\0' "${httphosts[@]}" | grep -qw "$host_toadd"; 
+              then
+                echo "host exists; No need to patch the gw";
+              else 
+                echo "continuing to patch the gw";  
+                echo "http hosts block before patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+                
+                kubectl patch gw $gwName -n $gwNS --type=json -p='[{"op": "add", "path": "/spec/servers/'$index'/hosts/-", "value": "'"$host_toadd"'" }]';
+                echo "=====patched tls block of gw====";                
+                echo "http hosts block after patching the gw"
+                kubectl get gateway $gwName -n $gwNS -o=json | jq ".spec.servers[$index].hosts";
+              fi
+          fi
+       fi 
+    fi
+ 
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pep-dps-gw-push-cronjob
+  namespace: pep-dps-ops-admin
+  labels:
+    app: pep-dps-gw-push-cronjob
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 300
+  suspend: false
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600
+      backoffLimit:
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+          labels:
+            app: pep-dps-gw-push-cronjob
+        spec:
+          serviceAccountName: gw-update-sa
+          automountServiceAccountToken: true          
+          restartPolicy: Never
+          containers:
+          - name: pep-dps-gw-push-cronjob
+            image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+            imagePullPolicy: IfNotPresent
+            envFrom:
+            - configMapRef:
+                name: gw-patch-n-push-config                    
+            - secretRef:
+                name: gw-push-secret           
+            readinessProbe:
+              exec:
+                command:
+                - cat
+                - /script/gw-push-script.sh 
+              initialDelaySeconds: 120
+              periodSeconds: 5
+              timeoutSeconds: 15
+              successThreshold: 1
+              failureThreshold: 1
+            livenessProbe:
+              exec:
+                command:
+                - cat
+                - /script/gw-push-script.sh 
+              initialDelaySeconds: 120
+              periodSeconds: 5
+              timeoutSeconds: 15
+              successThreshold: 1
+              failureThreshold: 1
+            command:
+            - bash
+            - /script/gw-push-script.sh              
+            resources:
+              limits:
+                cpu: "2"
+                memory: 2Gi
+              requests:
+                cpu: "2"
+                memory: 1400Mi
+            volumeMounts:
+            - name: gw-push-script-volume
+              mountPath: /script
+          volumes:
+          - name: gw-push-script-volume
+            configMap:
+              name: gw-push-script-cm
+              defaultMode: 0744     
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gw-push-script-cm
+  namespace: pep-dps-ops-admin
+data:
+  gw-push-script.sh: |        
+    #!/bin/bash
+    echo "cloning the eip infra k8s repo to push the modified gw across the cluster";
+    git clone -b $branch https://$eipinfrauser:$pat@dev.azure.com/PepsiCoIT/$project/_git/$repo;
+    git pull;    
+    folderOfGw="src/main/k8s/deployments/$sector/$envpath/$clusterName/cluster-config/gateways";
+    echo "Preparing to read all the gws of the cluster ";
+    echo "Making a temp dir to hold all the live manifests";
+    mkdir tempgwfiles;
+    touch tempgwfiles/gw-ns-details.json;    
+    echo "Getting the details of all the gw and ns in the cluster";
+    kubectl get gw -A -o json | jq -r '[.items[] | {name:.metadata.name, namespace:.metadata.namespace}]' > tempgwfiles/gw-ns-details.json;
+    echo " Here are the list of the gw-ns whose changes will be pushed";
+    cat tempgwfiles/gw-ns-details.json;
+    echo "Iterating over the all the ns in the list and updating the gw manifests in the repo";
+    jq -c '.[]' tempgwfiles/gw-ns-details.json | while read i; do
+      gwName=$(echo $i | jq -r .name)
+      gwNS=$(echo $i | jq -r .namespace)      
+      kubectl get gateway $gwName -n $gwNS -o json > tempgwfiles/$gwNS-gw.json;
+      touch tempgwfiles/$gwNS-cv-gw.yml;
+      echo "deleting un-required metadata fields in json and modifying into yaml: $gwNS-cv-gw.yml";
+      jq 'del(.metadata["annotations", "generation", "resourceVersion", "uid", "creationTimestamp", "managedFields"])' tempgwfiles/$gwNS-gw.json > tempgwfiles/modified-$gwNS-gw.json;
+      python3 -c 'import yaml, sys; print(yaml.dump(yaml.safe_load(open(sys.argv[1])), default_flow_style=False))' tempgwfiles/modified-$gwNS-gw.json > tempgwfiles/$gwNS-cv-gw.yml;      
+      cp tempgwfiles/$gwNS-cv-gw.yml $repo/$folderOfGw/$gwNS/$gwName.yml;    
+    done;
+    cd $repo    
+    git config user.email "$eipinfrauser@pepsico.com";
+    git config user.name "$eipinfrauser";
+    git add .;
+    echo "files modified and ready to commit are: "
+    git status
+    git commit -m "pushing gw on the cluster $clusterName for $sector sector and $envpath environment";
+    success=1;
+    attempts=0;
+    until [[ $success -eq 0 || $attempts -eq 10 ]];
+    do
+      ((attempts++));
+      git pull --rebase;
+      git push;
+      success=`echo $?`;      
+    done;
+    if [[ $success -eq 0 ]] ;  then
+      echo "git push was successful after $attempts attempts!" ;
+    else
+      echo "git push failed after 10 attempt/s" ;
+      exit 1;
+    fi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gw-patch-n-push-config
+  namespace: pep-dps-ops-admin
+data:
+  envpath: nonprod
+  sector: dps  
+  clusterName: pep-dps-nonprod-ae-global-01-aks
+  project: EIP-Infrastructure
+  repo: eip-infra-k8s-support 
+  branch: develop               
+   
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gw-push-secret
+  namespace: pep-dps-ops-admin
+stringData:
+  eipinfrauser: AZP_TOKEN
+  pat: rgafrgzydpmqcy7rdk2h7upwqkxuyiw4lo3xuwwofnds7eoiexbq
+  
+---

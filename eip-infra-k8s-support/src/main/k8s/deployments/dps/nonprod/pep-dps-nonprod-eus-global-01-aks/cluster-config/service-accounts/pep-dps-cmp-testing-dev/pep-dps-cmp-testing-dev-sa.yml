@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-cmp-testing-dev-sa
+  namespace: pep-dps-cmp-testing-dev

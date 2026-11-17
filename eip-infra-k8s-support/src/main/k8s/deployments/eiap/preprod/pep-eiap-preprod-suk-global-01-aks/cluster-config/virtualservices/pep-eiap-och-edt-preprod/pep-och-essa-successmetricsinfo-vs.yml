@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-essa-successmetricsinfo-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-essa-successmetricsinfo.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-och-essa-successmetricsinfo.pep-eiap-och-edt-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-essa-successmetricsinfo
+  name: pep-och-essa-successmetricsinfo-vs
+  namespace: pep-eiap-och-edt-preprod
+spec:
+  gateways:
+  - pep-eiap-och-edt-preprod/pep-eiap-och-edt-preprod-cv-gw
+  hosts:
+  - pep-och-essa-successmetricsinfo.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-essa-successmetricsinfo.pep-eiap-och-edt-preprod.svc.cluster.local
+        port:
+          number: 80

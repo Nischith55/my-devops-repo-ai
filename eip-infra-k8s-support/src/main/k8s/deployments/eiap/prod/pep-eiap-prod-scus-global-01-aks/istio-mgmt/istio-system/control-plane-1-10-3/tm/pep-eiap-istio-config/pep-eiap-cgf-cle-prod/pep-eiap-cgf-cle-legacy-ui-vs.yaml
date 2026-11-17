@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-cle-legacy-ui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-cgf-cle-legacy-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com 
+  - cle.mypepsico.com
+  - cle-scus.mypepsico.com 
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-cgf-cle-legacy-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com 
+      - cle.mypepsico.com
+      - cle-scus.mypepsico.com 
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-legacy-ui.pep-eiap-cgf-cle-prod.svc.cluster.local
+        port:
+          number: 443 

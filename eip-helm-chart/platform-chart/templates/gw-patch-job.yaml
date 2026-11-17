@@ -1,0 +1,72 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- $name := .Values.global.fullnameOverride | trunc 40 | replace "-" "" -}} 
+{{- if .Values.virtualService.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gw-patch-job-{{ $name }}-{{ mustLast (regexSplit "-" $namespace -1) }}
+  namespace: {{ .Values.destination.jobNS }}   
+  labels:
+    app: {{ $name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: gw-patch-job-{{ $name }}-{{ mustLast (regexSplit "-" $namespace -1) }}
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: gw-patch-job-{{ $name }}-{{ mustLast (regexSplit "-" $namespace -1) }}      
+    spec:
+      serviceAccount: {{ .Values.destination.jobServiceAccount }} 
+      restartPolicy: Never
+      containers:
+      - name: post-install-job
+        image: {{ .Values.destination.jobImage }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: false
+          runAsUser: 0
+        command:
+          - bash
+          - /script/gw-patch-script.sh    
+        envFrom:
+        - configMapRef:
+            name: gw-patch-n-push-config
+        - secretRef:
+            name: gw-push-secret 
+        env:        
+        - name: tls
+          value: {{ .Values.virtualService.tlsTerminationOnPod | quote }}
+        - name: gwNS
+          value: {{ $namespace}}
+        - name: gwName
+          value: {{ $namespace }}-cv-gw
+        {{- range .Values.virtualService.hosts }}
+        {{- $h := . -}}
+        {{- if and
+              (regexMatch "(^|\\.)gw0[1-9](\\.|$)" $h)
+              (or
+                (regexMatch "(^|\\.)eus[0-9](\\.|$)" $h)
+                (regexMatch "(^|\\.)aks0[1-9](\\.|$)" $h)
+                (regexMatch "(^|\\.)eks0[1-9](\\.|$)" $h)
+              
+              )
+              (regexMatch "\\.intra\\.pepsico\\.com$" $h)
+        }}
+        - name: vshost
+          value: {{ $h }}
+        {{- end }}
+        {{- end }}     
+        volumeMounts:
+        - name: gw-patch-script-volume
+          mountPath: /script          
+      volumes:
+      - name: gw-patch-script-volume
+        configMap:
+          name: gw-patch-script-cm
+          defaultMode: 0744        
+{{- end }}

@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: applicationname-envname-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: argorepourl
+    targetRevision: targetbranchname
+  - repoURL: acrurl
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: applicationname-envname-rel
+      valueFiles:
+      - $values/envname/clustername/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: envname
+          helm:  
+            enabled: false       
+            repo: acrurl
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: istioimage
+                  jobNS: pep-sector-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'applicationname-envname-rel' 
+            source: 
+              repoURL: argorepourl
+              repoName: argoreponame
+              targetRevision: targetbranchname
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: teamschannelname

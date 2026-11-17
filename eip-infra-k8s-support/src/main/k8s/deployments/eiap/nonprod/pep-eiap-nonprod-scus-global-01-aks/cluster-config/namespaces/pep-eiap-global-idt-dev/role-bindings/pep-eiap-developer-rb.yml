@@ -1,0 +1,20 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-global-idt-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # acr-digitaltwindev-service-principal
+    name: 6b41739b-e813-436d-ace3-b43cb95a7ef1
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.Global.InnovationDigitalTwin.Developer
+    name: 08a23e79-b42b-4fea-9933-5332397269f5

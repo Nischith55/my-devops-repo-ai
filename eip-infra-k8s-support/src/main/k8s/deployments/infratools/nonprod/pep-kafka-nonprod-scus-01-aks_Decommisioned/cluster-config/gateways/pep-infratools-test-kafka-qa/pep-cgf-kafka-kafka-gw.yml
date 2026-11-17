@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  labels:
+    app.kubernetes.io/instance: pep-cgf-kafka-qa
+  name: pep-cgf-kafka-kafka-gw
+  namespace: pep-infratools-test-kafka-qa
+spec:
+  selector:
+    istio: pep-kafka-ingress-gw01
+  servers:
+  - hosts:
+    - controlcenter.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    port:
+      name: http-kafka
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - controlcenter.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - zookeeper.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - kafka.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b0.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b1.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b3.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b4.kafka.kafka.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    port:
+      name: tls-kafka
+      number: 443
+      protocol: TLS
+    tls:
+      mode: PASSTHROUGH
+

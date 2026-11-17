@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-pfna-pogon-dev-sa
+  namespace: pep-eiap-pfna-pogon-dev

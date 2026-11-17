@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-trm-controller-iymr-vs
+  namespace: pep-pfna-shp-qa
+  labels:
+      app: pcaf-shp-trm-controller
+spec:
+  hosts:
+  - pcaf-shp-trm-controller.pfnashp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-shp-qa/pep-pfna-shp-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-trm-controller.pep-pfna-shp-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.qa.mypepsico.com
+      - exact: https://q2.pfnaweb.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Content-Type
+      - Link
+      exposeHeaders:
+      - Authorization
+      - Link
+       
+  

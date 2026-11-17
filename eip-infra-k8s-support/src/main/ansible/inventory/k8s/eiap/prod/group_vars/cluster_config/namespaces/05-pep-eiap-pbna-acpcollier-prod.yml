@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_pbna_acpcollier_prod:
+  
+  name: pep-eiap-pbna-acpcollier-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-acpcollier
+    sector: pbna
+    project: acpcollier
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: systemlogisticswarehouseautomation
+    pep-cmdb-app-service-id: "65572ae6c3aff5544c9669deb001319a"
+    pep-cmdb-bus-app-id: "a157e6e6c3aff5544c9669deb00131ec"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-acpcollier-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_acpcollier'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-pbna-acpcollier-prod-sa-token
+    namespace: pep-eiap-pbna-acpcollier-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pbna-acpcollier-prod-sa"

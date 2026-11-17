@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-och-pcaf-orderintake-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepsico-och-pcaf-orderintake.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-och-pcaf-orderintake.pep-pfna-pcaf-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pepsico-och-pcaf-orderintake
+  name: pepsico-och-pcaf-orderintake-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pepsico-och-pcaf-orderintake.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-och-pcaf-orderintake.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: gpg-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for gpg-qa  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_SNT_Global_Payment_Gateway/_git/gpg-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-europe-gpg-qa
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: gpg-qa-admin
+        description: Admin privileges to gpg-qa
+        policies:
+        - p, proj:gpg-qa:gpg-qa-admin, applications, *, gpg-qa/*, allow
+        - p, proj:gpg-qa:gpg-qa-admin, repositories, *, gpg-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: gpg-qa-user
+        description: Read-only privileges to gpg-qa
+        policies:
+        - p, proj:gpg-qa:gpg-qa-user, applications, get, gpg-qa/*, allow
+        - p, proj:gpg-qa:gpg-qa-user, applications, sync, gpg-qa/*, allow
+        - p, proj:gpg-qa:gpg-qa-user, repositories, get, gpg-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:gpg-qa:gpg-qa-user, applications, action/apps/Deployment/restart, gpg-qa/*, allow
+        groups:
+        - "Team.App.DPS.GPG.nonprod"
+        - "Team.Support.EIAP.READ"
+    

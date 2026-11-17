@@ -1,0 +1,480 @@
+global:
+  fullnameOverride: dai-iam-ocp-control-plane
+  namespace: pep-aisp-cgf-aiseciam-dev
+  labels:
+    app: dai-iam-ocp-control-plane
+  awsSecretManagement:
+    enabled: true
+    secretProviderClassName: dai-iam-ocp-github-pem
+    # THE FIX: same missing-mountPath bug as OPA's file — the dedicated
+    # awsSecretManagement auto-mount block needs this set explicitly.
+    mountPath: /github
+    awsregion: us-east-1
+    awspathTranslation: "_"
+    objects:
+      - secretName: dai-iam-ocp-github-pem
+        data:
+          - objectName: AISecurityIAM/GITHUB_APP_PEM_KEY
+            objectType: secretsmanager
+            filePermission: "0400"
+          - objectName: AISecurityIAM/GITHUB_APP2_PEM_KEY
+            objectType: secretsmanager
+            filePermission: "0400"
+platform-chart:
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 1
+  hpaConfigMaxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  destinationRule:
+    enabled: false
+    trafficPolicy:
+      portLevelSettings:
+        - port:
+            number: 8181
+          tls:
+            mode: DISABLE  
+  virtualService:
+    enabled: false
+app-chart:
+  replicaCount: 1
+  image:
+    repository: 751328675657.dkr.ecr.us-east-1.amazonaws.com/dai-iam-ocp-control-plane
+    pullPolicy: IfNotPresent
+    tag: "edge"
+  serviceAccount:
+    name: pep-aisp-cgf-aiseciam-dev-sa    
+  command:
+    - "/ocp"
+    - "run"
+    - "--config=/app/config.d/application.yml"
+    - "--data-dir=/app/data"
+    - "--apply-migrations"
+    - "--log-level=debug"
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    runAsNonRoot: true
+  securityContext:
+    allowPrivilegeEscalation: false
+  additionalVolumes:
+    - name: ocp-data
+      mountPath: /app/data
+      type:
+        emptyDir: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi    
+  configmapFromFile:
+    enabled: true
+    configurations:
+      ocp-config:
+        volumeName: ocp-config-vol
+        mountPath: /app/config.d
+        tobeMounted: true
+        config: |
+          sources:
+            enterprise:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-policies.git"
+                reference: "refs/heads/poc"
+                path: sources/enterprise-policy/src
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            system-service:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-policies.git"
+                reference: "refs/heads/poc"
+                path: sources/system/service/src
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            system-sidecar:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-policies.git"
+                reference: "refs/heads/poc"
+                path: sources/system/sidecar/src
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            poc-workload:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-poc.git"
+                reference: "refs/heads/poc"
+                path: security/policy/sources/poc/src
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            poc-framework-overlay:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-poc.git"
+                reference: "refs/heads/poc"
+                path: security/policy/sources/poc/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            poc-authz-overlay:
+              git:
+                repo: "https://github.com/Global-SnT/is-iam-ai-security-poc.git"
+                reference: "refs/heads/poc"
+                path: security/policy/sources/poc/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds
+            # --- sample-mcp-server (PepsiCo-AISP org, uses git-creds-2) ---
+            sample-mcp-server-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-sample-mcp-server.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            sample-mcp-server-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-sample-mcp-server.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            sample-mcp-server-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-sample-mcp-server.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            # --- market-intelligence-agent (PepsiCo-AISP org, uses git-creds-2) ---
+            market-intelligence-agent-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-market-intelligence.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            market-intelligence-agent-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-market-intelligence.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            market-intelligence-agent-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-market-intelligence.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                credentials: git-creds-2
+            # --- hello-agent-worker (PepsiCo-AISP org, uses git-creds-2) ---
+            hello-agent-worker-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-temporal-worker.git"
+                reference: "refs/heads/dev"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            hello-agent-worker-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-temporal-worker.git"
+                reference: "refs/heads/dev"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            hello-agent-worker-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-temporal-worker.git"
+                reference: "refs/heads/dev"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            # --- food-nutrition-agent (PepsiCo-AISP org, uses git-creds-2) ---
+            food-nutrition-agent-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-food-nutrition-agent.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            food-nutrition-agent-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-food-nutrition-agent.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            food-nutrition-agent-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-food-nutrition-agent.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            # --- orchestrator-agent-worker (PepsiCo-AISP org, uses git-creds-2) ---
+            orchestrator-agent-worker-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-orchestrator-agent-worker.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            orchestrator-agent-worker-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-orchestrator-agent-worker.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            orchestrator-agent-worker-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-orchestrator-agent-worker.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            # --- langraph-agent-playbook (PepsiCo-AISP org, uses git-creds-2) ---
+            langraph-agent-playbook-workload:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-agent-playbook.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            langraph-agent-playbook-framework-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-agent-playbook.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+            langraph-agent-playbook-authz-overlay:
+              git:
+                repo: "https://github.com/PepsiCo-AISP/dai-pepgenx-langraph-agent-playbook.git"
+                reference: "refs/heads/develop"
+                path: security/policy/effective
+                excluded_files:
+                  - .*/.*
+                credentials: git-creds-2
+          secrets:
+            git-creds:
+              type: github_app_auth
+              integration_id: 4421695
+              installation_id: 149755414
+              private_key: /github/AISecurityIAM_GITHUB_APP_PEM_KEY
+            git-creds-2:
+              type: github_app_auth
+              integration_id: 4949857
+              installation_id: 161836822
+              private_key: /github/AISecurityIAM_GITHUB_APP2_PEM_KEY
+          bundles:
+            policy-engine:
+              object_storage:
+                aws:
+                  bucket: "pep-aws-opasps-storage-dev-use1-01-s3"
+                  key: bundles/policy-engine/bundle.tar.gz
+                  region: "us-east-1"
+              labels:
+                deployment_mode: service
+              requirements:
+                - source: system-service
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.poc.enterprise
+                - source: poc-workload
+                  path: access.workload
+                  prefix: access.workloads.poc.workload
+                - source: poc-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.poc.framework
+                - source: poc-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.poc.authz
+                # sample-mcp-server
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.sample_mcp_server.enterprise
+                - source: sample-mcp-server-workload
+                  path: access.workload
+                  prefix: access.workloads.sample_mcp_server.workload
+                - source: sample-mcp-server-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.sample_mcp_server.framework
+                - source: sample-mcp-server-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.sample_mcp_server.authz
+                # market-intelligence-agent
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.market_intelligence_agent.enterprise
+                - source: market-intelligence-agent-workload
+                  path: access.workload
+                  prefix: access.workloads.market_intelligence_agent.workload
+                - source: market-intelligence-agent-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.market_intelligence_agent.framework
+                - source: market-intelligence-agent-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.market_intelligence_agent.authz
+                # hello-agent-worker
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.hello_agent_worker.enterprise
+                - source: hello-agent-worker-workload
+                  path: access.workload
+                  prefix: access.workloads.hello_agent_worker.workload
+                - source: hello-agent-worker-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.hello_agent_worker.framework
+                - source: hello-agent-worker-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.hello_agent_worker.authz
+                # food-nutrition-agent
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.food_nutrition_agent.enterprise
+                - source: food-nutrition-agent-workload
+                  path: access.workload
+                  prefix: access.workloads.food_nutrition_agent.workload
+                - source: food-nutrition-agent-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.food_nutrition_agent.framework
+                - source: food-nutrition-agent-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.food_nutrition_agent.authz
+                # orchestrator-agent-worker
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.orchestrator_agent.enterprise
+                - source: orchestrator-agent-worker-workload
+                  path: access.workload
+                  prefix: access.workloads.orchestrator_agent.workload
+                - source: orchestrator-agent-worker-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.orchestrator_agent.framework
+                - source: orchestrator-agent-worker-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.orchestrator_agent.authz
+                # langraph-agent-playbook
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.langraph_agent_playbook.enterprise
+                - source: langraph-agent-playbook-workload
+                  path: access.workload
+                  prefix: access.workloads.langraph_agent_playbook.workload
+                - source: langraph-agent-playbook-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.langraph_agent_playbook.framework
+                - source: langraph-agent-playbook-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.langraph_agent_playbook.authz
+            sps:
+              object_storage:
+                aws:
+                  bucket: "pep-aws-opasps-storage-dev-use1-01-s3"
+                  key: bundles/sps/bundle.tar.gz
+                  region: "us-east-1"
+              labels:
+                workload: sps
+                deployment_mode: sidecar
+              requirements:
+                - source: system-sidecar
+                # poc
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.poc.enterprise
+                - source: poc-workload
+                  path: access.workload
+                  prefix: access.workloads.poc.workload
+                - source: poc-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.poc.framework
+                - source: poc-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.poc.authz
+                # sample-mcp-server
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.sample_mcp_server.enterprise
+                - source: sample-mcp-server-workload
+                  path: access.workload
+                  prefix: access.workloads.sample_mcp_server.workload
+                - source: sample-mcp-server-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.sample_mcp_server.framework
+                - source: sample-mcp-server-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.sample_mcp_server.authz
+                # market-intelligence-agent
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.market_intelligence_agent.enterprise
+                - source: market-intelligence-agent-workload
+                  path: access.workload
+                  prefix: access.workloads.market_intelligence_agent.workload
+                - source: market-intelligence-agent-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.market_intelligence_agent.framework
+                - source: market-intelligence-agent-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.market_intelligence_agent.authz
+                # hello-agent-worker
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.hello_agent_worker.enterprise
+                - source: hello-agent-worker-workload
+                  path: access.workload
+                  prefix: access.workloads.hello_agent_worker.workload
+                - source: hello-agent-worker-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.hello_agent_worker.framework
+                - source: hello-agent-worker-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.hello_agent_worker.authz
+                # food-nutrition-agent
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.food_nutrition_agent.enterprise
+                - source: food-nutrition-agent-workload
+                  path: access.workload
+                  prefix: access.workloads.food_nutrition_agent.workload
+                - source: food-nutrition-agent-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.food_nutrition_agent.framework
+                - source: food-nutrition-agent-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.food_nutrition_agent.authz
+                # orchestrator-agent-worker
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.orchestrator_agent.enterprise
+                - source: orchestrator-agent-worker-workload
+                  path: access.workload
+                  prefix: access.workloads.orchestrator_agent.workload
+                - source: orchestrator-agent-worker-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.orchestrator_agent.framework
+                - source: orchestrator-agent-worker-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.orchestrator_agent.authz
+                # langraph-agent-playbook
+                - source: enterprise
+                  path: access.enterprise
+                  prefix: access.workloads.langraph_agent_playbook.enterprise
+                - source: langraph-agent-playbook-workload
+                  path: access.workload
+                  prefix: access.workloads.langraph_agent_playbook.workload
+                - source: langraph-agent-playbook-framework-overlay
+                  path: access.framework
+                  prefix: access.workloads.langraph_agent_playbook.framework
+                - source: langraph-agent-playbook-authz-overlay
+                  path: access.authz
+                  prefix: access.workloads.langraph_agent_playbook.authz

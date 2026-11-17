@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cgf-global-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: infra
+    sector: cgf
+    team: global-cgf
+    crosscharge_aks: direct
+    servicename_aks: sharedaks-platform

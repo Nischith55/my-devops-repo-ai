@@ -1,0 +1,103 @@
+global:
+  fullnameOverride: pep-eiap-cgf-psm-prod-api
+  namespace: pep-eiap-cgf-psm-prod
+
+  labels:
+    app: pep-eiap-cgf-psm-prod-api
+
+
+  secretManagement:
+    enabled: true
+    secretProviderClassName: cgf-psma-prod-secretproviderclass1
+    mountPath: /mnt/psmprod-secret
+    clientId: e2a62abb-9e39-4718-bd9f-c14b719fa3ab
+    keyvaultName: cgf-psma-prod-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects:
+    - secretName: pep-eiap-cgf-psm-prod-api-secret1
+      data:
+      - objectName: Username
+        objectType: secret
+        key : MSSQL_USERNAME
+      - objectName: Password
+        objectType: secret
+        key : MSSQL_PASSWORD
+
+platform-chart:
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 1
+  hpaConfigMaxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+
+
+  virtualService:
+    enabled: true
+    name: pep-eiap-cgf-psm-prod-api-vs
+    hosts:
+    - pep-eiap-cgf-psm-prod-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    routes:
+    - prefix: /
+      destinationService: pep-eiap-cgf-psm-prod-api
+      port: 8000
+
+
+  
+app-chart:
+  replicaCount: 9
+   
+  selector:
+    app: pep-eiap-cgf-psm-prod-api
+
+  image:
+    repository: pepeiapprodcommonacr.azurecr.io/pep/eip/potato-sourcing-matrix-api-repo
+    tag: "20260311.5"
+
+
+  serviceAccount: 
+    create: false
+    name: pep-eiap-cgf-psm-prod-sa
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+  containerPorts:     
+  - port: 8000
+    name: 
+
+  probes:                                       
+    enabled: true
+    liveness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 180
+      periodSeconds: 60
+      timeoutSeconds: 30
+    readiness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 180
+      periodSeconds: 60
+      timeoutSeconds: 30
+
+  env: 
+  - name: AKS_ENV
+    value: PROD
+
+
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "2048Mi"
+    requests:
+      cpu: "50m"
+      memory: "512Mi"
+
+  envFromSecretRef:
+  - secretRef:
+      name: pep-eiap-cgf-psm-prod-api-secret1
+

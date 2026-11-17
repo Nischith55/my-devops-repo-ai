@@ -1,0 +1,40 @@
+---
+ns_pep_aisp_cgf_hcmfar_prod:
+  
+  name: pep-aisp-cgf-hcmfar-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-hcmfar
+    sector: cgf
+    project: hcmfar
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: saparchiving-naprod
+    pep-cmdb-app-service-id: "9e0f134bdbabdf008a0e138b4b96199b"
+    pep-cmdb-bus-app-id: "26de84bddb3e8c10c2b5f381399619f7"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-aisp-cgf-hcmfar-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-aisp-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-aisp-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_hcmfar'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-aisp-cgf-hcmfar-prod-sa-token
+    namespace: pep-aisp-cgf-hcmfar-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-aisp-cgf-hcmfar-prod-sa"

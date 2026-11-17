@@ -1,0 +1,129 @@
+default                         node-debugger-aks-npu2z3-32172338-vmss00000b-qsp4r                0/1     Error                        0                  3h52m
+default                         node-debugger-aks-npu2z3-32172338-vmss00000b-xfkvw                0/1     Error                        0                  4h9m
+keda                            apigee-test-7b65bf5cb-6zhcc                                       1/2     CrashLoopBackOff             2708 (99s ago)     9d
+kubecost                        kubecost-prometheus-server-5dcffdcc59-hv2zs                       3/4     CrashLoopBackOff             86 (115s ago)      4h39m
+pep-eiap-cgf-cle-dev            pep-eiap-cgf-cle-app-lib-service-54fbdc9669-f7nqf                 1/2     CrashLoopBackOff             2653 (18s ago)     9d
+pep-eiap-cgf-cle-dev            pep-eiap-cgf-cle-metadata-sink-consumer-65b5bd9b46-bmhck          1/2     CrashLoopBackOff             2694 (4m ago)      9d
+pep-eiap-cgf-cle-dev            pep-eiap-cgf-cle-metadata-sink-consumer-7dbb847f87-gf6rf          1/2     CrashLoopBackOff             2697 (70s ago)     9d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-ddh-5dc4dd7895-sjnc2                              1/2     CrashLoopBackOff             2619 (2m53s ago)   9d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-ddh-84dd45798d-j22ph                              1/2     CrashLoopBackOff             2617 (3m19s ago)   9d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-eip-common-cle-5dc896db6d-j97fn                   1/2     CrashLoopBackOff             2758 (4m9s ago)    9d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-eip-common-cle-8466869749-gvrpg                   1/2     CrashLoopBackOff             2761 (2m3s ago)    9d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-iai-5c484dbcf9-5jnkb                              1/2     CrashLoopBackOff             2066 (4m48s ago)   8d
+pep-eiap-cgf-codeone-dev        pep-eiap-global-iai-6fdd895446-dhsh5                              1/2     CrashLoopBackOff             94 (2m16s ago)     8h
+pep-eiap-cgf-codeone-dev        pepsico-eip-common-cle-processor-7b4595d46d-cksj9                 1/2     CrashLoopBackOff             2128 (2m44s ago)   9d
+pep-eiap-cgf-codeone-dev        pepsico-mdp-test-packet-deployment-poc-64476c6764-xth6r           1/2     CrashLoopBackOff             2611 (5m ago)      9d
+pep-eiap-cgf-cvopa-dev          cv-opa-6b48d47bb8-d67ts                                           2/3     CrashLoopBackOff             3847 (88s ago)     9d
+pep-eiap-cgf-duaas-dev          duaas-cleantransactionauditdata-scheduler-5678d9cb89-fdr6g        1/2     CrashLoopBackOff             2685 (4m5s ago)    9d
+pep-eiap-cgf-duaas-dev          duaas-cleantransactionauditdata-scheduler-64ddbd9459-wq7j6        1/2     CrashLoopBackOff             2688 (4m10s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-azure-appgateway-scheduler-28659570-rtrv9         0/2     Terminating                  0                  4d8h
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-cmdb-schedulers-28663560-5nv8j                    0/2     Terminating                  6                  28h
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-elastic-lookups-6dbc8444b6-dwhfx                  1/2     CrashLoopBackOff             2517 (46s ago)     9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-elastic-lookups-6dbc8444b6-xcd4z                  1/2     CrashLoopBackOff             2517 (2m24s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-ess-jobstatus-sync-scheduler-28659120-fp62v       0/2     Terminating                  0                  4d8h
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-idm-schedulers-28659240-njz5f                     0/2     Terminating                  0                  4d8h
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-kafka-topic-provisioning-service-54744bb6b77ckz   1/2     CrashLoopBackOff             2623 (3m55s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-kafka-topic-provisioning-service-54cb696d5hts6k   1/2     CrashLoopBackOff             2615 (2m41s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-pe-ess-provisioning-7f99b798f4-qgcpp        1/2     CrashLoopBackOff             2474 (4m46s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-pe-ess-provisioning-7f99b798f4-spp8r        1/2     CrashLoopBackOff             2476 (75s ago)     9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-snow-integration-579d8f6799-fkdrj           1/2     CrashLoopBackOff             2583 (2m27s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-snow-integration-77959ffccf-wrz4p           1/2     CrashLoopBackOff             2582 (3m10s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-snow-integration-77959ffccf-xzwz9           1/2     CrashLoopBackOff             2581 (2m31s ago)   9d
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-status-updater-28663585-zxhkn               0/2     Terminating                  0                  37h
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-order-status-updater-28665420-6wggd               0/2     Terminating                  0                  7h9m
+pep-eiap-cgf-eecmp-qa           pepsico-cto-cmp-web-application-57db44988d-75xsd                  1/2     CreateContainerConfigError   0                  9d
+pep-eiap-cgf-iaicv-qa           iai-cv-pepiris-uae-sf-5485ff8d89-xlwbv                            1/2     Error                        2695 (5m12s ago)   9d
+pep-eiap-cgf-psm-qa             pep-eiap-cgf-psm-qa-api-bd56b66c9-bq4r2                           1/2     CrashLoopBackOff             1556 (3m32s ago)   5d12h
+pep-eiap-cgf-psm-qa             pep-eiap-cgf-psm-qa-api-bd56b66c9-vdlff                           1/2     CrashLoopBackOff             1551 (90s ago)     5d12h
+pep-eiap-cgf-psm-qa             pep-eiap-cgf-psm-qa-api-bd56b66c9-znxd5                           1/2     CrashLoopBackOff             1552 (4s ago)      5d12h
+pep-eiap-cgf-smartcan-dev       pep-smartcan-titan-app-7494859c9b-b8zxc                           0/1     CrashLoopBackOff             74 (4m1s ago)      6h54m
+pep-eiap-cgf-smartcan-dev       pep-smartcan-titan-app-98df79b98-t8fp2                            0/1     CrashLoopBackOff             1013 (115s ago)    4d5h
+pep-eiap-cgf-wsp-dev            webmypepsico-866b449f8d-7wbm6                                     1/2     CrashLoopBackOff             1985 (8s ago)      9d
+pep-eiap-cgf-wsp-dev            webmypepsico-866b449f8d-dsppx                                     1/2     CrashLoopBackOff             1985 (3m4s ago)    9d
+pep-eiap-global-cep-qa          dopapp-global-metrics-54ddf89768-jcx67                            0/2     Pending                      0                  24d
+pep-eiap-global-cep-qa          dopapp-global-metrics-88f4cb654-45kts                             0/2     Pending                      0                  24d
+pep-eiap-global-cep-qa          dopsrv-d2c-receipts-consumer-mx-perf-84957457d-tf4t8              1/2     CrashLoopBackOff             1388 (86s ago)     5d1h
+pep-eiap-global-cep-qa          dopsrv-d2c-redemption-mx-perf-59dbdb5545-5ts92                    1/2     CrashLoopBackOff             1124 (3m23s ago)   4d5h
+pep-eiap-global-cep-qa          dopsrv-d2c-redemption-mx-perf-59dbdb5545-hcgqt                    1/2     CrashLoopBackOff             1126 (4m28s ago)   4d5h
+pep-eiap-global-cep-qa          dopsrv-d2c-redemption-mx-perf-59dbdb5545-x7zfv                    1/2     CrashLoopBackOff             1127 (114s ago)    4d5h
+pep-eiap-global-cmp-dev         pepsico-cto-cmp-order-eiap-stack-orchestrator-79df997869-jkrq5    1/2     CrashLoopBackOff             2122 (2m25s ago)   8d
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-4x6c7                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-6dg58                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-d662w                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-kc8dt                       0/1     Error                        0                  43h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-q5fjn                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-rf4xl                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28663200-zz6ft                       0/1     Error                        0                  44h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-8d9pg                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-8vgbf                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-c8s77                       0/1     Error                        0                  19h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-jjw6c                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-pv5hr                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-vwcq7                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       device-audit-service-cronjob-28664640-zttlf                       0/1     Error                        0                  20h
+pep-eiap-global-eiotp-dev       keda-sample-func-54b7d495f8-pwgzn                                 1/2     CrashLoopBackOff             2706 (112s ago)    9d
+pep-eiap-global-eiotp-dev       keda-sample-func-597bf5f8c-mwzbr                                  1/2     CrashLoopBackOff             2700 (4m46s ago)   9d
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-8mjkt                           0/1     Error                        0                  24m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-9m8gg                           0/1     Error                        0                  29m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-b5pfs                           0/1     Error                        0                  19m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-gtkvr                           0/1     Error                        0                  30m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-ssw4p                           0/1     Error                        0                  30m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-vjt5r                           0/1     Error                        0                  28m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665815-wh6mq                           0/1     Error                        0                  27m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-2kx58                           0/1     Error                        0                  17m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-cvk2b                           0/1     Error                        0                  16m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-ds6j5                           0/1     Error                        0                  8m5s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-jbl2t                           0/1     Error                        0                  18m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-qhct9                           0/1     Error                        0                  13m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-qrhqd                           0/1     Error                        0                  18m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665830-xdzvn                           0/1     Error                        0                  19m
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-5dwvl                           0/1     Error                        0                  6m28s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-b8q5k                           0/1     Error                        0                  7m40s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-dk5jr                           0/1     Error                        0                  7m14s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-ds5ph                           0/1     Error                        0                  7m56s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-t42h6                           0/1     Error                        0                  2m16s
+pep-eiap-global-eiotp-qa        autoscaleservice-cronjob-28665840-wx4sj                           0/1     Error                        0                  5m2s
+pep-eiap-global-hcm-dev         df-fileze-5b6b6dc698-srqmf                                        1/2     CrashLoopBackOff             2649 (87s ago)     9d
+pep-eiap-global-hcm-dev         df-fileze-6f6c774b98-lzdqr                                        1/2     CrashLoopBackOff             2649 (4m13s ago)   9d
+pep-eiap-global-hcm-dev         dsi-powerbi-metrics-6c89f8f49-5jhkh                               1/2     CrashLoopBackOff             2664 (4m33s ago)   9d
+pep-eiap-global-hcm-dev         dsi-powerbi-metrics-8645b655ff-nwdj6                              1/2     CrashLoopBackOff             2618 (4m12s ago)   9d
+pep-eiap-global-hcm-dev         tpo-powerbi-serve-layer-7ff658cd8c-szlk2                          1/2     CrashLoopBackOff             2662 (2m9s ago)    9d
+pep-eiap-global-hcm-dev         tpo-powerbi-serve-layer-9c695f5c6-cdgms                           1/2     CrashLoopBackOff             2650 (109s ago)    9d
+pep-eiap-global-hcm-qa          df-fileze-5f7985c4c6-w6jln                                        1/2     CrashLoopBackOff             2659 (2m11s ago)   9d
+pep-eiap-global-hcm-qa          df-fileze-5f7985c4c6-wk598                                        1/2     CrashLoopBackOff             2650 (4m59s ago)   9d
+pep-eiap-global-hcm-qa          df-fileze-b97ccc9d5-94txg                                         1/2     CrashLoopBackOff             2664 (3m36s ago)   9d
+pep-eiap-global-hcm-qa          tpo-adf-graphql-trigger-685bdd8f8d-tfbpw                          1/2     CreateContainerConfigError   0                  9d
+pep-eiap-global-hcm-qa          tpo-adf-graphql-trigger-86bfb474c5-tgtvb                          1/2     CreateContainerConfigError   0                  9d
+pep-eiap-global-hcm-qa          tpo-adf-graphql-trigger-b9b5c964-2vzxg                            1/2     CreateContainerConfigError   0                  9d
+pep-eiap-global-hcm-qa          tpo-powerbi-serve-layer-556bc8478d-bllr2                          1/2     Error                        2652 (5m12s ago)   9d
+pep-eiap-global-hcm-qa          tpo-powerbi-serve-layer-7d76b75f85-lng7f                          1/2     CrashLoopBackOff             2660 (2m29s ago)   9d
+pep-eiap-global-iai-dev         iai-promotional-strip-removal-2024-5bdf48d786-9rl9j               1/2     CrashLoopBackOff             143 (4m43s ago)    12h
+pep-eiap-global-iai-dev         iai-promotional-strip-removal-2024-74d6f85bf5-sqvws               1/2     CrashLoopBackOff             60 (2m42s ago)     4h52m
+pep-eiap-global-iai-dev         iai-promotional-strip-removal-2024-7bd94b444d-jm6p7               1/2     CrashLoopBackOff             67 (3m28s ago)     5h23m
+pep-eiap-global-services-dev    pep-eip-cdp-data-retention-deletion-es-job-28665480-cb7vw         0/1     Error                        0                  6h10m
+pep-eiap-latam-cep-dev          dtcloyalty-joy-runtime-consumer-receipt-ptr-544dd99498-8ngdj      1/2     CrashLoopBackOff             234 (40s ago)      20h
+pep-eiap-latam-cep-dev          dtcloyalty-joy-runtime-consumer-receipt-ptr-66dc666c97-mhr8v      1/2     CrashLoopBackOff             73 (2m26s ago)     6h8m
+pep-eiap-latam-eiapcvcvat-dev   cvat-release-non-prod-backend-initializer-r51-gqhl5               0/2     Terminating                  0                  4d8h
+pep-eiap-latam-eiapcvcvat-dev   cvat-release-non-prod-nuclio-dashboard-6dd7f86dbd-rfzbw           1/2     CrashLoopBackOff             2694 (2m58s ago)   9d
+pep-eiap-latam-eiapcvcvat-dev   cvat-release-non-prod-nuclio-dashboard-75cbd9f9db-t4kmm           1/2     CrashLoopBackOff             2700 (4m ago)      9d
+pep-eiap-och-na-dev             pep-och-platform-policy-server-64f6bf9bd9-zgqsh                   2/3     CrashLoopBackOff             3243 (88s ago)     9d
+pep-eiap-och-na-qa              pep-och-platform-policy-distributor-7b5f496f65-rnxlf              1/2     CrashLoopBackOff             2633 (71s ago)     9d
+pep-eiap-och-na-qa              pep-och-platform-policy-distributor-7bc745ff5b-w9cbp              1/2     CrashLoopBackOff             2646 (3m ago)      9d
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-4zlqq                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-8c274                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-bnl5f                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-fb264                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-h8j52                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-nrbjt                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660410-t7xvq                           0/1     Error                        0                  3d18h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-2rms4                           0/1     Error                        0                  3d17h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-2z86k                           0/1     Error                        0                  3d17h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-75zjh                           0/1     Error                        0                  3d17h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-7fpv6                           0/1     Error                        0                  3d17h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-8w6ts                           0/1     Error                        0                  3d16h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-9b5zz                           0/1     Error                        0                  3d17h
+pep-eiap-ops-admin              pep-eiap-gw-push-cronjob-28660500-p62pc                           0/1     Error                        0                  3d17h
+pep-eiap-pfna-onepep-qa         pepsico-global-data-caf-producer-v1-7bcf94f76c-n8rvx              1/2     CrashLoopBackOff             2059 (106s ago)    9d
+pep-eiap-pfna-onepep-qa         pepsico-global-data-caf-producer-v1-d4dbfc67f-gg7nf               1/2     CrashLoopBackOff             2069 (5m5s ago)    9d
+pep-eiap-pfna-vct-dev           krogerdsi-7644546d9f-xq2p6                                        1/2     CrashLoopBackOff             2689 (4m24s ago)   9d
+pep-eiap-pfna-vct-qa            krogerdsi-768c4c4876-cslgr                                        1/2     CrashLoopBackOff             2686 (4m18s ago)   9d

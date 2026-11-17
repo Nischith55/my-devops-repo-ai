@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-afhmenu-preprod-cv-vs
+  namespace: pep-dps-dps-afhmenu-preprod
+spec:
+  hosts:
+    - pep-dps-dps-afhmenu-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - "istio-system/istio-in-gateway-01"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "afh-menupro-ui.pep-dps-dps-afhmenu-preprod.svc.cluster.local"
+        port:
+          number: 80

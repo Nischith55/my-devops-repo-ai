@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: paperlessforms-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for paperlessforms-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DigitalServices_WebSolutions/_git/paperlessforms-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-amesa-paperless-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: paperlessforms-prod-admin
+        description: Admin privileges to paperlessforms-prod
+        policies:
+        - p, proj:paperlessforms-prod:paperlessforms-prod-admin, applications, *, paperlessforms-prod/*, allow
+        - p, proj:paperlessforms-prod:paperlessforms-prod-admin, repositories, *, paperlessforms-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: paperlessforms-prod-user
+        description: Read-only privileges to paperlessforms-prod
+        policies:
+        - p, proj:paperlessforms-prod:paperlessforms-prod-user, applications, get, paperlessforms-prod/*, allow
+        - p, proj:paperlessforms-prod:paperlessforms-prod-user, applications, sync, paperlessforms-prod/*, allow
+        - p, proj:paperlessforms-prod:paperlessforms-prod-user, repositories, get, paperlessforms-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.Azure.ANZ.Developers"
+        - "Team.Support.EIAP.READ"
+    

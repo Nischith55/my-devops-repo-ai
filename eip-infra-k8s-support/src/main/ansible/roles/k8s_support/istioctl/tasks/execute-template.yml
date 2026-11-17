@@ -1,0 +1,53 @@
+---
+- name: ISTIOCTL_EXEC_TEMPLATE_BLOCK
+  block:
+
+    - name: ISTIOCTL_EXEC_TEMPLATE_TEMPFILE  ({{ ansible_play_name }})
+      tempfile:
+        state: file
+        prefix: "{{ inventory_hostname }}"
+      register: istioctl_exec_tmp_file
+
+    - name: ISTIOCTL_EXEC_TEMPLATE_TEMPFILE_MSG ({{ ansible_play_name }})
+      debug:
+        msg: "Created tmpfile : {{ istioctl_exec_tmp_file.path }}"
+
+    - name: |-
+        ISTIOCTL_EXEC_TEMPLATE_CREATE_FILE ({{ ansible_play_name }})
+      template:
+        src: "{{ istioctl_exec_template_src }}"
+        dest: "{{ istioctl_exec_tmp_file.path }}"
+
+    - name: |-
+        ISTIOCTL_EXEC_TEMPLATE_PRINT_TEMPLATE ({{ ansible_play_name }})
+      vars:
+        istioctl_exec_tmp_file_contents: |-
+          {{ lookup('file', istioctl_exec_tmp_file.path) }}
+      debug:
+        msg: "{{ istioctl_exec_tmp_file_contents }}"
+      when: (print_template | default('true') | bool)
+
+    - name: |-
+        ISTIOCTL_EXEC_TEMPLATE_ACTION ({{ ansible_play_name }})
+      include_role:
+        name: k8s_support/istioctl
+      vars:
+        mode: execute
+        # we only have file arg
+        istioctl_action_file_arg: " -f {{ istioctl_exec_tmp_file.path }}"
+      when: >-
+        (istioctl_exec_tmp_file.path is defined)
+        and
+        (not (istioctl_action_skip | default('false') | bool))
+
+  always:
+    - name: |-
+        ISTIOCTL_EXEC_TEMPLATE_REMOVE_TEMP_FILE ({{ istioctl_exec_tmp_file.path }})
+      file:
+        state: absent
+        path: "{{ istioctl_exec_tmp_file.path }}"
+      register: istioctl_exec_rm_tmp_file_result
+      when: >-
+        (not (istioctl_exec_keep_tmp_file | default('false') | bool) )
+  # always delegate to controller
+  delegate_to: localhost

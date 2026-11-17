@@ -1,0 +1,73 @@
+---
+# - name: check if objectid exists in subject.yml
+#   shell: "grep -i '{{ objectid }}' {{ mypath }}/src/main/ansible/inventory/k8s/defaults/group_vars/cluster_config/15-subjects.yml"
+#   register: output
+#   ignore_errors: true
+
+# filtering servicename_aks to be added as label
+- set_fact:
+    servicename_tag: "{{ servicename_aks | lower }}" 
+- debug:
+    msg: "The tags are {{ pep_cmdb_bus_app_id }} and {{ pep_cmdb_app_service_id }} and {{ pep_environment }}"
+- name: replace special characters in application_service 
+  set_fact: 
+    servicename_tag: "{{ servicename_tag | regex_replace(item.0, item.1) }}"
+  loop:
+  - ['\(', '-']
+  - ['\&', '-']
+  - ['\<', '-']
+  - ['\,', '-']
+  - ['\/', '-']
+  - [' ', '']
+  - ['\+', '-plus']
+  - ['\)', '-']
+  - ['\--', '-']
+- name: remove last character if any 
+  set_fact:
+    servicename_tag: "{{ servicename_tag[:-1] }}"
+  when: servicename_tag[-1] == '-'
+- debug: 
+    msg: "{{ servicename_tag }}"
+
+- name: add the block in subject.yml file
+  blockinfile:
+    path: "{{ mypath }}/src/main/ansible/inventory/k8s/defaults/group_vars/cluster_config/15-subjects.yml"
+    insertafter: "k8s_sup_subjects:"
+    marker: "#{mark} {{ sector }}_{{ project }}"
+    state: present
+    block: |2
+        {{ sector }}_{{ project }}:
+          name: {{ objectid }}
+          kind: Group
+          apiGroup: rbac.authorization.k8s.io
+  # when: output.rc == 1
+
+- name: check that the {{ namespace }}.yml exists
+  stat:
+    path: '{{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/group_vars/cluster_config/namespaces/05-"{{ namespace }}".yml'
+  register: stat_result
+
+- name: copy the template to specific location
+  template:
+    src: templates/namespace-onboard.j2
+    dest: '{{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/group_vars/cluster_config/namespaces/05-{{ namespace }}.yml'
+  when: not stat_result.stat.exists
+
+- shell: ansible --version
+
+- name: check if {{ namespace }} is exists in namespace.yml file
+  shell: "grep -i 'ns_{{ namespace }}' {{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/host_vars/{{ cluster }}/01-namespaces.yml"
+  register: presence
+  failed_when: "presence.rc == 2"
+  # ignore_errors: true
+
+- name: add the {{ namespace }} in namespace.yml file
+  lineinfile:
+    dest: '{{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/host_vars/{{ cluster }}/01-namespaces.yml'
+    line: "  - ns_pep_{{ department }}_{{ sector }}_{{ project }}_{{ env }}"
+    insertafter: 'instance_namespace_vars:'
+    state: present
+  register: output
+  when: presence.rc == 1 
+
+  

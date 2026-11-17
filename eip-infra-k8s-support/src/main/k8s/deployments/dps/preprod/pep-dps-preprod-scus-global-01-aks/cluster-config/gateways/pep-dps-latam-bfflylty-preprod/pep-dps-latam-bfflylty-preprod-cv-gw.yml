@@ -1,0 +1,108 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-bfflylty-preprod-cv-gw
+  namespace: pep-dps-latam-bfflylty-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-bfflylty-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-bfflylty-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-bfflylty-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-latam-bfflylty-preprod-443.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-insights-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-synch.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-synch-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-bfflylty-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-bfflylty-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-latam-bfflylty-preprod-80.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-insights-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-global-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-lylty-admin-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-mx-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-synch.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-segments.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-content.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-cnc-stores.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-profile-synch-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-bfflylty-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-bfflylty-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

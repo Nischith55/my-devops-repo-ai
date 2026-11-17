@@ -1,0 +1,22 @@
+---
+# Any kustomize overrides for ECK operator generation here
+
+# ECK - Operator Config Map Overrides
+eck_operator_cm:
+  # namespaces to monitor comma separated 
+  namespaces: "{{ ns_pep_eiap_elastic_cluster_01['name'] }}"
+  log-verbosity: 2
+  # enable-webhook: false
+
+eck_operator_webhook_patch:
+  # make it false to turn it off completely
+  enabled: true
+  #start_idx: 0
+  #end_idx: 8
+  #value: Fail
+
+eck_operator_webhook_api_version_patch:
+  enabled: false
+  # start_idx: 0
+  #end_idx: 8
+

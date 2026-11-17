@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"promoai-admin-vs","namespace":"pep-snt-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["promoai-admin.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"promoai-admin.pep-snt-cgf-promoai-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: promoai-admin
+  name: promoai-admin-vs
+  namespace: pep-snt-cgf-promoai-preprod
+spec:
+  gateways:
+  - pep-snt-cgf-promoai-preprod/pep-snt-cgf-promoai-preprod-cv-gw
+  hosts:
+  - promoai-admin.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: promoai-admin.pep-snt-cgf-promoai-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: "pep-cmp-cmp-hnanhws-qa-cv-gw"
+  namespace: "pep-cmp-cmp-hnanhws-qa"
+spec:
+  selector:
+    istio: "pep-cmp-ingress-gw01"
+  servers:
+  - hosts:
+    - wcuwrzs.qa.mypepsico.com
+    name: pep-cmp-cmp-hnanhws-qa-cv-gw-https-443
+    port:
+      name: "https-pep-cmp-cmp-hnanhws-qa-cv-gw-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: "pep-cmp-cmp-hnanhws-qa-tls"
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - "wcuwrzs.qa.mypepsico.com"
+    name: pep-cmp-cmp-hnanhws-qa-cv-gw-http-80
+    port:
+      name: "http-pep-cmp-cmp-hnanhws-qa-cv-gw-80"
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true

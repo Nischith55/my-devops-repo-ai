@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-outbound3plconsumer
+  name: pep-och-outbound3plconsumer-qa-vs
+  namespace: pep-eiap-och-edt-qa
+spec:
+  gateways:
+  - pep-eiap-och-edt-qa/pep-eiap-och-edt-qa-cv-gw
+  hosts:
+  - pep-och-outbound3plconsumer-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    - ignoreUriCase: true
+      uri:
+        prefix: /management/
+    route:
+    - destination:
+        host: pep-och-outbound3plconsumer.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80

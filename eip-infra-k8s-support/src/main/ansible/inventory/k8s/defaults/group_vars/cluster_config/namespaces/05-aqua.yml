@@ -1,0 +1,23 @@
+---
+# ##
+# IMPORTANT
+# - The global namespace name variable should be <resc_name>_<resc_abbrev>_cfg
+# - The resc_abbrev for namespace is 'ns'. Since the k8s-api-spec yaml.
+# ##
+
+aqua_ns_cfg:
+
+  name: aqua
+
+  labels:
+    istio-injection: disabled
+
+  generic_secrets: |-
+    {{ aqua_generic_secrets | default([]) }}
+
+  registry_secrets: |-
+    {{ aqua_registry_secrets | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ aquas_tls_secrets_names | default([]) }}

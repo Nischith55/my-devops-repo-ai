@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: walmart-360-ui-vs
+  namespace: pep-snt-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - walmart-360-ui.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - walmart360.preprod.mypepsico.com 
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  walmart-360-ui.pep-snt-cgf-walmart-preprod.svc.cluster.local
+        port:
+          number: 80

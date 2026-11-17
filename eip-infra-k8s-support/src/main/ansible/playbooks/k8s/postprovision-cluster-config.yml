@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  vars:
+    myvars:
+      - varname: clusters
+        varcont: |
+          - cluster:
+              insecure-skip-tls-verify: true
+              server: https://{{ip_address}}:443
+            name: {{cluster_name}}
+      - varname: contexts
+        varcont: |
+          - context:
+              cluster: {{cluster_name}}
+              user: clusterUser_{{cluster_name}}
+            name: {{cluster_name}}
+      - varname: users
+        varcont: |
+          - name: clusterUser_{{cluster_name}}
+            user:
+              exec:
+                apiVersion: client.authentication.k8s.io/v1beta1
+                args:
+                - get-token
+                - --environment
+                - AzurePublicCloud
+                - --server-id
+                - 6dae42f8-4368-4678-94ff-3960e28e3630
+                - --tenant-id
+                - 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+                - --login
+                - spn
+                command: kubelogin
+                env: null
+
+  tasks:
+    - name: read file before changes
+      command: cat "{{ agent_working_dir }}/config"
+
+    - name: blockinfileclus
+      blockinfile:
+        path: "{{ agent_working_dir }}/config"
+        insertafter: "{{ item.varname }}"
+        marker: "######### Added recently {{ item.varname }}--{{cluster_name}} #########"
+        block: "{{ item.varcont }}"
+      with_items: "{{ myvars }}"    
+
+    - name: read file after changes
+      command: cat "{{ agent_working_dir }}/config"

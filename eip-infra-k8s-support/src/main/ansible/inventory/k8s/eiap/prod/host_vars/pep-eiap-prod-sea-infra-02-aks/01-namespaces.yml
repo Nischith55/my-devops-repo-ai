@@ -1,0 +1,18 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  # EIAP admin infra ns
+  - ns_pep_eiap_global_infra
+
+  # ECK - operator -- default namespace
+  - ns_elastic_system
+  
+  # ECK managed -- cluster-01
+  - ns_pep_eiap_elastic_cluster_01
+
+  # DevSecOps namespace  
+  - ns_pep_eiap_global_devsecops_prod
+  

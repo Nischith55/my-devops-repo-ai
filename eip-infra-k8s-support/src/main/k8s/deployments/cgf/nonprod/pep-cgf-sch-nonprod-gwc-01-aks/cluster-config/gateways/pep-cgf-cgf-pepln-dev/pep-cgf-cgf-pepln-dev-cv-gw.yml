@@ -1,0 +1,136 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-cgf-cgf-pepln-dev-cv-gw
+  namespace: pep-cgf-cgf-pepln-dev
+spec:
+  selector:
+    istio: pep-cgf-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-cgf-cgf-pepln-dev.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-cgf-cgf-pepln-dev-cv-gw-tls-443
+    port:
+      name: https-pep-cgf-cgf-pepln-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-cgf-cgf-pepln-dev-cv.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-masterdata-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-product-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-faultcodes-reasons-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-kpi-threshold-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-plant-hierarchy-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-pepline-frontend.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-shift-schedule-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-pepline-plant-apps.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-shopfloorpro-common-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-bff-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-job-worker-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-scheduler-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-pepline-cip-plant-apps.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-cip-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-opa-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-reporting-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-cgf-cgf-pepln-dev-cv-gw-https-443
+    port:
+      name: https-pep-cgf-cgf-pepln-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cgf-sch-nonprod-gwc-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - shopfloorpro.dev.mypepsico.com
+    - pep-cgf-cgf-pepln-dev-cv.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-masterdata-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-product-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-faultcodes-reasons-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-kpi-threshold-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-plant-hierarchy-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-pepline-frontend.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-shift-schedule-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-pepline-plant-apps.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-shopfloorpro-common-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-bff-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-job-worker-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-scheduler-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - shopfloorpro.dev.intra.pepsico.com
+    - pep-europe-pepline-cip-plant-apps.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-cip-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-pepline-opa-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-europe-mfg-sfp-reporting-service.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-cgf-cgf-pepln-dev-cv-gw-http-80
+    port:
+      name: http-pep-cgf-cgf-pepln-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - shopfloorpro.dev.mypepsico.com
+    name: pep-cgf-cgf-pepln-dev-cv-gw-https-12-443
+    port:
+      name: https-pep-cgf-cgf-pepln-dev-cv-gw-12-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cgf-cgf-shopfloorpro-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - shopfloorpro.dev.intra.pepsico.com
+    name: pep-cgf-cgf-pepln-dev-cv-gw-https-20-443
+    port:
+      name: https-pep-cgf-cgf-pepln-dev-cv-gw-20-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cgf-cgf-shopfloorpro-intra-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: flna-e2e-monday-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for flna-e2e-monday-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/FLNA_E2E_Monday_C360/_git/flna-e2e-monday-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-monday-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: flna-e2e-monday-dev-admin
+        description: Admin privileges to flna-e2e-monday-dev
+        policies:
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-admin, applications, *, flna-e2e-monday-dev/*, allow
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-admin, repositories, *, flna-e2e-monday-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: flna-e2e-monday-dev-user
+        description: Read-only privileges to flna-e2e-monday-dev
+        policies:
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-user, applications, get, flna-e2e-monday-dev/*, allow
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-user, applications, sync, flna-e2e-monday-dev/*, allow
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-user, repositories, get, flna-e2e-monday-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:flna-e2e-monday-dev:flna-e2e-monday-dev-user, applications, action/apps/Deployment/restart, flna-e2e-monday-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.CMP.Read"
+        - "Team.Support.FLNA.NonProd.pfnaIt"
+        - "Team.Support.EIAP.READ"
+    

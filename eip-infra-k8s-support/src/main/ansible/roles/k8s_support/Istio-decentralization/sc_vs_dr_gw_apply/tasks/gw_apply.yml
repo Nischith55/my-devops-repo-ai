@@ -1,0 +1,92 @@
+###
+
+- name: read the file content  
+  slurp:
+    src: "{{ item }}"
+  register: yml_file_content
+
+- name: decode the content 
+  set_fact: 
+    decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+- name: set namespace  
+  set_fact:
+    namespace: "{{ decoded_yml.metadata.namespace }}"
+
+# - name: Apply Gateway block 
+#   block:
+- name: get already existing one in the namespace level.
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: Gateway 
+    namespace: "{{ namespace }}"
+    name: "{{ decoded_yml.metadata.name }}"
+  register: existing_gw
+  when: '"-patch.yml" in item'
+
+- debug: var=existing_gw.resources 
+- name: ensures {{ namespace }} directory exists
+  file:
+    path: "{{ mypath }}/Artifacts/applied/{{ namespace }}"
+    state: directory 
+- name: copy existing one in applied folder.
+  copy:
+    content: "{{ existing_gw.resources[0] | to_nice_yaml}}"
+    dest: "{{ mypath }}/Artifacts/applied/{{ namespace }}/{{ item| basename }}"
+  when: '"-patch.yml" in item'
+
+- name: apply gateway at namespace level 
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ decoded_yml }}"
+- debug:
+    msg: "applying the gateway for namespace {{ namespace }}"
+
+- name: storing applied files.
+  copy:
+    src: "{{ item }}"
+    dest: "{{ mypath }}/Artifacts/applied/{{ namespace }}/"
+  when: '"-patch.yml" not in item'
+#########################################################################
+
+- name: Creating directory for uploading files into git repo
+  file:
+    path: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/gateways/{{ decoded_yml.metadata.namespace }}"
+    state: directory
+- name: removing patch in file name if any 
+  set_fact:
+    temp_file: "{{ item| basename }}"
+- set_fact:
+    filename: "{{ temp_file.replace('-patch','') }}"
+- name: Copy folders
+  copy:
+    dest: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/gateways/{{ decoded_yml.metadata.namespace }}/{{ filename }}"
+    src: "{{ item }}"
+    force: true
+
+#############################################################################
+
+# - name: pushing to the repo. 
+#   include_role: 
+#     name: k8s_support/Istio-decentralization/git_push
+#   vars:
+#     path: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/gateways/{{ decoded_yml.metadata.namespace }}"
+#     src_file: "{{ item }}"
+  
+  # rescue:
+  # - debug:
+  #     msg: "Pushing the file to the repo failed. Please push the file {{ item }} manually."
+
+  # rescue:
+  # - debug:
+  #     msg: "Applying the file failed. Reverting all applied changes so far. "
+
+  # - name: Undo applied in Gateways stage.
+  #   include_tasks: revert_applied.yml
+  #   with_fileglob: 
+  #   - "{{ mypath }}/Artifacts/applied/*"
+  #   loop_control:
+  #       loop_var: inner_item
+    
+  # - fail: 
+  #     msg: "The apply failed in the middle. So reverted everything."

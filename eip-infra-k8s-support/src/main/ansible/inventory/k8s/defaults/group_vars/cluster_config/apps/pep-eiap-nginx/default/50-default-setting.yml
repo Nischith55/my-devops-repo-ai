@@ -1,0 +1,123 @@
+---
+# pep-eiap-nginx :: default (aka no component as such)
+# ABBREVIATIONS:
+#  _pe_nginx_default: _pe_n_d_
+
+_pe_n_d_name: default
+
+# latest tag
+_pe_n_d_tag: ubuntu-18.04-2021.02.27
+
+# where the overlays dir is for kustomize build e.g.
+_pe_n_d_dest_root_dir: |-
+  {{ (pe_nginx_deploy_app_root_dir, _pe_n_d_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_pe_n_d_manifests_dest_dir: |-
+  {{ (_pe_n_d_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_pe_n_d_overlays_dest_dir: |-
+  {{ (_pe_n_d_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_pe_n_d_manifest_path: |-
+  {{ (_pe_n_d_manifests_dest_dir, 
+      pe_nginx_app_name + '-' + _pe_n_d_name + '.yml') | path_join 
+  }}
+
+# can be shared
+_pe_n_d_kustomize_resource_base_dir: |-
+  {{ (pe_nginx_source_app_root_dir, 'kustomize', _pe_n_d_name, 'base') 
+      | path_join 
+  }}
+
+# -- meta parameters
+_pe_n_d_meta_params:
+
+  # component name
+  name: "{{ _pe_n_d_name }}"
+
+  # app name
+  app_name: "{{ pe_nginx_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ pe_nginx_target_namespace }}"
+
+
+# -- build parameters
+
+_pe_n_d_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _pe_n_d_overlays_dest_dir }}"
+    output_path: "{{ _pe_n_d_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_pe_n_d_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # override namespace
+    namespace:  "{{ _pe_n_d_meta_params['namespace'] }}"
+    
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _pe_n_d_kustomize_resource_base_dir 
+            | relpath(_pe_n_d_manifests_dest_dir) 
+        }}
+
+    images:
+      # MUST match what is in base!!
+      - name: &img001 pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx
+        newName: *img001
+        newTag: |-
+          {{ pep_eiap_nginx_tag | default(_pe_n_d_tag) }}
+
+  patches:
+
+    # override container patch merge/json or both
+    - name: patch-override-container-01
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_pe_n_d_overlays_dest_dir, 'patch-merge-override-container-01.yml')
+          | path_join
+        }}
+      target:
+        group: apps
+        version: v1
+        kind: Deployment
+        name: pep-eiap-nginx
+        namespace: "{{ pe_nginx_src_namespace }}"
+      # this is the merge patch. (note: app_name_component_name_...)
+      merge: |-
+        {{ pep_eiap_nginx_default_merge_patch_ovrd_container_01 
+          | default({}) }}
+
+      # json patch same target
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ 
+          (_pe_n_d_overlays_dest_dir, 'patch-json-override-container-01.yml')
+          |
+          path_join
+        }}
+      json6902: |-
+        {{ pep_eiap_nginx_default_json_patch_ovrd_container_01 | default([]) }}
+
+# ##
+# Make the final settings
+# ##
+pe_nginx_default_component_setting: |-
+  {{
+    _pe_n_d_meta_params
+    |
+    combine(_pe_n_d_build_params, recursive=True)
+  }}
+

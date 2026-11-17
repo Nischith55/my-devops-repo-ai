@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tct-southafrica-tct-southafrica-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tct-southafrica-tct-southafrica-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Transportation/_git/tct-southafrica-tct-southafrica-argocd-configs
+      - pepcgfschnonprodgwcacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-cgf-tctsa-qa
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: tct-southafrica-tct-southafrica-qa-admin
+        description: Admin privileges to tct-southafrica-tct-southafrica-qa
+        policies:
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-admin, applications, *, tct-southafrica-tct-southafrica-qa/*, allow
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-admin, repositories, *, tct-southafrica-tct-southafrica-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tct-southafrica-tct-southafrica-qa-user
+        description: Read-only privileges to tct-southafrica-tct-southafrica-qa
+        policies:
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-user, applications, get, tct-southafrica-tct-southafrica-qa/*, allow
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-user, applications, sync, tct-southafrica-tct-southafrica-qa/*, allow
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-user, repositories, get, tct-southafrica-tct-southafrica-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tct-southafrica-tct-southafrica-qa:tct-southafrica-tct-southafrica-qa-user, applications, action/apps/Deployment/restart, tct-southafrica-tct-southafrica-qa/*, allow
+        groups:
+        - "Team.Support.PFNA.Fleet.Developer"
+        - "Team.Support.EIAP.READ"
+    

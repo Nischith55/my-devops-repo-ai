@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: feature-toggle-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for feature-toggle-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/feature-toggle-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - name: pep-snt-nonprod-eus-global-01-aks
+    namespace: pep-snt-cgf-toggle-dev
+    server: https://kubernetes.default.svc
+  - name: pep-snt-nonprod-eus-global-01-aks
+    namespace: pep-snt-ops-admin
+    server: https://kubernetes.default.svc
+  roles:
+  - name: feature-toggle-dev-admin
+    description: Admin privileges to feature-toggle-dev
+    policies:
+    - p, proj:feature-toggle-dev:feature-toggle-dev-admin, applications, *, feature-toggle-dev/*, allow
+    - p, proj:feature-toggle-dev:feature-toggle-dev-admin, repositories, *, feature-toggle-dev/*, allow
+    groups:    
+    - "Team.App.DPS.DevOps.NonProd"
+  - name: feature-toggle-dev-user
+    description: Read-only privileges to feature-toggle-dev
+    policies:
+    - p, proj:feature-toggle-dev:feature-toggle-dev-user, applications, get, feature-toggle-dev/*, allow
+    - p, proj:feature-toggle-dev:feature-toggle-dev-user, applications, sync, feature-toggle-dev/*, allow
+    - p, proj:feature-toggle-dev:feature-toggle-dev-user, repositories, get, feature-toggle-dev/*, allow
+    - p, proj:feature-toggle-dev:feature-toggle-dev-user, applications, action/apps/Deployment/restart, feature-toggle-dev/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"

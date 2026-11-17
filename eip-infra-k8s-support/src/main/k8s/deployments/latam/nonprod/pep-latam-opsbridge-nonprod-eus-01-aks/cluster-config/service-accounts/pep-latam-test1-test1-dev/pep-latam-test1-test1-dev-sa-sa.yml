@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-latam-test1-test1-dev-sa
+  namespace: pep-latam-test1-test1-dev

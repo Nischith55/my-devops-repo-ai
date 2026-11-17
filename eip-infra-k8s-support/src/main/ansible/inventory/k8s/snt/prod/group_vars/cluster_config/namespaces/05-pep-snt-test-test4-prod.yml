@@ -1,0 +1,29 @@
+---
+ns_pep_snt_test_test4_prod:
+  
+  name: pep-snt-test-test4-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: test-test4
+    sector: test
+    project: test4
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-snt-test-test4-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['test_test4'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

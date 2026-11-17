@@ -1,0 +1,24 @@
+- op: replace
+  path: /spec/parameters/exemptImages/0
+  value:
+     cyberark/secrets-provider-for-k8s*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     docker.io/istio/*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     docker.elastic.co/observability/*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     appdynamics/*
+
+- op: add
+  path: /spec/parameters/exemptImages/-
+  value:
+     docker.io/appdynamics/*

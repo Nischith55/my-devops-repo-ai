@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nim-vlm-image-captioning-onej-vs
+  namespace: pep-eiap-cgf-nvingest-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-aisp-pepgenx-nim-vlm-image-captioning.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-nvingest-prod/pep-eiap-cgf-nvingest-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: nim-vlm-image-captioning.pep-eiap-cgf-nvingest-prod.svc.cluster.local
+        port:
+          number: 8000
+  

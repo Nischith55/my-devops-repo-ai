@@ -1,0 +1,31 @@
+---
+# generated file please do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: monitoring
+commonLabels:
+  app.kubernetes.io/version: v2.0.0-alpha.1
+resources:
+  - ../../../../../../add-ons/kube-state-metrics/kustomize/v2.0.x/base
+images:
+  - name: quay.io/coreos/kube-state-metrics
+    newName: quay.io/coreos/kube-state-metrics
+    newTag: v2.0.0-alpha.1
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-deployment.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-cluster-role.yml
+    target:
+      group: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: kube-state-metrics
+      version: v1
+ 
+ 
+
+

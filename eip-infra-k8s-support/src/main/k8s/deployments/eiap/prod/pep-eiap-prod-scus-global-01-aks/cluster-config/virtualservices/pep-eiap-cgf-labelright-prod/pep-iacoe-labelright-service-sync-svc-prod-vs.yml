@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-iacoe-labelright-service-sync-prod
+  name: pep-iacoe-labelright-service-sync-svc-prod-vs
+  namespace: pep-eiap-cgf-labelright-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-labelright-prod/pep-eiap-cgf-labelright-prod-cv-gw
+  hosts:
+  - pep-iacoe-labelright-service-sync-svc-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-labelright-service-sync-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local
+        port:
+          number: 8000

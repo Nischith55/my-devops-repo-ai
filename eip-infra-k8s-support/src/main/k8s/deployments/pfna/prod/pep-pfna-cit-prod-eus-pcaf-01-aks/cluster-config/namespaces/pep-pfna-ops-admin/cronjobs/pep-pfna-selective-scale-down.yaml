@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pep-pfna-selective-scale-down
+  namespace: pep-pfna-ops-admin
+spec:
+  #  Run every minute
+  schedule: "*/1 * * * *"
+  # Update the value to true to disable Cronjob
+  suspend: True
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  # Concurrent runs are not allowed
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/sh
+              - -c
+              - kubectl get deploy -A -l $DEPLOY_SELECTOR --no-headers | grep -Ewv $NS_EXCLUDE_REGX | awk '{print $1" "$2}' | while read -r ns dep; do kubectl scale --replicas=0 deployment/$dep -n $ns $DRYRUN; done
+              - exit 0
+            env:
+            # Label Selector for the deployments
+            # Deployments with pepsico-critical-app=true label will be excluded from scaling down
+            # and selects only the deployments with label key 'app'
+            - name: DEPLOY_SELECTOR
+              value: "pepsico-critical-app!=true,app"
+            # Namespace Regex to be excluded from scaling down deployments to Zero
+            # If there are multiple values, please seperate using pipe operator
+            - name: NS_EXCLUDE_REGX
+              value: "calico-system|istio-operator|istio-system|kube-node-lease|kube-public|cattle-fleet-system|cattle-impersonation-system|cattle-system|pep-pfna-global-infra|local|default|pep-pfna-istio-config|kube-system|kubecost|monitoring|msi-acrpull-system|observability|pep-pfna-ops-admin|pep-pfna-elastic-client-01|tigera-operator|pep-pfna-cgf-cle-prod"
+            # Option to perform dry run if needed. the value must be "--dry-run=client"
+            # to opt for Dry run. Otherwise it should be empty "". 
+            - name: DRYRUN
+              value: ""
+          # The provided service account should have access to get deployments cluster-wide
+          serviceAccountName: pep-pfna-admin-sa
+      # to avoid any retries of failed job
+      backoffLimit: 0

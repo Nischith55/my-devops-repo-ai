@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-cgf-pepiris02-preprod-sa
+  namespace: pep-eiap-cgf-pepiris02-preprod

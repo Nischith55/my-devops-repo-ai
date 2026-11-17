@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-latam-lassot-preprod-cv-gw
+  namespace: pep-eiap-latam-lassot-preprod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-latam-lassot-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-lassot-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-latam-lassot-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - digital-factory-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - latam-vmi-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-manualupload-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-manualupload-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-lassot-preprod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-latam-lassot-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - digital-factory-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - latam-vmi-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-manualupload-dsi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-manualupload-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - revman-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-lassot-preprod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-latam-lassot-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

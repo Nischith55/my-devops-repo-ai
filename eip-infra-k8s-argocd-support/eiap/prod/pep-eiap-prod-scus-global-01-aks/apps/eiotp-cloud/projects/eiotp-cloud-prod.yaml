@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eiotp-cloud-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for eiotp-cloud-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PEPsense_IoT_Platform/_git/pep-eiotp-cloud-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-global-eiotp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eiotp-cloud-prod-admin
+        description: Admin privileges to eiotp-cloud-prod
+        policies:
+        - p, proj:eiotp-cloud-prod:eiotp-cloud-prod-admin, applications, *, eiotp-cloud-prod/*, allow
+        - p, proj:eiotp-cloud-prod:eiotp-cloud-prod-admin, repositories, *, eiotp-cloud-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.Global.EIOTP.Prod.contributor"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.Global.EIOTP.Prod.ContributorNoDelete"
+        - "Team.Support.EIAP.Global.EIOTP.Prod.Reader"
+        - "mrengara@pepsico.com"
+
+      - name: eiotp-cloud-prod-user
+        description: Read-only privileges to eiotp-cloud-prod
+        policies:
+        - p, proj:eiotp-cloud-prod:eiotp-cloud-prod-user, applications, get, eiotp-cloud-prod/*, allow
+        - p, proj:eiotp-cloud-prod:eiotp-cloud-prod-user, applications, sync, eiotp-cloud-prod/*, allow
+        - p, proj:eiotp-cloud-prod:eiotp-cloud-prod-user, repositories, get, eiotp-cloud-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.Global.EIOTP.Prod.Reader"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 409a58ce-cac2-4f44-a34a-7b9b4ffb709e
+  name: pep-eiap-apac-catman-dev-sa
+  namespace: pep-eiap-apac-catman-dev

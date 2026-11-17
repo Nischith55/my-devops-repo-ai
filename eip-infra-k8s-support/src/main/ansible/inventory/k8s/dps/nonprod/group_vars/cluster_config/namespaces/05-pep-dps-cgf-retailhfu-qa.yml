@@ -1,0 +1,36 @@
+---
+ns_pep_dps_cgf_retailhfu_qa:
+  
+  name: pep-dps-cgf-retailhfu-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-retailhfu
+    sector: cgf
+    project: retailhfu
+    crosscharge_aks: direct
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-retailhfu-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_retailhfu'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-retailhfu-qa-sa-token
+    namespace: pep-dps-cgf-retailhfu-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-retailhfu-qa-sa"

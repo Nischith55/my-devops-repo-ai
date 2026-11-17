@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eiap-prod-sc-rdsamples-orderstatus
+  name: pep-eiap-prod-sc-rdsamples-orderstatus-vs
+  namespace: pep-eiap-cgf-scards-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-scards-prod/pep-eiap-cgf-scards-prod-cv-gw
+  hosts:
+  - pep-eiap-prod-sc-rdsamples-orderstatus.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-prod-sc-rdsamples-orderstatus.pep-eiap-cgf-scards-prod.svc.cluster.local
+        port:
+          number: 80

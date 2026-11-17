@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+# Ansible managed: modified on 2021-11-26 11:46:31
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-och-na-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: na
+    sector: och
+    team: och-na

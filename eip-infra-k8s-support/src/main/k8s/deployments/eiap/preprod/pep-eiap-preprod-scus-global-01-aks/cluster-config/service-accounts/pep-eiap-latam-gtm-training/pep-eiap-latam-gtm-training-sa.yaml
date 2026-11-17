@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 114030a1-8413-418f-86a7-99bfb1f2a6d1
+  name: pep-eiap-latam-gtm-training-sa
+  namespace: pep-eiap-latam-gtm-training
+

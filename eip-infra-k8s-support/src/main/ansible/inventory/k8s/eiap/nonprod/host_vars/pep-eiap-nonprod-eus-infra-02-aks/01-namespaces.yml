@@ -1,0 +1,10 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_global_infra_dev
+  # - ns_pep_eiap_flna_couchbase_dev
+  - ns_pep_eiap_global_devsecops_dev
+  

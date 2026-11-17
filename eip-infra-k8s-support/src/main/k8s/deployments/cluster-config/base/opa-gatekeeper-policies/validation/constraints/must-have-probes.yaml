@@ -1,0 +1,90 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredProbes
+metadata:
+  name: must-have-probes
+spec:
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+    - <PATCH>
+    # - calico-system
+    # - cattle-fleet-system
+    # - cattle-gatekeeper-system
+    # - cattle-impersonation-system
+    # - cattle-system
+    # - istio-operator
+    # - istio-system
+    # - kube-node-lease
+    # - kube-public
+    # - kube-system
+    # - kubecost
+    # - kubernetes-dashboard
+    # - monitoring
+    # - msi-acrpull-system
+    # - observability
+    # - twistlocknp
+    # - tigera-operator
+    # - pep-eiap-ops-admin
+    # - pep-eiap-global-infra-dev
+    # - pep-eiap-istio-config
+    # - pep-eiap-elastic-client-01
+    # - pep-eiap-elastic-client-02
+    # - pep-eiap-elastic-cluster-01
+    # - pep-eiap-elastic-cluster-02
+    # - pep-eiap-elastic-monitor-01
+    # - pep-eiap-global-devsecops-dev
+    - cert-manager-system
+    - reloader
+    # - flux-system
+    # - flagger
+    - policy-system
+    # - gitops-connector-system
+    # RITM4319394 - Probe-exempt for namespaces "och-na" qa and dev
+    # - pep-eiap-och-na-dev
+    # - pep-eiap-och-na-qa
+    # CMP OPA Exception Request 
+    # - pep-eiap-global-cmp-dev
+    # - pep-eiap-global-cmp-qa
+    # - pep-eiap-cgf-eecmp-dev
+    # - pep-eiap-cgf-eecmp-qa
+    # RITM4617900 - Probe-exempt for namespaces "hcm-dev
+    # - pep-eiap-global-hcm-dev
+    # RITM4343802 - Probe-exempt for below namespaces "flna-gtm" qa and dev
+    # - pep-eiap-flna-gtmdsld-qa
+    # - pep-eiap-flna-gtmdsld-02-dev
+    # - pep-eiap-flna-gtmgro-qa
+    # - pep-eiap-flna-gtmgro-02-dev
+    # - pep-eiap-flna-gtmothr-qa
+    # - pep-eiap-flna-gtmsp-qa
+    # - pep-eiap-flna-gtmsp-02-dev
+    # RITM4382479 - Probe-exempt for namespaces "pep-eiap-cgf-appruntime-dev"
+    # - pep-eiap-cgf-appruntime-dev  
+    # - cert-manager-system
+    # - reloader
+    # - flux-system
+    # - flagger  
+    # - pep-eiap-global-infra-dev
+    # - flagger    
+    # - pep-eiap-cgf-appruntime-dev
+    # - default
+    # - pep-eiap-cgf-swaggerhub-dev
+    # - pep-eiap-cgf-monday-dev
+    # - pep-eiap-global-eventapp-dev
+    # - pep-eiap-pbna-pbnasckm-dev #delete get testing #mahesh
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+    labelSelector:
+      matchExpressions:
+      - key: app
+        operator: Exists
+    scope: '*'
+  parameters:
+    probeTypes:
+    - tcpSocket
+    - httpGet
+    - exec
+    probes:
+    - readinessProbe

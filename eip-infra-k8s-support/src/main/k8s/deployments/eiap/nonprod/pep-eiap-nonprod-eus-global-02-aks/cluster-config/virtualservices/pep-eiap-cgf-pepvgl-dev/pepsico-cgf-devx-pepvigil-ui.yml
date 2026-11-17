@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: pepsico-cgf-devx-pepvigil-ui
+        meta.helm.sh/release-namespace: pep-eiap-cgf-pepvgl-dev
+    labels:
+        app: pepsico-cgf-devx-pepvigil-ui
+        app.kubernetes.io/instance: pepsico-cgf-devx-pepvigil-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250708.1'
+        environment: dev
+        helm.sh/chart: platform-chart-1.0.2
+    name: pepsico-cgf-devx-pepvigil-ui
+    namespace: pep-eiap-cgf-pepvgl-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-pepvgl-dev/pep-eiap-cgf-pepvgl-dev-cv-gw
+    hosts:
+    - pepsico-cgf-devx-pepvigil-ui.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - pepvigil.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-cgf-devx-pepvigil-ui.pep-eiap-cgf-pepvgl-dev.svc.cluster.local
+                port:
+                    number: 80

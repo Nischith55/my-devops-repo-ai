@@ -1,0 +1,37 @@
+  variables:
+    - group: pep-eiap-potato-sourcing-matrix-pipeline-templates
+    - name: PVC_MOUNT
+      value: /mnt/azure
+    - name : NAMESPACE
+      value: pep-eiap-global-devsecops-dev
+    - name: JOB_MANIFEST
+      value: job_template_kaniko.yaml
+    - name: isDevBranch
+      value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/dev')]
+    - name: isQaBranch
+      value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/qa')]      
+    - name: isReleaseBranch
+      value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release')]
+    - name: aks-nonprod-eus
+      value: pep-eiap-nonprod-eus-global-01-aks
+    - name: aks-prod-scus
+      value: pep-eiap-prod-scus-global-01-aks
+    - name: java11path
+      value: /opt/java/jdk11.0.9.1 
+    - name: java17path
+      value: /opt/java/jdk17
+    - name: manifest_pr_branch 
+      value: $(Build.Repository.Name)/$(Build.BuildNumber) 
+    - name: manifest_repo_url 
+      value: pepsicoit.visualstudio.com/Potato_Sourcing_Matrix_automation_PSMa/_git/potato-sourcing-argocd-configs
+    - name: manifest_branch
+      value: develop
+    - name: manifest_repo_name 
+      value: potato-sourcing-argocd-configs
+    - name: api_url
+      value: 'https://pepsico.service-now.com/api/inpe/cmp/change_validation'
+    - name: assignment_group
+      value: 'EIAP CICD SUPPORT ADMIN'
+    - name: ci_value
+      value: 'POTATO SOURCING MATRIX (PSM)'
+    

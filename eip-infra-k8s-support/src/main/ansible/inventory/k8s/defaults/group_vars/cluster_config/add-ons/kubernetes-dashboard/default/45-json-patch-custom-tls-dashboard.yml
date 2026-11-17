@@ -1,0 +1,68 @@
+---
+# ##
+# This is just a template for using custom TLS certificates, will patch the
+# dashboard UI
+# IMPORTANT:
+# - This is a json patch so should align with what is in the base
+# ##
+
+# --default-cert-dir is /certs if you change then we need to patch container
+# args with new name
+__k8s_d_mnt_path: /secrets
+__k8s_d_tls_01_crt: tls01.crt
+__k8s_d_tls_01_key: tls01.key
+
+k8s_dashboard_secrets_vol_name: "tls-01-certs"
+
+k8s_dashboard_json_custom_tls_01_patch_tmpl:
+
+  # Volumes to mount TLS certs..since base already has we append
+  - op: add
+    path: /spec/template/spec/volumes/-
+    value:
+      name: "{{ k8s_dashboard_secrets_vol_name }}"
+      projected:
+        defaultMode: 0400
+        sources:
+          - secret:
+              name: "{{ k8s_dashboard_tls_secret_01 }}"
+              items:
+                - key: tls.crt
+                  path: "{{ __k8s_d_tls_01_crt }}"
+                - key: tls.key
+                  # must be relative path
+                  path: "{{ __k8s_d_tls_01_key }}"
+
+  # Append first container -- volume mounts
+  - op: add
+    path: /spec/template/spec/containers/0/volumeMounts/-
+    value:
+      mountPath: "{{ __k8s_d_mnt_path }}"
+      name: "{{ k8s_dashboard_secrets_vol_name }}"
+      readOnly: true
+
+  # ##
+  # Now adjust dashboard command line arguments
+  # ##
+
+  # 1) remove generating own certs! (first one in base)
+  - op: remove
+    path: /spec/template/spec/containers/0/args/0
+
+  # 2) added default cert dir
+  - op: add
+    path: /spec/template/spec/containers/0/args/-
+    value: >-
+       --default-cert-dir={{ __k8s_d_mnt_path }}
+
+  # 3) append tls cert only one
+  - op: add
+    path: /spec/template/spec/containers/0/args/-
+    value: >-
+       --tls-cert-file={{  __k8s_d_tls_01_crt }}
+
+  # 4) append tls key only one
+  - op: add
+    path: /spec/template/spec/containers/0/args/-
+    value: >-
+       --tls-key-file={{ __k8s_d_tls_01_key }}

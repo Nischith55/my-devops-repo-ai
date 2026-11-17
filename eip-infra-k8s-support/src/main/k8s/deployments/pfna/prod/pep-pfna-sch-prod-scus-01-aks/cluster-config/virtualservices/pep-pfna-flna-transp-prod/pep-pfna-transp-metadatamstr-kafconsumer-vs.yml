@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-transp-metadatamstr-kafconsumer
+  name: pep-pfna-transp-metadatamstr-kafconsumer-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-metadatamstr-kafconsumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/metadatamstr/feed
+    route:
+    - destination:
+        host: pep-pfna-transp-metadatamstr-kafconsumer.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,28 @@
+---
+- name: creates temp directory
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforcr"
+    state: directory
+
+- template:
+    src: clusterroles.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforcr/{{ cr[item] }}.yml"
+  with_items: "{{ cr }}"
+
+
+- name: Create CRs from the generated manifest
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforcr/{{ cr[item] }}.yml"
+  register: var_output_cr
+  with_items: "{{ cr }}"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy generated CR manifests
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/cluster-roles"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforcr/"
+    force: true
+

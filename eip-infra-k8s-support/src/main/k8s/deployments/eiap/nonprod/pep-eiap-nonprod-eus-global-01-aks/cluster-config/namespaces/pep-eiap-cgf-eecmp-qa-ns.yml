@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-eecmp-qa
+  labels:
+    env-nonprod: "true"
+    project: eecmp
+    sector: cgf
+    team: cgf-eecmp
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: engineeringexcellenceportal-cgf
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

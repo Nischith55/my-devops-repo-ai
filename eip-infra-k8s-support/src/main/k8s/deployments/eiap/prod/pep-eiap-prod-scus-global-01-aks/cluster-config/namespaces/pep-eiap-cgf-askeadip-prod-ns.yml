@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-askeadip-prod
+  labels:
+    env-prod: "true"
+    project: askeadip
+    sector: cgf
+    team: cgf-askeadip
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: enterprisearchitectureassistantprod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 140ee975c3716210476a900f0501314e
+    pep-cmdb-app-service-id: 3b70bfebc3c3369098cd52af050131d4
+    pep-environment: Production
+    

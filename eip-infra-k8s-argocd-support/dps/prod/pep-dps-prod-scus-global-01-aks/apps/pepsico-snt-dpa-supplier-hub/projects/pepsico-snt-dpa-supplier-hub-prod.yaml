@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-snt-dpa-supplier-hub-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepsico-snt-dpa-supplier-hub-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pepsico-snt-dpa-supplier-hub-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-supplier-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-snt-dpa-supplier-hub-prod-admin
+    description: Admin privileges to pepsico-snt-dpa-supplier-hub-prod
+    policies:
+    - p, proj:pepsico-snt-dpa-supplier-hub-prod:pepsico-snt-dpa-supplier-hub-prod-admin, applications, *, pepsico-snt-dpa-supplier-hub-prod/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-prod:pepsico-snt-dpa-supplier-hub-prod-admin, repositories, *, pepsico-snt-dpa-supplier-hub-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-snt-dpa-supplier-hub-prod-user
+    description: Read-only privileges to pepsico-snt-dpa-supplier-hub-prod
+    policies:
+    - p, proj:pepsico-snt-dpa-supplier-hub-prod:pepsico-snt-dpa-supplier-hub-prod-user, applications, get, pepsico-snt-dpa-supplier-hub-prod/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-prod:pepsico-snt-dpa-supplier-hub-prod-user, applications, sync, pepsico-snt-dpa-supplier-hub-prod/*, allow
+    - p, proj:pepsico-snt-dpa-supplier-hub-prod:pepsico-snt-dpa-supplier-hub-prod-user, repositories, get, pepsico-snt-dpa-supplier-hub-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.DPS.Prod.Supplier"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-latam-gtm-training
+    project: gtm
+    sector: latam
+    servicename_aks: datadigital-latam
+    sub-environment: training
+    team: latam-gtm
+  name: pep-eiap-latam-gtm-training

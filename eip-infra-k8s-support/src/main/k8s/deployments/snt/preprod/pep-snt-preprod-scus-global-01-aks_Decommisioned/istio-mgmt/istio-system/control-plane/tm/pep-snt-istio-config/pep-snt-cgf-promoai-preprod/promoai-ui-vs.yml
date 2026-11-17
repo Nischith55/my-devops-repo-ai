@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: promoai-ui-vs
+  namespace: pep-snt-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - promoai-ui.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - gnrm-preprod.intra.pepsico.com
+  - gnrm.preprod.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: promoai-ui.pep-snt-cgf-promoai-preprod.svc.cluster.local
+        port:
+          number: 80

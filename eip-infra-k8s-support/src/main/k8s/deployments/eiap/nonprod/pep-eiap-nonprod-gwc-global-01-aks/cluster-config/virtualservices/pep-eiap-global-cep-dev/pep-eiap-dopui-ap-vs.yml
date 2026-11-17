@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dopui-ap
+  name: pep-eiap-dopui-ap-vs
+  namespace: pep-eiap-global-cep-dev
+spec:
+  gateways:
+  - pep-eiap-global-cep-dev/pep-eiap-global-cep-dev-cv-gw
+  hosts:
+  - pepdopauq.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - pepdopnzq.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopui-ap.pep-eiap-global-cep-dev.svc.cluster.local

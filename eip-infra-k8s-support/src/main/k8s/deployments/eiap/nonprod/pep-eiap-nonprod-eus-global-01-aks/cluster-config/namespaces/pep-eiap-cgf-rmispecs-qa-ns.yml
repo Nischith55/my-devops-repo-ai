@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-rmispecs-qa
+    pep-cmdb-app-service-id: e077534d83a4c614693f9365eeaad395
+    pep-cmdb-bus-app-id: ec77534d83a4c614693f9365eeaad370
+    pep-environment: QA
+    project: rmispecs
+    sector: cgf
+    servicename_aks: rmispecificationintakemanagementr-dlatam
+    team: cgf-rmispecs
+  name: pep-eiap-cgf-rmispecs-qa

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: allnodeprojects-newnoderepos01-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for allnodeprojects-newnoderepos01-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/allnodeprojects-newnoderepos01-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: allnodeprojects-newnoderepos01-dev-admin
+    description: Admin privileges to allnodeprojects-newnoderepos01-dev
+    policies:
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-admin, applications, *, allnodeprojects-newnoderepos01-dev/*, allow
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-admin, repositories, *, allnodeprojects-newnoderepos01-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: allnodeprojects-newnoderepos01-dev-user
+    description: Read-only privileges to allnodeprojects-newnoderepos01-dev
+    policies:
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-user, applications, get, allnodeprojects-newnoderepos01-dev/*, allow
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-user, applications, sync, allnodeprojects-newnoderepos01-dev/*, allow
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-user, repositories, get, allnodeprojects-newnoderepos01-dev/*, allow
+    - p, proj:allnodeprojects-newnoderepos01-dev:allnodeprojects-newnoderepos01-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ"

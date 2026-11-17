@@ -1,0 +1,74 @@
+steps: 
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  inputs:
+    secureFile: 'config'
+
+- task: CopyFiles@2
+  displayName: "Copyitems"
+  inputs:
+    SourceFolder: $(Agent.TempDirectory)
+    Contents: config
+    TargetFolder: $(HOME)
+  
+- task: Bash@3
+  displayName: 'set_context'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "$(ARM_CLIENT_ID)"
+      echo "$(ARM_SECRET)"
+      mkdir $HOME/.kube
+      cp $(Agent.TempDirectory)/config $HOME/.kube/
+      mv $HOME/.kube/config $HOME/.kube/config
+      kubectl config use-context ${{ parameters.resource_name }}
+      kubectl config current-context
+      pwd
+      cd /home/neipd999/.kube/
+      ls -la
+      cat config
+    
+- task: Bash@3
+  displayName: drain_system_np
+  condition: eq('${{ parameters.mode }}', 'System')
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -e
+      if [ ${{ parameters.mode }} = "System" ]; then
+         echo "test"
+         IFS=',' read -r -a my_array <<< "${{ parameters.old_system_pool }}"
+         echo "test1"
+         echo "sys pool array ${my_array[@]}"
+      fi
+      echo "after restart ($(kubectl get pods -A  -o  wide))"
+      echo "testing8 ${my_array[@]}"
+      my_node=($(kubectl get nodes -l "kubernetes.azure.com/mode=system,agentpool in ($(echo "${my_array[@]}" | tr ' ' ','))" -o=json | jq ".items[].metadata | [.name] | @csv" -r | tr -d '"'))
+      echo "Node- ${my_node[@]}"
+      for Item_drain in "${my_node[@]}";
+      do
+        kubectl drain $Item_drain --ignore-daemonsets --delete-emptydir-data --force
+      done
+
+- task: Bash@3
+  displayName: draining_user_np
+  condition: eq('${{ parameters.mode }}', 'User')
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -e
+      if [ ${{ parameters.mode }} = "User" ]; then
+        echo "test"
+        IFS=',' read -r -a my_array <<< "${{ parameters.old_user_pool }}"
+        echo "test1"
+        echo "user pool array ${my_array[@]}"
+      fi
+      my_node=($(kubectl get nodes -l "kubernetes.azure.com/mode=user,agentpool in ($(echo "${my_array[@]}" | tr ' ' ','))" -o=json | jq ".items[].metadata | [.name] | @csv" -r | tr -d '"'))
+      echo "Node- ${my_node[@]}"
+
+      for Item_drain in "${my_node[@]}";
+      do
+        kubectl drain $Item_drain --ignore-daemonsets --delete-emptydir-data --force
+      done
+
+

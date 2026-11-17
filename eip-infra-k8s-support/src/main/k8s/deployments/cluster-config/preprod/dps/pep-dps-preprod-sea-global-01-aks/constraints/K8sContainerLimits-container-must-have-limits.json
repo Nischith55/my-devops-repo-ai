@@ -1,0 +1,70 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sContainerLimits",
+  "metadata": {
+    "annotations": {},
+    "name": "container-must-have-limits"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "falcon-kac",
+        "falcon-system",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "tigera-operator",
+        "pep-dps-ops-admin",
+        "pep-dps-istio-config",
+        "pep-dps-elastic-client-01",
+        "pep-dps-global-infra-preprod",
+        "snyk-monitor",
+        "policy-system",
+        "internal-services",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "cpu": "4",
+      "exemptImages": [
+        "cyberark/secrets-provider-for-k8s*",
+        "docker.io/istio/*",
+        "docker.elastic.co/observability/*",
+        "appdynamics/*",
+        "docker.io/appdynamics/*",
+        "pepeiapprodcommonacr.azurecr.io/contenthubdigestdistributionservice*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/*",
+        "otel/opentelemetry-collector*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*",
+        "pepeiapprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eip/specification-digitization*",
+        "pepeiapprodcommonacr.azurecr.io/pbna/svt/svt-softbot-platform*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/iai-cv-pepiris-inference-ray-service*"
+      ],
+      "memory": "8Gi"
+    }
+  }
+}

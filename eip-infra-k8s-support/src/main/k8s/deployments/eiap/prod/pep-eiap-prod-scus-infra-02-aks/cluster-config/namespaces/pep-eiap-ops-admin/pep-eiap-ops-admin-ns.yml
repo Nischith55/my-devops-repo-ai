@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: disabled
+    team: eiap-admins
+    # MUST Change
+    cluster-name: pep-eiap-prod-scus-infra-02-aks
+    environment: prod
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    app.kubernetes.io/created-by: Haritha_Shakirat_Prasad_2021-08-027_12-15-07
+    app.kubernetes.io/managed-by: manual
+  name: pep-eiap-ops-admin

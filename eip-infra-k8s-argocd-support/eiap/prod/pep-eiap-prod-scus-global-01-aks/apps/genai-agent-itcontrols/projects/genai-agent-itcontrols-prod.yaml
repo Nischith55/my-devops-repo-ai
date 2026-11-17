@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: genai-agent-itcontrols-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for genai-agent-itcontrols-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/IT_Generative_AI_Initiatives/_git/pep-genai-agent-itcontrols-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-itc-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: genai-agent-itcontrols-prod-admin
+        description: Admin privileges to genai-agent-itcontrols-prod
+        policies:
+        - p, proj:genai-agent-itcontrols-prod:genai-agent-itcontrols-prod-admin, applications, *, genai-agent-itcontrols-prod/*, allow
+        - p, proj:genai-agent-itcontrols-prod:genai-agent-itcontrols-prod-admin, repositories, *, genai-agent-itcontrols-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: genai-agent-itcontrols-prod-user
+        description: Read-only privileges to genai-agent-itcontrols-prod
+        policies:
+        - p, proj:genai-agent-itcontrols-prod:genai-agent-itcontrols-prod-user, applications, get, genai-agent-itcontrols-prod/*, allow
+        - p, proj:genai-agent-itcontrols-prod:genai-agent-itcontrols-prod-user, applications, sync, genai-agent-itcontrols-prod/*, allow
+        - p, proj:genai-agent-itcontrols-prod:genai-agent-itcontrols-prod-user, repositories, get, genai-agent-itcontrols-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.Prod.ITC"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: admin-portal-frontend
+  name: admin-portal-frontend-qa-vs
+  namespace: pep-dps-cgf-adportal-qa
+spec:
+  gateways:
+  - pep-dps-cgf-adportal-qa/pep-dps-cgf-adportal-qa-cv-gw
+  hosts:
+  - admin-portal-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - admin-portal.qa.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: admin-portal-frontend.pep-dps-cgf-adportal-qa.svc.cluster.local
+        port:
+          number: 8080

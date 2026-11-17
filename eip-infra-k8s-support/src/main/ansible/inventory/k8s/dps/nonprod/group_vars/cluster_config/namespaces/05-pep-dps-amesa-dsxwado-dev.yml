@@ -1,0 +1,40 @@
+---
+ns_pep_dps_amesa_dsxwado_dev:
+  
+  name: pep-dps-amesa-dsxwado-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: amesa-dsxwado
+    sector: amesa
+    project: dsxwado
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: pepsiconnectb2bportalnon-prod
+    pep-cmdb-app-service-id: "0ded8c2ac3b98e1014d2981f050131be"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-amesa-dsxwado-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['amesa_dsxwado'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-amesa-dsxwado-dev-sa-token
+    namespace: pep-dps-amesa-dsxwado-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-amesa-dsxwado-dev-sa"

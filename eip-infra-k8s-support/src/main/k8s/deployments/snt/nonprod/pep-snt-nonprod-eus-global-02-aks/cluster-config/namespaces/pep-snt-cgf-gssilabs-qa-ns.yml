@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 3991d487-aaee-4a5b-9d06-e766f0837102
+    pep-cmdb-bus-app-id: 7c9eadac8392da58282e47747daad3a
+    pep-environment: QA
+    project: gssilabs
+    sector: cgf
+    servicename_aks: gssilabs
+    team: cgf-gssilabs
+  name: pep-snt-cgf-gssilabs-qa

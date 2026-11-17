@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: spendanalyticsai-spendanalytics-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for spendanalyticsai-spendanalytics-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Procurement/_git/spendanalyticsai-spendanalytics-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-buycon-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: spendanalyticsai-spendanalytics-dev-admin
+    description: Admin privileges to spendanalyticsai-spendanalytics-dev
+    policies:
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-admin, applications, *, spendanalyticsai-spendanalytics-dev/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-admin, repositories, *, spendanalyticsai-spendanalytics-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: spendanalyticsai-spendanalytics-dev-user
+    description: Read-only privileges to spendanalyticsai-spendanalytics-dev
+    policies:
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-user, applications, get, spendanalyticsai-spendanalytics-dev/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-user, applications, sync, spendanalyticsai-spendanalytics-dev/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-user, repositories, get, spendanalyticsai-spendanalytics-dev/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-dev:spendanalyticsai-spendanalytics-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.Prod.dsxdevop"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.DPS.NonProd.BUYCON"

@@ -1,0 +1,18 @@
+{
+    "kubecost_ADMIN":{
+       "allocationFilters":[
+          {
+             "namespace":"*",
+             "cluster":"*"
+          }
+       ]
+    },
+    "kubecost_USER":{
+       "allocationFilters":[
+          {
+             "namespace":"*",
+             "cluster":"*"
+          }
+       ]
+    }
+ }

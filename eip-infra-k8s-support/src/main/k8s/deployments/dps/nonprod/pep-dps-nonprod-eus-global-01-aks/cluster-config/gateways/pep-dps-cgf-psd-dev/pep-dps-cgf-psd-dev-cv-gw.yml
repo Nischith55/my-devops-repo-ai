@@ -1,0 +1,118 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-psd-dev-cv-gw
+  namespace: pep-dps-cgf-psd-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-psd-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-psd-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-global-psdreportapi.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-api-risingwave.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-global-psdreportapi-argocd-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ui-argocd-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-data-collector-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-widget-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-app-performance-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-common-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-graph-federation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-user-adoption-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-value-creation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ms-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dbt-data-processing-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - appruntimereportapi.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-dashboard-portal.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-onboarding.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-onboarding-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-ai-api-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-psd-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-global-psdreportapi.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-api-risingwave.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - success.dev.mypepsico.com
+    - pep-global-psdreportapi-argocd-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ui-argocd-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-data-collector-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-widget-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-app-performance-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-common-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-graph-federation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-user-adoption-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-value-creation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-psd-ms-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dbt-data-processing-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - appruntimereportapi.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-dashboard-portal.dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-onboarding.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-ps-onboarding-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - psd-ai-api-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-psd-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-psd-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - success.dev.mypepsico.com
+    name: pep-dps-cgf-psd-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-psd-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-successdev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

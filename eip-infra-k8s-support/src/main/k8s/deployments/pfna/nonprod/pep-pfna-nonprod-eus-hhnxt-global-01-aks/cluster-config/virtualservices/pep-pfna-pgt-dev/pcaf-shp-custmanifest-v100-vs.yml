@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pcaf-shp-custmanifest-v100-vs
+  namespace: pep-pfna-pgt-dev
+spec:
+  gateways:
+  - pep-pfna-pgt-dev/pep-pfna-pgt-dev-cv-gw
+  hosts:
+  - pcaf-shp-custmanifest-v100.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-custmanifest-v100.pep-pfna-pgt-dev.svc.cluster.local
+        port:
+          number: 80

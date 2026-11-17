@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ai-negotiations-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ai-negotiations-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SnT_AI_Negotiations/_git/ai-negotiations-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-ainego-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ai-negotiations-prod-admin
+        description: Admin privileges to ai-negotiations-prod
+        policies:
+        - p, proj:ai-negotiations-prod:ai-negotiations-prod-admin, applications, *, ai-negotiations-prod/*, allow
+        - p, proj:ai-negotiations-prod:ai-negotiations-prod-admin, repositories, *, ai-negotiations-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: ai-negotiations-prod-user
+        description: Read-only privileges to ai-negotiations-prod
+        policies:
+        - p, proj:ai-negotiations-prod:ai-negotiations-prod-user, applications, get, ai-negotiations-prod/*, allow
+        - p, proj:ai-negotiations-prod:ai-negotiations-prod-user, applications, sync, ai-negotiations-prod/*, allow
+        - p, proj:ai-negotiations-prod:ai-negotiations-prod-user, repositories, get, ai-negotiations-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.AINegotiation.admins"
+        - "Team.Support.EIAP.READ"
+    

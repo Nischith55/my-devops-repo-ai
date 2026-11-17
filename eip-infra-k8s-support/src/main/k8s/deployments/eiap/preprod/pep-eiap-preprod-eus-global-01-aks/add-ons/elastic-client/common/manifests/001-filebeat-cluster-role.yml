@@ -1,0 +1,23 @@
+---
+# ##
+# Common cluster wide role for filebeat
+# ##
+# permissions needed for filebeat
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-elastic-client-filebeat
+rules:
+# "" indicates the core API group
+- apiGroups: [""]
+  resources:
+  - events
+  - namespaces
+  - nodes
+  - pods
+  - services
+  - replicasets
+  verbs:
+  - get
+  - watch
+  - list

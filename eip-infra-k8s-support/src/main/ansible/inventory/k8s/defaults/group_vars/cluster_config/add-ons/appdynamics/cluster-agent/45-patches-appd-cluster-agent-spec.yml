@@ -1,0 +1,49 @@
+---
+# ##
+# Merge Patch for ClusterAgent spec.
+# ##
+# INPUTS:
+# - cluster_name: Required.
+# - 
+# ##
+# TODO : needs to restructure
+_appd_ca_cfg_defaults:
+
+  # OVRD# logLevel: INFO
+
+  # Java Stuff
+  appNameLabel: app
+  appNameStrategy: label
+  instrumentationMethod: ENV
+
+
+appd_ca_cfg: |-
+  {{ _appd_ca_cfg_defaults | combine(appd_ca_cfg_ovrd, recursive=True) }}
+
+
+# ##
+# Convenient Default for ClusterAgent merge spec. NOTE make sure every
+# field is copied from appd_ca_cfg.
+# ##
+_aca_merge_spec_patch:
+  # root is spec
+  spec:
+    # default to cluster_name.
+    appName: "{{ appd_ca_cfg['appName'] | default(cluster_name) }}"
+    controllerUrl: "{{ appd_ca_cfg['controllerUrl'] }}"
+    account: "{{ appd_ca_cfg['account'] }}"
+    image: "{{ appd_ca_cfg['image'] }}"
+    imagePullSecrets: "{{ appd_ca_cfg['image_pull_secret'] }}"
+    nodeSelector: "{{ system_np_node_selector }}"
+    tolerations: "{{ system_np_tolerations }}"
+
+    # ##
+    # Java Instrumentation [MOST IMPORTANT configuration]
+    # ##
+    appNameLabel: "{{ appd_ca_cfg['appNameLabel'] }}"
+    appNameStrategy: "{{ appd_ca_cfg['appNameStrategy'] }}"
+    instrumentationMethod: "{{ appd_ca_cfg['instrumentationMethod'] }}"
+    nsToMonitor: "{{ appd_ca_cfg['nsToMonitor'] | default([]) }}"
+    nsToInstrumentRegex: "{{ appd_ca_cfg['nsToInstrumentRegex'] }}"
+
+    stdoutLogging: "{{ appd_ca_cfg['stdoutLogging'] | default('true') }}"

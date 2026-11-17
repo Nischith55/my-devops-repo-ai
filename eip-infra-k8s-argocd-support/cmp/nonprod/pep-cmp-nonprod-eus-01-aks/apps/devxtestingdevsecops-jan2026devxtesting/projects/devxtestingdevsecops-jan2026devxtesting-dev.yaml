@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devxtestingdevsecops-jan2026devxtesting-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devxtestingdevsecops-jan2026devxtesting-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/devxtestingdevsecops-jan2026devxtesting-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: devxtestingdevsecops-jan2026devxtesting-dev-admin
+    description: Admin privileges to devxtestingdevsecops-jan2026devxtesting-dev
+    policies:
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-admin, applications, *, devxtestingdevsecops-jan2026devxtesting-dev/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-admin, repositories, *, devxtestingdevsecops-jan2026devxtesting-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: devxtestingdevsecops-jan2026devxtesting-dev-user
+    description: Read-only privileges to devxtestingdevsecops-jan2026devxtesting-dev
+    policies:
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-user, applications, get, devxtestingdevsecops-jan2026devxtesting-dev/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-user, applications, sync, devxtestingdevsecops-jan2026devxtesting-dev/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-user, repositories, get, devxtestingdevsecops-jan2026devxtesting-dev/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-dev:devxtestingdevsecops-jan2026devxtesting-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

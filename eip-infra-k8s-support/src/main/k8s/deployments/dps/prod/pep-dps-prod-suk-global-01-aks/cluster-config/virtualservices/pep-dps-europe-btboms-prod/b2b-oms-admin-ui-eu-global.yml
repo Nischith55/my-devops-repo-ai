@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-oms-admin-ui-europe-prod:networking.istio.io/VirtualService:pep-dps-europe-btboms-prod/b2b-oms-admin-ui-eu-global
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-oms-admin-ui-europe-prod:networking.istio.io/VirtualService:pep-dps-europe-btboms-prod/b2b-oms-admin-ui-eu-global"},"labels":{"app":"b2b-oms-admin-ui-eu-global","app.kubernetes.io/instance":"b2b-oms-admin-ui-europe","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","country":"eu-global","env":"prod","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-oms-admin-ui-eu-global","namespace":"pep-dps-europe-btboms-prod"},"spec":{"gateways":["pep-dps-europe-btboms-prod/pep-dps-europe-btboms-prod-cv-gw"],"hosts":["b2b-oms-admin-ui-eu-global.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-oms-admin-ui-eu-global.pep-dps-europe-btboms-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-oms-admin-ui-eu-global
+        app.kubernetes.io/instance: b2b-oms-admin-ui-europe
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        country: eu-global
+        env: prod
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-oms-admin-ui-eu-global
+    namespace: pep-dps-europe-btboms-prod
+spec:
+    gateways:
+    - pep-dps-europe-btboms-prod/pep-dps-europe-btboms-prod-cv-gw
+    hosts:
+    - b2b-oms-admin-ui-eu-global.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - orders-b2b-eu-glob.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-oms-admin-ui-eu-global.pep-dps-europe-btboms-prod.svc.cluster.local
+                port:
+                    number: 8080

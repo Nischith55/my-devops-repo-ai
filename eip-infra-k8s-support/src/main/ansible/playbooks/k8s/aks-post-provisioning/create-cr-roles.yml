@@ -1,0 +1,25 @@
+---
+- name: create_crs 
+  hosts: localhost
+  gather_facts: false
+  # collections:
+  #   - lvrfrc87.git_acp
+  vars_files:
+    - /azp/agent/_work/1/s/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml
+  tasks:
+    - name: Include cluster role data from variable file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/clusterroles.yml"
+        name: cr
+        
+    - name: Include vars from variables file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml"
+        name: var
+    
+    - name: import cluste role creation role
+      import_role:
+        name: create_cr
+
+
+

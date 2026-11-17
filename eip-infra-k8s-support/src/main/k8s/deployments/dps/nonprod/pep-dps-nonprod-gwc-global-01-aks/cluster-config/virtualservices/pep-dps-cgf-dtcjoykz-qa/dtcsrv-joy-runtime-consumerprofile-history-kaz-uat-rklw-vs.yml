@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-runtime-consumerprofile-history-kaz-uat-rklw-vs
+  namespace: pep-dps-cgf-dtcjoykz-qa
+  labels:
+      app: dtcsrv-joy-runtime-consumerprofile-history-kaz-uat
+spec:
+  hosts:
+  - pep-joy-dtcruntimeconsumerhistorykaz-uat-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-cgf-dtcjoykz-qa/pep-dps-cgf-dtcjoykz-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-consumerprofile-history-kaz-uat.pep-dps-cgf-dtcjoykz-qa.svc.cluster.local
+        port:
+          number: 80
+  

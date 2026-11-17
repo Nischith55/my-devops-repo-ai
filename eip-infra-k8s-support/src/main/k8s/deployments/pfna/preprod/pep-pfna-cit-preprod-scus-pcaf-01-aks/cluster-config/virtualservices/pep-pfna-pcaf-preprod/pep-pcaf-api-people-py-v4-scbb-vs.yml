@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-people-py-v4-scbb-vs
+  namespace: pep-pfna-pcaf-preprod
+  labels:
+      app: pep-pcaf-api-people-py-v4
+spec:
+  hosts:
+  - pep-pcaf-api-people-py-v4.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-api-people-py-v4.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 8080
+  

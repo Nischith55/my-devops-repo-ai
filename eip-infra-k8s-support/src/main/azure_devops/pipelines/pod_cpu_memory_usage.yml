@@ -1,0 +1,36 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger: 
+- none
+pr: 
+- none 
+
+schedules:
+  - cron: '*/15 * * * *'
+    displayName: 'pep-eiap-prod-scus-global-01-aks'
+    branches:
+      include: 
+      - develop 
+    always: true
+
+variables:
+  - group: repo_access_token
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+
+stages:
+- ${{ if eq(variables['Build.CronSchedule.DisplayName'], 'pep-eiap-prod-scus-global-01-aks') }}:
+  - template: templates/pod_cpu_memory_usage.yml
+    parameters:
+      cluster_name: pep-eiap-prod-scus-global-01-aks
+      department: eiap
+      Region: scus
+      env: prod
+      namespaces: pep-eiap-global-cep-prod,istio-system

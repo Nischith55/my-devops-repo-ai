@@ -1,0 +1,98 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-nba-qa-cv-gw
+  namespace: pep-dps-dps-nba-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-nba-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-nba-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-nba-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-nba-qa-cv.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-core-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-creation-properties-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-frontend-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-general-params-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-workflow-management-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-b2b-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-schedulers-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-nba-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-nba-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - nba.qa.mypepsico.com
+    - pep-dps-dps-nba-qa-cv.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-core-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-creation-properties-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-frontend-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-general-params-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-workflow-management-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-b2b-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - nba-schedulers-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-nba-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-nba-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - nba.qa.mypepsico.com
+    name: pep-dps-dps-nba-qa-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-nba-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-nba-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

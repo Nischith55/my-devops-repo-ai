@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: ae0f134bdbabdf008a0e138b4b9619b5
+    pep-cmdb-bus-app-id: 78ae0cb9db3e8c10c2b5f381399619c2
+    pep-environment: Development
+    project: devsol
+    sector: cgf
+    servicename_aks: azuredevopsprod
+    team: cgf-devsol
+  name: pep-dps-cgf-devsol-dev

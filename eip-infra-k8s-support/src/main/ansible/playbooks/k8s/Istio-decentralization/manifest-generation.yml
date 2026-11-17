@@ -1,0 +1,34 @@
+---
+- name: Manifests generation
+  hosts: localhost
+  connection: local
+  collections:
+    - kubernetes.core
+    - community.general
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks:
+    - name: take backup of manifests 
+      include_role:
+        name: k8s_support/Istio-decentralization/backup-manifests-istio
+    - name: Manifest generation of gateway
+      include_role: 
+        name: k8s_support/Istio-decentralization/gwmanifestgenerate
+    - name: Manifest generation of virtual services 
+      include_role:
+        name: k8s_support/Istio-decentralization/vsmanifestcreation
+    - name: Manifest generation of destination rules
+      include_role:
+        name: k8s_support/Istio-decentralization/drmanifestcreation
+    - name: Manifest generation of Side car 
+      include_role:
+        name: k8s_support/Istio-decentralization/scmanifestgenerate
+    - name: Precheck VS curl
+      include_role:
+        name: k8s_support/Istio-decentralization/prechecks_curl
+

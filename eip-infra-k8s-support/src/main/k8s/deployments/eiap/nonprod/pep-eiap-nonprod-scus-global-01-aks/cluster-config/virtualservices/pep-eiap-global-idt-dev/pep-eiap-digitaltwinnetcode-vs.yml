@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepdigitaltwinnetcode-pod
+  name: pep-eiap-digitaltwinnetcode-vs
+  namespace: pep-eiap-global-idt-dev
+spec:
+  gateways:
+  - pep-eiap-global-idt-dev/pep-eiap-global-idt-dev-cv-gw
+  hosts:
+  - pepdigitaltwinnetcode-service.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /machinekpi
+    route:
+    - destination:
+        host: pepdigitaltwinnetcode-service.pep-eiap-global-idt-dev.svc.cluster.local

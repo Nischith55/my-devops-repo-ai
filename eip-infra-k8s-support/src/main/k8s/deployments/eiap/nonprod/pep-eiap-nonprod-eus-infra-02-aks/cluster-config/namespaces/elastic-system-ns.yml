@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Haritha_Prasad_2022-01-21
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: crosscharge
+    istio-injection: disabled
+    kubernetes.io/metadata.name: elastic-system
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    servicename_aks: sharedaks
+  name: elastic-system

@@ -1,0 +1,130 @@
+global:
+# fullnameoverride sets the name of the deployment and service and prefix of other k8s objects
+  fullnameOverride: "pod-info-helm" 
+# targetted namespace to which the chart objects get deployed
+  namespace: sscsi 
+ 
+platform-chart:  
+  # enables the creation of hpa 
+  autoscalingEnabled: true
+# min replicas to be configured on hpa
+  hpaConfigMinReplicas: 2
+# max replicas to be configured on hpa
+  hpaConfigMaxReplicas: 3
+# target CPU Utilisation based on which autoscaling happens
+  targetCPUUtilizationPercentage: 80  
+# enables the creation of pdb
+  pdbEnabled: true
+  pdbMaxUnavailable: 1
+  pdbSelector:
+    app: pod-info-helm
+  
+ 
+  virtualService: 
+    enabled: true
+    name: pod-info-helm-vs
+    namespace: pep-eiap-istio-config
+    hosts: 
+    - pod-info.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+    routes:
+    - prefix: /
+      routingDestinations:
+      - destinationService: pod-info-helm
+        port: 9898    
+        
+  destinationRule:
+    enabled: true
+    namespace: pep-eiap-istio-config   
+    sessionAffinity: false
+    subsets:
+    - name: testversion
+      labels:
+        app: pod-info-helm
+      trafficPolicy:
+        loadBalancer:
+          simple: ROUND_ROBIN
+
+
+app-chart:
+  replicaCount: 3
+  
+  labels:
+    app: pod-info-helm
+   
+  image:    
+    repository: pepeiapnonprodcommonacr.azurecr.io/pep/pod-info
+    tag: "20230915.14"
+  
+  command:
+  - ./podinfo
+  - --port=9898
+  - --port-metrics=9797
+  - --grpc-port=9999
+  - --grpc-service-name=backend
+  - --level=info
+  - --cache-server=cache:6379
+
+  podSecurityContext: 
+   runAsNonRoot: true
+
+  securityContext:
+    runAsNonRoot: false
+    
+  containerPorts:
+  - port: 9898
+    name: http
+    protocol: TCP
+  - port: 9797
+    name: http-metrics
+    protocol: TCP
+  - port: 9999
+    name: grpc
+    protocol: TCP
+
+  serviceAccount:
+    name: wi-sa
+
+  probes:
+    enabled: true
+    liveness:
+      command: 
+        - podcli
+        - check
+        - http
+        - localhost:9898/healthz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 5
+    readiness:
+      command: 
+        - podcli
+        - check
+        - http
+        - localhost:9898/readyz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 5
+    startup:
+      command: 
+        - podcli
+        - check
+        - http
+        - localhost:9898/healthz
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 30
+
+  env:
+  - name: PODINFO_UI_COLOR
+    value: '#34577c'
+
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 32Mi
+ 

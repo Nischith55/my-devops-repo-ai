@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pbna-halo-qa
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: halo
+    sector: pbna
+    team: pbna-halo

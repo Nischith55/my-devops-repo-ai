@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-dps-b2bbff-prod-sa
+  namespace: pep-dps-dps-b2bbff-prod

@@ -1,0 +1,34 @@
+####### BEGIN Added recently --pep-dps-prod-suk-global-01-aks ######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_europe_bffmerch_prod
+  - ns_pep_dps_europe_indbtbloy_prod
+  - ns_pep_dps_europe_indbtboms_prod
+  - ns_pep_dps_europe_indbtbprod_prod
+  - ns_pep_dps_europe_indbtbprof_prod
+  - ns_pep_dps_europe_indbtbprom_prod
+  - ns_pep_dps_europe_globtbprof_prod
+  - ns_pep_dps_cgf_dsxadaptor_prod
+  - ns_pep_dps_europe_btbprofile_prod
+  - ns_pep_dps_europe_btborch_prod
+  - ns_pep_dps_europe_btboms_prod
+  - ns_pep_dps_europe_btbcarts_prod
+  - ns_pep_dps_europe_btbpromo_prod
+  - ns_pep_dps_europe_bffckout_prod
+  - ns_pep_dps_europe_bfflylty_prod
+  - ns_pep_dps_cgf_dtcjoykz_prod
+  - ns_pep_dps_europe_psd_prod
+  - ns_pep_dps_europe_fmcshs_prod
+  - ns_pep_dps_cgf_pepconntur_prod
+  - ns_pep_dps_cgf_apprt_prod
+  - ns_pep_dps_europe_gscafso_prod
+  - ns_pep_dps_cgf_pepconnrus_prod
+  - ns_pep_dps_europe_bff_prod
+  - ns_pep_dps_cgf_cct_prod
+  - ns_pep_dps_cgf_pepconnrou_prod
+  - ns_pep_dps_cgf_pepconnesp_prod
+  - ns_pep_dps_cgf_pepconnpol_prod
+  - ns_pep_dps_cgf_pepconnprt_prod
+####### END Added recently --pep-dps-prod-suk-global-01-aks ######

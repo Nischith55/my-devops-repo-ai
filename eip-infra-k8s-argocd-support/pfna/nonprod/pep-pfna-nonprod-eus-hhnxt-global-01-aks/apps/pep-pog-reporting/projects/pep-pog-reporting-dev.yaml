@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pog-reporting-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pog-reporting-dev  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pog-reporting-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-pcaf-dev
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pog-reporting-dev-admin
+        description: Admin privileges to pep-pog-reporting-dev
+        policies:
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-admin, applications, *, pep-pog-reporting-dev/*, allow
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-admin, repositories, *, pep-pog-reporting-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pog-reporting-dev-user
+        description: Read-only privileges to pep-pog-reporting-dev
+        policies:
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-user, applications, get, pep-pog-reporting-dev/*, allow
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-user, applications, sync, pep-pog-reporting-dev/*, allow
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-user, repositories, get, pep-pog-reporting-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-pog-reporting-dev:pep-pog-reporting-dev-user, applications, action/apps/Deployment/restart, pep-pog-reporting-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-snt-amesa-xftxyff-dev
+    project: xftxyff
+    sector: amesa
+    servicename_aks: dps-sharedaks
+    team: amesa-xftxyff
+  name: pep-snt-amesa-xftxyff-dev

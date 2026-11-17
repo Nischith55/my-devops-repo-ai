@@ -1,0 +1,38 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-gitops-clusteraccess-role
+rules: 
+- apiGroups:
+  - gitops.weave.works/v1alpha1
+  resources:
+  - gitopsclusters
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-gitops-clusteraccess-rb
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-gitops-clusteraccess-role
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-pbna-halo-sp
+    name: 0811018b-8f42-42e2-83ef-37a28996e673
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.PBNA.HALO.Developer
+    name: 6456152d-39e8-4d97-bd21-167521b36312

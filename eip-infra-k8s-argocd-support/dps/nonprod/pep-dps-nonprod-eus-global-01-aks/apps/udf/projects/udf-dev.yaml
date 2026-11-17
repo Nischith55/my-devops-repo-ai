@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: udf-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for udf-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/udf-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-udfna-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: udf-dev-admin
+    description: Admin privileges to udf-dev
+    policies:
+    - p, proj:udf-dev:udf-dev-admin, applications, *, udf-dev/*, allow
+    - p, proj:udf-dev:udf-dev-admin, repositories, *, udf-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: udf-dev-user
+    description: Read-only privileges to udf-dev
+    policies:
+    - p, proj:udf-dev:udf-dev-user, applications, get, udf-dev/*, allow
+    - p, proj:udf-dev:udf-dev-user, applications, sync, udf-dev/*, allow
+    - p, proj:udf-dev:udf-dev-user, repositories, get, udf-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:udf-dev:udf-dev-user, applications, action/apps/Deployment/restart, udf-dev/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.UDFNA"
+    - "Team.Support.EIAP.READ"

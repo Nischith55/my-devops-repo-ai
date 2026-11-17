@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-developer-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.App.DPS.DevOps.NonProd
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2

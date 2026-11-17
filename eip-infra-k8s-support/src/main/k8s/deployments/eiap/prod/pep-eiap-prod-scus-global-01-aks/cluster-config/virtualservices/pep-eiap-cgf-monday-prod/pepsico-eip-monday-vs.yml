@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-eip-monday
+  name: pepsico-eip-monday-vs
+  namespace: pep-eiap-cgf-monday-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-monday-prod/pep-eiap-cgf-monday-prod-cv-gw
+  hosts:
+  - pepsico-eip-monday.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-monday.pep-eiap-cgf-monday-prod.svc.cluster.local
+        port:
+          number: 8080

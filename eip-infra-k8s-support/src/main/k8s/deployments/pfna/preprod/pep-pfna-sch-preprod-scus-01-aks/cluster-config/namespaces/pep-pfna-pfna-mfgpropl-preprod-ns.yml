@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-pfna-mfgpropl-preprod
+  labels:
+    env-preprod: "true"
+    project: mfgpropl
+    sector: pfna
+    team: pfna-mfgpropl
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: quaker-canada-only-pfna
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 49ce4c3ddb3e8c10c2b5f381399619fd
+    pep-cmdb-app-service-id: 8e0f134bdbabdf008a0e138b4b96196f
+    pep-environment: Pre-Production
+    

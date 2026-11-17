@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-shortdec-qa-cv-web-vs
+  namespace: pep-cmp-cmp-shortdec-qa
+  labels:
+    app: pep-cmp-cmp-shortdec-qa-cv-web
+spec:
+  hosts:
+    - cvesstestappgw.corp.pep.tst
+    - pep-cmp-cmp-shortdec-qa-cv.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-shortdec-qa/pep-cmp-cmp-shortdec-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cmp-cmp-shortdec-qa-cv-web.pep-cmp-cmp-shortdec-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-transp-xrefmstr-gold-to-trpdetails-gold-cosmos-chgfeed
+  name: pep-pfna-transp-xrefmstr-gold-to-trpdetails-gold-cosmos-chgfeed-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-xrefmstr-gold-to-trpdetails-gold-cosmos-chgfeed.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/xrefmstr-gold-to-trpdetails-gold-cosmos-chgfeed
+    route:
+    - destination:
+        host: pep-pfna-transp-xrefmstr-gold-to-trpdetails-gold-cosmos-chgfeed.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-dps-nginx
+  name: pep-dps-nginx-vs
+  namespace: pep-dps-infra-dev
+spec:
+  gateways:
+  - pep-dps-infra-dev/pep-dps-infra-dev-cv-gw
+  hosts:
+  - pep-dps-nginx-curl.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dps-nginx.pep-dps-infra-dev.svc.cluster.local
+        port:
+          number: 8080

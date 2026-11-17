@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: chefgpt-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for chefgpt-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/chefgpt-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-dseagntdev-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: chefgpt-dev-admin
+    description: Admin privileges to chefgpt-dev
+    policies:
+    - p, proj:chefgpt-dev:chefgpt-dev-admin, applications, *, chefgpt-dev/*, allow
+    - p, proj:chefgpt-dev:chefgpt-dev-admin, repositories, *, chefgpt-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: chefgpt-dev-user
+    description: Read-only privileges to chefgpt-dev
+    policies:
+    - p, proj:chefgpt-dev:chefgpt-dev-user, applications, get, chefgpt-dev/*, allow
+    - p, proj:chefgpt-dev:chefgpt-dev-user, applications, sync, chefgpt-dev/*, allow
+    - p, proj:chefgpt-dev:chefgpt-dev-user, repositories, get, chefgpt-dev/*, allow
+    - p, proj:chefgpt-dev:chefgpt-dev-user, applications, action/apps/Deployment/restart, chefgpt-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.App.CGF.NonProd.Dexter"

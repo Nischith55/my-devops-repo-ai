@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster: pep-eiap-nonprod-ae-global-01-aks
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-och-na-dev
+    project: na
+    sector: och
+    servicename_aks: och
+    team: och-na
+  name: pep-eiap-och-na-dev

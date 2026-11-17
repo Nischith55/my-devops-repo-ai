@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: svt-robotics
+  name: svt-robotics-vs
+  namespace: pep-eiap-pbna-acpmaysvil-prod
+spec:
+  gateways:
+  - pep-eiap-pbna-acpmaysvil-prod/pep-eiap-pbna-acpmaysvil-prod-cv-gw
+  hosts:
+  - svt-robotics-acpmaysvil.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: svt-robotics.pep-eiap-pbna-acpmaysvil-prod.svc.cluster.local
+        port:
+          number: 80

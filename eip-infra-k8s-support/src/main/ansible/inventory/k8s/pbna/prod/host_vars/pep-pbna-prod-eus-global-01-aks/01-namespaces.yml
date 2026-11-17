@@ -1,0 +1,7 @@
+####### BEGIN Added recently --pep-pbna-prod-eus-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pbna_pbna_savvy_prod
+####### END Added recently --pep-pbna-prod-eus-global-01-aks######

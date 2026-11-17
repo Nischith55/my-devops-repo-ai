@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"gpa-services-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["gpa-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"gpa-services.pep-eiap-cgf-gpacommgt-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: gpa-services
+  name: gpa-services-vs
+  namespace: pep-eiap-cgf-gpacommgt-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-gpacommgt-prod/pep-eiap-cgf-gpacommgt-prod-cv-gw
+  hosts:
+  - gpa-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: gpa-services.pep-eiap-cgf-gpacommgt-prod.svc.cluster.local
+        port:
+          number: 80

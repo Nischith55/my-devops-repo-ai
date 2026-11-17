@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-pricechan-dev
+    pep-cmdb-app-service-id: 12c0297047e6151052293238436d43a3
+    pep-cmdb-bus-app-id: 64decc7ddb3e8c10c2b5f381399619de
+    pep-environment: Development
+    project: pricechan
+    sector: cgf
+    servicename_aks: pricechangerequestnon-prod
+    team: cgf-pricechan
+  name: pep-eiap-cgf-pricechan-dev

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pbna-supplychain-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pbna-supplychain-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PBNA_Data_Analytics_and_Digital_Solutions/_git/pbna-supplychain-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-pbna-sckm2-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pbna-supplychain-dev-admin
+    description: Admin privileges to pbna-supplychain-dev
+    policies:
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-admin, applications, *, pbna-supplychain-dev/*, allow
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-admin, repositories, *, pbna-supplychain-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pbna-supplychain-dev-user
+    description: Read-only privileges to pbna-supplychain-dev
+    policies:
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-user, applications, get, pbna-supplychain-dev/*, allow
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-user, applications, sync, pbna-supplychain-dev/*, allow
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-user, repositories, get, pbna-supplychain-dev/*, allow
+    - p, proj:pbna-supplychain-dev:pbna-supplychain-dev-user, applications, action/apps/Deployment/restart, pbna-supplychain-dev/*, allow
+    groups:
+    - "Team.Support.PBNA.NonProd.PBNASCKM"
+    - "Team.Support.EIAP.READ"

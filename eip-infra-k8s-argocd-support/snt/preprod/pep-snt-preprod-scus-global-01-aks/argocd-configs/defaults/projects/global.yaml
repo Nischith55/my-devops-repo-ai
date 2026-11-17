@@ -1,0 +1,203 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:  
+  name: global-app
+  namespace: argocd  
+spec:
+  clusterResourceWhitelist:
+  - group: ""
+    kind: PersistentVolume  
+  - group: storage.k8s.io
+    kind: StorageClass
+  clusterResourceBlacklist:
+  - group: ""
+    kind: Binding
+  - group: ""
+    kind: ComponentStatus
+  - group: ""
+    kind: LimitRange
+  - group: ""
+    kind: Namespace
+  - group: ""
+    kind: Node
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+  - group: admissionregistration.k8s.io
+    kind: ValidatingWebhookConfiguration
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+  - group: apiregistration.k8s.io
+    kind: APIService
+  - group: authentication.k8s.io
+    kind: TokenReview
+  - group: authentication.k8s.io
+    kind: SelfSubjectAccessReview
+  - group: authentication.k8s.io
+    kind: SelfSubjectRulesReview
+  - group: authentication.k8s.io
+    kind: SubjectAccessReview
+  - group: certificates.k8s.io
+    kind: CertificateSigningRequest	
+  - group: crd.projectcalico.org
+    kind: BGPConfiguration
+  - group: crd.projectcalico.org
+    kind: BGPPeer
+  - group: crd.projectcalico.org
+    kind: BlockAffinity
+  - group: crd.projectcalico.org
+    kind: CalicoNodeStatus
+  - group: crd.projectcalico.org
+    kind: ClusterInformation
+  - group: crd.projectcalico.org
+    kind: FelixConfiguration
+  - group: crd.projectcalico.org 
+    kind: GlobalNetworkPolicy
+  - group: crd.projectcalico.org 
+    kind: GlobalNetworkSet
+  - group: crd.projectcalico.org
+    kind: HostEndpoint
+  - group: crd.projectcalico.org 
+    kind: IPAMBlock
+  - group: crd.projectcalico.org
+    kind: IPAMConfig
+  - group: crd.projectcalico.org
+    kind: IPAMHandle	
+  - group: crd.projectcalico.org
+    kind: IPPool
+  - group: crd.projectcalico.org
+    kind: IPReservation
+  - group: crd.projectcalico.org
+    kind: KubeControllersConfiguration
+  - group: flowcontrol.apiserver.k8s.io
+    kind: FlowSchema	
+  - group: flowcontrol.apiserver.k8s.io
+    kind: PriorityLevelConfiguration	
+  - group: metrics.k8s.io
+    kind: NodeMetrics
+  - group: monitoring.coreos.com
+    kind: PrometheusRule
+  - group: networking.k8s.io
+    kind: IngressClass
+  - group: node.k8s.io
+    kind: RuntimeClass 
+  - group: operator.tigera.io
+    kind: APIServer
+  - group: operator.tigera.io
+    kind: ImageSet
+  - group: operator.tigera.io
+    kind: Installation
+  - group: operator.tigera.io
+    kind: TigeraStatus
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleClusterRole
+  - group: scheduling.k8s.io
+    kind: PriorityClass
+  - group: snapshot.storage.k8s.io
+    kind: VolumeSnapshotClass
+  - group: snapshot.storage.k8s.io
+    kind: VolumeSnapshotContent  
+  - group: storage.k8s.io
+    kind: CSIDriver
+  - group: storage.k8s.io
+    kind: CSINode
+  - group: storage.k8s.io
+    kind: VolumeAttachment    
+  description: global project to manage exclusions  
+  namespaceResourceBlacklist:
+  - group: rbac.authorization.k8s.io
+    kind: Role
+  - group: rbac.authorization.k8s.io
+    kind: RoleBinding
+  - group: ""
+    kind: PodTemplate
+  - group: ""
+    kind: ResourceQuota
+  - group: apps
+    kind: ControllerRevision
+  - group: authentication.k8s.io
+    kind: LocalSubjectAccessReview
+  - group: coordination.k8s.io
+    kind: Lease
+  - group: crd.projectcalico.org  
+    kind: NetworkPolicy	
+  - group: crd.projectcalico.org  
+    kind: NetworkSet 
+  - group: discovery.k8s.io
+    kind: EndpointSlice	 
+  - group: events.k8s.io
+    kind: Event
+  - group: metrics.k8s.io
+    kind: PodMetrics	
+  - group: msi-acrpull.microsoft.com
+    kind: AcrPullBinding	
+  - group: networking.k8s.io
+    kind: Ingress
+  - group: networking.k8s.io
+    kind: NetworkPolicy
+  - group: snapshot.storage.k8s.io
+    kind: VolumeSnapshot
+  - group: storage.k8s.io
+    kind: CSIStorageCapacity
+  
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:  
+  name: global-platform
+  namespace: argocd  
+spec:
+  clusterResourceWhitelist:
+  - group: ""
+    kind: Namespace 
+  - group: ""
+    kind: PersistentVolume 
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+  - group: admissionregistration.k8s.io
+    kind: ValidatingWebhookConfiguration
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition   
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+  - group: storage.k8s.io
+    kind: StorageClass
+  - group: constraints.gatekeeper.sh
+    kind: ContainerDenyEmptyDirNoSizeLimit
+  - group: constraints.gatekeeper.sh
+    kind: K8sAllowedRepos
+  - group: constraints.gatekeeper.sh
+    kind: K8sBlockLoadBalancer
+  - group: constraints.gatekeeper.sh
+    kind: K8sBlockNodePort
+  - group: constraints.gatekeeper.sh
+    kind: K8sContainerLimits
+  - group: constraints.gatekeeper.sh
+    kind: K8sContainerRequests
+  - group: constraints.gatekeeper.sh
+    kind: K8sDisallowedTags
+  - group: constraints.gatekeeper.sh
+    kind: K8sHorizontalPodAutoscaler
+  - group: constraints.gatekeeper.sh
+    kind: K8sPSPAllowPrivilegeEscalationContainer
+  - group: constraints.gatekeeper.sh
+    kind: K8sPSPPrivilegedContainer
+  - group: constraints.gatekeeper.sh
+    kind: K8sPodDisruptionBudget
+  - group: constraints.gatekeeper.sh
+    kind: K8sReplicaLimits
+  - group: constraints.gatekeeper.sh
+    kind: K8sRequiredProbes
+  - group: constraints.gatekeeper.sh
+    kind: K8sRequiredResources
+  - group: constraints.gatekeeper.sh
+    kind: VerifyDeprecatedAPI
+  - group: constraints.gatekeeper.sh
+    kind: VirtualserviceDenyDuplicate
+  - group: templates.gatekeeper.sh 
+    kind: ConstraintTemplate 
+  description: global project to manage inclusions for platform projects  

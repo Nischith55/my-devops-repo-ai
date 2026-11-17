@@ -1,0 +1,62 @@
+---
+- name: creates temp directory acr
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempacr"
+    state: directory
+
+- name: creates temp directories msi
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/msi"
+    state: directory
+
+- name: Copy msi-acrpull manifest
+  copy:
+    src: "{{ source_directory }}/src/main/k8s/deployments/infratools/nonprod/pep-paas-infratools-nonprod-eus-01-aks/add-ons/msi-acrpull/msi-acrpull-system/default/manifests/msi-acrpull-default.yml"
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/msi/msi-acrpull-default.yml"
+    remote_src : yes
+  register: msifile
+
+- template:
+    src: msi-acrpullbinding.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/msi/msi-acrpull-default.yml"
+
+
+- name: Applying the msi-acrpull manifest
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/msi/msi-acrpull-default.yml"
+  register: msi
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+
+- template:
+    src: acrpullbinding.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempacr/{{ acrname }}.yml"
+
+
+- name: Applying acr pull binding manifest 
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempacr/{{ acrname }}.yml"
+  register: crs
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: copying the files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/msi-acrpull/default/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/msi/msi-acrpull-default.yml"
+    force: true
+  register: Copyfiles
+
+- name: copying the files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ clustername }}/acrpullbindings/{{ prefix }}-ops-admin"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempacr/{{ acrname }}.yml"
+    force: true
+  register: cfs

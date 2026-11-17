@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-sch-wse-lighthouse-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-sch-wse-lighthouse-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-sch-wse-lighthouse-argocd-configs
+      - peppfnaschprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-prod-scus-01-aks
+        namespace: pep-pfna-pbna-pbnalghous-prod
+      - name: pep-pfna-sch-prod-scus-01-aks
+        namespace: pep-pfna-sch-ops-admin
+      roles:
+      - name: pbna-sch-wse-lighthouse-prod-admin
+        description: Admin privileges to pbna-sch-wse-lighthouse-prod
+        policies:
+        - p, proj:pbna-sch-wse-lighthouse-prod:pbna-sch-wse-lighthouse-prod-admin, applications, *, pbna-sch-wse-lighthouse-prod/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-prod:pbna-sch-wse-lighthouse-prod-admin, repositories, *, pbna-sch-wse-lighthouse-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-sch-wse-lighthouse-prod-user
+        description: Read-only privileges to pbna-sch-wse-lighthouse-prod
+        policies:
+        - p, proj:pbna-sch-wse-lighthouse-prod:pbna-sch-wse-lighthouse-prod-user, applications, get, pbna-sch-wse-lighthouse-prod/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-prod:pbna-sch-wse-lighthouse-prod-user, applications, sync, pbna-sch-wse-lighthouse-prod/*, allow
+        - p, proj:pbna-sch-wse-lighthouse-prod:pbna-sch-wse-lighthouse-prod-user, repositories, get, pbna-sch-wse-lighthouse-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PBNA.NonProd.lighth"
+        - "Team.Support.EIAP.READ"
+    

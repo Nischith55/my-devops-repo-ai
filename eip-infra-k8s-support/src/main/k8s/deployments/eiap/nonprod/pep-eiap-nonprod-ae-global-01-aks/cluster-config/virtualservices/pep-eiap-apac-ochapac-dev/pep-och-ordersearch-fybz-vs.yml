@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-ordersearch-fybz-vs
+  namespace: pep-eiap-apac-ochapac-dev
+  labels:
+      app: pep-och-ordersearch
+spec:
+  hosts:
+  - pep-och-ordersearch.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-dev/pep-eiap-apac-ochapac-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-ordersearch.pep-eiap-apac-ochapac-dev.svc.cluster.local
+        port:
+          number: 80
+  

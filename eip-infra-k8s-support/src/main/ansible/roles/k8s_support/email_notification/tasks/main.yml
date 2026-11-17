@@ -1,0 +1,9 @@
+- name: send mail to platform team
+  mail:
+    host: planrr.corp.pep.pvt
+    port: 25
+    from: ITEIAPALERTS@pepsico.com
+    to:
+    - "{{ email_id }}"
+    subject: "{{ subject }}"
+    body: "{{ body }}"

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-cgf-eecmp-dev-cv-vs-vs
+  namespace: pep-eiap-cgf-eecmp-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-dev/pep-eiap-cgf-eecmp-dev-cv-gw
+  hosts:
+  - pep-eiap-cgf-eecmp-dev-cv-vs.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-eecmp-dev-cv-vs.pep-eiap-cgf-eecmp-dev.svc.cluster.local
+        port:
+          number: 80

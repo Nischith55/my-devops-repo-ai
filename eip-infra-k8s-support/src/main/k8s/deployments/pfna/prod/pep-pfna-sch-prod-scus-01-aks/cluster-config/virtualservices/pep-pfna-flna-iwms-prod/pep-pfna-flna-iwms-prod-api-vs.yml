@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-pfna-flna-iwms-prod-api-vs","namespace":"pep-pfna-sch-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-pfna-flna-iwms-prod-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-pfna-flna-iwms-prod-api.pep-pfna-flna-iwms-prod.svc.cluster.local","port":{"number":8080}}}]}]}}'
+  labels:
+    app: pep-pfna-flna-iwms-prod-api
+  name: pep-pfna-flna-iwms-prod-api-vs
+  namespace: pep-pfna-flna-iwms-prod
+spec:
+  gateways:
+  - pep-pfna-flna-iwms-prod/pep-pfna-flna-iwms-prod-cv-gw
+  hosts:
+  - pep-pfna-flna-iwms-prod-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-flna-iwms-prod-api.pep-pfna-flna-iwms-prod.svc.cluster.local
+        port:
+          number: 8080

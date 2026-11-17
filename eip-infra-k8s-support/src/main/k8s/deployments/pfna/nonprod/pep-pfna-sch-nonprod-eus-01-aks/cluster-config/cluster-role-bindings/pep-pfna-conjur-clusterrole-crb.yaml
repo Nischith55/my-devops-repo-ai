@@ -1,0 +1,13 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pep-pfna-sch-conjur-clusterrole-crb
+roleRef:
+  kind: ClusterRole
+  name: pep-pfna-sch-conjur-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: pep-pfna-sch-conjur-cr-sa
+  namespace: pep-pfna-sch-ops-admin

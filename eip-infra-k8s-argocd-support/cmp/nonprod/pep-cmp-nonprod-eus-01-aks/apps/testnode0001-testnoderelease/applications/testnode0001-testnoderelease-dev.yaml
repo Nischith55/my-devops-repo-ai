@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: testnode0001-testnoderelease-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testnode0001-testnoderelease-argocd-configs
+    targetRevision: develop 
+  - repoURL: pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: testnode0001-testnoderelease-dev
+      valueFiles:
+      - $values/dev/pep-cmp-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-cmp-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: testnode0001-testnoderelease-dev 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testnode0001-testnoderelease-argocd-configs 
+              repoName: testnode0001-testnoderelease-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: Dl@pepsico.com

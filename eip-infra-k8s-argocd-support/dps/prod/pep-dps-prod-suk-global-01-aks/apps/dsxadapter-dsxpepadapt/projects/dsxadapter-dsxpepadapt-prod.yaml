@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxadapter-dsxpepadapt-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsxadapter-dsxpepadapt-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-dps-euadapt-prod
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxadapter-dsxpepadapt-prod-admin
+    description: Admin privileges to dsxadapter-dsxpepadapt-prod
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-prod:dsxadapter-dsxpepadapt-prod-admin, applications, *, dsxadapter-dsxpepadapt-prod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-prod:dsxadapter-dsxpepadapt-prod-admin, repositories, *, dsxadapter-dsxpepadapt-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsxadapter-dsxpepadapt-prod-user
+    description: Read-only privileges to dsxadapter-dsxpepadapt-prod
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-prod:dsxadapter-dsxpepadapt-prod-user, applications, get, dsxadapter-dsxpepadapt-prod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-prod:dsxadapter-dsxpepadapt-prod-user, applications, sync, dsxadapter-dsxpepadapt-prod/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-prod:dsxadapter-dsxpepadapt-prod-user, repositories, get, dsxadapter-dsxpepadapt-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.DPS.Prod.adapt"
+    - "Team.Support.EIAP.READ"

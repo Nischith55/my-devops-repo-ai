@@ -1,0 +1,75 @@
+{{- $rollout := .Values.global.rollout -}}
+{{- $blueGreen := .Values.global.rollout.blueGreen -}}
+{{- $canary := .Values.global.rollout.canary -}}
+{{- if .Values.global.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app-chart.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "app-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range .Values.containerPorts }} 
+  - port: {{ .port }}
+    targetPort: {{ .port }}
+    protocol: {{ .protocol }}
+    name: {{ .name }}  
+  {{- end }}           
+  selector:   
+    app: {{ .Values.global.labels.app }}
+{{- end }}
+
+---
+{{- if .Values.global.rollout.enabled }}
+{{- if and .Values.global.service.enabled (or (eq "blueGreen" $rollout.strategy)  (not $canary.trafficRouting.istio.destinationRule)) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app-chart.fullname" . }}-preview
+  namespace: {{ .Values.global.namespace }}
+  labels:
+  {{- if .Values.service.labels }}  
+  {{- with .Values.service.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
+  {{- end }}
+    {{- include "app-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range .Values.containerPorts }} 
+  - port: {{ .port }}
+    targetPort: {{ .port }}
+    protocol: {{ .protocol }}
+    name: {{ .name }}  
+  {{- end }}           
+  selector:   
+    app: {{ .Values.labels.app }}
+{{- end }}
+{{- end }}
+
+---
+{{- if .Values.global.statefulset.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.statefulset.serviceName | default (printf "%s-headless" (include "app-chart.fullname" .)) }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "app-chart.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  {{- range .Values.containerPorts }} 
+  - port: {{ .port }}
+    targetPort: {{ .port }}
+    protocol: {{ .protocol }}
+    name: {{ .name }}  
+  {{- end }}           
+  selector:   
+    app: {{ .Values.global.labels.app }}
+{{- end }}

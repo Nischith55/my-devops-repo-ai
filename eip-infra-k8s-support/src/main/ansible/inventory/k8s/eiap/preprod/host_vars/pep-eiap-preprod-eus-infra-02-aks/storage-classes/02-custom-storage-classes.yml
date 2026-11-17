@@ -1,0 +1,89 @@
+---
+# ##
+# Custom Storage classes for this host. Note we use lookup plugin
+# NOTES:
+#  - Made it copy and paste safe as we removed allowedTopologies
+# ##
+
+# ##
+# storage_classes_ovrd
+# ##
+
+storage_classes_ovrd: |-
+  {{ q('storage_class', 'create', sc_params=__custom_storage_class_params__) }}
+
+# ##
+# All Generator Params
+# ##
+
+__common_disk_params: &dsk001
+  kind: Managed
+  resourceGroup: "{{ _rg_storage }}"
+
+__common_file_params: &file001
+  resourceGroup: "{{ _rg_storage }}"
+  storageAccount: "{{ _storage_acct }}"
+
+
+__custom_storage_class_params__:
+
+  # #######################################################
+  #  All Azure File provisioner (smb)
+  # #######################################################
+
+  #managed-ultrassd
+  managed-ultra:
+    type: disk
+    parameters:
+      <<: *dsk001
+      zoned: "false"
+      storageaccounttype: UltraSSD_LRS
+
+  #managed-stdssd
+  managed-stdssd:
+    type: disk
+    parameters:
+      <<: *dsk001
+      zoned: "false"
+      storageaccounttype: StandardSSD_LRS
+
+  #managed-stdssd-zoned
+  managed-stdssd-zoned:
+    type: disk
+    parameters:
+      <<: *dsk001
+      zoned: "true"
+      storageaccounttype: StandardSSD_LRS
+      fsType: xfs
+
+  #elastic-stdssd-zone [IMPORTANT: reclaim policy Delete]
+  elastic-stdssd-zoned:
+    type: disk
+    reclaim_policy: Delete
+    parameters:
+      <<: *dsk001
+      zoned: "true"
+      storageaccounttype: StandardSSD_LRS
+      fsType: xfs
+
+  #managed-premium-zoned
+  managed-premium-zoned:
+    type: disk
+    parameters:
+      <<: *dsk001
+      zoned: "true"
+      storageaccounttype: Premium_LRS
+      fsType: xfs
+
+  # #######################################################
+  #  All Azure File provisioner (smb)
+  # #######################################################
+
+  #azurefile-stdssd (NOTE: file the params is skuName)
+  azurefile-stdssd:
+    type: file
+    mount_options: "{{ _sc_az_file_mnt_options }}"
+    parameters:
+      <<: *file001
+      skuName: StandardSSD_LRS
+

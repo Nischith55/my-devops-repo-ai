@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-cto-cmp-nsg-automation
+  name: pepsico-cto-cmp-nsg-automation-qa-vs
+  namespace: pep-eiap-global-cmp-qa
+spec:
+  gateways:
+  - pep-eiap-global-cmp-qa/pep-eiap-global-cmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-nsg-automation-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cto-cmp-nsg-automation.pep-eiap-global-cmp-qa.svc.cluster.local
+        port:
+          number: 80

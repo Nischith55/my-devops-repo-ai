@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-cgf-afhblue-prod-sa
+  namespace: pep-dps-cgf-afhblue-prod

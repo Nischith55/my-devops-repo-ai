@@ -1,0 +1,12 @@
+---
+# apiVersion and kind of Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - rbac-csi-azurefile-controller.yaml
+  - rbac-csi-azurefile-node.yaml
+  - csi-azurefile-controller.yaml
+  - csi-azurefile-driver.yaml
+  - csi-azurefile-node.yaml
+

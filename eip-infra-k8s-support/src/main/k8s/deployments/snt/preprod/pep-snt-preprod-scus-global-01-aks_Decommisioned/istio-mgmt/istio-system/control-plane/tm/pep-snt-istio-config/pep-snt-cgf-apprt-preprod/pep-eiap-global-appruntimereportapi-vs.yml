@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-global-appruntimereportapi-vs
+  namespace: pep-snt-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-global-appruntimereportapi.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprtpre-report-api
+    route:
+    - destination:
+        host: pep-eiap-global-appruntimereportapi.pep-snt-cgf-apprt-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:   
+      allowOrigins:
+      - exact: https://psd.preprod.mypepsico.com
+      - exact: https://pep-psd-ui.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - x-operation-name
+      - x-operation-type
+      exposeHeaders:
+      - x-total-count
+      

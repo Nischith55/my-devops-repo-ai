@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ctx-profit-to-serve-ui-irhu-vs
+  namespace: pep-dps-dps-ctxptsqa-qa
+  labels:
+      app: ctx-profit-to-serve-ui
+spec:
+  hosts:
+  - pep-dps-qa-ctx-profit-to-serve-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - ctx-pts.qa.mypepsico.com
+  gateways:
+  - pep-dps-dps-ctxptsqa-qa/pep-dps-dps-ctxptsqa-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: ctx-profit-to-serve-ui.pep-dps-dps-ctxptsqa-qa.svc.cluster.local
+        port:
+          number: 8080
+  

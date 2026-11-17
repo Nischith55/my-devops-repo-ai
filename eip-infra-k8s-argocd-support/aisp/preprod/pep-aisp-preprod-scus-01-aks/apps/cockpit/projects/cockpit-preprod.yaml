@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cockpit-preprod-pep-aisp-preprod-scus-01-aks
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cockpit-preprod-pep-aisp-preprod-scus-01-aks  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Mosaic_Product_Teams/_git/pep-fpa-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-aisp-preprod-scus-01-aks
+        namespace: pep-aisp-cgf-ckpmcp-preprod
+      - name: pep-aisp-preprod-scus-01-aks
+        namespace: pep-aisp-ops-admin
+      roles:
+      - name: cockpit-preprod-pep-aisp-preprod-scus-01-aks-admin
+        description: Admin privileges to cockpit-preprod-pep-aisp-preprod-scus-01-aks
+        policies:
+        - p, proj:cockpit-preprod-pep-aisp-preprod-scus-01-aks:cockpit-preprod-pep-aisp-preprod-scus-01-aks-admin, applications, *, cockpit-preprod-pep-aisp-preprod-scus-01-aks/*, allow
+        - p, proj:cockpit-preprod-pep-aisp-preprod-scus-01-aks:cockpit-preprod-pep-aisp-preprod-scus-01-aks-admin, repositories, *, cockpit-preprod-pep-aisp-preprod-scus-01-aks/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cockpit-preprod-pep-aisp-preprod-scus-01-aks-user
+        description: Read-only privileges to cockpit-preprod-pep-aisp-preprod-scus-01-aks
+        policies:
+        - p, proj:cockpit-preprod-pep-aisp-preprod-scus-01-aks:cockpit-preprod-pep-aisp-preprod-scus-01-aks-user, applications, get, cockpit-preprod-pep-aisp-preprod-scus-01-aks/*, allow
+        - p, proj:cockpit-preprod-pep-aisp-preprod-scus-01-aks:cockpit-preprod-pep-aisp-preprod-scus-01-aks-user, applications, sync, cockpit-preprod-pep-aisp-preprod-scus-01-aks/*, allow
+        - p, proj:cockpit-preprod-pep-aisp-preprod-scus-01-aks:cockpit-preprod-pep-aisp-preprod-scus-01-aks-user, repositories, get, cockpit-preprod-pep-aisp-preprod-scus-01-aks/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cockpit-preprod:cockpit-preprod-user, applications, action/apps/Deployment/restart, cockpit-preprod/*, allow
+        groups:
+        - "Team.App.Support.CGF.PreProd.FPA.CKPGPT.Developer"
+        - "Team.Support.EIAP.READ"
+    

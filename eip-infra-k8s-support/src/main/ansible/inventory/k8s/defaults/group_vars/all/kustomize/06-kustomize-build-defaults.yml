@@ -1,0 +1,39 @@
+---
+# ##
+# Default Kustomize Build settings.
+# 
+# GLOBALS:
+# - k8s_root_dir: [required] [string] Base root directory for k8s sources
+# ##
+
+# ABBREVIATIONS:
+#   kct: kustomize_common_template
+
+kustomize_common_template_dir: |-
+  {{ (k8s_root_dir, 'common-templates', 'kustomize', 'overlays') | path_join }}
+
+kct_kustomization_src: |-
+  {{ (kustomize_common_template_dir, 'kustomization.yml.j2')
+    | path_join 
+  }}
+
+kct_config_map_merge_yaml_src: |-
+  {{ (kustomize_common_template_dir, 'patch-merge-configmap-yaml-data.yml.j2')
+    | path_join 
+  }}
+
+kct_template_spec_merge_src: |-
+  {{ (kustomize_common_template_dir, 'patch-merge-template-spec.yml.j2')
+    | path_join 
+  }}
+
+kct_json6902_patch_src: |-
+  {{ (kustomize_common_template_dir, 'patch-json-6902.yml.j2')
+    | path_join 
+  }}
+
+# NOTE: the generic template is from playbook dir
+kct_generic_k8s_resource_src: |-
+  {{ (k8s_playbook_templates_dir, 
+      'cluster-config', 'generate-k8s-resource.yml.j2') | path_join 
+  }}

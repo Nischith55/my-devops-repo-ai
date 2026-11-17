@@ -1,0 +1,16 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-latam-opsbridge-devsecops-cd-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-latam-opsbridge-devsecops-cd-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-prod-devsecops-spn
+    name: eea00c38-1800-4362-98ea-2e594b4585f5

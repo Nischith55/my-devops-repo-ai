@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-snt-apexai-dev
+  labels:
+    env-nonprod: "true"
+    project: apexai
+    sector: snt
+    team: snt-apexai
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: enterprisedatafoundation-edf-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 01708a85830d0a14693f9365eeaad3c8
+    pep-cmdb-app-service-id: c92597d183494250782e47747daad311
+    pep-environment: Development
+    

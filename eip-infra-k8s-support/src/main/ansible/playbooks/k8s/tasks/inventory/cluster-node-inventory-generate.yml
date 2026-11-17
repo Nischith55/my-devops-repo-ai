@@ -1,0 +1,57 @@
+---
+# ##
+# Task to generate cluster node inventory from kubectl get nodes output
+# INPUT:
+#  params_task:
+#    kube_context:
+#    inventory_file:
+#    inventory_group_name:
+# OUTPUT:
+#  cluster_nodes_info: 
+# ##
+
+
+- name: KCTL_GET_NODES
+  include_role:
+    name: k8s_support/kubectl
+    tasks_from: execute
+  vars:
+    # large output we need few fields
+    print_resp: false
+    kube_context: "{{ params_task['kube_context'] }}"
+    kctl_action: get
+    kctl_action_args: " nodes -o yaml "
+
+- name: KCTL_OUTPUT_SET_FACT
+  set_fact:
+    _exec_out: "{{ kctl_exec_result.stdout | from_yaml }}"
+
+- name: ASSERT_KCTL_EXEC_RESULT
+  assert:
+    that:
+      - _exec_out['items'] is defined
+      - (_exec_out['items'] | length) > 0
+
+- name: GENERATE_INVENTORY
+  block:
+
+    - name: "ENSURE {{ k8s_generated_inv_dir }} exists"
+      file:
+        # just in case always expand the inventory file and get direname
+        path: |-
+          {{ 
+            (params_task['inventory_file'] 
+              | expandvars | expanduser | realpath)
+            |
+            dirname
+          }}
+        state: directory
+
+    - name: CREATE_STATIC_INVENTORY_FROM_TEMPLATE
+      template:
+        src: templates/cluster-management/cluster-inventory.yml.j2
+        dest: "{{ params_task['inventory_file'] }}"
+      vars:
+        params_tmpl:
+          cluster_group_name: "{{ params_task['inventory_group_name'] }}"
+          nodes_info: "{{ _exec_out['items'] }}"

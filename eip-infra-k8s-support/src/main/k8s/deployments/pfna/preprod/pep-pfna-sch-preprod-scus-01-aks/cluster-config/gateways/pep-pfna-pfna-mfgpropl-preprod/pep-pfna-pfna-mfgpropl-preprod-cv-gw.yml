@@ -1,0 +1,90 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-pfna-mfgpropl-preprod-cv-gw
+  namespace: pep-pfna-pfna-mfgpropl-preprod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-pfna-mfgpropl-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pfna-pfna-mfgpropl-preprod-cv.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-sc-mfg-reporting-api-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-sc-mfg-ddd-analytics-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-preprod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-preprod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - mfgproplus.preprod.pepsico.com
+    - pep-pfna-pfna-mfgpropl-preprod-cv.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-sc-mfg-reporting-api-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-sc-mfg-ddd-analytics-preprod.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-preprod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-pfna-mfgpropl-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - mfgproplus.preprod.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-preprod-cv-gw-https-1-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-pfna-mfgpropl-preprod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

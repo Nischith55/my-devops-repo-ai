@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-cv-latam-app-backend
+  name: pep-eip-cv-latam-app-backend-vs
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - pep-eip-cv-latam-app-backend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/store
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/fixture
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/product
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/inspection
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-cv-latam-app-backend.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000

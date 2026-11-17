@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: bir-executive-eemo-apis-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for bir-executive-eemo-apis-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/bir-executive-eemo-apis-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-pricechan-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: bir-executive-eemo-apis-dev-admin
+        description: Admin privileges to bir-executive-eemo-apis-dev
+        policies:
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-admin, applications, *, bir-executive-eemo-apis-dev/*, allow
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-admin, repositories, *, bir-executive-eemo-apis-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: bir-executive-eemo-apis-dev-user
+        description: Read-only privileges to bir-executive-eemo-apis-dev
+        policies:
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-user, applications, get, bir-executive-eemo-apis-dev/*, allow
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-user, applications, sync, bir-executive-eemo-apis-dev/*, allow
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-user, repositories, get, bir-executive-eemo-apis-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:bir-executive-eemo-apis-dev:bir-executive-eemo-apis-dev-user, applications, action/apps/Deployment/restart, bir-executive-eemo-apis-dev/*, allow
+        groups:
+        - "Team.Support.IAI.PWC.Azure.Dev"
+        - "Team.Support.EIAP.READ"
+    

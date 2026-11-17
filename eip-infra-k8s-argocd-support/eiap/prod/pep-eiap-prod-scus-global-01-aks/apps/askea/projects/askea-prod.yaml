@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: askea-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for askea-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/askea-genai-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-askeadip-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: askea-prod-admin
+        description: Admin privileges to askea-prod
+        policies:
+        - p, proj:askea-prod:askea-prod-admin, applications, *, askea-prod/*, allow
+        - p, proj:askea-prod:askea-prod-admin, repositories, *, askea-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: askea-prod-user
+        description: Read-only privileges to askea-prod
+        policies:
+        - p, proj:askea-prod:askea-prod-user, applications, get, askea-prod/*, allow
+        - p, proj:askea-prod:askea-prod-user, applications, sync, askea-prod/*, allow
+        - p, proj:askea-prod:askea-prod-user, repositories, get, askea-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.Prod.AskEADiP"
+        - "Team.Support.EIAP.READ"
+    

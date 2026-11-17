@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-hhnext-qa
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: hhnext
+    sector: pfna
+    team: pfna-hhnext

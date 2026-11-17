@@ -1,0 +1,15 @@
+steps:
+- task: Bash@3
+  displayName: 'Git push repository'
+  inputs:
+    targetType: 'inline'
+    script: |
+      . /opt/venv/python38-ansible211/bin/activate
+      python -V
+      pip3 install pandas
+      pip3 install jmespath
+      python3.8 src/main/azure_devops/scripts/json_to_csv.py
+      cp CSV.csv ${{ parameters.cluster }}.csv
+      rm CSV.csv
+
+

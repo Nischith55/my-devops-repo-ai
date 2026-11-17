@@ -1,0 +1,108 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-schservice-qa-cv-gw
+  namespace: pep-pfna-flna-schservice-qa
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-schservice-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-schservice-qa-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-schservice-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-pfna-flna-schservice-qa-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-mfg-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-opsconsole-ui-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-wmi-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-transp-intg-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-snow-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-empl-cntrl-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-common-utilities-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-synapse-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-pipelines-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-agents-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-api.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-maintenance-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-schservice-qa-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-schservice-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-pfna-flna-schservice-qa-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-mfg-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-opsconsole-ui-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-wmi-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-transp-intg-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-snow-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - schops.qa.mypepsico.com
+    - pep-sch-opsconsole-empl-cntrl-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sch-opsconsole-common-utilities-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-synapse-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-pipelines-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-agents-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-transp-api.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-sch-maintenance-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-schservice-qa-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-schservice-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - schops.qa.mypepsico.com
+    name: pep-pfna-flna-schservice-qa-cv-gw-https-1-443
+    port:
+      name: https-pep-pfna-flna-schservice-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-flna-schservice-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

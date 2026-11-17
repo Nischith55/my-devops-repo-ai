@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-hhnx-salesforce-scheduler
+  name: pep-pfna-hhnx-salesforce-scheduler-vs
+  namespace: pep-pfna-hhnext-dev
+spec:
+  gateways:
+  - pep-pfna-hhnext-dev/pep-pfna-hhnext-dev-cv-gw
+  hosts:
+  - pep-pfna-hhnx-salesforce-scheduler.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-hhnx-salesforce-scheduler.pep-pfna-hhnext-dev.svc.cluster.local
+        port:
+          number: 80

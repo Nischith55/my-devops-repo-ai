@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fmcs-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app     
+spec:
+  description: Project for fmcs-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fmcs-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-fmcshs-prod
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: fmcs-prod-admin
+    description: Admin privileges to fmcs-prod
+    policies:
+    - p, proj:fmcs-prod:fmcs-prod-admin, applications, *, fmcs-prod/*, allow
+    - p, proj:fmcs-prod:fmcs-prod-admin, applications, get, argocd/*, allow
+    - p, proj:fmcs-prod:fmcs-prod-admin, repositories, *, fmcs-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: fmcs-prod-user
+    description: Read-only privileges to fmcs-prod
+    policies:
+    - p, proj:fmcs-prod:fmcs-prod-user, applications, get, fmcs-prod/*, allow
+    - p, proj:fmcs-prod:fmcs-prod-user, applications, sync, fmcs-prod/*, allow
+    - p, proj:fmcs-prod:fmcs-prod-user, repositories, get, fmcs-prod/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

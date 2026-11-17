@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-pfna-flna-iwms-prod-api-core-yards-vs
+  namespace: pep-pfna-sch-istio-config
+spec:
+  gateways:
+  - pep-pfna-sch-istio-config/pep-pfna-sch-istio-config-cv-gw
+  hosts:
+  - pep-pfna-flna-iwms-prod-api-core-yards.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-flna-iwms-prod-api-core-yards.pep-pfna-flna-iwms-prod.svc.cluster.local
+        port:
+          number: 8080

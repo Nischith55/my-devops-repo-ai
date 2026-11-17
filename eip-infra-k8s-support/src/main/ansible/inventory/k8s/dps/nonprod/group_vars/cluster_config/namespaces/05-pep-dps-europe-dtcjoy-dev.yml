@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_dtcjoy_dev:
+  
+  name: pep-dps-europe-dtcjoy-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-dtcjoy
+    sector: europe
+    project: dtcjoy
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dtcpeployaltynon-prod
+    pep-cmdb-app-service-id: "f8b669f583af0e5c6a4357d0deaad325"
+    pep-cmdb-bus-app-id: "6a38097347ecfd1029ffb098436d43d7"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-dtcjoy-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_dtcjoy'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-dtcjoy-dev-sa-token
+    namespace: pep-dps-europe-dtcjoy-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-dtcjoy-dev-sa"

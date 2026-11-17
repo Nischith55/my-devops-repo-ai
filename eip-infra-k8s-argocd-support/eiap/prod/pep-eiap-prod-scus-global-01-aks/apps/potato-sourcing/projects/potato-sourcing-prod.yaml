@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: potato-sourcing-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for potato-sourcing-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Potato_Sourcing_Matrix_automation_PSMa/_git/potato-sourcing-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-psm-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: potato-sourcing-prod-admin
+        description: Admin privileges to potato-sourcing-prod
+        policies:
+        - p, proj:potato-sourcing-prod:potato-sourcing-prod-admin, applications, *, potato-sourcing-prod/*, allow
+        - p, proj:potato-sourcing-prod:potato-sourcing-prod-admin, repositories, *, potato-sourcing-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: potato-sourcing-prod-user
+        description: Read-only privileges to potato-sourcing-prod
+        policies:
+        - p, proj:potato-sourcing-prod:potato-sourcing-prod-user, applications, get, potato-sourcing-prod/*, allow
+        - p, proj:potato-sourcing-prod:potato-sourcing-prod-user, applications, sync, potato-sourcing-prod/*, allow
+        - p, proj:potato-sourcing-prod:potato-sourcing-prod-user, repositories, get, potato-sourcing-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PSMa.PROD.Contributor"
+        - "Team.Support.EIAP.READ"
+    

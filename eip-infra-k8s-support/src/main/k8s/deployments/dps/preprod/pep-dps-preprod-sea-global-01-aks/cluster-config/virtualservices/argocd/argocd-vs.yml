@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"argo-configs"},"name":"argocd-vs","namespace":"pep-dps-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["argocd.dps.gw01.aks01.sea.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"argocd-server.argocd.svc.cluster.local","port":{"number":80}}}],"timeout":"120s"}]}}
+  labels:
+    app: undefined
+    app.kubernetes.io/instance: argo-configs
+  name: argocd-vs
+  namespace: argocd
+spec:
+  gateways:
+  - argocd/argocd-cv-gw
+  hosts:
+  - argocd.dps.gw01.aks01.sea.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: argocd-server.argocd.svc.cluster.local
+        port:
+          number: 80
+    timeout: 120s

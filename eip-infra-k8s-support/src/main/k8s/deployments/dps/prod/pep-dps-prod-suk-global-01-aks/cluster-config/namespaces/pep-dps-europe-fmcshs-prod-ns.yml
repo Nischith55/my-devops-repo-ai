@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 005526e2c3a0c2502dd7773ed40131f7
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: fmcshs
+    sector: europe
+    servicename_aks: fmcs-prod
+    team: europe-fmcshs
+  name: pep-dps-europe-fmcshs-prod

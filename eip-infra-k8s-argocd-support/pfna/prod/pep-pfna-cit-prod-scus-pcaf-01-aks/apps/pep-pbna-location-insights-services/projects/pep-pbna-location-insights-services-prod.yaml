@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pbna-location-insights-services-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pbna-location-insights-services-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pbna-location-insights-services-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-pcaf-prod
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pbna-location-insights-services-prod-admin
+        description: Admin privileges to pep-pbna-location-insights-services-prod
+        policies:
+        - p, proj:pep-pbna-location-insights-services-prod:pep-pbna-location-insights-services-prod-admin, applications, *, pep-pbna-location-insights-services-prod/*, allow
+        - p, proj:pep-pbna-location-insights-services-prod:pep-pbna-location-insights-services-prod-admin, repositories, *, pep-pbna-location-insights-services-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pbna-location-insights-services-prod-user
+        description: Read-only privileges to pep-pbna-location-insights-services-prod
+        policies:
+        - p, proj:pep-pbna-location-insights-services-prod:pep-pbna-location-insights-services-prod-user, applications, get, pep-pbna-location-insights-services-prod/*, allow
+        - p, proj:pep-pbna-location-insights-services-prod:pep-pbna-location-insights-services-prod-user, applications, sync, pep-pbna-location-insights-services-prod/*, allow
+        - p, proj:pep-pbna-location-insights-services-prod:pep-pbna-location-insights-services-prod-user, repositories, get, pep-pbna-location-insights-services-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

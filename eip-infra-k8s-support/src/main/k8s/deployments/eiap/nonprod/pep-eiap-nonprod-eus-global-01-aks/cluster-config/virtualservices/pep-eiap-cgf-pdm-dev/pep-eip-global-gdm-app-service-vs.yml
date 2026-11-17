@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-global-gdm-app
+  name: pep-eip-global-gdm-app-service-vs
+  namespace: pep-eiap-cgf-pdm-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pdm-dev/pep-eiap-cgf-pdm-dev-cv-gw
+  hosts:
+  - pep-eip-global-gdm-app-service-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - gdm.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-global-gdm-app-service.pep-eiap-cgf-pdm-dev.svc.cluster.local
+        port:
+          number: 80

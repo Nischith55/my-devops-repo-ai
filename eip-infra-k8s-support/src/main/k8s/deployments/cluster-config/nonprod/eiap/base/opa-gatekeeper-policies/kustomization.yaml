@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../base
+
+patches:
+  - path: constraints/eiap-addexcludednamespaces.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sRequiredResources
+      name: container-must-have-limits-and-requests
+  - path: constraints/eiap-addexcludednamespaces.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerLimits
+      name: container-must-have-limits
+  - path: constraints/eiap-addexcludednamespaces.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sAllowedRepos
+      name: restrictrepo
+  - path: constraints/eiap-addexcludednamespaces.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sRequiredProbes
+      name: must-have-probes
+  - path: constraints/eiap-addexcludednamespaces.yaml
+    target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerRequests
+      name: container-must-have-requests

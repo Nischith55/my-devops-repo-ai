@@ -1,0 +1,40 @@
+###
+- debug:
+    msg: "Reverting the applied one {{ inner_item.src }} "
+- name: read the file content  
+  slurp:
+    src: "{{ inner_item.src }}"
+  register: yml_file_content
+
+- name: decode the content 
+  set_fact: 
+    decoded_yml_temp: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+- name: printing manifest of to be undo 
+  debug: var=decoded_yml_temp 
+
+- name: block to delete unnecessary elements on patch file 
+  block:
+  - set_fact:
+      decoded_yml: "{{ decoded_yml_temp | ansible.utils.remove_keys(target=['resourceVersion', 'creationTimestamp', 'annotations', 'generation', 'managedFields', 'uid']) | to_nice_yaml}}"
+  - name: debug after removing elements 
+    debug: var=decoded_yml
+  when: '"-patch.yml" in inner_item.src'
+
+- name: delete the applied service 
+  kubernetes.core.k8s:
+    state: absent
+    definition: "{{ decoded_yml_temp }}"
+  when: '"-patch.yml" not in inner_item.src'
+- debug: 
+    msg: " The applied one deleted. "
+  when: '"-patch.yml" not in inner_item.src'
+
+- name: undo patched service  
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ decoded_yml }}"
+  when: '"-patch.yml" in inner_item.src'
+- debug: 
+    msg: " The patched one is undo. "
+  when: '"-patch.yml" in inner_item.src'

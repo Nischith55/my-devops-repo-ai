@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pricing-ai-ui
+  name: pricing-ai-ui-vs
+  namespace: pep-eiap-cgf-pricingai-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pricingai-dev/pep-eiap-cgf-pricingai-dev-cv-gw
+  hosts:
+  - pricing-ai-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pricing-ai-ui.pep-eiap-cgf-pricingai-dev.svc.cluster.local
+        port:
+          number: 80

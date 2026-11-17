@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-cmebas-dev
+    pep-cmdb-app-service-id: 641e156793d9f1507f39b8f74dba1023
+    pep-cmdb-bus-app-id: ac1ed16793d9f1507f39b8f74dba10e0
+    pep-environment: Development
+    project: cmebas
+    sector: cgf
+    servicename_aks: cme-businessanalyticssimplification-standardrrization
+    team: cgf-cmebas
+  name: pep-eiap-cgf-cmebas-dev

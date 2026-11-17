@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pcaf-shp-catax-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pcaf-shp-catax.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Link","Content-Type","Access-Control-Allow-Origin","Access-Control-Allow-Headers"],"allowMethods":["POST","GET","PUT","DELETE","OPTIONS","PATCH"],"allowOrigins":[{"exact":"https://api-pfna.mypepsico.com"}],"exposeHeaders":["x-total-count","x-source"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pcaf-shp-catax.pep-pfna-pgt-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pcaf-shp-catax
+  name: pcaf-shp-catax-vs
+  namespace: pep-pfna-pgt-prod
+spec:
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  hosts:
+  - pcaf-shp-catax.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowOrigins:
+      - exact: https://api-pfna.mypepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-catax.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80

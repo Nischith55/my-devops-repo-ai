@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-ops-admin
+  labels:
+    cluster-name: pep-dps-nonprod-gwc-global-01-aks
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    team: eiap-admins
+    istio-injection: disabled

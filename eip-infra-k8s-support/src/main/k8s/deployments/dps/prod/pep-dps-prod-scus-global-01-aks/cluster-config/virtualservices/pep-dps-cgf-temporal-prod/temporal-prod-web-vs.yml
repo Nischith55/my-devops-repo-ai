@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: temporal-prod-web-vs
+  namespace: pep-dps-cgf-temporal-prod
+spec:
+  gateways:
+  - pep-dps-cgf-temporal-prod/pep-dps-cgf-temporal-prod-cv-gw
+  hosts:
+  - temporal-prod-web.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: temporal-prod-web.pep-dps-cgf-temporal-prod.svc.cluster.local
+        port:
+          number: 8080

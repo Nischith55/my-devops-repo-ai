@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: halo-argocd-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for halo-argocd-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/HaloCRM_SAFe/_git/halo-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-halo-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: halo-argocd-dev-admin
+        description: Admin privileges to halo-argocd-dev
+        policies:
+        - p, proj:halo-argocd-dev:halo-argocd-dev-admin, applications, *, halo-argocd-dev/*, allow
+        - p, proj:halo-argocd-dev:halo-argocd-dev-admin, repositories, *, halo-argocd-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: halo-argocd-dev-user
+        description: Read-only privileges to halo-argocd-dev
+        policies:
+        - p, proj:halo-argocd-dev:halo-argocd-dev-user, applications, get, halo-argocd-dev/*, allow
+        - p, proj:halo-argocd-dev:halo-argocd-dev-user, applications, sync, halo-argocd-dev/*, allow
+        - p, proj:halo-argocd-dev:halo-argocd-dev-user, repositories, get, halo-argocd-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:halo-argocd-dev:halo-argocd-dev-user, applications, action/apps/Deployment/restart, halo-argocd-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+        - "Team.Support.EIAP.READ"
+    

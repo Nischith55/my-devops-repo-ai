@@ -1,0 +1,16 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-pfna-springcloudk8s-rb
+  namespace: pep-pfna-flna-wfm-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-springcloudk8s-clusterrole
+subjects:
+- apiGroup: ''
+  kind: ServiceAccount
+  name: pep-pfna-flna-wfm-dev-sa
+  namespace: pep-pfna-flna-wfm-dev

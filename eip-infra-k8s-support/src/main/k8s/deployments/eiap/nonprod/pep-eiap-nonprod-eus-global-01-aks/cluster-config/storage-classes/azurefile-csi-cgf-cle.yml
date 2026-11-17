@@ -1,0 +1,27 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-csi-cgf-cle
+provisioner: file.csi.azure.com
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0644
+  - mfsymlinks
+  - nobrl 
+  - cache=strict
+  - actimeo=30  
+  - uid=1000
+  - gid=1000
+parameters:
+  resourceGroup: pep-cle-preprod-eus-kafka-01-rg
+  skuName: Premium_LRS
+  storageAccount: pepcledownloadfilestorag
+  csi.storage.k8s.io/provisioner-secret-name: pep-eiap-cgf-cle-sa-az
+  csi.storage.k8s.io/provisioner-secret-namespace: pep-eiap-cgf-cle-dev
+  csi.storage.k8s.io/node-stage-secret-name: pep-eiap-cgf-cle-sa-az
+  csi.storage.k8s.io/node-stage-secret-namespace: pep-eiap-cgf-cle-dev
+  csi.storage.k8s.io/controller-expand-secret-name: pep-eiap-cgf-cle-sa-az
+  csi.storage.k8s.io/controller-expand-secret-namespace: pep-eiap-cgf-cle-dev

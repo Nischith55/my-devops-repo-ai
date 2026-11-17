@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: opsconsole-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for opsconsole-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-flna-schservice-preprod
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: opsconsole-preprod-admin
+    description: Admin privileges to opsconsole-preprod
+    policies:
+    - p, proj:opsconsole-preprod:opsconsole-preprod-admin, applications, *, opsconsole-preprod/*, allow
+    - p, proj:opsconsole-preprod:opsconsole-preprod-admin, repositories, *, opsconsole-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: opsconsole-preprod-user
+    description: Read-only privileges to opsconsole-preprod
+    policies:
+    - p, proj:opsconsole-preprod:opsconsole-preprod-user, applications, get, opsconsole-preprod/*, allow
+    - p, proj:opsconsole-preprod:opsconsole-preprod-user, applications, sync, opsconsole-preprod/*, allow
+    - p, proj:opsconsole-preprod:opsconsole-preprod-user, repositories, get, opsconsole-preprod/*, allow
+    - p, proj:opsconsole-preprod:opsconsole-preprod-user, applications, action/apps/Deployment/restart, opsconsole-preprod/*, allow
+    groups:
+    - "Team.Support.PFNA.SCH.Reader"
+    - "Team.Support.EIAP.READ"

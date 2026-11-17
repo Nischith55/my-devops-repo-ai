@@ -1,0 +1,138 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-retailuat-qa-cv-gw
+  namespace: pep-dps-cgf-retailuat-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-retailuat-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-retailuat-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-retailuat-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pepsico-retail-360-caf-api-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-retail-360-frontend-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-auth-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-kroger-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-metrics-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-walmart-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-luminate-api-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-common-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-auth-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-metrics-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-graph-fedration-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-nginx-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-insights-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-fileproxy-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-ui-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-xda-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-file-auth-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-retailuat-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-retailuat-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepsico-retail-360-caf-api-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-retail-360-frontend-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - retail360.hfuat.pepsico.com
+    - r360assetsuat.qa.pepsico.com
+    - r360-caf-auth-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-kroger-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-metrics-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-walmart-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-luminate-api-retailuat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-common-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-auth-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - retail360uat.qa.pepsico.com
+    - r360assetsuat.qa.pepsico.com
+    - r360-caf-metrics-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-graph-fedration-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-nginx-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-insights-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-fileproxy-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-ui-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-xda-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-file-auth-uat-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-retailuat-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-retailuat-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - r360assetsuat.qa.pepsico.com
+    name: pep-dps-cgf-retailuat-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-retailuat-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: r360assetsuat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - retail360uat.qa.pepsico.com
+    name: pep-dps-cgf-retailuat1-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-retailuat1-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: retail360uat.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

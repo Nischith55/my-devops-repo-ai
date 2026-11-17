@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-amesa-prod-agro-webapp-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eip-amesa-prod-agro-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - agroppr.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-prod-agro-webapp.pep-eiap-amesa-ksaeinvc-prod.svc.cluster.local
+        port:
+          number: 80

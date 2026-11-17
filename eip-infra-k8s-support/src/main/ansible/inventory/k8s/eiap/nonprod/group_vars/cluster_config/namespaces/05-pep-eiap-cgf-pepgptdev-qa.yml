@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_pepgptdev_qa:
+  
+  name: pep-eiap-cgf-pepgptdev-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-pepgptdev
+    sector: cgf
+    project: pepgptdev
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: iaiconversationaistudioprod
+    pep-cmdb-app-service-id: "e03f35e11bd2b4905e6e54ae034bcb98"
+    pep-cmdb-bus-app-id: "283f35e11bd2b4905e6e54ae034bcbb6"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-pepgptdev-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_pepgptdev'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-pepgptdev-qa-sa-token
+    namespace: pep-eiap-cgf-pepgptdev-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-pepgptdev-qa-sa"

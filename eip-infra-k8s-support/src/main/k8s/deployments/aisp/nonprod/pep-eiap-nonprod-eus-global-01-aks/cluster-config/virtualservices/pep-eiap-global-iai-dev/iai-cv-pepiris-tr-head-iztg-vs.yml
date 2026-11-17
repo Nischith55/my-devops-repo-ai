@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: iai-cv-pepiris-tr-head-iztg-vs
+  namespace: pep-eiap-global-iai-dev
+  labels:
+      app: iai-cv-pepiris-tr-head
+spec:
+  hosts:
+  - iai-cv-pepiris-tr-head.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model
+    route:
+    - destination:
+        host: iai-cv-pepiris-tr-head.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000
+  

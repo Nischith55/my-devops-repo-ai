@@ -1,0 +1,40 @@
+apiVersion: appdynamics.com/v1alpha1
+kind: Clusteragent
+metadata:
+  name: appdynamics-cluster-agent
+  namespace: appdynamics
+spec:
+  account: pepsi-test
+  appName: pep-eiap-preprod-eus-global-01-aks
+  appNameLabel: app
+  appNameStrategy: label
+  controllerUrl: https://pepsi-test.saas.appdynamics.com:443
+  image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/vendor/appdynamics/cluster-agent:ubuntu-18.04-20.10.0.1820-unofficial
+  imageInfo:
+    java:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/java-agent:latest
+      imagePullPolicy: IfNotPresent
+  # imagePullSecrets: pep-eiap-svc-eiap-infra-sp-regcred
+  instrumentationMethod: ENV
+  logFileBackups: 3
+  logFileSizeMb: 5
+  logLevel: INFO
+  maxPodLogsTailLinesCount: 500
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+    kubernetes.azure.com/mode: system
+  nsToInstrumentRegex: pep-eiap-ops-admin|pep-eiap-latam-gtm-preprod|pep-eiap-flna-hhnext-preprod
+  nsToMonitor:
+  - pep-eiap-ops-admin
+  - pep-eiap-latam-gtm-preprod
+  - pep-eiap-flna-hhnext-preprod
+  numberOfTaskWorkers: 2
+  resourcesToInstrument:
+  - Deployment
+  - StatefulSet
+  serviceAccountName: appdynamics-cluster-agent
+  stdoutLogging: "true"
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists

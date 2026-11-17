@@ -1,0 +1,352 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-suk-global-01-aks-node-metricbeat-config
+  namespace: pep-eiap-elastic-client-01
+data:
+  K8S_CLUSTER_NAME: pep-eiap-prod-suk-global-01-aks
+
+  metricbeat-processor.yml: |
+
+    processors:
+
+    # ~~
+    # Add EIAP fields
+    # ~~
+
+    - add_fields:
+        fields:
+          ls-destination: "SUK"
+          pep-aks-cluster: ${K8S_CLUSTER_NAME}
+    - add_host_metadata: {}
+    - add_cloud_metadata: {}
+    - add_kubernetes_metadata: {}
+    - add_tags:
+        tags: ["Prod-SUK-Shared", "retain-logs"]
+
+    - script:
+        lang: javascript
+        source: >
+          function process(event) {
+            event.Put("fields.sn-application", "metrics-pep-eiap-prod-suk-global-01-aks" + "-" + event.Get("kubernetes.namespace"));
+            return event;
+          }
+
+
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat standard k8s stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  metricbeat.yml: |
+
+    monitoring:
+      enabled: false
+    http:
+      enabled: true
+      host: 0.0.0.0
+      port: 5066
+
+
+    metricbeat:
+
+      monitoring:
+        enabled: false
+
+      modules:
+      - module: system
+        enabled: true
+        period: 1m
+        metricsets:
+        - cpu
+        - load
+        - memory
+        - network
+        - process
+        - process_summary
+        - uptime
+        - core
+        process:
+          include_top_n:
+            by_cpu: 5
+            by_memory: 5
+        processes:
+        - .*
+
+      # +++
+      # System: FileSystem metrics
+      # +++
+      - module: system
+        period: 1m
+        metricsets:
+        - filesystem
+        - fsstat
+        processors:
+        - drop_event:
+            when:
+              regexp:
+                system:
+                  filesystem:
+                    mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib)($|/)
+
+
+      - module: kubernetes
+        enabled: true
+        # IMPORTANT: when using module directly, it's still host (not node)
+        host: ${NODE_NAME}
+        period: 30s
+        hosts:
+        # change to local host kubelet secure port
+        - https://${NODE_IP}:10250
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        ssl:
+          verification_mode: none
+        metricsets:
+        - container
+        - node
+        - pod
+        - system
+        - volume
+
+      - module: kubernetes
+        enabled: true
+        # IMPORTANT: when using module directly, it's still host (not node)
+        host: ${NODE_NAME}
+        period: 30s
+        metricsets:
+          - proxy
+        hosts:
+          - "${NODE_IP}:10249"
+
+    setup.template.name: "pep-metrics-template"
+    setup.template.pattern: "metrics-*"
+    setup.ilm.enabled: false 
+    #setup.template.enabled: true
+    output.elasticsearch:
+        hosts: [https://33d4a6a83cd14cf48959307e81b0d6cb.privatelink.uksouth.azure.elastic-cloud.com:9243]
+        api_key: "HVxtt5QBFN0Tg2fWr2am:vsM7iKL7RTm2yii8SbGUYQ"
+        #index: "gwc-dps-mb"
+        index: "%{[fields][sn-application]}"
+        #index: "metrics-%{[event][module]}"
+        #index: "aks-pep-dps-nonprod-eus-global-01-aks-%{[kubernetes.namespace]}"
+        #index: "dps-nonprod-eus-global-01-%{[kubernetes][namespace]}"
+        #index: "%{[fields][cluster_name]}-%{[kubernetes][namespace]}"
+        #worker: 2
+        #bulk_max_size: 1000
+        ssl.verification_mode: none
+        timeout: 90s
+---
+
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: elastic-beat-metricbeat
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - nodes
+#   - namespaces
+#   - events
+#   - pods
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - "extensions"
+#   resources:
+#   - replicasets
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - apps
+#   resources:
+#   - statefulsets
+#   - deployments
+#   - replicasets
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - ""
+#   resources:
+#   - nodes/stats
+#   verbs:
+#   - get
+# - nonResourceURLs:
+#   - /metrics
+#   verbs:
+#   - get
+# ---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: &app_name prod-suk-global-01-aks-node-metricbeat
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    app.kubernetes.io/name: *app_name
+    app.kubernetes.io/version: &vers 8.19.11
+    app: *app_name
+    # match the  ES server version (beats is not backward compatible)
+    version: *vers
+spec:
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app_name
+      app.kubernetes.io/version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app_name
+        app.kubernetes.io/version: *vers
+        app: *app_name
+        version: *vers
+        # we need this for stack monitoring via metricbeat collection
+        stack-monitoring.elastic.co/type: metricbeat-node
+      annotations:
+        co.elastic.logs/enabled: "true"
+
+    spec:
+      hostAliases:
+      - ip: "172.23.36.71"
+        hostnames:
+        - "33d4a6a83cd14cf48959307e81b0d6cb.privatelink.uksouth.azure.elastic-cloud.com"
+      # Run only on linux nodes, not that we have non linux nodes :)
+      nodeSelector:
+        kubernetes.io/os: linux
+      # PEP: DaemonSet we need to run it on EVERY node. so tolerate all
+      # taints
+      tolerations:
+      - operator: Exists
+
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: metricbeat
+
+      automountServiceAccountToken: true
+      securityContext:
+        runAsUser: 0
+
+      # All volumes
+      volumes:
+
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+
+      - name: proc
+        hostPath:
+          path: /proc
+
+      - name: data
+        hostPath:
+          # IMPORTANT: always change this to match the app_name
+          path: /var/lib/pep-eiap-elastic-client-01/prod-suk-global-01-aks-node-metricbeat/metricbeat-data
+          type: DirectoryOrCreate
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+          # metricbeat-node-config
+          - configMap:
+              name: &beats_config prod-suk-global-01-aks-node-metricbeat-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      containers:
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:8.19.11
+        args:
+        - --environment
+        - container
+        # need this for node-level metricbeat
+        - --system.hostfs=/hostfs
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+        ports:
+        - name: monitoring
+          containerPort: 5066
+          protocol: TCP
+
+        env:
+
+        # All environment variables from beats-shared-env-config
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: *beats_config
+              key: K8S_CLUSTER_NAME
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        # ~~
+        # VolumeMounts
+        volumeMounts:
+        # ~~
+
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true
+
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+
+        - name: proc
+          mountPath: /hostfs/proc
+
+        - name: data
+          mountPath: /usr/share/metricbeat/data
+

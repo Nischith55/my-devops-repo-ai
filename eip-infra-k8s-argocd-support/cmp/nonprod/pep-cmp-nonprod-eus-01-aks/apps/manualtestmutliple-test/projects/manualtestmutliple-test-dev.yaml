@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: manualtestmutliple-test-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for manualtestmutliple-test-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/manualtestmutliple-test-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: manualtestmutliple-test-dev-admin
+    description: Admin privileges to manualtestmutliple-test-dev
+    policies:
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-admin, applications, *, manualtestmutliple-test-dev/*, allow
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-admin, repositories, *, manualtestmutliple-test-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: manualtestmutliple-test-dev-user
+    description: Read-only privileges to manualtestmutliple-test-dev
+    policies:
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-user, applications, get, manualtestmutliple-test-dev/*, allow
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-user, applications, sync, manualtestmutliple-test-dev/*, allow
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-user, repositories, get, manualtestmutliple-test-dev/*, allow
+    - p, proj:manualtestmutliple-test-dev:manualtestmutliple-test-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

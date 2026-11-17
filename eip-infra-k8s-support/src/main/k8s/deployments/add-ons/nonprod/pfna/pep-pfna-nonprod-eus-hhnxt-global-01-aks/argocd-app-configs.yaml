@@ -1,0 +1,38 @@
+---
+global:
+  spec:
+    destination:
+      clusterName: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+
+argoCDApplications:  
+  opa-opensrc-pep-pfna-nonprod-eus-hhnxt-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gatekeeper
+    revision: 3.20.0
+    namespace: gatekeeper-system
+    path: /src/main/k8s/deployments/add-ons/base/opa-gatekeeper/osopa
+    ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      jsonPointers:
+      - /spec/preserveUnknownFields
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jsonPointers:
+      - /webhooks/admissionReviewVersions/namespaceSelector/matchExpressions
+  opa-constraints-pep-pfna-nonprod-eus-hhnxt-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/cluster-config/nonprod/pfna/pep-pfna-nonprod-eus-hhnxt-global-01-aks/constraints
+  
+  opa-templates-pep-pfna-nonprod-eus-hhnxt-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/cluster-config/base/opa-gatekeeper-policies/validation/constraint-templates

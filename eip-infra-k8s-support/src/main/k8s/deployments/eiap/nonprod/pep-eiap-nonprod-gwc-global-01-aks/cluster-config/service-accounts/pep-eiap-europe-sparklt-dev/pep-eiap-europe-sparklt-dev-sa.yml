@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 92df657e-6c20-4073-8f9c-669aab048484
+  name: pep-eiap-europe-sparklt-dev-sa
+  namespace: pep-eiap-europe-sparklt-dev

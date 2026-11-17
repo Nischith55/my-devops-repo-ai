@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-latam-opsbridge-infra-prod
+    project: infra
+    sector: latam-opsbridge
+    servicename_aks: operation-bridge
+    team: latam-infra
+  name: pep-latam-opsbridge-infra-prod

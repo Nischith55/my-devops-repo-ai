@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-ppsdms-dev-cv-cdn-vs
+  namespace: pep-eiap-cgf-ppsdms-dev
+spec:
+  hosts:
+    - dms.dev.pepsico.com
+  gateways:
+  - "pep-eiap-cgf-ppsdms-dev/pep-eiap-cgf-ppsdms-dev-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-eiap-cgf-ppsdms-dev-cv-webdeploy.pep-eiap-cgf-ppsdms-dev.svc.cluster.local"
+        port:
+          number: 80

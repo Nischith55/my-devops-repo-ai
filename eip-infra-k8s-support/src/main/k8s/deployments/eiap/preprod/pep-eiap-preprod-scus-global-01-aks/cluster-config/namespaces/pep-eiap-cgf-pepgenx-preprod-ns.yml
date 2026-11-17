@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    project: pepgenx
+    sector: cgf
+    servicename_aks: engineeringexcellencepepgenx
+    team: cgf-pepgenx
+  name: pep-eiap-cgf-pepgenx-preprod

@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-cgf-europe-mfgcons-dev-sa
+  namespace: pep-cgf-europe-mfgcons-dev

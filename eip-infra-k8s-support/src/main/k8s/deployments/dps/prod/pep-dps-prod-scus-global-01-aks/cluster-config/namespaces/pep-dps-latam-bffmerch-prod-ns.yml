@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 3a02a57c970a9e50170439771153afec
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: bffmerch
+    sector: latam
+    servicename_aks: b2bpepsiconnectportalabffproductselectionamericasprod
+    team: latam-bffmerch
+  name: pep-dps-latam-bffmerch-prod

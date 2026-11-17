@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: b2b-bff
+  name: b2b-bff-vs
+  namespace: pep-dps-latam-bff-prod
+spec:
+  gateways:
+  - pep-dps-latam-bff-prod/pep-dps-latam-bff-prod-cv-gw
+  hosts:
+  - b2b-bff.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-bff.pep-dps-latam-bff-prod.svc.cluster.local
+        port:
+          number: 8080

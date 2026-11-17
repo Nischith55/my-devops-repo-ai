@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2022-03-21 11:03:50
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-cgf-duaas-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.IACOE.Admins
+    name: d28a3e04-0692-4c12-81bc-4794cde1f936

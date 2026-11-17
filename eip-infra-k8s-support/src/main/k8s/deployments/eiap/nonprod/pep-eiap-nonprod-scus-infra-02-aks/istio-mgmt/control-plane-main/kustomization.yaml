@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- istio-system/in-gateways/istio-in-gateway-01.yml
+- istio-system/in-gateways/istio-in-gateway-02.yml
+- pep-eiap-istio-config/kubernetes-dashboard/kubernetes-dashboard-vs.yml
+  # - tm/pep-eiap-istio-config/observability/tracing-disable-mtls-policy-dr.yml
+- pep-eiap-istio-config/observability/tracing-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-01/pep-eiap-apm-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-01/pep-eiap-elastic-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-01/pep-eiap-ingest-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-01/pep-eiap-kibana-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-02/pep-eiap-elastic-02-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-02/pep-eiap-ingest-02-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-cluster-02/pep-eiap-kibana-02-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-monitor-01/pep-eiap-elastic-monitor-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-elastic-monitor-01/pep-eiap-kibana-monitor-01-vs.yml
+- pep-eiap-istio-config/pep-eiap-nginx/pep-eiap-nginx-dr.yml
+- pep-eiap-istio-config/pep-eiap-nginx/pep-eiap-nginx-vs.yml

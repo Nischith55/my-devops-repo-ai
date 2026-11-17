@@ -1,0 +1,77 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "annotations": {},
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "default",
+        "istio-operator",
+        "istio-system",
+        "keda",
+        "kube-node-lease",
+        "observability",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "local",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "pep-pfna-elastic-client-01",
+        "pep-pfna-istio-config",
+        "pep-pfna-ops-admin",
+        "tigera-operator",
+        "twistlockpp",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "pep-pfna-gremlin",
+        "snyk-monito"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "pepeiapprodcommonacr.azurecr.io/",
+        "docker.io/istio/",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "rancher/",
+        "docker.io/rancher/",
+        "wiziopublic.azurecr.io/wiz-app/",
+        "wizio.azurecr.io/",
+        "us-docker.pkg.dev/gloo-mesh"
+      ]
+    }
+  }
+}

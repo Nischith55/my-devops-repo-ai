@@ -1,0 +1,239 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+parameters:
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+
+  - name: Functional_Area
+    displayName: Functional_Area
+    type: string
+    values:
+      - eiap
+      - apigee
+      - pfna
+      - snt
+      - dps
+      - cmp
+      - pbna
+      - infratools
+      - infosectools
+      - latam
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+  - name: cluster_name
+    displayName: Cluster Name
+    type: string
+  
+  - name: resource_group 
+    displayName: Resource Group 
+    type: string 
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - group: pep-k8s-db-endpoints
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: pep-pfna-cit-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna'), eq(parameters.Region, 'scus')) }}:
+      value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna'), eq(parameters.Region, 'eus')) }}:
+      value: pep-pfna-cit-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  - name: subscription_id_others
+    ${{ if and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 498640c4-36eb-4566-b752-ca3d2939c544
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'snt')) }}:
+      value: cf488406-af15-4248-898e-11932611df2b
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cmp')) }}:
+      value: dcae03ca-ca66-40ff-a58e-a8585fd62d6d
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: f427a039-5122-4a35-ac4a-c63c96d1acde
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 55bde1f0-8591-432c-a37f-5c1bdff8c2f8
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), or(eq(parameters.Region, 'ae'), eq(parameters.Region, 'gwc'), eq(parameters.Region, 'suk')), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 72d4c1b3-fd6e-432a-b18a-89eec2c10a6b
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'eiap')) }}:
+      value: 154431fe-c911-490e-87a0-c84ced2bee05
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'snt')) }}:
+      value: c02eac0c-ef5a-4dc0-a613-c4be86e092ab
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), or(eq(parameters.Functional_Area, 'infratools'), eq(parameters.Functional_Area, 'latam'))) }}:
+      value: 86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Functional_Area, 'infratools'), eq(parameters.Functional_Area, 'latam'))) }}:
+      value: 92ddb5ec-2ad5-45f6-b81f-e358d4904d04
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 93c33431-a080-4b4a-a362-3b7c5a36b6dc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 4f85ea10-aee0-4b46-82cc-4416208c1485
+    ${{ elseif and(or(eq(parameters.env, 'preprod'), eq(parameters.env, 'prod'), eq(parameters.env, 'nonprod')), or(eq(parameters.Functional_Area, 'infosectools'), eq(parameters.Functional_Area, 'fortify'))) }}:
+      value: bbfb8d7c-7f66-4690-9a6a-0aec959d9035
+    ${{ else }}:
+      value: using-subscription-id-available-in-keyvault
+  
+  
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: target_branch
+    value: master
+  - name: source_branch
+    value: develop
+
+stages:
+- stage: Tag_Namespaces
+  displayName: Tag namespaces
+  pool:
+    name: $(agent_pool)
+  jobs:
+
+  - job: tag_namespace
+    displayName: Tag Namespace
+    steps:
+      - template: templates/set_config_namespace_tagging.yml
+        parameters:
+          cluster: ${{ parameters.cluster_name }}
+          env: ${{ variables.env_convert }}
+      
+      - task: Bash@3
+        displayName: 'Set Subscription'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "sub value is --> ${{ variables.subscription_id_others }} ....."
+            if [[ "${{ variables.subscription_id_others }}" == "using-subscription-id-available-in-keyvault" ]]; then
+              echo "subscription set to KV subscription -->> $AZURE_SUBSCRIPTION_ID"
+              echo "##vso[task.setvariable variable=SUBSCRIPTION_ID]$AZURE_SUBSCRIPTION_ID"
+            else
+              echo "subscription set to subscription_id_others --> ${{ variables.subscription_id_others }} "
+              echo "##vso[task.setvariable variable=SUBSCRIPTION_ID]${{ variables.subscription_id_others }}"
+            fi
+
+      - task: CmdLine@2
+        inputs:
+          script: |
+            pip3 install ruamel.yaml
+            ansible-playbook --version
+            pip install ansible[Azure]
+            pip install futures
+            pip show pyyaml
+            pip3 install openshift
+            pip3 install "cryptography!=40.0.0,!=40.0.1,<42,>=38.0.0"
+            pip3 install "packaging<22.0,>=20.9"
+            pip3 install "portalocker~=1.2"
+            pip3 install azure-mgmt-apimanagement
+
+      - task: Bash@3
+        displayName: 'kubectl'
+        inputs:
+          targetType: 'inline'
+          script: |
+            ansible-galaxy collection install kubernetes.core -p ~/.ansible/collections/
+            ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+            ansible-galaxy collection install azure.azcollection -p ~/.ansible/collections/
+            ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+            pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
+      
+      - task: Ansible@0
+        displayName: 'Tag Namespace'
+        name: tag_namespace
+        continueOnError: true
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/namespace-tagging-crosscharge.yml'
+          args: '-e ''{ "env": "${{ parameters.env }}", "department": "${{ parameters.Functional_Area }}", "cluster_name": "${{ parameters.cluster_name }}", "resource_group": "${{ parameters.resource_group }}" }'' -v'
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_LOCALHOST_WARNING: False
+          script_dir: $(system.defaultWorkingDirectory)
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+          AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID: $(SUBSCRIPTION_ID)
+          AAD_SERVICE_PRINCIPAL_TENANT_ID: $(AZURE_TENANT)
+
+      - task: Bash@3
+        displayName: 'git_push'
+        name: "git_push"
+        inputs:
+          targetType: 'inline'
+          script: | 
+            git branch
+            git checkout -b $(Build.SourceBranchName)
+            git add .
+            git commit -m "Added namespace manifests for $(Build.DefinitionName) and build id $(Build.BuildId)"
+            git pull 'https://$(svcuser):$(svcPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+            git config --global user.email "svceipazdevops@pepsico.com"
+            git config --global user.name "svceipazdevops"
+            git status | grep 'nothing to commit, working tree clean' &> /dev/null
+            outpval=`echo $?`
+            echo $outpval
+            if [ $outpval -eq 0 ];then
+              echo 'Nothing to commit'
+              echo "##vso[task.setvariable variable=output;isOutput=true]nothing_to_commit"
+            else
+              git add .
+              git commit -m "Added namespace manifests for $(Build.DefinitionName) and build id $(Build.BuildId)"
+              while ! git push 'https://$(svcuser):$(svcPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName); do sleep 7; done
+              echo "##vso[task.setvariable variable=output;isOutput=true]things_to_commit"
+            fi
+      
+      - pwsh: |
+          $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"  
+          az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+          $pr_response=az repos pr list --creator svceipazdevops --status active | ConvertFrom-Json
+          Write-host $pr_response
+          if ($pr_response.count -gt 0)
+
+          {
+
+              Write-Host “PR exists”
+              Return
+
+          }
+          else
+          {
+              Write-Host “There is no PR”
+              az repos pr create --project $(System.TeamProject) --repository $(Build.Repository.Name) --target-branch $(target_branch) --source-branch $(source_branch) --reviewers $(reviewer1_pr) --title "PR request $(Build.BuildNumber)" | ConvertFrom-Json
+              Return
+          }
+        condition: and(succeeded(), eq(variables['git_push.output'], 'things_to_commit'))
+        displayName: 'PR Request'
+

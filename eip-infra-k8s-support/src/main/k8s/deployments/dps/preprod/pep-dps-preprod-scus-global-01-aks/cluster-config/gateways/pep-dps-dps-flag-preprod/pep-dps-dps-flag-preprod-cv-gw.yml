@@ -1,0 +1,112 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-flag-preprod-cv-gw
+  namespace: pep-dps-dps-flag-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-flag-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-flag-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-flag-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - agro-hub-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-hub-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-fritolay-ag-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-fritolay-ag-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-variety-cataloge.preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-flag-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-flag-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - fritolayag.preprod.pepsico.com
+    - agro-hub-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-hub-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-fritolay-ag-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - agro-fritolay-ag-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - aghub.preprod.pepsico.com
+    - agro-variety-cataloge.preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-flag-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-flag-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - fritolayag.preprod.pepsico.com
+    name: pep-dps-dps-flag-preprod-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-flag-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-flag-preprod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - aghub.preprod.pepsico.com
+    name: pep-dps-dps-flag-preprod-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-flag-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: aghub.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

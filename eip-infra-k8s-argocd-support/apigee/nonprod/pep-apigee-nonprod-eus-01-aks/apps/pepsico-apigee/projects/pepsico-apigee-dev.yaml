@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepsico-apigee-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepsico-apigee-dev  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/pepsico-apigee-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-apigee-nonprod-eus-01-aks
+        namespace: api-marketplace
+      - name: pep-apigee-nonprod-eus-01-aks
+        namespace: pep-apigee-ops-admin
+      roles:
+      - name: pepsico-apigee-dev-admin
+        description: Admin privileges to pepsico-apigee-dev
+        policies:
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-admin, applications, *, pepsico-apigee-dev/*, allow
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-admin, repositories, *, pepsico-apigee-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepsico-apigee-dev-user
+        description: Read-only privileges to pepsico-apigee-dev
+        policies:
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-user, applications, get, pepsico-apigee-dev/*, allow
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-user, applications, sync, pepsico-apigee-dev/*, allow
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-user, repositories, get, pepsico-apigee-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepsico-apigee-dev:pepsico-apigee-dev-user, applications, action/apps/Deployment/restart, pepsico-apigee-dev/*, allow
+        groups:
+        - "Team.Support.Apigee.Read"
+        - "Team.Support.EIAP.READ"

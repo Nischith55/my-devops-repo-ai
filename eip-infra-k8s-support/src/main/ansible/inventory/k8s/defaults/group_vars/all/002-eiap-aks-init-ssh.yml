@@ -1,0 +1,28 @@
+---
+# ##
+# Variables defining ssh keys for app deployment like aks-init
+# ##
+_ssh_private_key_dir: |-
+  {{
+    (lookup('env', 'SSH_KEY_DIR') | default('~/.ssh', True))
+    | expandvars | expanduser | realpath
+  }}
+
+_aks_init_filename_noext: "{{ 'id_rsa_eiap_' + env + '_aks_init' }}"
+
+ssh_private_key_0_file: |-
+  {{
+    ssh_private_key_0_file_ovrd
+    |
+    default((_ssh_private_key_dir, _aks_init_filename_noext) | path_join)
+  }}
+
+# Please either:
+# - use the ovrd variable
+# - or ssh_public_key_0_filename
+ssh_public_key_0_file: |-
+  {{
+    ssh_public_key_0_file_ovrd
+    |
+    default((_ssh_private_key_dir, _aks_init_filename_noext + '.pub') | path_join)
+  }}

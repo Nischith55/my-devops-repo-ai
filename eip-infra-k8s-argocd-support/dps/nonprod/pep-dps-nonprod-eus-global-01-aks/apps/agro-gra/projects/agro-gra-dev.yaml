@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-gra-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-gra-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Grower_Relationship_Application/_git/agro-service-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-gra-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: agro-gra-dev-admin
+    description: Admin privileges to agro-gra-dev
+    policies:
+    - p, proj:agro-gra-dev:agro-gra-dev-admin, applications, *, agro-gra-dev/*, allow
+    - p, proj:agro-gra-dev:agro-gra-dev-admin, applications, get, argocd/*, allow
+    - p, proj:agro-gra-dev:agro-gra-dev-admin, repositories, *, agro-gra-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-gra-dev-user
+    description: Read-only privileges to agro-gra-dev
+    policies:
+    - p, proj:agro-gra-dev:agro-gra-dev-user, applications, get, agro-gra-dev/*, allow
+    - p, proj:agro-gra-dev:agro-gra-dev-user, applications, sync, agro-gra-dev/*, allow
+    - p, proj:agro-gra-dev:agro-gra-dev-user, repositories, get, agro-gra-dev/*, allow
+    - p, proj:agro-gra-dev:agro-gra-dev-user, applications, action/apps/Deployment/restart, agro-gra-dev/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GRA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pog-reporting-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pog-reporting-qa  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pog-reporting-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-pcaf-qa
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pog-reporting-qa-admin
+        description: Admin privileges to pep-pog-reporting-qa
+        policies:
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-admin, applications, *, pep-pog-reporting-qa/*, allow
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-admin, repositories, *, pep-pog-reporting-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pog-reporting-qa-user
+        description: Read-only privileges to pep-pog-reporting-qa
+        policies:
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-user, applications, get, pep-pog-reporting-qa/*, allow
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-user, applications, sync, pep-pog-reporting-qa/*, allow
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-user, repositories, get, pep-pog-reporting-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-pog-reporting-qa:pep-pog-reporting-qa-user, applications, action/apps/Deployment/restart, pep-pog-reporting-qa/*, allow
+        groups:
+        - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+        - "Team.Support.EIAP.READ"
+    

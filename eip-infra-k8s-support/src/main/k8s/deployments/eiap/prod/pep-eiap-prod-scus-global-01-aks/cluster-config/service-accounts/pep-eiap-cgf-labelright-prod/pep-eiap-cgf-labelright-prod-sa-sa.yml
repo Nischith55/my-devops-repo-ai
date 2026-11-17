@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-cgf-labelright-prod-sa
+  namespace: pep-eiap-cgf-labelright-prod

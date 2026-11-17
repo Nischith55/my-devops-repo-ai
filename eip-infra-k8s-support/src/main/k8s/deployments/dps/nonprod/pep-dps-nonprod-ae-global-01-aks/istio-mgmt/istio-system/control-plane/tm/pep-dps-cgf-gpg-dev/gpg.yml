@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: gpg-vs
+  namespace: pep-dps-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - gpg.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: gpg.pep-dps-cgf-gpg-dev.svc.cluster.local
+        port: 
+          number: 8080

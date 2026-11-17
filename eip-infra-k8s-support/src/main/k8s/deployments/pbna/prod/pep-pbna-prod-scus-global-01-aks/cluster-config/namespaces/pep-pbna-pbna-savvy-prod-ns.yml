@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-pbna-pbna-savvy-prod
+    pep-cmdb-app-service-id: a73ba19d1b7228105f7bcbf2604bcb4b
+    pep-cmdb-bus-app-id: 6f3ba19d1b7228105f7bcbf2604bcb76
+    pep-environment: Production
+    project: savvy
+    sector: pbna
+    servicename_aks: savvypbnaprod
+    team: pbna-savvy
+  name: pep-pbna-pbna-savvy-prod

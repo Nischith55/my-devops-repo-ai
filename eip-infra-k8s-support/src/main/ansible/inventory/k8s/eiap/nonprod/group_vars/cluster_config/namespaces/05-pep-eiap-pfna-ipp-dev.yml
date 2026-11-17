@@ -1,0 +1,39 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PFNA Intelligent Promo Planner (IPP)
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_pfna_ipp_dev:
+  
+  name: pep-eiap-pfna-ipp-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pfna-ipp
+    sector: pfna
+    project: ipp
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pfna_ipp'] }}"
+
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no rolebinding, unless asked
+    - name: pep-eiap-pfna-ipp-dev-sa
+

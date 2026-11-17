@@ -1,0 +1,43 @@
+---
+# ##
+# 05/2021
+# - Global Variable Naming Convention
+#   <resc_name>_<resc_abbrev>_cfg
+#   resc_abbrev: see the 00-k8s-api-spec key
+# ##
+# TODO: Deprecated -- use the monitor clusterrole
+pep_eiap_servicenow_clusterrole_cr_cfg:
+  name: pep-eiap-servicenow-clusterrole
+  kind: ClusterRole
+  alias: pep-eiap-servicenow
+
+  rules:
+    - apiGroups:
+        -  ""
+        - apps
+        - autoscaling
+        - extensions
+        - batch
+      resources:
+        - endpoints
+        - daemonsets
+        - deployments
+        - jobs
+        - cronjobs
+        - namespaces
+        - nodes
+        - pods
+        - replicasets
+        - services
+        - statefulsets
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        -  ""
+      resources:
+        - events
+      verbs:
+        - get
+        - list

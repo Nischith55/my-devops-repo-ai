@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:29:38Z"
+  generation: 1
+  name: pepsico-cto-cmp-order-bigfix-defender-processor-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638231751"
+  uid: 6dedfaf3-402b-4b37-bdcc-5abf88dc8217
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-bigfix-defender-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/order/bigfix/defender
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-bigfix-defender-processor.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

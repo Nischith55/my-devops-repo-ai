@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-gto-fvrt-cust
+  name: pcaf-gto-fvrt-cust-vs
+  namespace: pep-pfna-flna-salesplus-prod
+spec:
+  gateways:
+  - pep-pfna-flna-salesplus-prod/pep-pfna-flna-salesplus-prod-cv-gw
+  hosts:
+  - pcaf-gto-fvrt-cust.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-gto-fvrt-cust.pep-pfna-flna-salesplus-prod.svc.cluster.local
+        port:
+          number: 80

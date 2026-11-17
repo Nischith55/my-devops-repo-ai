@@ -1,0 +1,57 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-pfna-sch-nonprod-eus-01-aks
+
+argoCDApplications:
+  nginx-pep-pfna-sch-nonprod-eus-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/pfna/pep-pfna-sch-nonprod-eus-01-aks/pep-pfna-sch-global-infra-dev_NGINX
+
+  arc-controller-pep-pfna-sch-nonprod-eus-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set-controller
+    revision: 0.14.2
+    namespace: arc-systems
+    path: src/main/k8s/deployments/apps/nonprod/pfna/pep-pfna-sch-nonprod-eus-01-aks/pep-pfna-arc/controller
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-runner-set-pep-pfna-sch-nonprod-eus-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set
+    revision: 0.14.2
+    namespace: pep-pfna-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pfna/pep-pfna-sch-nonprod-eus-01-aks/pep-pfna-arc/runner-set
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-image-prepull-pep-pfna-sch-nonprod-eus-01-aks:
+    enabled: true
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-pfna-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pfna/pep-pfna-sch-nonprod-eus-01-aks/pep-pfna-arc/prepull
+    syncOptions:
+      - CreateNamespace=true
+
+  # arc-kaniko-rbac-pep-pfna-sch-nonprod-eus-01-aks:
+  #   enabled: true
+  #   autoSync: true
+  #   helm: false
+  #   recursive: false
+  #   namespace: pep-pfna-global-devsecops-dev
+  #   path: src/main/k8s/deployments/apps/nonprod/pfna/pep-pfna-sch-nonprod-eus-01-aks/pep-pfna-arc/kaniko-rbac
+  #   syncOptions:
+  #     - CreateNamespace=true

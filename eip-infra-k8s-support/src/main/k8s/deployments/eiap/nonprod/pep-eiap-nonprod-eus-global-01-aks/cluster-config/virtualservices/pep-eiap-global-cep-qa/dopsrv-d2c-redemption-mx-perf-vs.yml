@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dopsrv-d2c-redemption-mx-perf
+  name: dopsrv-d2c-redemption-mx-perf-vs
+  namespace: pep-eiap-global-cep-qa
+spec:
+  gateways:
+  - pep-eiap-global-cep-qa/pep-eiap-global-cep-qa-cv-gw
+  hosts:
+  - pepceps37.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopsrv-d2c-redemption-mx-perf.pep-eiap-global-cep-qa.svc.cluster.local
+        port:
+          number: 80

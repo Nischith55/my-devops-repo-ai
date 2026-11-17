@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-ctxptspp-preprod
+  labels:
+    env-preprod: "true"
+    project: ctxptspp
+    sector: dps
+    team: dps-ctxptspp
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: profittoserve
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 00461de687881d1038f9ec683cbb35f9
+    pep-cmdb-app-service-id: c8ddc747-eb41-4f17-8c5d-da507e1b0b5d
+    pep-environment: Pre-Production
+    

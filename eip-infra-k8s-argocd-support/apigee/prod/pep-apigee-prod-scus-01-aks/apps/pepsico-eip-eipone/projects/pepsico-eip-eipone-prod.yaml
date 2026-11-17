@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepsico-eip-eipone-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepsico-eip-eipone-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Microservices_Development_Portal/_git/pepsico-eip-eipone-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-apigee-prod-scus-01-aks
+        namespace: api-marketplace
+      - name: pep-apigee-prod-scus-01-aks
+        namespace: pep-apigee-ops-admin
+      roles:
+      - name: pepsico-eip-eipone-prod-admin
+        description: Admin privileges to pepsico-eip-eipone-prod
+        policies:
+        - p, proj:pepsico-eip-eipone-prod:pepsico-eip-eipone-prod-admin, applications, *, pepsico-eip-eipone-prod/*, allow
+        - p, proj:pepsico-eip-eipone-prod:pepsico-eip-eipone-prod-admin, repositories, *, pepsico-eip-eipone-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepsico-eip-eipone-prod-user
+        description: Read-only privileges to pepsico-eip-eipone-prod
+        policies:
+        - p, proj:pepsico-eip-eipone-prod:pepsico-eip-eipone-prod-user, applications, get, pepsico-eip-eipone-prod/*, allow
+        - p, proj:pepsico-eip-eipone-prod:pepsico-eip-eipone-prod-user, applications, sync, pepsico-eip-eipone-prod/*, allow
+        - p, proj:pepsico-eip-eipone-prod:pepsico-eip-eipone-prod-user, repositories, get, pepsico-eip-eipone-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.MDP.AppSupport"
+        - "Team.Support.EIAP.READ"
+    

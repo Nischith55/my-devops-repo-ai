@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepgenx-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepgenx-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepgenx-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepgenx-preprod-admin
+        description: Admin privileges to pepgenx-preprod
+        policies:
+        - p, proj:pepgenx-preprod:pepgenx-preprod-admin, applications, *, pepgenx-preprod/*, allow
+        - p, proj:pepgenx-preprod:pepgenx-preprod-admin, repositories, *, pepgenx-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepgenx-preprod-user
+        description: Read-only privileges to pepgenx-preprod
+        policies:
+        - p, proj:pepgenx-preprod:pepgenx-preprod-user, applications, get, pepgenx-preprod/*, allow
+        - p, proj:pepgenx-preprod:pepgenx-preprod-user, applications, sync, pepgenx-preprod/*, allow
+        - p, proj:pepgenx-preprod:pepgenx-preprod-user, repositories, get, pepgenx-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepgenx-preprod:pepgenx-preprod-user, applications, action/apps/Deployment/restart, pepgenx-preprod/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.EEGenAI"
+        - "Team.Support.EIAP.READ"
+    

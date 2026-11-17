@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_flna_trmmrw_dev:
+  
+  name: pep-pfna-flna-trmmrw-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-trmmrw
+    sector: flna
+    project: trmmrw
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dps-dispatchplanningsystemnon-prod
+    pep-cmdb-app-service-id: "d87268438783d11c2b90426d0ebb3576"
+    pep-cmdb-bus-app-id: "0cbe08f9db3e8c10c2b5f38139961928"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-trmmrw-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_trmmrw'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-trmmrw-dev-sa-token
+    namespace: pep-pfna-flna-trmmrw-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-trmmrw-dev-sa"

@@ -1,0 +1,10 @@
+####### BEGIN Added recently --pep-snt-prod-scus-global-02-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_snt_cgf_ppsi_prod
+  - ns_pep_snt_cgf_gssilabs_prod
+  - ns_pep_snt_cgf_ckms_prod
+  - ns_pep_snt_cgf_sde_prod
+####### END Added recently --pep-snt-prod-scus-global-02-aks######

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falcon-namespaces-pep-pbna-preprod-scus-global-01-aks
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: falcon-pep-pbna-preprod-scus-global-01-aks
+  destination:
+    name: pep-pbna-preprod-scus-global-01-aks
+    namespace: falcon-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+  source:
+    repoURL: https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+    targetRevision: develop
+    path: preprod/pbna/pep-pbna-preprod-scus-global-01-aks/namespaces
+    directory:
+      recurse: false

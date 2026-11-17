@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pfb-pricing-solution-webapp-api
+  name: pfb-pricing-solution-webapp-api-vs
+  namespace: pep-eiap-cgf-pricechan-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pricechan-prod/pep-eiap-cgf-pricechan-prod-cv-gw
+  hosts:
+  - pfb-pricing-solution-webapp-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pfb-pricing-solution-webapp-api.pep-eiap-cgf-pricechan-prod.svc.cluster.local
+        port:
+          number: 80

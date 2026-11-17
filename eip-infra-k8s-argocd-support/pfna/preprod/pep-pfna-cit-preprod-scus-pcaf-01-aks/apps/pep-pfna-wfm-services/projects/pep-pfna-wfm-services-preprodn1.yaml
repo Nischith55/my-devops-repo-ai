@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pfna-wfm-services-preprodn1
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pfna-wfm-services-preprodn1   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-wfm-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+        namespace: pep-pfna-flna-asmwfmnone-preprod
+      - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pfna-wfm-services-preprodn1-admin
+        description: Admin privileges to pep-pfna-wfm-services-preprodn1
+        policies:
+        - p, proj:pep-pfna-wfm-services-preprodn1:pep-pfna-wfm-services-preprodn1-admin, applications, *, pep-pfna-wfm-services-preprodn1/*, allow
+        - p, proj:pep-pfna-wfm-services-preprodn1:pep-pfna-wfm-services-preprodn1-admin, repositories, *, pep-pfna-wfm-services-preprodn1/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pfna-wfm-services-preprodn1-user
+        description: Read-only privileges to pep-pfna-wfm-services-preprodn1
+        policies:
+        - p, proj:pep-pfna-wfm-services-preprodn1:pep-pfna-wfm-services-preprodn1-user, applications, get, pep-pfna-wfm-services-preprodn1/*, allow
+        - p, proj:pep-pfna-wfm-services-preprodn1:pep-pfna-wfm-services-preprodn1-user, applications, sync, pep-pfna-wfm-services-preprodn1/*, allow
+        - p, proj:pep-pfna-wfm-services-preprodn1:pep-pfna-wfm-services-preprodn1-user, repositories, get, pep-pfna-wfm-services-preprodn1/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Prasad_2022-04-21_09-51-07
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    kubernetes.io/metadata.name: elastic-system
+    servicename_aks: sharedaks
+  name: elastic-system

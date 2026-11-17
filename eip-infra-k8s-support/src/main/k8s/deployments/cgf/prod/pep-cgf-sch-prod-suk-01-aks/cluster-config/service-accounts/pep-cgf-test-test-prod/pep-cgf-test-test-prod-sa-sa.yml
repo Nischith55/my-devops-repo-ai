@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-cgf-test-test-prod-sa
+  namespace: pep-cgf-test-test-prod

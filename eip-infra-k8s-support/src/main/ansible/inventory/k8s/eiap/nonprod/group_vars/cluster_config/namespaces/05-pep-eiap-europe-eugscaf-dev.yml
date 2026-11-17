@@ -1,0 +1,34 @@
+---
+ns_pep_eiap_europe_eugscaf_dev:
+  
+  name: pep-eiap-europe-eugscaf-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-eugscaf
+    sector: europe
+    project: eugscaf
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-eugscaf-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_eugscaf'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-europe-eugscaf-dev-sa-token
+    namespace: pep-eiap-europe-eugscaf-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-europe-eugscaf-dev-sa"

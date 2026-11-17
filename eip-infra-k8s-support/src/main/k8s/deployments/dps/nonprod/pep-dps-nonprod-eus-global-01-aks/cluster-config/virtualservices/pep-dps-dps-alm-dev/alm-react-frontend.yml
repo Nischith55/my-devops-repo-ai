@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: alm-react-frontend-dev:networking.istio.io/VirtualService:pep-dps-dps-alm-dev/alm-react-frontend
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"alm-react-frontend-dev:networking.istio.io/VirtualService:pep-dps-dps-alm-dev/alm-react-frontend"},"labels":{"app":"alm-react-frontend","app.kubernetes.io/instance":"alm-react-frontend","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"alm-react-frontend","namespace":"pep-dps-dps-alm-dev"},"spec":{"gateways":["pep-dps-dps-alm-dev/pep-dps-dps-alm-dev-cv-gw"],"hosts":["alm-react-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","insightboard.qa.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"alm-react-frontend.pep-dps-dps-alm-dev.svc.cluster.local","port":{"number":3000}}}]}]}}
+
+'
+    labels:
+        app: alm-react-frontend
+        app.kubernetes.io/instance: alm-react-frontend
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: alm-react-frontend
+    namespace: pep-dps-dps-alm-dev
+spec:
+    gateways:
+    - pep-dps-dps-alm-dev/pep-dps-dps-alm-dev-cv-gw
+    hosts:
+    - alm-react-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - insightboard.qa.pepsico.com
+    - insightboard.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: alm-react-frontend.pep-dps-dps-alm-dev.svc.cluster.local
+                port:
+                    number: 3000

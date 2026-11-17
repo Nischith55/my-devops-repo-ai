@@ -1,0 +1,11 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Sidecar
+metadata:
+  name: default-new
+  namespace: flagger
+spec:
+  egress:
+  - hosts:
+    - "./*"
+    - "istio-system/*"
+    - "pep-eiap-pbna-halo-dev/*"

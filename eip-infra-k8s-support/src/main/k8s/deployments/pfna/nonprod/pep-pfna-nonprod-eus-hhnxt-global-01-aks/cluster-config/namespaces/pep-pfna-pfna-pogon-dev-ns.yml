@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 2fb55bb4c3214ad06e47f145df013167
+    pep-cmdb-bus-app-id: 80eaf289c372f9d4b74985359901310a
+    pep-environment: Development
+    project: pogon
+    sector: pfna
+    servicename_aks: pfnastoreperfectprogram-spp
+    team: pfna-pogon
+  name: pep-pfna-pfna-pogon-dev

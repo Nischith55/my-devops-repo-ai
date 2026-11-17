@@ -1,0 +1,9 @@
+####### BEGIN Added recently --pep-pfna-sch-preprod-scus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pfna_flna_schwmi_preprod
+  - ns_pep_pfna_pfna_tranps_preprod
+  - ns_pep_pfna_test_test_preprod
+####### END Added recently --pep-pfna-sch-preprod-scus-01-aks######

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nemoretriever-graphic-elements-v1-zeht-vs
+  namespace: pep-eiap-cgf-nvingest-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-aisp-metrics-nemoretriever-graphic-elements-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-nvingest-prod/pep-eiap-cgf-nvingest-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /metrics
+    route:
+    - destination:
+        host: nemoretriever-graphic-elements-v1.pep-eiap-cgf-nvingest-prod.svc.cluster.local
+        port:
+          number: 8002
+  

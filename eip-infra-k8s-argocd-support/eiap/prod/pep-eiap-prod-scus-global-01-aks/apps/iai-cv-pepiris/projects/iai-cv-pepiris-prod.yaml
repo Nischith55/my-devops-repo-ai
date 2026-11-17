@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iai-cv-pepiris-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iai-cv-pepiris-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-global-iaicv-plt-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepiris01-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: iai-cv-pepiris-prod-admin
+        description: Admin privileges to iai-cv-pepiris-prod
+        policies:
+        - p, proj:iai-cv-pepiris-prod:iai-cv-pepiris-prod-admin, applications, *, iai-cv-pepiris-prod/*, allow
+        - p, proj:iai-cv-pepiris-prod:iai-cv-pepiris-prod-admin, repositories, *, iai-cv-pepiris-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iai-cv-pepiris-prod-user
+        description: Read-only privileges to iai-cv-pepiris-prod
+        policies:
+        - p, proj:iai-cv-pepiris-prod:iai-cv-pepiris-prod-user, applications, get, iai-cv-pepiris-prod/*, allow
+        - p, proj:iai-cv-pepiris-prod:iai-cv-pepiris-prod-user, applications, sync, iai-cv-pepiris-prod/*, allow
+        - p, proj:iai-cv-pepiris-prod:iai-cv-pepiris-prod-user, repositories, get, iai-cv-pepiris-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.IACOE.CVTG.PRDCNTB"
+        - "Team.Support.EIAP.READ"
+    

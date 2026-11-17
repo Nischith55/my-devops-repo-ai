@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-aigrop-prod
+  labels:
+    env-prod: "true"
+    project: aigrop
+    sector: cgf
+    team: cgf-aigrop
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: aigronomistprod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 1e4044b34787ee5027ba9454836d43c6
+    pep-cmdb-app-service-id: 18a4d3d19711b6d06a15b2a3f153af29
+    pep-environment: Production
+    

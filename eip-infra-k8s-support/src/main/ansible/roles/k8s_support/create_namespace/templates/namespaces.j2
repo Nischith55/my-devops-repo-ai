@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ namespaces[item] }}
+{% if namespaces[item] == prefix ~ "-ops-admin" %}
+  labels:
+    cluster-name: {{ var['clustername'] }}
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    team: eiap-admins
+    istio-injection: disabled
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% elif namespaces[item] == "observability" or namespaces[item] == "msi-acrpull-system" or namespaces[item] == prefix ~ "-istio-config" or namespaces[item] == "monitoring" %}
+  labels:
+    istio-injection: disabled
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% elif namespaces[item] == "kubecost" %}
+  labels:
+    istio-injection: enabled
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% elif namespaces[item] == prefix ~ "-elastic-client-01" %}
+  labels:
+    istio-injection: enabled
+    eck-managed: 'false'
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% elif namespaces[item] == var['infransfull'] %}
+  labels:
+    env-dev: 'true'
+    environment: {{ env }}
+    istio-injection: enabled
+    project: infra
+    sector: {{ functionalarea }}
+    team: global-{{ functionalarea }}
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% else %}
+  labels:
+    crosscharge_aks: {{ crosscharge_aks }}
+    servicename_aks: sharedaks-platform
+{% endif %}

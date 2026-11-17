@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: receipt-scanning-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for receipt-scanning-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-rsmain-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: receipt-scanning-preprod-admin
+    description: Admin privileges to receipt-scanning-preprod
+    policies:
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-admin, applications, *, receipt-scanning-preprod/*, allow
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-admin, repositories, *, receipt-scanning-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: receipt-scanning-preprod-user
+    description: Read-only privileges to receipt-scanning-preprod
+    policies:
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-user, applications, get, receipt-scanning-preprod/*, allow
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-user, applications, sync, receipt-scanning-preprod/*, allow
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-user, repositories, get, receipt-scanning-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:receipt-scanning-preprod:receipt-scanning-preprod-user, applications, action/apps/Deployment/restart, receipt-scanning-preprod/*, allow
+
+    groups:
+    - "Team.App.DPS.DSSRS.admin"
+    - "Team.Support.EIAP.READ"

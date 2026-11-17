@@ -1,0 +1,21 @@
+---
+# IMPORTANT please use _ns_cfg
+
+#  For Elastic Stack monitoring
+pep_eiap_elastic_monitor_01_ns_cfg:
+
+  name: pep-eiap-elastic-monitor-01
+
+  labels:
+    istio-injection: enabled
+    eck-managed: !!str true
+
+  generic_secrets: |-
+    {{ pep_eiap_elastic_monitor_01_generic_secrets | default([]) }}
+
+  registry_secrets: |-
+    {{ pep_eiap_elastic_monitor_01_registry_secrets | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ pep_eiap_elastic_monitor_01_tls_secrets_names | default([]) }}

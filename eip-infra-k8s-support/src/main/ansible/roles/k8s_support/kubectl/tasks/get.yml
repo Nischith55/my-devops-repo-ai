@@ -1,0 +1,30 @@
+---
+# ##
+# Execute a get request with yaml
+# ##
+
+- name: GET_YAML_OUTPUT_BLOCK
+  block:
+
+    - name: KCTL_GET_YAML
+      include_tasks:
+        file: ./execute.yml
+      vars:
+         # large output we need few fields
+        print_resp: false
+        kctl_action: get
+        kctl_action_args: "{{ ____kctl_action_args }}"
+       
+    - name: KCTL_GET_SET_OUTPUT
+      set_fact:
+        # see k8s_helper.py for sanitize_kctl_out
+        kctl_get: |-
+          {{ 
+            (kctl_exec_result.stdout | from_yaml) 
+             | sanitize_kctl_out 
+          }}
+  vars:
+    ____kctl_resc_args: "{{ kctl_resource_args | default('') }}"
+    ____kctl_action_args: |-
+      {{ kctl_resource }} -o yaml {{ ____kctl_resc_args}}
+  when: true

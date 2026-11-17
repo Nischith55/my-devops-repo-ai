@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: gpg
+  name: gpg-qa-vs
+  namespace: pep-dps-cgf-gpg-qa
+spec:
+  gateways:
+  - pep-dps-cgf-gpg-qa/pep-dps-cgf-gpg-qa-cv-gw
+  hosts:
+  - gpg-qa.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: gpg.pep-dps-cgf-gpg-qa.svc.cluster.local
+        port:
+          number: 8080

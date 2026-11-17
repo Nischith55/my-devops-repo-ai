@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: "2023-08-14T17:58:25Z"
+  name: pep-pfna-devsecops-rb
+  namespace: pep-pfna-global-devsecops-dev
+  resourceVersion: "122823824"
+  uid: ff672e70-1790-4030-a697-2b8bbc61355d
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-devsecops-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: pep-pfna-buildagent
+  namespace: pep-pfna-global-devsecops-dev

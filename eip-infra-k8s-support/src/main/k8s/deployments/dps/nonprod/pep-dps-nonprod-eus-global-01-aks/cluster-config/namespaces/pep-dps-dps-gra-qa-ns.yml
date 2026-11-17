@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-gra-qa
+  labels:
+    env-nonprod: "true"
+    project: gra
+    sector: dps
+    team: dps-gra
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: grower-relationship-application-dps
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: a82999d947d85a548dc84ce4116d4360
+    pep-cmdb-app-service-id: 7c7fd4cd-6093-4c88-84fd-709c230964cf
+    pep-environment: QA
+    

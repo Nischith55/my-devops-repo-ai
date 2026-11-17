@@ -1,0 +1,5 @@
+---
+
+- name: "KUBCTL_ROLE_INC ({{ mode }})"
+  include_tasks: 
+    file: "{{ mode }}.yml"

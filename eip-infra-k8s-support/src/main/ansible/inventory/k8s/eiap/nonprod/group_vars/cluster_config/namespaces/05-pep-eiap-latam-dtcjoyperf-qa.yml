@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_latam_dtcjoyperf_qa:
+  
+  name: pep-eiap-latam-dtcjoyperf-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-dtcjoyperf
+    sector: latam
+    project: dtcjoyperf
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: distributororderportalnon-prod
+    pep-cmdb-app-service-id: "117d51304766151052293238436d4308"
+    pep-cmdb-bus-app-id: "e95ed977db7740106285d2984b96192e"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-dtcjoyperf-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_dtcjoyperf'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-latam-dtcjoyperf-qa-sa-token
+    namespace: pep-eiap-latam-dtcjoyperf-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-latam-dtcjoyperf-qa-sa"

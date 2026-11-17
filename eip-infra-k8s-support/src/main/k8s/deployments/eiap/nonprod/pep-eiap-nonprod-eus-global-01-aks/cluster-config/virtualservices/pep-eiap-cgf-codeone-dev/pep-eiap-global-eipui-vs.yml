@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-global-eipui
+  name: pep-eiap-global-eipui-vs
+  namespace: pep-eiap-cgf-codeone-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-codeone-dev/pep-eiap-cgf-codeone-dev-cv-gw
+  hosts:
+  - pep-eiap-global-eipui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-global-eipui.pep-eiap-cgf-codeone-dev.svc.cluster.local
+        port:
+          number: 80

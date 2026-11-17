@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-eipone-batch-ami-service
+  name: pepsico-eip-eipone-batch-ami-service-qa
+  namespace: pep-eiap-global-mdp-qa
+spec:
+  gateways:
+  - pep-eiap-global-mdp-qa/pep-eiap-global-mdp-qa-cv-gw
+  hosts:
+  - pepsico-eip-eipone-batch-ami-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-eipone-batch-ami-service.pep-eiap-global-mdp-qa.svc.cluster.local
+        port:
+          number: 8080

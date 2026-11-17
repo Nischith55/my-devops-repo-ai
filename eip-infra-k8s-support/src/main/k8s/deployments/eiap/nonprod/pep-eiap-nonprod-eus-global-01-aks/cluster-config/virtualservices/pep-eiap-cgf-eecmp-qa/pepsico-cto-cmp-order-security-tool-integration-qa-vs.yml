@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:38:39Z"
+  generation: 1
+  name: pepsico-cto-cmp-order-security-tool-integration-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638244210"
+  uid: 476eda44-f729-4e1a-8032-8825a70eb372
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-security-tool-integration-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/order/security/tool
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-security-tool-integration.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

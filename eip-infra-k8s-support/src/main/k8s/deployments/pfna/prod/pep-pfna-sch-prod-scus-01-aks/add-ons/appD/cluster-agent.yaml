@@ -1,0 +1,48 @@
+apiVersion: cluster.appdynamics.com/v1alpha1
+kind: Clusteragent
+metadata:
+  name: k8s-cluster-agent
+  namespace: appdynamics
+spec:
+  appName: "pep-pfna-sch-prod-scus-01-aks-Prod"
+  controllerUrl: "https://pepsi-prod.saas.appdynamics.com:443"
+  account: "pepsi-prod"
+  # docker image info
+  image: "docker.io/appdynamics/cluster-agent:24.7.0-519"
+  serviceAccountName: appdynamics-cluster-agent
+  nsToMonitorRegex: pep-pfna-flna-iwms-prod
+  # auto-instrumentation config
+  instrumentationMethod: Env
+  numberOfTaskWorkers: 5
+  nsToInstrumentRegex: pep-pfna-flna-iwms-prod
+  resourcesToInstrument: 
+    - Deployment
+    - StatefulSet
+  defaultAppName: IWMS (INTELLIGENT WAREHOUSE MANAGEMENT SYSTEM) FLNA PROD
+  instrumentationRules:
+    - language: java
+      imageInfo:
+        image: docker.io/appdynamics/java-agent:24.7.1
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: Always
+  metricsSyncInterval: 30
+  clusterMetricsSyncInterval: 60
+  metadataSyncInterval: 60
+  metricUploadRetryCount: 3
+  metricUploadRetryIntervalMilliSeconds: 5
+  logLevel: DEBUG
+  stdoutLogging: "true"
+  logFileSizeMb: 5
+  logFileBackups: 3
+  resources:
+    limits:
+      cpu: 512m
+      memory: "512Mi"
+    requests:
+      cpu: 512m
+      memory: "512Mi"
+  ### Uncomment the following line if you need pull secret
+  #imagePullSecret: "<your-docker-pull-secret-name>"
+  ### Uncomment the following line if you need to enable the profiling
+  #pprofEnabled: true
+  #pprofPort: 9991

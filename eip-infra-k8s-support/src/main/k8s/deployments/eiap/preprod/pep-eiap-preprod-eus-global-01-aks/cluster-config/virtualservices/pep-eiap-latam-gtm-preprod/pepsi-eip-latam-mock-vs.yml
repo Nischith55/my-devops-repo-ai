@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsi-eip-latam-mock
+  name: pepsi-eip-latam-mock-vs
+  namespace: pep-eiap-latam-gtm-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-preprod/pep-eiap-latam-gtm-preprod-cv-gw
+  hosts:
+  - pepsi-eip-latam-mock.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsi-eip-latam-mock.pep-eiap-latam-gtm-preprod.svc.cluster.local

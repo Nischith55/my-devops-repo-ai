@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dxpicasso-space-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dxpicasso-space-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/DX_Space_Automation/_git/pep-eip-flna-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-flna-dxpicasso-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: dxpicasso-space-dev-admin
+        description: Admin privileges to dxpicasso-space-dev
+        policies:
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-admin, applications, *, dxpicasso-space-dev/*, allow
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-admin, repositories, *, dxpicasso-space-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dxpicasso-space-dev-user
+        description: Read-only privileges to dxpicasso-space-dev
+        policies:
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-user, applications, get, dxpicasso-space-dev/*, allow
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-user, applications, sync, dxpicasso-space-dev/*, allow
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-user, repositories, get, dxpicasso-space-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dxpicasso-space-dev:dxpicasso-space-dev-user, applications, action/apps/Deployment/restart, dxpicasso-space-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.dxpicasso"
+        - "Team.Support.EIAP.READ"
+    

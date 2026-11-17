@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-settlement-ingest
+  name: pepsico-eip-latam-settlement-ingest-qa-vs
+  namespace: pep-eiap-latam-gtm-qa
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-qa/pep-eiap-latam-gtm-qa-cv-gw
+  hosts:
+  - pepsico-eip-latam-settlement-ingest-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/settlements
+    route:
+    - destination:
+        host: pepsico-eip-latam-settlement-ingest.pep-eiap-latam-gtm-qa.svc.cluster.local
+        port:
+          number: 80

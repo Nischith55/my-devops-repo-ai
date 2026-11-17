@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "ajun99"
+  namespace: "pep-cmp-cmp-ajun9sri1-qa"
+  labels:
+    app: "ajun99"
+
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "ajun99"
+
+  template:
+    metadata:
+      labels:
+        app: "ajun99"
+    spec:
+      serviceAccountName: "pep-cmp-cmp-ajun9sri1-qa-sa"
+      automountServiceAccountToken: true
+      containers:
+      - name: "ajun99"
+        image: "pepeiapnonprodcommonacr.azurecr.io/pep/cto/cmp/pepsico-cto-cmp-helloworld-webapp:20231024.26"
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 8080
+
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "ajun99"
+  namespace: "pep-cmp-cmp-ajun9sri1-qa"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: "ajun99"

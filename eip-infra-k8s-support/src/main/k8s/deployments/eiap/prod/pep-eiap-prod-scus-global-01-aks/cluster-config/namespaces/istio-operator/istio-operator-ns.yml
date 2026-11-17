@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Mohan_2020_07_30
+    app.kubernetes.io/managed-by: kustomize
+    istio-injection: disabled
+    istio-operator-managed: Reconcile
+  name: istio-operator

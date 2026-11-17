@@ -1,0 +1,15 @@
+---
+- name: create_acr 
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - /azp/agent/_work/1/s/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml
+  tasks:
+    - name: Include ACR data from variable file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml"
+        name: acr
+
+    - name: import the ACR role
+      import_role:
+        name: create_acr_binding

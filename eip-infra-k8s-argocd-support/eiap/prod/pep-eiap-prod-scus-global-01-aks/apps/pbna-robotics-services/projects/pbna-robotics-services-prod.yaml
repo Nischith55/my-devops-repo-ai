@@ -1,0 +1,51 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-robotics-services-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-robotics-services-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PBNA_Automated_Case_Picking_ACP/_git/PBNA-SVT-ROBOTICS-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-pbna-acpclaym-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-pbna-acpcollier-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-pbna-acpsmyrn-prod 
+      - name: pep-eiap-prod-scus-global-01-aks      
+        namespace: pep-eiap-pbna-acpgrime-prod       
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-pbna-acp-prod
+        server: https://kubernetes.default.svc
+
+      roles:
+      - name: pbna-robotics-services-prod-admin
+        description: Admin privileges to pbna-robotics-services-prod
+        policies:
+        - p, proj:pbna-robotics-services-prod:pbna-robotics-services-prod-admin, applications, *, pbna-robotics-services-prod/*, allow
+        - p, proj:pbna-robotics-services-prod:pbna-robotics-services-prod-admin, repositories, *, pbna-robotics-services-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-robotics-services-prod-user
+        description: Read-only privileges to pbna-robotics-services-prod
+        policies:
+        - p, proj:pbna-robotics-services-prod:pbna-robotics-services-prod-user, applications, get, pbna-robotics-services-prod/*, allow
+        - p, proj:pbna-robotics-services-prod:pbna-robotics-services-prod-user, applications, sync, pbna-robotics-services-prod/*, allow
+        - p, proj:pbna-robotics-services-prod:pbna-robotics-services-prod-user, repositories, get, pbna-robotics-services-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.SVTRobotics.Developers"
+        - "Team.Support.EIAP.READ"
+    

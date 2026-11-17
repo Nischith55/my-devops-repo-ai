@@ -1,0 +1,48 @@
+{{- $experiment := .Values.experiment -}}
+{{- $labels := .Values.global.labels -}}
+{{- $appChartlabels := include "app-chart.labels" . }}
+{{- if and (.Values.experiment.enabled) (not .Values.global.rollout.enabled) (not .Values.global.deployment.enabled)  }}
+apiVersion: argoproj.io/v1alpha1
+kind: Experiment
+metadata:
+  name: {{ include "app-chart.fullname" . }}-experiment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- $appChartlabels | nindent 4 }}
+spec:
+  duration: {{ $experiment.duration  }}
+  progressDeadlineSeconds: {{ $experiment.progressDeadlineSeconds  }}
+  measurementRetention: {{ $experiment.measurementRetention  }}
+  scaleDownDelaySeconds: {{ $experiment.scaleDownDelaySeconds  }}
+  terminate: {{ $experiment.terminate  }}
+  templates:
+  {{- range $experiment.templates }}  
+  - name: {{ .name }}   
+    minReadySeconds: {{ .minReadySeconds }} 
+    replicas: {{ .replicas }}        
+    service:      
+      name: {{ .service.name }}
+    selector:
+     {{- with .podLabels }}
+      matchLabels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    template:
+      metadata:
+      {{- with .podLabels }}
+        labels:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+      {{- with .spec }}
+      spec:
+        {{- toYaml . | nindent 8 }} 
+      {{- end }}
+  {{- end }}
+  analyses:
+  {{- range $experiment.analyses }}
+  - name: {{ .name }}
+    templateName: {{ .templateName }}
+    args:
+    {{- toYaml .args | nindent 4 }}  
+  {{- end }}
+{{- end }}

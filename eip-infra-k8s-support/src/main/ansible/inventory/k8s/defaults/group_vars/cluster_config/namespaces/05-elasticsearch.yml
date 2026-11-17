@@ -1,0 +1,24 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+# IMPORTANT:: Do NOT use DEPRECATED 06/2021
+# Replaced by pep-eiap-elastic-client-01/02 etc for NON ECK managed Beats
+ns_elasticsearch:
+  name: elasticsearch
+
+  labels:
+    istio-injection: disabled
+
+  generic_secrets: |-
+    {{ elasticsearch_generic_secrets | default([]) }}
+
+  registry_secrets: |-
+    {{ elasticsearch_registry_secrets | default([]) }}
+

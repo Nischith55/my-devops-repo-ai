@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapnonprodcommonacr
+  namespace: pep-weblogic-ops-admin
+spec:
+  acrServer: pepeiapnonprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/154431fe-c911-490e-87a0-c84ced2bee05/resourceGroups/pep-weblogic-nonprod-eus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-weblogic-nonprod-eus-01-aks-agentpool
+  # serviceAccountName: <add if different than default>

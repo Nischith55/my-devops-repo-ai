@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-eipone-prod
+    project: eipone
+    sector: global
+    servicename_aks: eip
+    team: global-eipone
+  name: pep-eiap-global-eipone-prod

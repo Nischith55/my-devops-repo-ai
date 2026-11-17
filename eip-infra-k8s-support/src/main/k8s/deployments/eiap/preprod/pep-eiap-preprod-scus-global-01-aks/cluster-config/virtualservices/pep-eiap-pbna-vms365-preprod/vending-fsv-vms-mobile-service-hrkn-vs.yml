@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vending-fsv-vms-mobile-service-hrkn-vs
+  namespace: pep-eiap-pbna-vms365-preprod
+  labels:
+      app: vending-fsv-vms-mobile-service
+spec:
+  hosts:
+  - pep-pbna-preprod-vending-fsv-vms-mobile-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-vms365-preprod/pep-eiap-pbna-vms365-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vending-fsv-vms-mobile-service.pep-eiap-pbna-vms365-preprod.svc.cluster.local
+        port:
+          number: 80
+  

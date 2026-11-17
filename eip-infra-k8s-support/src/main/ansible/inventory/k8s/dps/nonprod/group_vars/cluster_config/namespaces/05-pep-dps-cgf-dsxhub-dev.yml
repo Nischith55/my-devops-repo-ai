@@ -1,0 +1,40 @@
+---
+ns_pep_dps_cgf_dsxhub_dev:
+  
+  name: pep-dps-cgf-dsxhub-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-dsxhub
+    sector: cgf
+    project: dsxhub
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: retail360-aksclusternon-prod
+    pep-cmdb-app-service-id: "2c5c1f3d83884210e43247747daad333"
+    pep-cmdb-bus-app-id: "327967b31be36010b050c992604bcbc8"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-dsxhub-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_dsxhub'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-dsxhub-dev-sa-token
+    namespace: pep-dps-cgf-dsxhub-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-dsxhub-dev-sa"

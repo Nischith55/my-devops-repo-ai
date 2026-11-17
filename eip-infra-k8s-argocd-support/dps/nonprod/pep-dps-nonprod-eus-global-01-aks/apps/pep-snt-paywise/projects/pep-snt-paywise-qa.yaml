@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-snt-paywise-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-snt-paywise-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pep-snt-paywise-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-grirqa-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-snt-paywise-qa-admin
+    description: Admin privileges to pep-snt-paywise-qa
+    policies:
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-admin, applications, *, pep-snt-paywise-qa/*, allow
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-admin, repositories, *, pep-snt-paywise-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-snt-paywise-qa-user
+    description: Read-only privileges to pep-snt-paywise-qa
+    policies:
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-user, applications, get, pep-snt-paywise-qa/*, allow
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-user, applications, sync, pep-snt-paywise-qa/*, allow
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-user, repositories, get, pep-snt-paywise-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-snt-paywise-qa:pep-snt-paywise-qa-user, applications, action/apps/Deployment/restart, pep-snt-paywise-qa/*, allow
+
+    groups:
+    - "Team.Support.DPS.NonProd.grirqa"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

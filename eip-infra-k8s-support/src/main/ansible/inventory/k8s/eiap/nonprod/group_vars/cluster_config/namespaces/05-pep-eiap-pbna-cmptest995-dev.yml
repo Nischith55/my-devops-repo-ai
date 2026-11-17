@@ -1,0 +1,37 @@
+---
+ns_pep_eiap_pbna_cmptest995_dev:
+  
+  name: pep-eiap-pbna-cmptest995-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-cmptest995
+    sector: pbna
+    project: cmptest995
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: codeonenon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-cmptest995-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_cmptest995'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-pbna-cmptest995-dev-sa-token
+    namespace: pep-eiap-pbna-cmptest995-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pbna-cmptest995-dev-sa"

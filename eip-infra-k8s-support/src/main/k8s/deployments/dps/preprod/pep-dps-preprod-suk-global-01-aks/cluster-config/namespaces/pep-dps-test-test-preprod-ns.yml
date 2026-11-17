@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    project: test
+    sector: test
+    team: test-test
+  name: pep-dps-test-test-preprod

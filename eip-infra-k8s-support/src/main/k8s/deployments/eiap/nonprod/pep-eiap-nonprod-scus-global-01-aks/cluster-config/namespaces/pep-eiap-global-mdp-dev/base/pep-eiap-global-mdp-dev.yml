@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-global-mdp-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: mdp
+    sector: global
+    team: global-mdp
+    pep-cmdb-app-service: EIAP-ONE-PORTAL

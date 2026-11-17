@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-snackstou-qa
+    project: snackstou
+    sector: cgf
+    servicename_aks: internetofthingsplatformnon-prod
+    team: cgf-snackstou
+  name: pep-eiap-cgf-snackstou-qa

@@ -1,0 +1,170 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-btboms-dev-cv-gw
+  namespace: pep-dps-europe-btboms-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-btboms-dev.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-btboms-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-btboms-dev-443.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-europe-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-btboms-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-btboms-dev-80.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - oms-b2b-eu.dev.pepsico.com
+    - b2b-oms-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-am-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - orders-b2b-am.dev.pepsico.com
+    - orders-b2b-pl.dev.pepsico.com
+    - b2b-oms-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - orders-b2b-in.dev.pepsico.com
+    - b2b-checkout-domain-in-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-europe-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-btboms-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - oms-b2b-eu.dev.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-3-https-443
+    port:
+      name: pep-dps-europe-btboms-dev-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: oms-b2b-eu.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-am.dev.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-europe-btboms-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-am.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-pl.dev.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-5-https-443
+    port:
+      name: pep-dps-europe-btboms-dev-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-pl.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-in.dev.pepsico.com
+    name: pep-dps-europe-btboms-dev-cv-gw-6-https-443
+    port:
+      name: pep-dps-europe-btboms-dev-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-in.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

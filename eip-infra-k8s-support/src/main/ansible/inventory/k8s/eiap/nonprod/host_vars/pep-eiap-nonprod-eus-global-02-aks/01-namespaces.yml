@@ -1,0 +1,57 @@
+####### BEGIN Added recently --pep-eiap-nonprod-eus-global-02-aks ######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_pepgptqa_qa
+  - ns_pep_eiap_cgf_pepgptdev_dev
+  - ns_pep_eiap_cgf_pepgptdev_qa
+  - ns_pep_eiap_cgf_pepgptnv_dev
+  - ns_pep_eiap_cgf_askada_dev
+  - ns_pep_eiap_cgf_pepiris01_qa
+  - ns_pep_eiap_cgf_pepiris03_qa
+  - ns_pep_eiap_cgf_pepiris04_qa
+  - ns_pep_eiap_cgf_pepiris02_qa
+  - ns_pep_eiap_latam_btbcep_dev
+  - ns_pep_eiap_cgf_pepiris03_dev
+  - ns_pep_eiap_cgf_pepiris04_dev
+  - ns_pep_eiap_cgf_pepiris02_dev
+  - ns_pep_eiap_cgf_pepiris01_dev
+  - ns_pep_eiap_cgf_ainego_dev
+  - ns_pep_eiap_cgf_rndkmfw_dev
+  - ns_pep_eiap_cgf_iamai_qa
+  - ns_pep_eiap_cgf_dsnotes_dev
+  - ns_pep_eiap_cgf_pepgenxsit_qa
+  - ns_pep_eiap_cgf_pepgenx_qa
+  - ns_pep_eiap_cgf_pepiris_qa
+  - ns_pep_eiap_cgf_pepiris_dev
+  - ns_pep_eiap_cgf_nvingest_qa
+  - ns_pep_eiap_cgf_nvingest_dev
+  - ns_pep_eiap_cgf_pepci_qa
+  - ns_pep_eiap_pbna_pescntcr_dev
+  - ns_pep_eiap_apac_agfactory_qa
+  - ns_pep_eiap_pbna_awxtest_qa
+  - ns_pep_eiap_cgf_temporal_dev
+  - ns_pep_eiap_cgf_llamaparse_dev
+  - ns_pep_eiap_cgf_crewai_dev
+  - ns_pep_eiap_apac_uaemt_dev
+  - ns_pep_eiap_cgf_shrdagntai_dev
+  - ns_pep_eiap_flna_picassoqa_qa
+  - ns_pep_eiap_apac_agfactory_dev
+  - ns_pep_eiap_flna_whsecc_qa
+  - ns_pep_eiap_cgf_dseagntdev_dev
+  - ns_pep_eiap_cgf_pepagm_dev
+  - ns_pep_eiap_cgf_dsworkbench_dev
+  - ns_pep_eiap_cgf_iamcentral_qa
+  - ns_pep_eiap_pgcs_aibidwd_dev
+  - ns_pep_eiap_cgf_pepgpt_qa
+  - ns_pep_eiap_latam_pepgpt_qa
+  - ns_pep_eiap_cgf_pepvigil_dev
+  - ns_pep_eiap_cgf_mtc_dev
+  - ns_pep_eiap_cgf_pepgptgpu_dev
+  - ns_pep_eiap_cgf_pepgpt_dev
+  - ns_pep_eiap_pfna_pogon_dev
+  - ns_pep_eiap_cgf_catalyst_dev
+  - ns_pep_eiap_cgf_catalystgp_dev
+  - ns_pep_eiap_cgf_ckms_dev
+####### END Added recently --pep-eiap-nonprod-eus-global-02-aks ######

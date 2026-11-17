@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-mock-v100-ttzk-vs
+  namespace: pep-pfna-pgt-dev
+  labels:
+      app: pcaf-mock-v100
+spec:
+  hosts:
+  - pcaf-mock-genp-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-dev/pep-pfna-pgt-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-mock-v100.pep-pfna-pgt-dev.svc.cluster.local
+        port:
+          number: 80
+  

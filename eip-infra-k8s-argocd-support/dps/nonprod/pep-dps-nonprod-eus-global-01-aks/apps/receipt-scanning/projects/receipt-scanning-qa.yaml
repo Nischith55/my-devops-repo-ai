@@ -1,0 +1,71 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: receipt-scanning-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for receipt-scanning-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsadmin-qa
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsmaster-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsruleng-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-extractor-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsproduct-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsvalidati-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsrewards-qa
+    server: https://kubernetes.default.svc
+    
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rstemporal-qa
+    server: https://kubernetes.default.svc
+  roles:
+  - name: receipt-scanning-qa-admin
+    description: Admin privileges to receipt-scanning-qa
+    policies:
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-admin, applications, *, receipt-scanning-qa/*, allow
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-admin, applications, get, argocd/*, allow
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-admin, repositories, *, receipt-scanning-qa/*, allow
+    groups:
+    - "Team.App.DPS.DSSRS.admin"
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: receipt-scanning-qa-user
+    description: Read-only privileges to receipt-scanning-qa
+    policies:
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-user, applications, get, receipt-scanning-qa/*, allow
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-user, applications, sync, receipt-scanning-qa/*, allow
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-user, repositories, get, receipt-scanning-qa/*, allow
+    - p, proj:receipt-scanning-qa:receipt-scanning-qa-user, applications, action/apps/Deployment/restart, receipt-scanning-qa/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

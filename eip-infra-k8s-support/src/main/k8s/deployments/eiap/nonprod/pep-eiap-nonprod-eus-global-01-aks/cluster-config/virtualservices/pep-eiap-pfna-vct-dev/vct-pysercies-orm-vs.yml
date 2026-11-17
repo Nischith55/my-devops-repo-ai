@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: vct-pysercies-orm-vs
+  namespace: pep-eiap-pfna-vct-dev
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-dev/pep-eiap-pfna-vct-dev-cv-gw
+  hosts:
+  - vct-pysercies-orm.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vct-pysercies-orm.pep-eiap-pfna-vct-dev.svc.cluster.local

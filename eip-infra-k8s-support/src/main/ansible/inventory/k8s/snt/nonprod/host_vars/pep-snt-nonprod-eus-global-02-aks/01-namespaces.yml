@@ -1,0 +1,15 @@
+####### BEGIN Added recently --pep-snt-nonprod-eus-global-02-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_snt_cgf_ppsipreprd_qa
+  - ns_pep_snt_cgf_ppsi_qa
+  - ns_pep_snt_cgf_ppsi_dev
+  - ns_pep_snt_cgf_gssilabs_qa
+  - ns_pep_snt_cgf_ckmspprod_dev
+  - ns_pep_snt_cgf_gssilabs_dev
+  - ns_pep_snt_cgf_ckms_dev
+  - ns_pep_snt_cgf_sde_qa
+  - ns_pep_snt_cgf_sde_dev
+####### END Added recently --pep-snt-nonprod-eus-global-02-aks######

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-latam-printmod-preprod
+  labels:
+    env-preprod: "true"
+    project: printmod
+    sector: latam
+    team: latam-printmod
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: pickabox-mobile-picking-latam
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 5ace887ddb3e8c10c2b5f3813996196d
+    pep-cmdb-app-service-id: beb0ed3047e6151052293238436d4368
+    pep-environment: Pre-Production
+    

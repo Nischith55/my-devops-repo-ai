@@ -1,0 +1,6 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-global-wsp-prod-sa
+  namespace: pep-eiap-global-wsp-prod

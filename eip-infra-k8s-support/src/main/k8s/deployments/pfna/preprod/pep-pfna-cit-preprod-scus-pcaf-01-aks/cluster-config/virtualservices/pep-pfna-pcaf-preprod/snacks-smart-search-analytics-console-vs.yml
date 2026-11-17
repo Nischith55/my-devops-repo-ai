@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: snacks-smart-search-analytics-console
+  name: snacks-smart-search-analytics-console-vs
+  namespace: pep-pfna-pcaf-preprod
+spec:
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  hosts:
+  - snacks-smart-search-analytics-console.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: snacks-smart-search-analytics-console.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80

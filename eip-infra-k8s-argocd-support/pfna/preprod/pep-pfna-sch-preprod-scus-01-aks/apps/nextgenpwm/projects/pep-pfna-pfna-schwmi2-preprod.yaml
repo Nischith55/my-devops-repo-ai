@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: nextgenpwm-preprod2
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for nextgenpwm-preprod2   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+      - peppfnaschprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-preprod-scus-01-aks
+        namespace: pep-pfna-pfna-schwmi2-preprod
+      - name: pep-pfna-sch-preprod-scus-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: nextgenpwm-admin-preprod2
+        description: Admin privileges to nextgenpwm-preprod2
+        policies:
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-admin-preprod2, applications, *, nextgenpwm-preprod2/*, allow
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-admin-preprod2, repositories, *, nextgenpwm-preprod2/*, allow
+        groups:
+        - "Team.Support.EIAP.Deployment.Approvers"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: nextgenpwm-user-preprod2
+        description: Read-only privileges to nextgenpwm-preprod2
+        policies:
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-user-preprod2, applications, get, nextgenpwm-preprod2/*, allow
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-user-preprod2, applications, sync, nextgenpwm-preprod2/*, allow
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-user-preprod2, repositories, get, nextgenpwm-preprod2/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:nextgenpwm-preprod2:nextgenpwm-user-preprod2, applications, action/apps/Deployment/restart, nextgenpwm-preprod2/*, allow
+        groups:
+        - "Team.Support.NGPWM.Admins"
+        - "Team.Support.EIAP.READ"
+    

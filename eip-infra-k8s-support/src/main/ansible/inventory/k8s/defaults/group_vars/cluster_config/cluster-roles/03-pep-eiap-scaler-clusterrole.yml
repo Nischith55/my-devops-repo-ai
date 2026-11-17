@@ -1,0 +1,20 @@
+---
+# ##
+# 05/2021
+# - Global Variable Naming Convention
+#   <resc_name>_<resc_abbrev>_cfg
+#   resc_abbrev: see the 00-k8s-api-spec key
+# ##
+pep_eiap_scaler_clusterrole_cr_cfg:
+  name: pep-eiap-scaler-clusterrole
+  kind: ClusterRole
+  alias: pep-eiap-scaler
+
+  rules:
+    # pods, configmaps - get, list and watch 
+    - apiGroups: 
+        - "apps"
+      resources: 
+        - deployments/scale
+      verbs: 
+        - patch

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nemoretriever-table-structure-v1-cgzd-vs
+  namespace: pep-eiap-cgf-nvingest-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-aisp-metrics-nemoretriever-table-structure-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-nvingest-dev/pep-eiap-cgf-nvingest-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /metrics
+    route:
+    - destination:
+        host: nemoretriever-table-structure-v1.pep-eiap-cgf-nvingest-dev.svc.cluster.local
+        port:
+          number: 8002
+  

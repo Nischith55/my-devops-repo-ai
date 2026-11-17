@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mfgproplus-ai-chat-client-api-mfgproplus-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for mfgproplus-ai-chat-client-api-mfgproplus-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/mfgproplus-ai-chat-client-api-mfgproplus-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-flna-mfgproai-preprod
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-preprod-scus-01-aks
+    namespace: pep-pfna-ops-admin
+    server: https://kubernetes.default.svc   
+  # - name: pep-pfna-sch-preprod-scus-01-aks
+  #   namespace: pep-pfna-sch-ops-admin
+  #   server: https://kubernetes.default.svc
+  roles:
+  - name: mfgproplus-ai-chat-client-api-mfgproplus-preprod-admin
+    description: Admin privileges to mfgproplus-ai-chat-client-api-mfgproplus-preprod
+    policies:
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-admin, applications, *, mfgproplus-ai-chat-client-api-mfgproplus-preprod/*, allow
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-admin, repositories, *, mfgproplus-ai-chat-client-api-mfgproplus-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: mfgproplus-ai-chat-client-api-mfgproplus-preprod-user
+    description: Read-only privileges to mfgproplus-ai-chat-client-api-mfgproplus-preprod
+    policies:
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-user, applications, get, mfgproplus-ai-chat-client-api-mfgproplus-preprod/*, allow
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-user, applications, sync, mfgproplus-ai-chat-client-api-mfgproplus-preprod/*, allow
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-user, repositories, get, mfgproplus-ai-chat-client-api-mfgproplus-preprod/*, allow
+    - p, proj:mfgproplus-ai-chat-client-api-mfgproplus-preprod:mfgproplus-ai-chat-client-api-mfgproplus-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.PFNA.Mfgpro.Developer"
+    - "Team.Support.EIAP.READ"

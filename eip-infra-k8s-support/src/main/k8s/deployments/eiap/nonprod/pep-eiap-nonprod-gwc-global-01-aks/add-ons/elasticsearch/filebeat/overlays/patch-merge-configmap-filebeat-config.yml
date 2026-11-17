@@ -1,0 +1,61 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: kube-system
+data:
+  filebeat.yml: |
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    filebeat.autodiscover:
+      providers:
+      - hints.default_config:
+          paths:
+          - /var/log/containers/*${data.kubernetes.container.id}.log
+          type: container
+        hints.enabled: true
+        host: ${NODE_NAME}
+        type: kubernetes
+    logging:
+      level: info
+    output.elasticsearch:
+      hosts:
+      - ${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}
+      index: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-%{+yyyy.MM.dd}
+      password: ${ELASTICSEARCH_PASSWORD}
+      protocol: https
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+        enabled: true
+      username: ${ELASTICSEARCH_USERNAME}
+    processors:
+    - add_cloud_metadata: null
+    - add_host_metadata: null
+    setup.ilm:
+      enabled: false
+    setup.kibana:
+      hosts:
+      - ${KIBANA_HOST:elasticsearch}:${KIBANA_PORT:5601}
+      password: ${ELASTICSEARCH_PASSWORD}
+      protocol: https
+      setup.dashboards:
+        always_kibana: true
+        enabled: true
+        index: aks-filebeat-${K8S_CLUSTER_NAME}-*
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+        enabled: true
+      username: ${ELASTICSEARCH_USERNAME}
+    setup.template:
+      enabled: true
+      name: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}
+      overwrite: false
+      pattern: aks-filebeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-*
+      settings:
+        index:
+          number_of_replicas: 1
+          number_of_routing_shards: 64
+          number_of_shards: 8

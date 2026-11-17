@@ -1,0 +1,111 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sRequiredProbes",
+  "metadata": {
+    "annotations": {},
+    "name": "must-have-probes"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra-dev",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-dev",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "policy-system",
+        "gitops-connector-system",
+        "argocd",
+        "pep-eiap-och-na-dev",
+        "pep-eiap-och-na-qa",
+        "pep-eiap-global-cmp-dev",
+        "pep-eiap-global-cmp-qa",
+        "pep-eiap-cgf-eecmp-dev",
+        "pep-eiap-cgf-eecmp-qa",
+        "pep-eiap-global-hcm-dev",
+        "pep-eiap-flna-gtmdsld-qa",
+        "pep-eiap-flna-gtmdsld-02-dev",
+        "pep-eiap-flna-gtmgro-qa",
+        "pep-eiap-flna-gtmgro-02-dev",
+        "pep-eiap-flna-gtmothr-qa",
+        "pep-eiap-flna-gtmsp-qa",
+        "pep-eiap-flna-gtmsp-02-dev",
+        "pep-eiap-cgf-appruntime-dev",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "pep-eiap-global-infra-dev",
+        "flagger",
+        "pep-eiap-cgf-appruntime-dev",
+        "default",
+        "pep-eiap-cgf-swaggerhub-dev",
+        "pep-eiap-cgf-monday-dev",
+        "pep-eiap-global-eventapp-dev",
+        "pep-eiap-pbna-pbnasckm-dev",
+        "pep-eiap-snowdiscovery-dev",
+        "pep-eiap-pbna-halo-dev",
+        "falcon-system",
+        "falcon-kac",
+        "falcon-system",
+        "pep-eiap-latam-eiapcvcvat-dev",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": [
+          {
+            "key": "app",
+            "operator": "Exists"
+          }
+        ]
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "probeTypes": [
+        "tcpSocket",
+        "httpGet",
+        "exec"
+      ],
+      "probes": [
+        "readinessProbe"
+      ]
+    }
+  }
+}

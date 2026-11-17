@@ -1,0 +1,60 @@
+---
+# creating template files in the temp directory
+- name: create temp directory snow discovery
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery"
+    state: directory
+- template: 
+    src: snow-discovery-roles.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-roles.yaml"
+- template: 
+    src: snow-discovery-secret.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-secret.yaml"
+- template: 
+    src: snow-discovery-informer.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-informer.yaml"
+
+#creating roles and namespace for snow discovery
+- name: Creating roles for snow discovery
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-roles.yaml"
+  register: snow_role
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+#creating secret for snow discovery
+- name: Creating secret for snow discovery 
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-secret.yaml"
+  register: snow_secret
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+#creating deployment for snow discovery
+- name: Creating deployment for snow discovery
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-informer.yaml"
+  register: snow_informer
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+#copying files to the repo
+- name: create directory snow discovery
+  ansible.builtin.file:
+    path: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/snow-discovery"
+    state: directory
+- name: copying roles file to the repo 
+  copy:
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-roles.yaml"
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/snow-discovery/role-bindings.yml"
+
+- name: copying roles file to the repo 
+  copy:
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/snow_discovery/snow-informer.yaml"
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/snow-discovery/informer.yaml"

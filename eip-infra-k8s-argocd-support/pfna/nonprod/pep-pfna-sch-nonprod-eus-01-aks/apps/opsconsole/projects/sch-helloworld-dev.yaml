@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: sch-helloworld-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for sch-helloworld-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-helloworld-configs
+      - peppfnaschnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-flna-schservice-dev
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-sch-ops-admin
+      roles:
+      - name: sch-helloworld-dev-admin
+        description: Admin privileges to sch-helloworld-dev
+        policies:
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-admin, applications, *, sch-helloworld-dev/*, allow
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-admin, repositories, *, sch-helloworld-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: sch-helloworld-dev-user
+        description: Read-only privileges to sch-helloworld-dev
+        policies:
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-user, applications, get, sch-helloworld-dev/*, allow
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-user, applications, sync, sch-helloworld-dev/*, allow
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-user, repositories, get, sch-helloworld-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:sch-helloworld-dev:sch-helloworld-dev-user, applications, action/apps/Deployment/restart, sch-helloworld-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.PFNA.SCH.Contributor"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-test-test1-qa-sa
+  namespace: pep-infratools-test-test1-qa

@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-apprt-dev-cv-gw
+  namespace: pep-dps-cgf-apprt-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-apprt-dev.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-apprt-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-apprt-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-global-appruntimeapi.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimeapi-argocd-dev.dps.gw01.aks01.apac.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback-argocd-dev.dps.gw01.aks01.apac.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback-argocd.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimeapi-argocd.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-apprt-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-apprt-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-ae-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-global-appruntimeapi.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimeapi-argocd-dev.dps.gw01.aks01.apac.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback-argocd-dev.dps.gw01.aks01.apac.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimekafkafeedback-argocd.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    - pep-global-appruntimeapi-argocd.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-apprt-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-apprt-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

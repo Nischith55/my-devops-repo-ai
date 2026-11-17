@@ -1,0 +1,939 @@
+global:
+# fullnameoverride sets the name of the deployment and service and prefix of other k8s objects
+  fullnameOverride: "pep-eip-pbna-savvy-metrics" 
+# targetted namespace to which the chart objects get deployed
+  namespace: test-prasanti
+# labels to use for all the objects and to manage the pods
+  labels:
+  # app label is manadatory which is internally used by the deployment, service, virtual service
+    app: pep-eip-pbna-savvy-metrics
+# deployment - configuration to toggle the creation of deployment  
+  deployment:
+ # enabled - default value is true and creates deployment
+ # when turned off, turns off the creation of VS,DR,PDB and HPA
+    enabled: true
+# service - configuration to toggle the creation of service  
+  service:
+  # enabled - default value is true and creates service
+    enabled: true
+  
+  rollout:
+    enabled: false
+    strategy: canary       
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+      dynamicStableScale: true
+      trafficRouting:
+        istio:      
+          virtualServices:     
+          - name: pep-eip-pbna-savvy-metrics-vs         
+            routes:
+            - primary     
+          destinationRule:
+            name: pep-eip-pbna-savvy-nfstest-dr
+            canarySubsetName: canary
+            stableSubsetName: stable
+            
+
+#pvc section to include when a persistent volume must be created and mounted on pod.
+  pvc:
+  # enabled - default value is false, set it to true for creation of PVC
+    enabled: true
+  # access modes of the volume mount 
+    accessModes: 
+    - ReadWriteOnce
+  # storage class to use - to use the volume configuration (binding mode, reclaim policy etc)
+    storageClass: ""
+  # amount of storage requested
+    storageRequest: 1Gi
+  # mount path where the volume is mounted on the container
+    mountPath: /mount
+# pvc section ends
+
+# secret Management section to enable creation of secrets through Azure KV integration
+  secretManagement:
+  # enabled - default value is false, set it to true to manage secrets using SSCSI Driver
+    enabled: false
+  # name of the secret provider class to be created
+    secretProviderClassName: test-csi-metrics
+  # mount path on the container where the objects pulled from KV are mounted
+    mountPath: /secretmount
+  # object ID of the MI which has access to KV
+    clientId: bb2ede38-8689-4f18-87c0-2c47df148c7f
+  # name of the key vaule where the secrets,certs or RSA keys are maintained
+    keyvaultName: pe1001-git-test-01-kv
+  # tenant ID 
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+  # list of objects to be pulled and synced to K8s secret
+    objects:       
+    # name of the secret to be created to which the objects from KV are to be syced
+    - secretName: databasecreds
+      data:
+      - objectName: test
+      # type of the object (valid values are secret, cert or Key)
+        objectType: secret
+      # key of the secret, whose corresponding value will be synced with the above object
+        key : username
+      - objectName: sample
+        objectType: secret
+        key : password 
+# secret Management section ends
+ 
+ 
+## Platform chart - overrides to create and manage platform objects 
+platform-chart:  
+# enables the creation of hpa 
+  autoscalingEnabled: true
+# min replicas to be configured on hpa
+  hpaConfigMinReplicas: 3
+  hpaBehavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300   # ⬅︝ Prevent scale-down for 5 minutes
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15 
+
+# max replicas to be configured on hpa
+  hpaConfigMaxReplicas: 6
+# target CPU Utilisation based on which autoscaling happens
+  targetCPUUtilizationPercentage: 80 
+# target Memory Utilisation based on which autoscaling happens 
+  targetMemoryUtilizationPercentage: 20
+# enables the creation of pdb
+  pdbEnabled: false
+# Min Available or Max Unavailable configuration of PDB can be provided
+  pdbMaxUnavailable: 1
+# selector to use for the PDB to monitor the workloads
+  pdbSelector:
+    app: pep-eip-pbna-savvy-metrics
+
+# envoy filter section
+  envoyfilter:
+    enabled: false
+    name: testapp
+    patchOperation: INSERT_BEFORE #if applyTo field is "HTTP_FILTER", then context is set to following "INSERT_BEFORE, INSERT_AFTER, INSERT_FIRST" or if applyTo is set to ROUTE_CONFIGURATION, or HTTP_ROUTE, then context would be "ADD, REMOVE"
+    context: SIDECAR_INBOUND 
+    applyto: HTTP_FILTER # if applyTo field is HTTP_FILTER, then network filter selection on "envoy.filters.network.http_connection_manager"  
+    portnumber: 8080
+    filterConfig:
+      inlineCode: |-
+        function envoy_on_request(request_handle)
+          local original_auth = request_handle:headers():get("authorization")
+            local x_auth = request_handle:headers():get("x-authorization")               
+              if original_auth then
+                -- Move Authorization value to X-Authorization
+                request_handle:headers():replace("x-authorization", original_auth)
+              end              
+# envoy filter section ends 
+
+  # virtual service section -  to enable the creation of VS with SSL termination on POD
+  virtualService: 
+  # enabled - default value is false, set it to true to create the Virtual service 
+    enabled: true
+  # name of the virutal service to be created
+    name: pep-eip-pbna-savvy-metricskeda-vs
+    # list of host names to be used 
+    hosts: 
+    - savvycustomer.dev.mypepsico.com
+  # tlsTerminationOnPod - allows user to configure the virtual service to terminate SSL on POD
+    tlsTerminationOnPod: false
+  # list of routes to be configured for the Virtal service to route the traffic to destination service
+    routes:
+    # context path to be used after the host name to route specific requests to backend service
+    #- prefix: /   
+    - name: primary
+      prefixes: 
+      - /external-upload
+      - /internal-upload
+      - /admin
+      destinations:
+    # backend service to which the request must be routed to
+      - destinationService: pep-eip-pbna-savvy-metrics
+      # port on the service 
+        port: 443    
+# virtual service section ends
+
+# virtual service section -  to enable the creation of VS with SSL termination on GW
+  virtualService: 
+  # enabled - default value is false, set it to true to create the Virtual service 
+    enabled: true
+  # name of the virutal service to be created
+    name: pep-eip-pbna-savvy-metrics-vs
+  # target namespace where the virtual service must be created
+    namespace: pep-eiap-istio-config  
+  # target namespace where the virtual service must be created
+    namespace: pep-eiap-istio-config
+  # gateway to use in the format namespace/gw-name(to be leveraged in case of istio gateway present in application namespace)
+  # To be used in case of custom domain host and istio gateway present in the app namespace.
+    gateways:
+    - test/test-gw
+  # list of host names to be used 
+    hosts: 
+    - savvycustomer.dev.mypepsico.com
+    - pep-eip-pbna-savvy-customer.sbox.gw01.eks01.eus.nonprod.aws.intra.pepsico.com 
+    - pep-eip-pbna-savvy-customer.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com 
+  #list of routes to be configured for the Virtal service to route the traffic to destination service
+    routes:
+    # context path to be used after the host name to route specific requests to backend service
+    - prefix: /vi/api
+    # backend service to which the request must be routed to
+      destinationService: pep-eip-pbna-savvy-customer
+      port: 8080 
+
+
+# virtual service section ends
+
+
+# destination rule section to enable and create destination rule for the service 
+  destinationRule:
+  # enabled - default value is false, set it to true to create the Destination rule
+    enabled: true
+  # if the purpose of creation of this destionation rule is to achieve session affinity, turn this flag to true. This flag takes care of configuring the session affinity based on the http cookie "IstioSessionAffinity" on the destination rule.
+    sessionAffinity: false
+  # Traffic policies to apply for a specific destination, to achieve outlier detection, controlling the volume of connections, loadbalancing etc. 
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+      outlierDetection:
+        consecutive5xxErrors: 2
+        interval: 1m
+        baseEjectionTime: 5m
+        maxEjectionPercent: 100
+    subsets:
+    - name: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      labels:        # labels will be injected with canary rollouts-pod-template-hash value
+        version: canary
+    - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      labels:        # labels will be injected with stable rollouts-pod-template-hash value
+        version: stable  
+# destination rule section ends       
+
+# storage class section - to be enabled if we need to create a storage class with file CSI driver and reuse the pv configuration
+  storageClass:
+  # enabled - default value is false, set it to true to create the storage class
+    enabled: true
+    nfs: 
+      path: /test
+      server: 10.10.0.0
+  # name of the storage class to be created
+    name: test-storage-class
+  # configuration to manage the mount on the pod
+    mountOptions:
+    - dir_mode=0777
+    - file_mode=0644
+    - mfsymlinks
+    - nobrl
+    - cache=strict
+    - actimeo=30
+    - uid=1000
+    - gid=1000  
+  # resource group of the storage account where the file share is created
+    resourceGroup: pep-eiap-nonprod-scus-k8s-01-rg
+  # sku type of the storage account
+    sku: Standard_LRS
+  # name of the storage account
+    storageAccount: pe0001sbox03aks01sa
+  # reclaim policy of the pv - as in how to handle the pv post the deletion of pvc (Delete or Retain)
+    reclaimPolicy: Delete
+  # binding mode - when to bind the pvc to pv (Immediate or WaitForFirstConsumer)
+    volumeBindingMode: Immediate
+  # whether to allow volume expansion or not
+    allowVolumeExpansion: true
+# Storage class section ends
+
+
+# pv section - to enable and create persistent volume
+  pv:
+  # enabled - default value is false, set it to true to create the persistent volume
+    enabled: true
+  # name of the file share to be mounted on the container
+    fileShare: test
+  # k8s secret to access the storage account
+    accessSecret: azure-secret
+  # storage class to use (to use "" if we would like to provide all the configuration on the pv)
+    storageClass: ""
+  # resource group of the storage account where the file share is created
+    resourceGroup: pep-eiap-nonprod-scus-k8s-01-rg
+  # name of the storage account
+    storageAccount: pe0001sbox03aks01sa
+    # nfs: 
+    #   path: /test
+    #   server: 10.10.0.0
+  # configuration to manage the mount on the pod
+    mountOptions:
+    - dir_mode=0777
+    - file_mode=0644
+    - mfsymlinks 
+    - nobrl
+    - cache=strict
+    - actimeo=30
+    - uid=1000
+    - gid=1000
+# pv section ends
+
+# keda configuration
+  keda:
+    # set to true to enable KEDA event-driven autoscaling for workloads
+    enabled: true
+    # maximum number of replicas KEDA can scale up to
+    maxReplicaCount: 20
+    # minimum number of replicas to maintain (0 allows scale-to-zero)
+    minReplicaCount: 0
+    # frequency in seconds to check scaling metrics from external sources
+    pollingInterval: 30
+    # wait time in seconds before scaling down after last trigger activation
+    cooldownPeriod: 300
+    # backup scaling configuration when scaler fails or becomes unavailable
+    fallback:
+      # maintain during scaler failure
+      replicas: 2
+      # consecutive failures before activating fallback mode
+      failureThreshold: 3
+    # external event sources that drive autoscaling decisions
+    triggers:
+    #Kafka message queue monitoring
+    - type: kafka
+      # Kafka scaler configuration parameters
+      metadata:
+        # comma-separated list of broker addresses
+        bootstrapServers: kafkabroker.eus.nonprod.azure.intra.pepsico.com:19095
+        # monitor for lag metrics
+        consumerGroup: auditstorehhndev
+        ## Optional parameters
+        # monitor for scaling decisions
+        topic: pep-flna-salesmetrics-filter-queue-1-0
+        # consumer lag count that triggers scale-up operations from 1 replica to N replicas
+        lagThreshold: '10'
+        # minimum lag to activate from zero replicas
+        activationLagThreshold: '5'
+        # behavior when consumer offset is invalid (earliest/latest)
+        offsetResetPolicy: latest
+        # permit consumers with no active partitions (conflicts with limitToPartitionsWithLag)
+        allowIdleConsumers: false # cannot be set to true when limitToPartitionsWithLag is true
+        # scale to zero when offset becomes invalid
+        scaleToZeroOnInvalidOffset: false
+        # ignore partitions with persistent lag in scaling decisions
+        excludePersistentLag: false
+        # only consider partitions with actual lag for scaling
+        limitToPartitionsWithLag: true # when set to true, topic must be specified  
+        # monitor specific partition numbers (comma-separated ranges)
+        partitionLimitation: '1,2,10-20,31'
+      # secret containing authentication credentials
+      authenticationRef:
+        name: pep-eip-pbna-savvy-metrics-trigger-auth-kafka-cred
+    # Azure Event Hub message processing monitoring
+    - type: eventhub
+      # Event Hub scaler configuration parameters
+      metadata:
+        # environment variable containing connection string
+        connectionFromEnv: EVENTHUB_CONNECTIONSTRING_ENV_NAME
+        # monitor for unprocessed events
+        eventHubName: XYZ # "eventHubName or eventHubNameFromEnv is required as the connection string does not end with EntityPath=<event_hub_name> "
+        # environment variable for checkpoint storage connection string
+        storageConnectionFromEnv: STORAGE_CONNECTIONSTRING_ENV_NAME
+        # track processing progress
+        consumerGroup: $Default
+        # number that triggers scale-up
+        unprocessedEventThreshold: '64'
+        # minimum to activate from zero
+        activationUnprocessedEventThreshold: '10'
+        # store consumer checkpoints
+        blobContainer: 'name_of_container'
+        # for connection
+        eventHubNamespace: XYZ
+        # environment variable for namespace
+        eventHubNamespaceFromEnv: XYZ
+        # environment variable for name
+        eventHubNameFromEnv: XYZ
+        # Azure environment (AzurePublicCloud, AzureGovernmentCloud, etc.) Optional (Default: AzurePublicCloud)
+        cloud: AzurePublicCloud
+        # custom endpoint for private Azure environments Required when cloud = Private
+        endpointSuffix: servicebus.airgap.example
+        # custom storage endpoint for private environments required when cloud = Private
+        storageEndpointSuffix: airgap.example
+        # for checkpoint persistence. Required when using pod identity authentication with blob storage
+        storageAccountName: 'name_of_account'
+        # access method (podIdentity/connectionString)
+        authenticationType: "podIdentity" # possible values podIdentity or connectionString
+    # Redis data structure monitoring
+    - type: redis
+      # Redis scaler configuration parameters
+      metadata:
+        # server host and port for connection
+        address: localhost:8799
+        # monitor for length-based scaling
+        listName: testlist
+        # target length that triggers scaling operations
+        listLength: "10"
+        # minimum length to activate from zero replicas
+        activationListLength: 0
+        # use encryption for connection security
+        enableTLS: true
+        # database number to connect to (0-15 typically)
+        databaseIndex: 0
+      # secret containing authentication credentials
+      authenticationRef:
+        name: keda-trigger-auth-redis-secret
+
+    # end of keda configuration
+    # prometheus data structure monitoring
+    - type: prometheus
+      metadata:
+      # required parameters
+        serverAddress: https://pep-eiap-prometheus.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com:443
+        metricName: http_requests_total
+        threshold: "100"
+        query: sum(rate(http_requests_total{deployment="pep-eip-pbna-savvy-nfstest-keda"}[2m]))
+        activationThreshold: "5.5"
+        unsafeSsl: true
+        authModes: "basic"
+      ## optional parameters##
+        # authModes: "tls,bearer,basic"
+        # namespace: sscsi
+        # customHeaders: "demoappsa"
+        # ignoreNullValues: true
+        # queryParameters: "sample"
+      authenticationRef:
+        name: keda-trigger-auth-prometheus-secret
+    # memory data structure monitoring   
+    - type: memory
+      metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+      metadata:
+        value: "60"
+        containerName: demo-app
+    # cpu data structure monitoring   
+    - type: cpu
+      metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+      metadata:
+        value: "50"
+        containerName: nfstest-app
+    - type: azureblob
+      metadata:
+        blobContainerName: functions-blob
+        blobCount: '5'
+        activationBlobCount: '50'
+        connectionFromEnv: STORAGE_CONNECTIONSTRING_ENV_NAME
+        accountName: storage-account-name
+        blobPrefix: myprefix
+        blobDelimiter: /example
+        cloud: Private
+        endpointSuffix: blob.core.airgap.example # Required when cloud=Private
+        recursive: false
+        globPattern: glob-pattern
+        authenticationType: "podIdentity"
+    # end of keda configuration
+  
+
+
+## Application chart - overrides to create and manage deployment, service and configmaps
+app-chart:  
+  # sidecar:
+  #   # enabled - default value is false, set it to true to create the configmap from file
+  #   enabled: false
+# number of replicas of the service to run
+  replicaCount: 1
+  podLabels:
+    lable1: test1
+    lable2: test2
+  command: ["/bin/sh", "-c"]
+  args: ["sleep 180"]
+# image section - mentioning the image to use by the deployment   
+  image: 
+  # repository to use - NonProd ACR in lower and Prod ACR in higher env   
+    repository: pepeiapeusnonprodaispacr.azurecr.io/pep/eiap/pep-fpa-cockpit-genai-rstrct-sql-exec
+  # image tag to use
+    tag: "20241121.1"
+  
+    pullPolicy: IfNotPresent
+  # image pull secret to be used to pull the image from image repository
+  # imagePullSecrets:
+  #   - name: "pep-eiap-pbna-halo-dev-regcred" 
+# image section ends
+# container life cycle 
+  lifecycle:
+    postStart:
+      httpGet:
+        # path: /docs
+        # port: 8080
+        # scheme: HTTP
+        # host: localhost
+      exec:
+        command: ["/bin/sh", "-c", "ls  /tmp"]
+    preStop:
+      httpGet:
+        # path: /docs
+        # port: 8080
+        # scheme: HTTP
+        # host: localhost
+      exec:
+        command:  ["/bin/sh", "-c", "ls  /tmp"]
+         #command: ["/bin/sh", "-c", "echo Hello from the preStop handler > /usr/share/message"]
+# container life cycle ends here
+# list of contianer ports to configured and used
+  containerPorts:
+  # port number
+  - port: 8080
+  # port name - this is mandatory as the port name is re-used in probes configuration
+    name: "app-port"
+  # - port: 8980
+  #   name: "promethus-port"
+    
+
+# service account configuration to be used by the deployment
+  serviceAccount:
+  # set create flag to true - to create the service account
+    create: false
+  # name of the service account to be used by the deployment
+    name: 
+
+# deployment strategy to use - valid values are Recreate and RollingUpdate. Defaults to Rolling update. 
+# In case of Rollingupdate, rollingUpdate configuraiton mentioning maxSurge and maxUnavailable can be provided.
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 75%
+      maxUnavailable: 25%
+      
+# Graceful shutdown configuration
+# Time in seconds to wait for pod to shut down gracefully before force terminating
+  terminationGracePeriodSeconds: 60
+
+  
+  podSecurityContext: 
+   runAsNonRoot: false
+  securityContext:
+    runAsNonRoot: false
+    allowPrivilegeEscalation: true
+    runAsUser: 0
+# liveness and readiness probes configuration - supports both http probe and command probe
+  probes:
+  # enabled - default value is false, set it to true to add the probes configuration to the deployment
+    enabled: true
+    # liveness probe to be included under liveness section
+    liveness:
+      # http probes require path and port configuration
+      command: 
+        - ls
+        - /tmp
+      # path: /actuator/health/liveness
+      # # name of the port (matching to the contianer ports configuration) to be used for probes
+      # port: app-port
+      # wait period in sec, before the performing the first liveness probe 
+      initialDelaySeconds: 120
+      # interval with which the probes are performed
+      periodSeconds: 5
+      # Number of seconds after which the probe times out
+      timeoutSeconds: 15
+      # success threshold
+      successThreshold: 1
+      # failure threshold
+      failureThreshold: 1
+    # readiness probe to be included under readiness section
+    readiness:
+      # command to execute for the probe
+      command: 
+        - ls
+        - /tmp
+      # wait period in sec, before the performing the first liveness probe 
+      initialDelaySeconds: 120
+      # interval with which the probes are performed
+      periodSeconds: 5
+      # Number of seconds after which the probe times out
+      timeoutSeconds: 15
+      # success threshold
+      successThreshold: 1
+      # failure threshold
+      failureThreshold: 1
+    # startup probe (optional) - only rendered when this section is present; delays liveness/readiness until startup completes
+    startup:
+      # command to execute for the probe (http path/port also supported, see liveness/readiness examples)
+      command: 
+        - ls
+        - /tmp
+      # wait period in sec, before performing the first startup probe
+      initialDelaySeconds: 10
+      # interval with which the probes are performed
+      periodSeconds: 10
+      # Number of seconds after which the probe times out
+      timeoutSeconds: 15
+      # success threshold
+      successThreshold: 1
+      # failure threshold - the container has (failureThreshold * periodSeconds) to finish starting up
+      failureThreshold: 30
+# liveness, readiness and startup probe section ends
+
+# ENV Section
+# ENV from Secrets - to be used for setting env from couple of keys from multiple secrets
+  # envFromSecrets:
+  # # name of the env variable
+  # - name: TERADATA_USER
+  # # secret to refer to extract the value and set to env variable
+  #   secret: 
+  #   # name of the secret
+  #     name: pep-eip-pbna-savvy-customer-secret
+  #   # key in the secret to refer, whose value is extracted and assigned to env variable
+  #     key: TERADATA_USER
+  # # name of the env variable
+  # - name: TERADATA_PASSWORD
+  # #  secret to refer to extract the value and set to env variable
+  #   secret: 
+  #   # name of the secret
+  #     name: pep-eip-pbna-savvy-customer-secret
+  #   # key in the secret to refer, whose value is extracted and assigned to env variable
+  #     key: TERADATA_PASSWORD
+
+# ENV from Secret Ref - to be used when all the keys in a secret are to be created as env variables
+  # envFromSecretRef:
+  # # secret reference to extract all the keys and values and set as env variables in the container
+  # - secretRef:
+  #   # name of the secret
+  #     name:  test-secret
+  # # secret reference to extract all the keys and values and set as env variables in the container
+  # - secretRef: 
+  #   # name of the secret
+  #     name: test-secret2
+
+# ENV from Configmap Ref - to be used when all the keys in a configmap are to be created as env variables
+  # envFromConfigMapRef:
+  # # configmap reference to extract all the keys and values and set as env variables in the container
+  # - configMapRef:
+  #   # name of the configmap
+  #     name: pepsico-test-configmap
+
+# ENV from Key and Value pairs - list of keys and values to be used to create env variables
+  env:
+  - name: APP_NAME 
+    value: "pep-cgpt-cgf-rstrct-sql-exec"
+  # env:
+  # # name of the env variable
+  # - name: testenv1
+  # # value to be assigned 
+  #   value: value1
+  # # name of the env variable
+  # - name: testenv2
+  # # value to be assigned 
+  #   value: value2
+
+  envFromFieldRef:
+  # name of the env variable
+  - name: test
+  # secret to refer to extract the value and set to env variable
+    fieldPath: metadata.name
+# ENV Section ends
+
+# resource section - to specify limits and requests
+  resources: 
+  # limits - the maximum amount of resource to be used by the container
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+  # requests - the minimum amount of resource required for the container
+    requests:
+      cpu: "1"
+      memory: "1400Mi"
+# resurce section ends
+
+
+# configmap creation from file
+  configmapFromFile:
+  # enabled - default value is false, set it to true to create the configmap from file
+    enabled: true   
+    # configmaps to be created 
+    configurations: 
+      # name of the configmap - suffixed with -configmap
+      pep-eip-pbna-savvy-metrics:
+        # config to be assigned to some random text - which is overwritten with contents of the file in the pipeline with --set-file flag
+        config: 'test'
+        # tobeMounted - set to true to moun the configmap as volume
+        tobeMounted: true
+        # mount path on the container where configmap is mounted
+        mountPath: '/config'
+        # name of the volume to be created and mounted
+        volumeName: application-config 
+      pep-eip-pbna-savvy-app:
+        config: "test2"
+        tobeMounted: true
+        mountPath: /testconfig
+        volumeName: testappapplication-config
+      pep-eip-pbna-savvy-app-test:
+        config: |
+          spring.datasource.url= jdbc:sqlserver://pepcgfpepgenxd.database.windows.net:1433;database=SQLCGFPEPGENXD;user=svceeepepgenx;password=Pepsico@1234567;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+          spring.datasource.username= svceeepepgenx
+          spring.datasource.password= Pepsico@1234567
+        tobeMounted: true
+        mountPath: /testconfig1
+        volumeName: testappapplication1-config
+        
+    jsonconfigurations: 
+      # name of the configmap - suffixed with -configmap
+      application-cmsettings:
+        # config to be assigned to some random text - which is overwritten with contents of the file in the pipeline with --set-file flag
+        config: 
+          guardrails_constants.json: |
+            {
+              "CONTENT_CHUNK_SIZE": 10000,
+              "MODEL_NAME": "nvidia/llama-3.1-nemoguard-8b-content-safety",
+              "SAFETY_KEY": "User Safety",
+              "UNSAFE_VALUE": "unsafe",
+              "UNSAFE_CATEGORY_LIST_EXPANDED": """S1: Violence.S2: Sexual.S3: Criminal Planning/Confessions.S4: Guns and Illegal Weapons.S5: Controlled/Regulated Substances.S6: Suicide and Self Harm.S7: Sexual (minor).S8: Hate/Identity Hate.S9: Harassment.S10: Threat.S11: Profanity.S12: Needs Caution.S13: Other.S14: Manipulation.S15: Fraud/Deception.S16: Malware.S17: High Risk Gov Decision Making.S18: Political/Misinformation/Conspiracy.S19: Copyright/Trademark/Plagiarism.S20: Unauthorized Advice.S21: Illegal Activity.S22: Immoral/Unethical."""
+              "RESPONSE_FORMAT": """Provide your safety assessment for the above conversation in the below output JSON format:{{"User Safety": safe or unsafe rating for the user message,"Response Safety": safe or unsafe rating for the agent response. Omit if no agent response present."Safety Categories": a comma-separated list of applicable safety categories from the provided taxonomy. Omit if all safe.}} Do not include anything other than the output JSON in your response. Output JSON: """
+            }
+        # tobeMounted - set to true to moun the configmap as volume
+        tobeMounted: true
+        # mount path on the container where configmap is mounted
+        mountPath: '/config'
+        # name of the volume to be created and mounted
+        volumeName: application-cmfromfile 
+
+# configmap creation from key and value pair
+  configmaps:
+  # enabled - default value is false, set it to true to create the configmap from key-value pair
+    enabled: true    
+    # list of configmaps to be created with the keyand value configuration  
+    configurations: 
+    # name of the configmap - suffixed with -configmap
+    - name: pep-eip-pbna-savvy-app-test2
+      config: 
+        key1: value1
+        key2: value2
+      tobeMounted: true
+      mountPath: /testconfig1
+      volumeName: testappapplication2-config
+    - name: application-settings
+    # key and value configuration
+      config:
+        guardrails_constants.json: |
+          {
+            "CONTENT_CHUNK_SIZE": 10000,
+            "MODEL_NAME": "nvidia/llama-3.1-nemoguard-8b-content-safety",
+            "SAFETY_KEY": "User Safety",
+            "UNSAFE_VALUE": "unsafe",
+            "UNSAFE_CATEGORY_LIST_EXPANDED": """S1: Violence.S2: Sexual.S3: Criminal Planning/Confessions.S4: Guns and Illegal Weapons.S5: Controlled/Regulated Substances.S6: Suicide and Self Harm.S7: Sexual (minor).S8: Hate/Identity Hate.S9: Harassment.S10: Threat.S11: Profanity.S12: Needs Caution.S13: Other.S14: Manipulation.S15: Fraud/Deception.S16: Malware.S17: High Risk Gov Decision Making.S18: Political/Misinformation/Conspiracy.S19: Copyright/Trademark/Plagiarism.S20: Unauthorized Advice.S21: Illegal Activity.S22: Immoral/Unethical."""
+            "RESPONSE_FORMAT": """Provide your safety assessment for the above conversation in the below output JSON format:{{"User Safety": safe or unsafe rating for the user message,"Response Safety": safe or unsafe rating for the agent response. Omit if no agent response present."Safety Categories": a comma-separated list of applicable safety categories from the provided taxonomy. Omit if all safe.}} Do not include anything other than the output JSON in your response. Output JSON: """
+          }
+    - name: application-cm
+    # key and value configuration
+      config:
+        safety_constants.json: |
+          {
+            "ServiceMode": {
+              "LANGUAGE_ONLY": "language_only",
+              "CONTENT_ONLY": "content_only",
+              "LANGUAGE_AND_CONTENT_SAFETY": "language_and_content_safety",
+              "NONE": "none"
+            }
+          }
+  initContainers: 
+    - name: otel-agent
+      command: 
+        - cp
+        - "-ra"
+        - /otel/.
+        - /opt/temp
+      image: "myartifactory.mypepsico.com/global-data-project-docker-local/pep/eip/pfna/otel:1.32.0" 
+      securityContext:
+        runAsNonRoot: false
+      resources:
+            limits:
+              cpu: 200m
+              memory: 100M
+            requests:
+              cpu: 100m
+              memory: 50M     
+      volumeMounts: 
+        - mountPath: /opt/temp
+          name: appd-agent-repo
+#list of any additional volumes to mount
+  additionalVolumes:
+# name of the volume
+  - name: testvolume1
+  # path to mount on the container
+    mountPath: /addVol/guardrails_constants.json
+    # subpath - to facilitate multiple mounts on same path
+    subPath: guardrails_constants.json
+    # readonly set to true if we want the mout to be readonly
+    readOnly: true
+    # source of the volume - configmap / secret etc
+    type:
+      # source of the volume and settings
+      configMap: 
+      # name of the source of volume
+        name: application-settings-configmap
+        # items to mount
+        items:
+        - key: guardrails_constants.json
+          path: guardrails_constants.json
+  - name: testvolume2
+  # path to mount on the container
+    mountPath: /addVol/safety_constants.json
+    # subpath - to facilitate multiple mounts on same path
+    subPath: safety_constants.json
+    # readonly set to true if we want the mout to be readonly
+    readOnly: true
+    # source of the volume - configmap / secret etc
+    type:
+      # source of the volume and settings
+      configMap: 
+      # name of the source of volume
+        name: application-cm-configmap
+        # items to mount
+        items:
+        - key: safety_constants.json
+          path: safety_constants.json
+  
+  analysisTemplates:
+    enabled: true
+    templates:
+    - name: httprequest-test
+      args:
+      - appname
+      - namespace
+      - service
+      - port
+      - podhash
+      metrics:
+      - name: failure-rate
+        interval: 60s
+        count: 5    
+        successCondition: len(result)==0 || result[0] >=0.95
+        failureLimit: 3
+        provider: web    
+        web:
+          url: "http://{{args.service-name}}.{{args.namespace}}.svc.cluster.local:{{args.port}}/readyz"        
+          jsonPath: "{$.status}"
+          timeoutSeconds: 20 # defaults to 10 seconds
+          headers:
+            - key: Authorization
+              value: "Bearer {{ args.api-token }}"
+          jsonBody: # If using jsonBody Content-Type header will be automatically set to json
+            key1: value_1
+            key2:
+              nestedObj: nested value
+            key3: "{{ args.service-name }}"
+    - name: success-rate
+      args:
+      - appname
+      - namespace
+      - service
+      - port
+      - podhash
+      metrics:
+      - name: failure-rate
+        interval: 60s
+        count: 5    
+        successCondition: len(result)==0 || result[0] >=0.95
+        failureLimit: 3
+        provider: prometheus 
+        prometheus:
+          address: https://pep-eiap-prometheus.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com 
+          insecure: true  
+          timeout: 40        
+          query: |
+            sum(irate(istio_requests_total{app="{{args.appname}}",kubernetes_namespace="{{args.namespace}}",request_protocol="http",response_code!~"5.*"}[5m]))/ sum(irate(
+              istio_requests_total{app="{{args.appname}}",kubernetes_namespace="{{args.namespace}}",request_protocol="http"}[5m]
+            ))
+          
+    - name: performance-test
+      args:
+      - appname
+      - namespace
+      - service
+      - port
+      - podhash
+      metrics:
+      - name: failure-rate      
+        provider: job 
+        job:        
+          spec:          
+            template:   
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"          
+              spec:
+                containers:
+                - name: load-tester
+                  image: argoproj/load-tester:latest
+                  command: [sh, -xec]
+                  args:
+                  - |
+                    wrk -t1 -c1 -d5 -s report.lua http://{{args.service-name}}/color
+                    # jq -e '.errors_ratio <= 0.05' report.json
+                restartPolicy: Never
+            backoffLimit: 0 
+
+  experiment:
+    enabled: true
+    duration: 20m  
+    progressDeadlineSeconds: 30
+    templates:
+    - name: purple   
+      replicas: 1    
+      service:      
+        name: purple-svc     
+      podLabels:
+        app: canary-demo
+        color: purple
+      spec:
+        containers:
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:purple
+          imagePullPolicy: Always
+          ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP    
+    analyses:
+    - name: purple
+      templateName: http-benchmark
+      args:
+      - name: service-name
+        value: purple.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+      - name: namespace
+        value: test
+    
+    
+
+### Scheduling section
+
+# topologicalspreadconstraints dictate how Pods are spread across your cluster among failure-domains such as regions, zones, nodes etc
+  topologySpreadConstraints:
+  # enabled - default value is false, set it to true to configure topological spread constraint on deployment
+    enabled: true
+  # max skew describes the degree to which Pods may be unevenly distributed
+    maxSkew: 1
+  # topologyKey is the key of node labels
+    topologyKey: topology.kubernetes.io/zone
+  # indicates how to deal with a Pod if it doesn't satisfy the spread constraint
+    whenUnsatisfiable: ScheduleAnyway
+
+# node selector to schedule the pod on a specific node
+  nodeSelector: {}
+
+# tolerations to be set on the pod to get scheduled on the node where there are taints
+  tolerations: []
+
+# affinity to be set on the pods to co-schedule with other pods 
+  affinity: {}
+  
+## scheduling section ends ##
+
+
+
+
+
+

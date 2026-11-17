@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-hhnx-locmaterialseq-ingest
+  name: pep-eiap-hhnx-locmaterialseq-ingest-vs
+  namespace: pep-pfna-hhnext-dev
+spec:
+  gateways:
+  - pep-pfna-hhnext-dev/pep-pfna-hhnext-dev-cv-gw
+  hosts:
+  - pep-eiap-hhnx-locmaterialseq-ingest.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - headers:
+      request:
+        add:
+          Content-Type: application/json
+        remove:
+        - Content-Type
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-hhnx-locmaterialseq-ingest.pep-pfna-hhnext-dev.svc.cluster.local
+        port:
+          number: 80

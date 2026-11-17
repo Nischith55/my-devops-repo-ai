@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:28:37Z"
+  generation: 1
+  name: pepsico-cto-cmp-notification-service-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638230358"
+  uid: 77fe128f-1228-4ac2-929c-64f615dac662
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-notification-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/notification
+    route:
+    - destination:
+        host: pepsico-cto-cmp-notification-service.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

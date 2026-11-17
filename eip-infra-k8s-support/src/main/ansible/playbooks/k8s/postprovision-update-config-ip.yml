@@ -1,0 +1,45 @@
+---
+- hosts: localhost
+  tasks:
+
+    - name: read the file content  
+      slurp:
+        src: "{{ agent_working_dir }}/config"
+      register: yml_file_content
+    
+    - name: decode the content 
+      set_fact: 
+        decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+        index_found: []
+    
+    - name: find index of match
+      set_fact:
+        index_found: "{{ index_found + [ index ] }}"
+      with_items: "{{ decoded_yml.clusters }}"
+      when: item.name == cluster_name
+      loop_control:
+        index_var: index
+
+    - name: fail if index not found 
+      fail: 
+        msg: "The cluster name entered is not found in the config file."
+      when: index_found | length == 0
+
+    - name: update the config
+      ansible.utils.update_fact: 
+        updates:
+          - path: decoded_yml.clusters[{{ item }}].cluster.server
+            value: "https://{{ ip_address }}:443"
+      register: decoded_yml_updated
+      with_items: "{{ index_found }}"
+      when: index_found | length > 0
+    
+    # - debug:
+    #     msg: "{{ decoded_yml_updated }}"
+    - name: write the updated one to the file 
+      copy:
+        content: "{{ decoded_yml_updated.results[0].decoded_yml | to_nice_yaml(indent=2) }}"
+        dest: "{{ agent_working_dir }}/config"
+
+    - name: read file after changes
+      command: cat "{{ agent_working_dir }}/config"

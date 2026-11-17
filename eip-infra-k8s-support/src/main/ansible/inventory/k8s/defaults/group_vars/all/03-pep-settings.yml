@@ -1,0 +1,11 @@
+---
+# ##
+# Some default azure settings
+# ##
+
+# default tenant id for PEP
+pep_azure_tenant_id: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+
+# default email DL
+pep_default_email: ITPivotalCloudFoundryOperationsTeam@pepsico.com
+

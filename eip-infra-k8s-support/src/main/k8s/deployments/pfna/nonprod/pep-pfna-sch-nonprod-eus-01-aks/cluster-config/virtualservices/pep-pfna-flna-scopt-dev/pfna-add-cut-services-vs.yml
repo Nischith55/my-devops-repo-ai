@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pfna-add-cut-services-vs
+  namespace: pep-pfna-flna-scopt-dev
+spec:
+  gateways:
+  - pep-pfna-flna-scopt-dev/pep-pfna-flna-scopt-dev-cv-gw
+  hosts:
+  - pfna-add-cut-services.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - api.addcut.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/
+    route:
+    - destination:
+        host: pfna-add-cut-services.pep-pfna-flna-scopt-dev.svc.cluster.local
+        port:
+          number: 80

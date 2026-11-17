@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for Pepgenx
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - peppepgenxnonprodeusacr.azurecr.io
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://github.com/PepsiCo-AISP/dai-aisp-pepgenx-argocd-configs
+  - https://github.com/PepsiCo-AISP/dai-iam-argocd-configs
+  destinations:
+  - name: pep-pepgenx-nonprod-eus-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  roles:
+  - name: argocd-user
+    description: Read-only privileges to argocd
+    policies:
+    - p, proj:argocd:argocd-user, applications, get, argocd/*, allow
+    - p, proj:argocd:argocd-user, applications, sync, argocd/*, allow
+    - p, proj:argocd:argocd-user, repositories, get, argocd/*, allow
+    groups:
+    - Team.Support.CGF.NonProd.devops

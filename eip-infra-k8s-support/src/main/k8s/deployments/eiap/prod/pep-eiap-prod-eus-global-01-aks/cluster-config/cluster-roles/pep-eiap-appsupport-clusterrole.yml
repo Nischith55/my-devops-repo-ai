@@ -1,0 +1,160 @@
+---
+# Generated File do not edit manually --- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-appsupport-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - events
+    - persistentvolumeclaims
+    - persistentvolumes
+    - pods
+    - pods/log
+    - pods/portforward
+    - pods/status
+    - endpoints
+    - services
+    - secrets
+    - nodes
+    - namespaces
+    - podtemplates
+    - serviceaccounts
+    - endpoints
+    verbs:
+    - list
+    - get
+    - watch
+-   apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    - daemonsets
+    verbs:
+    - list
+    - get
+    - watch
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pod
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - msi-acrpull.microsoft.com
+    resources:
+    - acrpullbindings
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    - triggerauthentications
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - policy
+    resources:
+    - poddisruptionbudgets 
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - gateways
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - security.istio.io
+    resources:
+    - peerauthentication
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - networking.k8s.io
+    resources:
+    - networkpolicies
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - secrets-store.csi.x-k8s.io
+    resources:
+    - secretproviderclasses
+    - secretproviderclasspodstatuses
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - roles
+    - rolebindings
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - virtualservices
+    - destinationrules
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - ''
+    - api
+    - autoscaling
+    - batch
+    - networking.istio.io
+    resources:
+    - '*/status'
+    - '*/scale'
+    verbs:
+    - get
+    - list

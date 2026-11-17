@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-optmerch-qa
+  labels:
+    env-nonprod: "true"
+    project: optmerch
+    sector: dps
+    team: dps-optmerch
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsiconnect-b2b-portal-dps
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: 0ded8c2ac3b98e1014d2981f050131be
+    pep-environment: QA
+    

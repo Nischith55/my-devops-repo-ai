@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-automation-global-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: infra
+    sector: automation
+    team: global-automation
+    crosscharge_aks: direct
+    servicename_aks: sharedaks-platform

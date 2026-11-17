@@ -1,0 +1,41 @@
+---
+# ##
+# ABBREVIATION:
+# - appd -> appdynamics
+# ##
+appd_app_name: appdynamics
+
+# NOTE: kube-state-metrics always goes in kube-system namespace
+appd_namespace: appdynamics
+
+# ##
+# All directories
+# ##
+# This can be configure various components directory paths.
+appd_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, appd_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+appd_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, appd_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_appdynamics_setting:
+
+  #app_name
+  name: "{{ appd_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with app prefix or app abbrv prefix and 
+  # ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^appd_.+_component_setting$'))
+    }}

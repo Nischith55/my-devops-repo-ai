@@ -1,0 +1,19 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-snt-springcloudk8s-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - pods
+    - jobs
+    - cronjobs
+    verbs:
+    - get
+    - list
+    - watch

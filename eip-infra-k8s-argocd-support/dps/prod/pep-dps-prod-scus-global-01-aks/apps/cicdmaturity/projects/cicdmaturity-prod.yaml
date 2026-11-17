@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cicdmaturity-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for cicdmaturity-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-emd-prod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: cicdmaturity-prod-admin
+    description: Admin privileges to cicdmaturity-prod
+    policies:
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-admin, applications, *, cicdmaturity-prod/*, allow
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-admin, applications, get, argocd/*, allow
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-admin, repositories, *, cicdmaturity-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: cicdmaturity-prod-user
+    description: Read-only privileges to cicdmaturity-prod
+    policies:
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-user, applications, get, cicdmaturity-prod/*, allow
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-user, applications, sync, cicdmaturity-prod/*, allow
+    - p, proj:cicdmaturity-prod:cicdmaturity-prod-user, repositories, get, cicdmaturity-prod/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,114 @@
+githubConfigUrl: "https://github.com/Global-SnT"
+
+githubConfigSecret: arc-github-app
+
+runnerGroup: pfna-aks-runners-group
+runnerScaleSetName: "pfna-cit-preprod-scus-pcaf-01-arc"
+
+minRunners: 0
+maxRunners: 10
+
+controllerServiceAccount:
+  name: arc-controller-pep-pfna-cit-preprod-scus-pcaf-01-aks-gha-rs-con
+  namespace: arc-systems
+
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "managed-csi"
+    resources:
+      requests:
+        storage: 10Gi
+
+template:
+  spec:
+    serviceAccountName: pep-pfna-buildagent
+    securityContext:
+      fsGroup: 1000
+    # This cluster has no BuildAgentPools node pool; build workloads here run on
+    # User01ZonedPools (untainted), so the KEDA nodeSelector/toleration pair is
+    # deliberately NOT copied over.
+    nodeSelector:
+      kubernetes.io/os: linux
+      balance-group: User01ZonedPools
+    containers:
+      - name: runner
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/github-runner:20260814.4
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+            value: "false"
+
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_SERVICE_PRINCIPAL_CLIENT_ID
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_SERVICE_PRINCIPAL_CLIENT_SECRET
+
+          # --- EIAP ACR service principal (ported from the KEDA ScaledJob) ---
+          - name: AAD_EIAP_ACR_SERVICE_PRINCIPAL_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_EIAP_ACR_SERVICE_PRINCIPAL_CLIENT_ID
+          - name: AAD_EIAP_ACR_SERVICE_PRINCIPAL_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_EIAP_ACR_SERVICE_PRINCIPAL_CLIENT_SECRET
+
+          # --- Azure subscription / tenant context (KEDA ScaledJob parity) ---
+          - name: AAD_TENANT_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_TENANT_ID
+          - name: AAD_NONPROD_RG
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_NONPROD_RG
+          - name: AAD_NONPROD_SUB_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_NONPROD_SUB_ID
+          - name: AAD_PROD_SUB_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-pfna-svc-global-devsecops-azdevops
+                key: AAD_PROD_SUB_ID
+        volumeMounts:
+          - name: work
+            mountPath: /azp/runners/_work
+          - name: azure-build-scratch
+            mountPath: /mnt/azure
+          - name: acr-secret
+            mountPath: "/home/neipd999/.docker"
+            readOnly: true
+        # Matches the KEDA ScaledJob container resources.
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+          limits:
+            cpu: "8000m"
+            memory: "16Gi"
+    volumes:
+      - name: azure-build-scratch
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops
+      # Gives the runner a pre-populated docker config for ACR, as the KEDA
+      # ScaledJob does.
+      - name: acr-secret
+        secret:
+          secretName: pep-pfna-svc-global-devsecops-acr-creds
+          items:
+            - key: .dockerconfigjson
+              path: config.json

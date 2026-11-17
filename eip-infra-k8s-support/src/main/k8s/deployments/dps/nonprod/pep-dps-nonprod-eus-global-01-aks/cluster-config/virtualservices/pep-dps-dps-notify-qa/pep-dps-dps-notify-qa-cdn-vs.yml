@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-notify-qa-cv-cdn-vs
+  namespace: pep-dps-dps-notify-qa
+spec:
+  hosts:
+    - notification-eu.qa.pepsico.com
+  gateways:
+  - "pep-dps-dps-notify-qa/pep-dps-dps-notify-qa-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-dps-dps-notify-qa-cv-webdeploy.pep-dps-dps-notify-qa.svc.cluster.local"
+        port:
+          number: 80

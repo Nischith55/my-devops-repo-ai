@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"onepep-suggesstedorder-dsi-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["onepep-suggesstedorder-dsi.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"onepep-suggesstedorder-dsi.pep-eiap-global-hcm-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: onepep-suggesstedorder-dsi-vs
+  namespace: pep-eiap-global-hcm-prod
+spec:
+  gateways:
+  - pep-eiap-global-hcm-prod/pep-eiap-global-hcm-prod-cv-gw
+  hosts:
+  - onepep-suggesstedorder-dsi.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: onepep-suggesstedorder-dsi.pep-eiap-global-hcm-prod.svc.cluster.local
+        port:
+          number: 80

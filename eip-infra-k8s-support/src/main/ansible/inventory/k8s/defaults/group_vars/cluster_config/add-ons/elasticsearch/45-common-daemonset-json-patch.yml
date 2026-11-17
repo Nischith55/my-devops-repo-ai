@@ -1,0 +1,96 @@
+---
+# ##
+# Common DaemonSet patch variable -- to all daemonsets
+# IMPORTANT:
+# - make sure the original manifest has the same order and index if list
+#   type.
+# ##
+
+__es_generic_secret_name: &sec001 |-
+  {{ elasticsearch_generic_secrets[0]['secret_name'] }}
+
+es_common_daemonset_json_patch:
+
+  # ELASTICSEARCH_HOST
+  - op: remove
+    path: /spec/template/spec/containers/0/env/0/value
+
+  - op: add
+    path: /spec/template/spec/containers/0/env/0/valueFrom
+    value:
+      secretKeyRef: 
+        name: *sec001
+        key: host
+
+  # ELASTICSEARCH_PORT
+  - op: remove
+    path: /spec/template/spec/containers/0/env/1/value
+
+  - op: add
+    path: /spec/template/spec/containers/0/env/1/valueFrom
+    value:
+      secretKeyRef: 
+        name: *sec001
+        key: port
+
+  # ELASTICSEARCH_USERNAME
+  - op: remove
+    path: /spec/template/spec/containers/0/env/2/value
+
+  - op: add
+    path: /spec/template/spec/containers/0/env/2/valueFrom
+    value:
+      secretKeyRef: 
+        name: *sec001
+        key: username
+
+  # ELASTICSEARCH_PASSWORD
+  - op: remove
+    path: /spec/template/spec/containers/0/env/3/value
+
+  - op: add
+    path: /spec/template/spec/containers/0/env/3/valueFrom
+    value:
+      secretKeyRef: 
+        name: *sec001
+        key: password
+
+  # append KIBANA_HOST
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: KIBANA_HOST
+      valueFrom:
+        secretKeyRef: 
+          name: *sec001
+          key: kibana_host
+
+  # append KIBANA_PORT
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: KIBANA_HOST
+      valueFrom:
+        secretKeyRef: 
+          name: *sec001
+          key: kibana_port
+
+  # append pep-ca
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: PEP_CA_CERT_CHAIN
+      valueFrom:
+        secretKeyRef: 
+          name: *sec001
+          key: pep_ca_chain
+
+  # append cluster_name
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: K8S_CLUSTER_NAME
+      valueFrom:
+        secretKeyRef: 
+          name: *sec001
+          key: k8s_cluster_name

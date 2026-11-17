@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pep-edocs-prod-csext-dcs-vs
+  namespace: pep-aisp-cgf-edocs-prod
+spec:
+  gateways:
+  - pep-aisp-cgf-edocs-prod/pep-aisp-cgf-edocs-prod-cv-gw
+  hosts:
+  - pep-edocs-prd-csext-dcs-pg.aisp.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 2691
+    route:
+    - destination:
+        host: csext-dcs-pg.pep-aisp-cgf-edocs-prod.svc.cluster.local
+        port:
+          number: 2691

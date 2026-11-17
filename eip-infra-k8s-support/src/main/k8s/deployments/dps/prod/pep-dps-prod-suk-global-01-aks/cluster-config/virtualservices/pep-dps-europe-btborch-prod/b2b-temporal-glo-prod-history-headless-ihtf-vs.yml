@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: b2b-temporal-glo-prod-history-headless-ihtf-vs
+  namespace: pep-dps-europe-btborch-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - b2b-temporal-glo-prod-history.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-europe-btborch-prod/pep-dps-europe-btborch-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /metrics
+    route:
+    - destination:
+        host: b2b-temporal-glo-prod-history-headless.pep-dps-europe-btborch-prod.svc.cluster.local
+        port:
+          number: 9090
+  

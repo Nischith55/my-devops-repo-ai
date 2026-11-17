@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-xpc-userservice-hhel-vs
+  namespace: pep-pfna-flna-salesplus-preprod
+  labels:
+      app: pcaf-xpc-userservice
+spec:
+  hosts:
+  - pcaf-xpc-userservice.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-salesplus-preprod/pep-pfna-flna-salesplus-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-xpc-userservice.pep-pfna-flna-salesplus-preprod.svc.cluster.local
+        port:
+          number: 80
+  

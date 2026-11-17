@@ -1,0 +1,88 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-dtvtpopp-preprod-cv-gw
+  namespace: pep-dps-dps-dtvtpopp-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-dtvtpopp-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-dtvtpopp-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-dtvtpopp-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-dps-dtvtpopp-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-api-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-dtvtpopp-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-dtvtpopp-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-dps-dtvtpopp-preprod-80.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-api-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - dtv-tpo.preprod.mypepsico.com
+    name: pep-dps-dps-dtvtpopp-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-dtvtpopp-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - dtv-tpo.preprod.mypepsico.com
+    name: pep-dps-dps-dtvtpopp-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-dps-dtvtpopp-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: dtv-tpo.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

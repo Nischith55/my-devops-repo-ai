@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testnode0001-testnoderelease-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testnode0001-testnoderelease-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testnode0001-testnoderelease-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testnode0001-testnoderelease-dev-admin
+    description: Admin privileges to testnode0001-testnoderelease-dev
+    policies:
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-admin, applications, *, testnode0001-testnoderelease-dev/*, allow
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-admin, repositories, *, testnode0001-testnoderelease-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testnode0001-testnoderelease-dev-user
+    description: Read-only privileges to testnode0001-testnoderelease-dev
+    policies:
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-user, applications, get, testnode0001-testnoderelease-dev/*, allow
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-user, applications, sync, testnode0001-testnoderelease-dev/*, allow
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-user, repositories, get, testnode0001-testnoderelease-dev/*, allow
+    - p, proj:testnode0001-testnoderelease-dev:testnode0001-testnoderelease-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

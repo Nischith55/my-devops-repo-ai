@@ -1,0 +1,49 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pes-sw-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pes-sw-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PBNA_Commercial-Equipment_Service_and_Vending/_git/pes_sw_argocd_configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-halo-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-vms365-dev
+        server: https://kubernetes.default.svc
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-cets-dev
+        server: https://kubernetes.default.svc                 
+      roles:
+      - name: pes-sw-dev-admin
+        description: Admin privileges to pes-sw-dev
+        policies:
+        - p, proj:pes-sw-dev:pes-sw-dev-admin, applications, *, pes-sw-dev/*, allow
+        - p, proj:pes-sw-dev:pes-sw-dev-admin, repositories, *, pes-sw-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pes-sw-dev-user
+        description: Read-only privileges to pes-sw-dev
+        policies:
+        - p, proj:pes-sw-dev:pes-sw-dev-user, applications, get, pes-sw-dev/*, allow
+        - p, proj:pes-sw-dev:pes-sw-dev-user, applications, sync, pes-sw-dev/*, allow
+        - p, proj:pes-sw-dev:pes-sw-dev-user, repositories, get, pes-sw-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pes-sw-dev:pes-sw-dev-user, applications, action/apps/Deployment/restart, pes-sw-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+        - "Team.Support.PBNA.NonProd.VMS365"
+        - "team.support.fsv.aks.nonprod.admins"
+        - "Team.Support.EIAP.READ"
+    

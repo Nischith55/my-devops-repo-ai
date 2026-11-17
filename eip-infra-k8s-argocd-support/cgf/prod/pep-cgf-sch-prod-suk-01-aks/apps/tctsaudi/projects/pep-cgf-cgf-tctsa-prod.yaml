@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: tctsaudi-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app       
+spec:
+  description: Project for tctsaudi-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/tct-adapter-service-argocd-configs
+  - pepcgfschprodsukacr.azurecr.io/helm
+  destinations:
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-cgf-tctsa-prod
+  - name: pep-cgf-sch-prod-suk-01-aks
+    namespace: pep-cgf-ops-admin
+  roles:
+  - name: tctsaudi-prod-admin
+    description: Admin privileges to tctsaudi-prod
+    policies:
+    - p, proj:tctsaudi-prod:tctsaudi-prod-admin, applications, *, tctsaudi-prod/*, allow
+    - p, proj:tctsaudi-prod:tctsaudi-prod-admin, repositories, *, tctsaudi-prod/*, allow
+    - p, proj:tctsaudi-prod:tctsaudi-prod-admin, applications, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: tctsaudi-prod-user
+    description: Read-only privileges to tctsaudi-prod
+    policies:
+    - p, proj:tctsaudi-prod:tctsaudi-prod-user, applications, get, tctsaudi-prod/*, allow
+    - p, proj:tctsaudi-prod:tctsaudi-prod-user, applications, sync, tctsaudi-prod/*, allow
+    - p, proj:tctsaudi-prod:tctsaudi-prod-user, repositories, get, tctsaudi-prod/*, allow
+    - p, proj:tctsaudi-prod:tctsaudi-prod-user, applications, action/apps/Deployment/restart, tctsaudi-prod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.AMESATCT"
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"

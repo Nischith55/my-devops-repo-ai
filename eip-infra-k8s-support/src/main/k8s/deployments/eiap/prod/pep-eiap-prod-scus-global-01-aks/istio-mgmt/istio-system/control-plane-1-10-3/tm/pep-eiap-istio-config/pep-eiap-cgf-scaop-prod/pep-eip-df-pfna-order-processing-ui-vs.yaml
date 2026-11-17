@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-df-pfna-order-processing-ui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eip-df-pfna-order-processing-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - ordermgmtflna.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-df-pfna-order-processing-ui.pep-eiap-cgf-scaop-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-eip-df-pfna-order-processing-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://api-pfna.mypepsico.com/it/scas/v1/orders/
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin 
+      exposeHeaders:
+      - x-total-count
+      - x-source

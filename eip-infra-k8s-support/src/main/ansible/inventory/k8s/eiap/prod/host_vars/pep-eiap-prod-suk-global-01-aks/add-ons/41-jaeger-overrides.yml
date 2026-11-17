@@ -1,0 +1,6 @@
+---
+# Overrides for jaeger
+
+# select storage for backend
+# one of [jt_jb_prod_in_mem_storage_spec|jt_jb_prod_es_storage_spec]
+jaeger_backend_merge_spec_patch: "{{ jt_jb_prod_in_mem_storage_spec }}"

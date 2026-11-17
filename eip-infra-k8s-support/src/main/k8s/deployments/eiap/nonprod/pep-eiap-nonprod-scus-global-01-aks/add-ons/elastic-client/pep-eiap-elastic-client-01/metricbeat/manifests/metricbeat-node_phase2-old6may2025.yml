@@ -1,0 +1,536 @@
+# ##
+# PEP NOTES:
+# - IMPORTANT: this is NOT ECK managed, straightforward k8s resources
+# - IMPORTANT: This beat should run ONLY As DaemonSet.
+# - IMPORTANT: This beat should concern itself with NODE level metrics
+#              that should be handled by node metricbeat DaemonSet.
+# ##
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: metricbeat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metricbeat
+  labels:
+    k8s-app: metricbeat
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  - services
+  - persistentvolumes
+  - persistentvolumeclaims
+  verbs: ["get", "list", "watch"]
+# Enable this rule only if planing to use Kubernetes keystore
+#- apiGroups: [""]
+#  resources:
+#  - secrets
+#  verbs: ["get"]
+- apiGroups: ["extensions"]
+  resources:
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  - daemonsets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch"]
+  resources:
+  - jobs
+  - cronjobs
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["storage.k8s.io"]
+  resources:
+    - storageclasses
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat
+  # should be the namespace where metricbeat is running
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs: ["get", "create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: metricbeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    resourceNames:
+      - kubeadm-config
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: pep-eiap-elastic-client-01
+roleRef:
+  kind: ClusterRole
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat
+  namespace: pep-eiap-elastic-client-01
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: pep-eiap-elastic-client-01
+roleRef:
+  kind: Role
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metricbeat-kubeadm-config
+  namespace: pep-eiap-elastic-client-01
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: pep-eiap-elastic-client-01
+roleRef:
+  kind: Role
+  name: metricbeat-kubeadm-config
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-node-config
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: metricbeat-node
+data:
+
+  K8S_CLUSTER_NAME: pep-eiap-nonprod-scus-global-01-aks
+
+  metricbeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+    
+    processors:
+    
+    # ~~
+    # Add EIAP fields
+    # ~~
+    - add_fields:
+        target: eiap
+        fields:
+          cluster_name: ${K8S_CLUSTER_NAME}
+    - add_fields:
+        fields:
+          ls-destination: "SCUS"
+          pep-aks-cluster: ${K8S_CLUSTER_NAME}
+    - add_tags:
+        tags: ["NonProd-SCUS-Shared", "retain-logs"]
+    - script:
+        lang: javascript
+        source: >
+          function process(event) {
+            event.Put("fields.legacy-index", "mb-aks-" + event.Get("fields.pep-aks-cluster"));
+            return event;
+          }
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+        
+  metricbeat.yml: |-
+
+    metricbeat:
+
+      # ##
+      # All modules:
+      # ##
+
+      modules:
+
+      # ~~
+      # 1) System: Node/Host metrics
+      # ~~
+      - module: system
+        period: 10s
+        metricsets:
+        - cpu
+        - load
+        - memory
+        - network
+        - process
+        - process_summary
+        - uptime
+        - core
+        process:
+          include_top_n:
+            by_cpu: 5
+            by_memory: 5
+        processes:
+        - .*
+
+      # ~~
+      # 2) System: systemd service we don't need every 10s
+      # ~~
+      - module: system
+        # IMPORTANT: do not enable in k8s clusters as we need access to
+        # - dbus
+        # -  /run/systemd/private
+        enabled: false
+        period: 2m
+        metricsets:
+        # systemd service information
+        - service
+        service:
+          # Filter systemd services by status or sub-status
+          state_filter:
+          - active
+          # # Filter systemd services based on a name pattern
+          # pattern_filter:
+          # - "ssh*"
+          # - "nfs*"
+
+      # ~~
+      # 3) System: FileSystem metrics
+      # ~~
+      - module: system
+        period: 1m
+        metricsets:
+        - filesystem
+        - fsstat
+        processors:
+        - drop_event:
+            when:
+              regexp:
+                system:
+                  filesystem:
+                    mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib)($|/)
+
+      # ~~
+      # 4) Kubernetes: kubelet (secure port)
+      # ~~
+      - module: kubernetes
+        period: 10s
+        enabled: true
+        add_metadata: true
+        host: ${NODE_NAME}
+        hosts:
+        # change to local host kubelet secure port
+        - https://localhost:10250
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        ssl:
+          verification_mode: none
+        metricsets:
+        - node
+        - system
+        - pod
+        - container
+        - volume
+
+      # ~~
+      # 5) Kubernetes: kube-proxy 
+      # ~~
+      # Currently `proxy` metricset is not supported on Openshift, 
+      - module: kubernetes
+        metricsets:
+          - proxy
+        period: 10s
+        host: ${NODE_NAME}
+        hosts: 
+          - "localhost:10249"
+
+      # ~~
+      # 6) Kubernetes: controller-manager
+      #    - IMPORTANT: this should be enabled only on Master nodes
+      #    - Cloud PaaS services should be DISABLED (enabled: false)
+      # ~~
+      # Kubernetes controller manager
+      # (URL and deployment method should be adapted to match the controller
+      # manager deployment / service / endpoint)
+      - module: kubernetes
+        # IMPORTANT: AKS, EKS, GKE should be false
+        enabled: false
+        metricsets: 
+          - controllermanager
+        hosts: 
+          - "http://localhost:10252"
+        period: 10s
+
+      # ~~
+      # 7) Kubernetes: scheduler
+      #    - IMPORTANT: this should be enabled only on Master nodes
+      #    - Cloud PaaS services should be DISABLED (enabled: false)
+      # ~~
+      # Kubernetes scheduler
+      # (URL and deployment method should be adapted to match scheduler 
+      # deployment / service / endpoint)
+      - module: kubernetes
+        # IMPORTANT: AKS, EKS, GKE should be false
+        enabled: false
+        metricsets:
+          - scheduler
+        hosts: 
+          - "localhost:10251"
+        period: 10s
+
+    output.logstash:
+      hosts: ["pepwap22237.corp.pep.pvt:5045", "pepwap22238.corp.pep.pvt:5045"]
+      loadbalance: true
+      worker: 1
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-beat-metricbeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "extensions"
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: &app_name metricbeat-node
+  namespace: pep-eiap-elastic-client-01
+  labels:
+    k8s-app: *app_name
+spec:
+
+  selector:
+    matchLabels:
+      k8s-app: *app_name
+
+  template:
+
+    metadata:
+      labels:
+        k8s-app: *app_name
+        app: *app_name
+        version: 8.10.2
+
+    spec:
+      # PEP: DaemonSet we need to run it on EVERY node. so tolerate all
+      # taints
+      tolerations:
+      - operator: Exists
+      serviceAccountName: metricbeat
+      # some older Beat versions are depending on this settings presence 
+      # in k8s context
+      automountServiceAccountToken: true 
+      dnsPolicy: ClusterFirstWithHostNet
+      # Allows to provide richer host metadata
+      hostNetwork: true 
+      securityContext:
+        runAsUser: 0
+      terminationGracePeriodSeconds: 30
+
+      # All volumes
+      volumes:
+
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+
+      - name: proc
+        hostPath:
+          path: /proc
+
+      # os-release
+      - name: os-release
+        hostPath:
+          path: /etc/os-release
+
+      # all metricbeat-data will be stored at the node level for Daemonset
+      # so we can restart from where we left off
+      - name: data
+        hostPath:
+          path: /var/lib/pep-eiap-elastic-client-01/metricbeat-node/metricbeat-data
+          type: DirectoryOrCreate
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:   
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+          # beats-entrypoint-config
+          - configMap:
+              name: beats-entrypoint-config
+              optional: false
+              items:
+                - key: entrypoint.sh
+                  # must be relative
+                  path: bin/entrypoint.sh
+                  # 0755 -> 493
+                  mode: 493
+          # beats-common-config
+          - configMap:
+              name: &beats_common_config beats-common-output-config
+              optional: false
+              items:
+                - key: beat-output-config.yml
+                  # must be relative
+                  path: etc/beat-output-config.yml
+
+          # metricbeat-node-config
+          - configMap:
+              name: metricbeat-node-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      # ##
+      # Containers
+      # ##
+      containers:
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:8.10.2
+        command:
+        args:
+        - metricbeat
+        - -c 
+        - /projected/etc/beat-processor-config.yml
+        - -c 
+        - /projected/etc/beat.yml 
+        - -system.hostfs=/hostfs
+        env:
+
+        - name: K8S_CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: &beats_shared_env beats-shared-env-config
+              key: K8S_CLUSTER_NAME
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        # VolumeMounts
+        volumeMounts:
+
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+
+        - name: proc
+          mountPath: /hostfs/proc
+
+        # PEP: we need this mount to setup some environment variables
+        - name: os-release
+          mountPath: /tmp/etc/os-release
+          readOnly: true
+
+        - name: data
+          mountPath: /usr/share/metricbeat/data
+
+        # PEP: 
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

@@ -1,0 +1,16 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-aisp-springcloudk8s-rb
+  namespace: pep-aisp-cgf-pepsar-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-aisp-springcloudk8s-clusterrole
+subjects:
+- apiGroup: ''
+  kind: ServiceAccount
+  name: pep-aisp-cgf-pepsar-prod-sa
+  namespace: pep-aisp-cgf-pepsar-prod

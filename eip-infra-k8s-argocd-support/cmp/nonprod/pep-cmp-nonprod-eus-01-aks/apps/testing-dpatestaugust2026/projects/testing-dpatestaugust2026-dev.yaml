@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: testing-dpatestaugust2026-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for testing-dpatestaugust2026-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/testing-dpatestaugust2026-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: testing-dpatestaugust2026-dev-admin
+    description: Admin privileges to testing-dpatestaugust2026-dev
+    policies:
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-admin, applications, *, testing-dpatestaugust2026-dev/*, allow
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-admin, repositories, *, testing-dpatestaugust2026-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: testing-dpatestaugust2026-dev-user
+    description: Read-only privileges to testing-dpatestaugust2026-dev
+    policies:
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-user, applications, get, testing-dpatestaugust2026-dev/*, allow
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-user, applications, sync, testing-dpatestaugust2026-dev/*, allow
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-user, repositories, get, testing-dpatestaugust2026-dev/*, allow
+    - p, proj:testing-dpatestaugust2026-dev:testing-dpatestaugust2026-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

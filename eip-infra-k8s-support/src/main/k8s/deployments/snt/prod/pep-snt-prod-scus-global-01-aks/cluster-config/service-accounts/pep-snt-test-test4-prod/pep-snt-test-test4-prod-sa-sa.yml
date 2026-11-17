@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-snt-test-test4-prod-sa
+  namespace: pep-snt-test-test4-prod

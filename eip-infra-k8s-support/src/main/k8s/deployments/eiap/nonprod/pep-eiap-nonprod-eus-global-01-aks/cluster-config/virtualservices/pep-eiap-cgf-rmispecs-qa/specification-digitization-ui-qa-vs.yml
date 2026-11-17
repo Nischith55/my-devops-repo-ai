@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: specification-digitization-ui
+  name: specification-digitization-ui-qa-vs
+  namespace: pep-eiap-cgf-rmispecs-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-rmispecs-qa/pep-eiap-cgf-rmispecs-qa-cv-gw
+  hosts:
+  - specification-digitization-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: specification-digitization-ui.pep-eiap-cgf-rmispecs-qa.svc.cluster.local
+        port:
+          number: 8080

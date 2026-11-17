@@ -1,0 +1,28 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-clereplay-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-clereplay.global.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1"}}],"route":[{"destination":{"host":"pep-och-clereplay.pep-eiap-och-edt-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-clereplay
+  name: pep-och-clereplay-vs
+  namespace: pep-eiap-och-edt-prod
+spec:
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  hosts:
+  - pep-och-clereplay.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    - ignoreUriCase: true
+      uri:
+        prefix: /management/ 
+    route:
+    - destination:
+        host: pep-och-clereplay.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_apac_ochapac_qa:
+  
+  name: pep-eiap-apac-ochapac-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: apac-ochapac
+    sector: apac
+    project: ochapac
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: omni-channelcommerceintegrationhubseanon-prod
+    pep-cmdb-app-service-id: "c730f1c597f026d04584b1aad053af51"
+    pep-cmdb-bus-app-id: "aa0ad23ddb149850ccfa65494b961944"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-apac-ochapac-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['apac_ochapac'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-apac-ochapac-qa-sa-token
+    namespace: pep-eiap-apac-ochapac-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-apac-ochapac-qa-sa"

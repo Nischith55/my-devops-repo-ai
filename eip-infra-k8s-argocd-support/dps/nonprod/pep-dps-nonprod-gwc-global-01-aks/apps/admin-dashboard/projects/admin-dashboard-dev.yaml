@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: admin-dashboard-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for admin-dashboard-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-dashboard-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-admineu-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: admin-dashboard-dev-admin
+    description: Admin privileges to admin-dashboard-dev
+    policies:
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-admin, applications, *, admin-dashboard-dev/*, allow
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-admin, repositories, *, admin-dashboard-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: admin-dashboard-dev-user
+    description: Read-only privileges to admin-dashboard-dev
+    policies:
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-user, applications, get, admin-dashboard-dev/*, allow
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-user, applications, sync, admin-dashboard-dev/*, allow
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-user, repositories, get, admin-dashboard-dev/*, allow
+    - p, proj:admin-dashboard-dev:admin-dashboard-dev-user, applications, action/apps/Deployment/restart, admin-dashboard-dev/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.NBA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

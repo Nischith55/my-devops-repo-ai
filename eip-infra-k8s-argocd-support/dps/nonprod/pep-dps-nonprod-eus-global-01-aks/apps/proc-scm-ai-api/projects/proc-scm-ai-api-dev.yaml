@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: proc-scm-ai-api-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for proc-scm-ai-api-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/proc-scm-ai-api-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-dtvscm-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: proc-scm-ai-api-dev-admin
+    description: Admin privileges to proc-scm-ai-api-dev
+    policies:
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-admin, applications, *, proc-scm-ai-api-dev/*, allow
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-admin, repositories, *, proc-scm-ai-api-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: proc-scm-ai-api-dev-user
+    description: Read-only privileges to proc-scm-ai-api-dev
+    policies:
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-user, applications, get, proc-scm-ai-api-dev/*, allow
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-user, applications, sync, proc-scm-ai-api-dev/*, allow
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-user, repositories, get, proc-scm-ai-api-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:proc-scm-ai-api-dev:proc-scm-ai-api-dev-user, applications, action/apps/Deployment/restart, proc-scm-ai-api-dev/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.dtvscm"
+    - "Team.Support.EIAP.READ"

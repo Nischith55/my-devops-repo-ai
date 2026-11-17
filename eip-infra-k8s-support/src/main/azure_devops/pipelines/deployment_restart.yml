@@ -1,0 +1,81 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+parameters:
+- name: env
+  displayName: Environment
+  type: string
+  values:
+    - nonprod
+    - preprod
+    - prod
+- name: cluster_name
+  displayName: 'Cluster Name'
+  type: string
+  values:
+      - pep-eiap-nonprod-eus-sbox-03-aks
+      - pep-eiap-nonprod-scus-sbox-03-aks
+- name: namespace
+  displayName: 'Namespace'
+  type: string
+- name: deployments
+  displayName: 'Deployment(s)'
+  type: string
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - name: pool_name
+    value: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+stages:
+  - stage: deployment_restart
+    displayName: Deployment Restart
+    pool:
+      name: $(pool_name)
+    jobs:
+    - job: gather_inputs 
+      displayName: gather_inputs 
+      steps:
+        - task: Bash@3
+          name: set_agent_pool 
+          inputs:
+            targetType: 'inline'
+            script: |
+              echo "getting agent pool. "
+              pwd
+              agentpool=`cat ./src/main/azure_devops/pipelines/templates/cluster_pools.json | jq --arg env_input "${{ parameters.env }}" '.[$env_input][] | select(.cluster=="${{ parameters.cluster_name }}")' | jq '.agentpool' | tr -d '"'`
+              echo $agentpool
+              echo "##vso[task.setvariable variable=agentpool;isOutput=true]$agentpool"
+    
+    - job: pod_restart
+      displayName: pod_restart
+      dependsOn: gather_inputs
+      variables:
+        agentpool: $[ dependencies.gather_inputs.outputs['set_agent_pool.agentpool'] ]
+      pool: $(agentpool)
+      steps:
+        - template: templates/set_config_k8s.yml
+          parameters:
+            cluster: ${{ parameters.cluster_name }}
+            env: ${{ variables.env_convert }}
+
+        - task: Bash@3
+          displayName: 'Pod Restart'
+          name: pod_restart
+          inputs:
+            targetType: 'inline'
+            script: |
+              kubectl get ns
+              IFS=',' read -r -a deploy_array <<< "${{ parameters.deployments }}"
+              for Item in "${deploy_array[@]}";
+              do 
+                kubectl -n ${{ parameters.namespace }} rollout restart deployment/$Item
+              done 
+
+          env:
+            AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+            AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

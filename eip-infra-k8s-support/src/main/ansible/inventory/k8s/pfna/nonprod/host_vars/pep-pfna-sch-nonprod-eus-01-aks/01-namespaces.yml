@@ -1,0 +1,30 @@
+####### BEGIN Added recently --pep-pfna-sch-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pfna_flna_mfgmatinfo_dev
+  - ns_pep_pfna_flna_schstckout_dev
+  - ns_pep_pfna_flna_schwmit_qa
+  - ns_pep_pfna_flna_tctgps_dev
+  - ns_pep_pfna_flna_schhatest_dev
+  - ns_pep_pfna_pbna_pbnalghous_dev
+  - ns_pep_pfna_pbna_pbnalghous_qa
+  - ns_pep_pfna_flna_schservice_qa
+  - ns_pep_pfna_flna_schopscon_qa
+  - ns_pep_pfna_flna_risingwave_qa
+  - ns_pep_pfna_flna_schwmitwo_qa
+  - ns_pep_pfna_flna_trmmrw_dev
+  - ns_pep_pfna_flna_transp_qa
+  - ns_pep_pfna_pfna_schwhseint_dev
+  - ns_pep_pfna_pfna_schwhseint_qa
+  - ns_pep_pfna_pfna_schubwhse_qa
+  - ns_pep_pfna_flna_whasqa_qa
+  - ns_pep_pfna_flna_cshub_dev
+  - ns_pep_pfna_flna_mfgppdev_dev
+  - ns_pep_pfna_pfna_foundone_dev
+  - ns_pep_pfna_flna_iwms_dev
+  - ns_pep_pfna_flna_scopt_dev
+  - ns_pep_pfna_flna_whorch_dev
+  - ns_pep_pfna_flna_transp_dev
+####### END Added recently --pep-pfna-sch-nonprod-eus-01-aks######

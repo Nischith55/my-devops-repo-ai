@@ -1,0 +1,306 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-btbproduct-preprod-cv-gw
+  namespace: pep-dps-latam-btbproduct-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-btbproduct-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-btbproduct-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-latam-btbproduct-preprod-443.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domain-elastic-sync-service-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-domain-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-admin-ui-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domain-synchronization-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-embeddings-latam-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-pr oduct-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-btbproduct-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-latam-btbproduct-preprod-80.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b.preprod.pepsico.com
+    - b2b-products-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-preprod2.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-ta.preprod.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-glo.preprod.pepsico.com
+    - b2b-domainsync-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-co.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-co.preprod.pepsico.com
+    - b2b-products-global.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-na.preprod.pepsico.com
+    - products-b2b-na-hf.preprod.pepsico.com
+    - products-b2b-co-hf.preprod.pepsico.com
+    - b2b-elastic-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-na.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-elastic-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domainsync-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domain-elastic-sync-service-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-domain-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-products-admin-ui-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-domain-synchronization-latam-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-glo-hf.preprod.pepsico.com
+    - b2b-embeddings-latam-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-co-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-na-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - b2b-pr oduct-admin-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-btbproduct-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - products-b2b.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-ta.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-4-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-glo.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-5-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-glo.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-co.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-6-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-co.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-na.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-7-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-na.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-na-hf.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-8-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-8-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-na-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-co-hf.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-9-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-9-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-co-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-glo-hf.preprod.pepsico.com
+    name: pep-dps-latam-btbproduct-preprod-cv-gw-10-https-443
+    port:
+      name: pep-dps-latam-btbproduct-preprod-cv-gw-10-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-glo-hf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

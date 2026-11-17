@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-cgf-agfactory-prod-sa
+  namespace: pep-eiap-cgf-agfactory-prod

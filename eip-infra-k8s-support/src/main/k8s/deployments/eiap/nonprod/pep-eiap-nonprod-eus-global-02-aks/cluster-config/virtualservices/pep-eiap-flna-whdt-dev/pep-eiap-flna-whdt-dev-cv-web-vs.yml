@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-flna-whdt-dev-cv-web-vs
+  namespace: pep-eiap-flna-whdt-dev
+  labels:
+    app: pep-eiap-flna-whdt-dev-cv-web
+spec:
+  hosts:
+    - warehousedt.dev.pepsico.com
+    - pep-eiap-flna-whdt-dev-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-flna-whdt-dev/pep-eiap-flna-whdt-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-flna-whdt-dev-cv-web.pep-eiap-flna-whdt-dev.svc.cluster.local
+        port:
+          number: 80

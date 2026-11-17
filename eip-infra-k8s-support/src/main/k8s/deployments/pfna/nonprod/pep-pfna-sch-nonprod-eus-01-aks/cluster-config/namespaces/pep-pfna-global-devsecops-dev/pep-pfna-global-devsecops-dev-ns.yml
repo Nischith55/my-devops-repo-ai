@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-global-devsecops-dev
+  labels:
+    env-prod: 'true'
+    environment: nonprod
+    istio-injection: disabled
+    project: devsecops
+    sector: global
+    team: global-devsecops
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    app.kubernetes.io/created-by: Mahesh_2023_08_14
+    app.kubernetes.io/managed-by: manual

@@ -1,0 +1,11 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_latam_cgf_pricechang_dev
+  - ns_pep_latam_test2_test2_dev
+  - ns_pep_latam_test1_test1_dev
+  - ns_pep_latam_test_test_dev
+  - ns_pep_latam_latam_obs_dev

@@ -1,0 +1,8 @@
+####### BEGIN Added recently --pep-automation-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_automation_cgf_cvopa_dev
+  - ns_pep_automation_cgf_cvopa_qa
+####### END Added recently --pep-automation-nonprod-eus-01-aks######

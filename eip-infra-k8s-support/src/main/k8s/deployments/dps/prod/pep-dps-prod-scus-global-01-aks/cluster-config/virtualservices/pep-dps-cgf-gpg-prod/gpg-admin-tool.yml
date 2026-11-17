@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"gpg-admin-tool","app.kubernetes.io/instance":"gpg-admin-tool-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.1"},"name":"gpg-admin-tool","namespace":"pep-dps-cgf-gpg-prod"},"spec":{"gateways":["pep-dps-cgf-gpg-prod/pep-dps-cgf-gpg-prod-cv-gw"],"hosts":["gpg-frontend.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"gpg-admin-tool.pep-dps-cgf-gpg-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: gpg-admin-tool
+        app.kubernetes.io/instance: gpg-admin-tool-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.1
+    name: gpg-admin-tool
+    namespace: pep-dps-cgf-gpg-prod
+spec:
+    gateways:
+    - pep-dps-cgf-gpg-prod/pep-dps-cgf-gpg-prod-cv-gw
+    hosts:
+    - gpg-frontend.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - gpg.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: gpg-admin-tool.pep-dps-cgf-gpg-prod.svc.cluster.local
+                port:
+                    number: 8080

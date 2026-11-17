@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pbna-wse-lighthouse-frontend","app.kubernetes.io/instance":"pbna-wse-lighthouse-frontend-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pbna-wse-lighthouse-frontend","namespace":"pep-eiap-pbna-lighth-dev"},"spec":{"gateways":["pep-eiap-pbna-lighth-dev/pep-eiap-pbna-lighth-dev-cv-gw"],"hosts":["pbna-wse-lighthouse-frontend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pbna-wse-lighthouse-frontend.pep-eiap-pbna-lighth-dev.svc.cluster.local","port":{"number":80}}}]}]}}
+
+'
+    labels:
+        app: pbna-wse-lighthouse-frontend
+        app.kubernetes.io/instance: pbna-wse-lighthouse-frontend-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pbna-wse-lighthouse-frontend
+    namespace: pep-eiap-pbna-lighth-dev
+spec:
+    gateways:
+    - pep-eiap-pbna-lighth-dev/pep-eiap-pbna-lighth-dev-cv-gw
+    hosts:
+    - pbna-wse-lighthouse-frontend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pbna-wse-lighthouse-frontend.pep-eiap-pbna-lighth-dev.svc.cluster.local
+                port:
+                    number: 80

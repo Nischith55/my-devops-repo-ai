@@ -1,0 +1,152 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-re360-preprod-cv-gw
+  namespace: pep-dps-dps-re360-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-re360-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-re360-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-re360-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-nginx-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-graph-fedration-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-caf-personalisation-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-caf-common-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-xda-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-config-loader-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-auth-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-file-auth-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-metrics-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-insights-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-promotions-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-jbp-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-jbp-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-insights-ui-lib-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-poc-ai-nego-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usagentic-poc-knowledge-rag-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usai-document-ingestor-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-chatbot-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usagentic-poc-pepgenx-adapter-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-sf-data-migration-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-content-creator-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-planner-agent-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-sell-and-lead-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-re360-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-dps-dps-re360-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-nginx-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-graph-fedration-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-caf-personalisation-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360assets.preprod.pepsico.com
+    - usretail360.preprod.pepsico.com
+    - usr360-lite-caf-common-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-xda-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-config-loader-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-auth-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-file-auth-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-metrics-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-caf-insights-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-promotions-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-jbp-frontend-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-jbp-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-insights-ui-lib-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-poc-ai-nego-ui-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usagentic-poc-knowledge-rag-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usai-document-ingestor-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-chatbot-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usagentic-poc-pepgenx-adapter-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usr360-lite-sf-data-migration-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-content-creator-service-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-planner-agent-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - usaiq-sell-and-lead-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-re360-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - usr360assets.preprod.pepsico.com
+    name: pep-dps-dps-re360-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-dps-re360-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: usr360assets.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - usretail360.preprod.pepsico.com
+    name: pep-dps-dps-re360-preprod-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-re360-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: usretail360.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

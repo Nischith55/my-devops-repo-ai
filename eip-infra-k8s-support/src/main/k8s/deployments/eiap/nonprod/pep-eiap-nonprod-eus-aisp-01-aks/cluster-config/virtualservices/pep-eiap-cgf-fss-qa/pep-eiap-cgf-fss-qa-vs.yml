@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-fss-qa-vs
+  namespace: pep-eiap-cgf-fss-qa
+spec:
+  hosts:
+  - pep-fss-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-fss-qa/pep-eiap-cgf-fss-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dsearchadmin
+    route:
+    - destination:
+        host: indexserver.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 9300
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /IndexAgent
+    route:
+    - destination:
+        host: indexagent.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 9200
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dfs
+    route:
+    - destination:
+        host: dfs-server.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /da
+    route:
+    - destination:
+        host: da-svc.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otdsws
+    route:
+    - destination:
+        host: otdsws.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otds-admin
+    route:
+    - destination:
+        host: otdsws.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /DmMethods/servlet/DoMethod
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /Acs/servlet
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dctm-rest.pep-eiap-cgf-fss-qa.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,13 @@
+---
+# ##
+# Overrides for add-on installation
+# ##
+
+# we patch deployment to use PEP CA signed GW01 cert
+
+# we mount gw01 secrets
+k8s_dashboard_tls_secret_01: "{{ pep_eiap_scus_infra_02_aks_gw01_tls }}"
+
+# use the default template -- override vars needed before
+k8s_dashboard_json_custom_tls_01_patch: |-
+  {{ k8s_dashboard_json_custom_tls_01_patch_tmpl }}

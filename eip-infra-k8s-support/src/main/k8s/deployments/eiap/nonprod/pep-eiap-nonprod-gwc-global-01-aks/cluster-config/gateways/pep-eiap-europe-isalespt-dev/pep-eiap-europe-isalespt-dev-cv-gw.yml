@@ -1,0 +1,135 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-europe-isalespt-dev-cv-gw
+  namespace: pep-eiap-europe-isalespt-dev
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-europe-isalespt-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-europe-isalespt-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-eiap-europe-isalespt-dev-cv.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-geoshard.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-shardfusion.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-trustcore.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-passgate.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-sessionchecker.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-universal-coverage.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-welcomescreen.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-rolemanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-userprofilemanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-routesmanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-felogservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-pii-scrubber.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-visitscreen.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-storageservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-mobilesync-global.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-mobilesync.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-customers.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isalespl-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isalespl-dev-new.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-https-443
+    port:
+      name: https-pep-eiap-europe-isalespt-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - isalespl.dev.mypepsico.com
+    - isalespl-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pep-eiap-europe-isalespt-dev-cv.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-geoshard.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-shardfusion.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-trustcore.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-passgate.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-sessionchecker.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-universal-coverage.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-welcomescreen.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-rolemanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-userprofilemanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-routesmanagement.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-felogservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-pii-scrubber.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-visitscreen.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-storageservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-mobilesync-global.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-mobilesync.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isales-services-customers.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isalespl-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-http-80
+    port:
+      name: http-pep-eiap-europe-isalespt-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - isalespl.dev.mypepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-https-1-443
+    port:
+      name: https-pep-eiap-europe-isalespt-dev-cv-gw-1-443
+      number: 8081
+      protocol: HTTP2
+  - hosts:
+    - isalespl.dev.mypepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-https-2-443
+    port:
+      name: https-pep-eiap-europe-isalespt-dev-cv-gw-2-443
+      number: 443
+      protocol: HTTPS
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-europe-isalespt-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - isalespl-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - isalespl-dev-new.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-europe-isalespt-dev-cv-gw-grpc-1-8081
+    port:
+      name: grpc-pep-eiap-europe-isalespt-dev-cv-gw-1-8081
+      number: 8081
+      protocol: HTTP2
+

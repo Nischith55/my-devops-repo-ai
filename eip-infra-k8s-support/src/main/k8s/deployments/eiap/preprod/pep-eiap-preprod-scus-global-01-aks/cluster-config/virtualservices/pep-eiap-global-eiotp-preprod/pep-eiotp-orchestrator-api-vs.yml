@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiotp-orchestrator-api-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["eiotpapi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"orchestrator-api.pep-eiap-global-eiotp-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: orchestrator-api
+  name: pep-eiotp-orchestrator-api-vs
+  namespace: pep-eiap-global-eiotp-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eiotp-preprod/pep-eiap-global-eiotp-preprod-cv-gw
+  hosts:
+  - eiotpapi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: orchestrator-api.pep-eiap-global-eiotp-preprod.svc.cluster.local
+        port:
+          number: 8080

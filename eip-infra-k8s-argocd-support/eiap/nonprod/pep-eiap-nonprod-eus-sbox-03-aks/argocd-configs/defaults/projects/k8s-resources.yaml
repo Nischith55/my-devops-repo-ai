@@ -1,0 +1,134 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: k8s-resources
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for k8s clusters   
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+  - https://charts.rancher.io
+  - https://kubecost.github.io/cost-analyzer
+  - https://prometheus-community.github.io/helm-charts
+  destinations:
+ 
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: kubecost
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-istio-config
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: default
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-elastic-client-01
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: istio-system
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: cattle-gatekeeper-system
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+   
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: msi-acrpull-system
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-ops-admin
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+ 
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-global-infra-dev
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-global-devsecops-dev
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: monitoring
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-infra-dev
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: cao
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-cgf-eecmp-dev
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: test
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: test-istio-dcz-10
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: pep-eiap-pbna-halo-dev
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: kube-node-lease
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: observability
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: kube-public
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: calico-system
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: tigera-operator
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443  
+
+  - name: pep-eiap-nonprod-scus-sbox-03-aks
+    namespace: kube-system
+    server: https://pep-eiap-nonprod-scus-sbox-03-aks-4p8foijw.privatelink.southcentralus.azmk8s.io:443
+
+  clusterResourceWhitelist:
+  - group: 'rbac.authorization.k8s.io'
+    kind: 'ClusterRoleBinding'
+  - group: 'rbac.authorization.k8s.io'
+    kind: 'ClusterRole'
+  - group: 'apiextensions.k8s.io'
+    kind: 'CustomResourceDefinition'
+  - group: 'storage.k8s.io'
+    kind: 'StorageClass'
+  - group: '*'
+    kind: 'Namespace'
+
+  - group: 'constraints.gatekeeper.sh'
+    kind: '*'
+  - group: 'templates.gatekeeper.sh'
+    kind: '*'
+  - group: 'admissionregistration.k8s.io'
+    kind: '*'
+
+  # - group: 'constraints.gatekeeper.sh'
+  #   kind: 'K8sDisallowedTags'

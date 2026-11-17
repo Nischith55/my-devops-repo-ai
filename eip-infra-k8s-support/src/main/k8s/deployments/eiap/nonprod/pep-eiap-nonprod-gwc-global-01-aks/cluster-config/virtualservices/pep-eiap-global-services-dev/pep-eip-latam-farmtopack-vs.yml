@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-latam-farmtopack
+  name: pep-eip-latam-farmtopack-vs
+  namespace: pep-eiap-global-services-dev
+spec:
+  gateways:
+  - pep-eiap-global-services-dev/pep-eiap-global-services-dev-cv-gw
+  hosts:
+  - pep-eip-latam-farmtopack.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-farmtopack.pep-eiap-global-services-dev.svc.cluster.local

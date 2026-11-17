@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: pep-eiap-hhnx-customer-master-ingest-dr-qa
+  namespace: pep-pfna-istio-config
+spec:
+  host: pep-eiap-hhnx-customer-master-ingest.pep-pfna-hhnext-qa.svc.cluster.local
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 9
+      interval: 3m
+      baseEjectionTime: 1m

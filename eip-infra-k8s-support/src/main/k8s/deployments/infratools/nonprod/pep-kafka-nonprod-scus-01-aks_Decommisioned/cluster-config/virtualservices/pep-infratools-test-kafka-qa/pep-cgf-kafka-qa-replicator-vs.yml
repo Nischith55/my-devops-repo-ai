@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: replicator
+  name: pep-cgf-kafka-qa-replicator-vs
+  namespace: pep-infratools-test-kafka-qa
+spec:
+  gateways:
+  - pep-infratools-test-kafka-qa/pep-infratools-test-kafka-qa-cv-gw
+  hosts:
+  - replicator.kafka.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - gateways:
+      - pep-infratools-test-kafka-qa/pep-cgf-kafka-qa-kafka-gw
+      port: 443
+      sniHosts:
+      - replicator.kafka.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: replicator.pep-infratools-test-kafka-qa.svc.cluster.local
+        port:
+          number: 8083

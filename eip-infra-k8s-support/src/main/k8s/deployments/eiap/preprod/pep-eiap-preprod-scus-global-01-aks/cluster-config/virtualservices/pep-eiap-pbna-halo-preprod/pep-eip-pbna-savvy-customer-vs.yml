@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-pbna-savvy-customer
+  name: pep-eip-pbna-savvy-customer-vs
+  namespace: pep-eiap-pbna-halo-preprod
+spec:
+  gateways:
+  - pep-eiap-pbna-halo-preprod/pep-eiap-pbna-halo-preprod-cv-gw
+  hosts:
+  - pep-eip-pbna-savvy-customer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-savvy-customer.pep-eiap-pbna-halo-preprod.svc.cluster.local
+        port:
+          number: 80

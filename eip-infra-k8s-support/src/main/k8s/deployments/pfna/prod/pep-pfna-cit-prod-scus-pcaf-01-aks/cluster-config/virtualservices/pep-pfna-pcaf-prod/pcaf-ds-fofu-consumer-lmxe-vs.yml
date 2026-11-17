@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-ds-fofu-consumer-lmxe-vs
+  namespace: pep-pfna-pcaf-prod
+  labels:
+      app: pcaf-ds-fofu-consumer
+spec:
+  hosts:
+  - pcaf-ds-fofu-consumer.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-ds-fofu-consumer.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080
+  

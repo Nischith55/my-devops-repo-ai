@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-pbna-quikpick-dev
+    pep-cmdb-app-service-id: 22dd608347a6dd1859866582846d43b9
+    pep-cmdb-bus-app-id: eadd608347a6dd1859866582846d43b5
+    pep-environment: Development
+    project: quikpick
+    sector: pbna
+    servicename_aks: quikpickbypepsicocommercializationprod
+    team: pbna-quikpick
+  name: pep-eiap-pbna-quikpick-dev

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: schstckout-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for schstckout-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-schstckout-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm
+  - peppfnaschnonprodacr.azurecr.io/bitnamicharts
+  destinations:
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-schstckout-dev
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: schstckout-dev-admin
+    description: Admin privileges to schstckout-dev
+    policies:
+    - p, proj:schstckout-dev:schstckout-dev-admin, applications, *, schstckout-dev/*, allow
+    - p, proj:schstckout-dev:schstckout-dev-admin, repositories, *, schstckout-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: schstckout-dev-user
+    description: Read-only privileges to schstckout-dev
+    policies:
+    - p, proj:schstckout-dev:schstckout-dev-user, applications, get, schstckout-dev/*, allow
+    - p, proj:schstckout-dev:schstckout-dev-user, applications, sync, schstckout-dev/*, allow
+    - p, proj:schstckout-dev:schstckout-dev-user, repositories, get, schstckout-dev/*, allow
+    - p, proj:schstckout-dev:schstckout-dev-user, applications, action/apps/Deployment/restart, schstckout-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.SCH.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.PFNA.SCH.Contributor"

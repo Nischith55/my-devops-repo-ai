@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-pcaf-python-services-blobstorage-dr
+  namespace: pep-pfna-pcaf-dev
+spec:
+  host: pep-pcaf-python-services-blobstorage.pep-pfna-pcaf-dev.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: IstioSessionAffinity
+          ttl: 0s

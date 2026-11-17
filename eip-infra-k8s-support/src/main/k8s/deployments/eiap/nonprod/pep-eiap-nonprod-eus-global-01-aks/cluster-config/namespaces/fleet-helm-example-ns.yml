@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    kubernetes.io/metadata.name: fleet-helm-example
+    name: fleet-helm-example
+    servicename_aks: sharedaks
+  name: fleet-helm-example

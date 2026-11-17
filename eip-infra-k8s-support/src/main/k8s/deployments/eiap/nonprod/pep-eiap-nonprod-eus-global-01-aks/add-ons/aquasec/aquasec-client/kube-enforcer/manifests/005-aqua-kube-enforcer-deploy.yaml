@@ -1,0 +1,113 @@
+---
+## Updated Tolerations to deploy only on System Nodepool and PepCA certs as Projected volume ##
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: aqua-kube-enforcer
+  namespace: aquasec-client
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: aqua-kube-enforcer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: aqua-kube-enforcer
+    app.kubernetes.io/created-by: haritha_shakirat_2021-09-20
+    app.kubernetes.io/managed-by: manual  
+  name: aqua-kube-enforcer
+  namespace: aquasec-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aqua-kube-enforcer
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: aqua-kube-enforcer
+    spec:
+      # PEP - System Node Pool Selector
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        # this is AKS generated label for all system node pools
+        kubernetes.azure.com/mode: system
+      tolerations:
+        # tolerate System node pool taint
+        - operator: Exists
+          key: CriticalAddonsOnly
+      containers:
+      - env:
+        - name: AQUA_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: aqua-kube-enforcer-token
+              optional: true
+        envFrom:
+        - configMapRef:
+            name: aqua-kube-enforcer-cm
+        image: registry.aquasec.com/kube-enforcer:6.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          tcpSocket:
+            port: 8080
+        name: kube-enforcer
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          tcpSocket:
+            port: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /certs
+          name: kube-enforcer-ssl
+        - mountPath: /tmp
+          name: projected
+          readOnly: true
+      imagePullSecrets:
+      - name: aqua-registry
+      securityContext:
+        fsGroup: 11433
+        runAsGroup: 11433
+        runAsUser: 11431
+      serviceAccountName: aqua-kube-enforcer-sa
+      volumes:
+      - name: projected
+        projected:
+          defaultMode: 420
+          sources:
+          ## Remeber to create ConfigMap in .pem format ##
+          - configMap:
+              items:
+              - key: PepsiCoRootCA.pem
+                path: PepsiCoRootCA.pem
+              - key: PepsiCoCA01.pem
+                path: PepsiCoCA01.pem
+              name: pep-ca-certs-config
+      ## This is needed for Admission controller server. Follow the documentation for creating new CA certificates and use it here ##
+      ## Can also get the values from existing clusters "kube-enforcer-ssl" secret ##
+      - name: kube-enforcer-ssl
+        secret:
+          items:
+          - key: aqua_ke.crt
+            path: aqua_ke.crt
+          - key: aqua_ke.key
+            path: aqua_ke.key
+          secretName: kube-enforcer-ssl
+status: {}

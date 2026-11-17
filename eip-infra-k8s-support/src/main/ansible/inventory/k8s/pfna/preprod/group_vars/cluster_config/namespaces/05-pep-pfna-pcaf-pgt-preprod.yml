@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace pfna hhnext
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa, prod or preprod etc}
+
+ns_pep_pfna_pcaf_pgt_preprod:
+
+  name: pep-pfna-pcaf-pgt-preprod
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: pfna-pcaf-pgt
+    sector: pfna
+    project: pcaf-pgt
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pfna_pgt'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-pfna-pcaf-pgt-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb

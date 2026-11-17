@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: pepsico-eip-eipone-batch-ami-service-v1
+    meta.helm.sh/release-namespace: pep-eiap-global-eipone-prod
+  labels:
+    app: pepsico-eip-eipone-batch-ami-service
+    app.kubernetes.io/instance: pepsico-eip-eipone-batch-ami-service-v1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.1
+  name: pepsico-eip-eipone-batch-ami-service-prod
+  namespace: pep-eiap-global-eipone-prod
+spec:
+  gateways:
+  - pep-eiap-global-eipone-prod/pep-eiap-global-eipone-prod-cv-gw
+  hosts:
+  - pepsico-eip-eipone-batch-ami-service-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-eipone-batch-ami-service.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 8080

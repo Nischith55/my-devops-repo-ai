@@ -1,0 +1,106 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-gpg-qa-cv-gw
+  namespace: pep-dps-cgf-gpg-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-gpg-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-gpg-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-gpg-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - gpg-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gpg-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-gpg-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-gpg-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - gpg-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gpg-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gpg-na.qa.mypepsico.com
+    - gpg.qa.mypepsico.com
+    name: pep-dps-cgf-gpg-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-gpg-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - gpg-na.qa.mypepsico.com
+    name: pep-dps-cgf-gpg-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-gpg-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: gpg-na.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - gpg.qa.mypepsico.com
+    name: pep-dps-cgf-gpg-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-cgf-gpg-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: gpg.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

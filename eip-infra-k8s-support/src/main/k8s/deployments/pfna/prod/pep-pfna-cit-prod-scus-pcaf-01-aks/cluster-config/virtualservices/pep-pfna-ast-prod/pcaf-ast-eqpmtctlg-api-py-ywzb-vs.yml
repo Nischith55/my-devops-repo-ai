@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-ast-eqpmtctlg-api-py-ywzb-vs
+  namespace: pep-pfna-ast-prod
+  labels:
+      app: pcaf-ast-eqpmtctlg-api-py
+spec:
+  hosts:
+  - pcaf-ast-eqpmtctlg-api-py-prod.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-ast-prod/pep-pfna-ast-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-ast-eqpmtctlg-api-py.pep-pfna-ast-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.mypepsico.com
+      allowMethods:
+      - OPTIONS
+      - GET
+      - POST
+      - PUT
+      - DELETE
+  
+      allowCredentials: true
+       
+  

@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-prod: 'true'
+    environment: prod
+    istio.io/rev: prod-stable
+    project: test4
+    sector: test
+    team: test-test4
+  name: pep-snt-test-test4-prod

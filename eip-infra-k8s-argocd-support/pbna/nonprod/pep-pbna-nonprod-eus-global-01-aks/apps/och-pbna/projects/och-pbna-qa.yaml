@@ -1,0 +1,39 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: och-pbna-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for och-pbna-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pbna-nonprod-eus-global-01-aks
+        namespace: pep-pbna-pbna-savvy-qa
+      - name: pep-pbna-nonprod-eus-global-01-aks
+        namespace: pep-pbna-ops-admin
+      roles:
+      - name: och-pbna-qa-admin
+        description: Admin privileges to och-pbna-qa
+        policies:
+        - p, proj:och-pbna-qa:och-pbna-qa-admin, applications, *, och-pbna-qa/*, allow
+        - p, proj:och-pbna-qa:och-pbna-qa-admin, repositories, *, och-pbna-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: och-pbna-qa-user
+        description: Read-only privileges to och-pbna-qa
+        policies:
+        - p, proj:och-pbna-qa:och-pbna-qa-user, applications, get, och-pbna-qa/*, allow
+        - p, proj:och-pbna-qa:och-pbna-qa-user, applications, sync, och-pbna-qa/*, allow
+        - p, proj:och-pbna-qa:och-pbna-qa-user, repositories, get, och-pbna-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:och-pbna-qa:och-pbna-qa-user, applications, action/apps/Deployment/restart, och-pbna-qa/*, allow
+        groups:
+        - "Team.Support.OCH.NA.DigitalSales.Developer"
+        - "Team.Support.EIAP.READ"
+    

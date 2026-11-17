@@ -1,0 +1,32 @@
+cluster_vnet_snet_resource_group_name   = "pep-network-non-prod-pfna-eus-01-rg"
+cluster_vnet_name                       = "pep-paas-nonprod-pfna-eus-01-vnet"
+cluster_snet_name                       = "pep-aks-global-03-subnet"
+managed_identity_name                   = "pep-pfna-cit-preprod-eus-pgt-01-aks-01-mi"
+managed_identity_resource_group_name    = "pep-pfna-cit-preproddr-eus-k8s-pgt-01-rg"
+cluster_resource_group_name             = "pep-pfna-cit-preproddr-eus-k8s-pgt-01-rg"
+resource_name_to_create                 = "pep-pfna-cit-preprod-eus-pgt-01-aks"
+cluster_location                        = "eastus"
+active_directory_admin_group_object_ids = ["367dfb5d-8aed-4dcf-9366-6024024bfb94"]
+private_dns_zone_id                     = "/subscriptions/463c7676-c9ae-45e7-98c7-cd83065a4fb1/resourceGroups/pep-network-privatednszone-01-rg/providers/Microsoft.Network/privateDnsZones/privatelink.eastus.azmk8s.io"
+kubernetes_version                      = "1.30.7"
+default_node_pool_resource_group        = "pep-pfna-cit-preprod-eus-pgt-01-aks-rg"
+cluster_tags = {
+  CreateData      = "{\"User\": \"80303850\", \"TimeStamp\": \"2023-02-24T14:26:51\", \"ExecuteHost\": \"USC02DVADXML85\"}"
+  ModifiedData    = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-07-07T14:06:12\", \"ExecuteHost\": \"pepsico-pfna-global-devsecops-agent-batchjob-knfxt-5v4cv\", \"build\": \"1825089\"}"
+  department      = "pfna"
+  description     = "pgt 01 AKS Cluster"
+  environment     = "preprod"
+  financialTag    = "H-######"
+  serviceName     = "och-hhnext"
+  spn             = "pep-eiap-preprod-k8s-sp"
+  crosscharge_aks = "direct"
+}
+default_node_pool_tags = {
+  ModifiedData = "{\"ExecuteHost\": \"LTIN383042\", \"TimeStamp\": \"2023-08-09T17:27:48\", \"User\": \"yuvaraj\"}"
+  department   = "pfna"
+  description  = "pgt 01 AKS Cluster"
+  environment  = "preprod"
+  financialTag = "H-######"
+  serviceName  = "och-hhnext"
+  spn          = "pep-eiap-preprod-k8s-sp"
+}

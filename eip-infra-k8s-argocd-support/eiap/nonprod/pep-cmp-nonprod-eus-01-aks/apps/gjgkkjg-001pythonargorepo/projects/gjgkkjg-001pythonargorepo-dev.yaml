@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gjgkkjg-001pythonargorepo-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for gjgkkjg-001pythonargorepo-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/gjgkkjg-001pythonargorepo-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: gjgkkjg-001pythonargorepo-dev-admin
+    description: Admin privileges to gjgkkjg-001pythonargorepo-dev
+    policies:
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-admin, applications, *, gjgkkjg-001pythonargorepo-dev/*, allow
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-admin, repositories, *, gjgkkjg-001pythonargorepo-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gjgkkjg-001pythonargorepo-dev-user
+    description: Read-only privileges to gjgkkjg-001pythonargorepo-dev
+    policies:
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-user, applications, get, gjgkkjg-001pythonargorepo-dev/*, allow
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-user, applications, sync, gjgkkjg-001pythonargorepo-dev/*, allow
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-user, repositories, get, gjgkkjg-001pythonargorepo-dev/*, allow
+    - p, proj:gjgkkjg-001pythonargorepo-dev:gjgkkjg-001pythonargorepo-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ"

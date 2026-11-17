@@ -1,0 +1,203 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-cle-dev-cv-gw
+  namespace: pep-eiap-cgf-cle-dev
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - cle.dev.mypepsico.com
+    - pep-eiap-cgf-cle-react.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle.beta.dev.mypepsico.com
+    - nextgencle.dev.mypepsico.com
+    - pep-eiap-cgf-nextgen-cle-ui-pre-alpha.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle.dev.mypepsico.com
+    - pep-eiap-cgf-cle-react.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle.beta.dev.mypepsico.com
+    - nextgencle.dev.mypepsico.com
+    - pep-eiap-cgf-nextgen-cle-ui-pre-alpha.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-cle-dev-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-cle-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-eiap-cgf-cle-admin-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-app-lib-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-common-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-download-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-export-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-poc-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-report-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-kafka-producer-client.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-external-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-admin-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-app-lib-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-common-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-download-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-export-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-poc-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-report-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-kafka-producer-client.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsites-container-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsite-a-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsite-b-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-cle-blob-metric-service.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-external-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-cle-dev-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-cle-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-eiap-cgf-cle-admin-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-app-lib-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-common-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-download-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-export-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-poc-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-report-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle-rest-api.dev.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-kafka-producer-client.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-external-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-admin-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-app-lib-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-common-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-download-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-exception-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-export-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-log-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-metric-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-poc-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-replay-data-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-report-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle-rest-api.dev.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-user-services.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-kafka-producer-client.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsites-container-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsite-a-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-subsite-b-poc-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-cle-blob-metric-service.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-external-data-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-cle-dev-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-cle-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - cle-rest-api.dev.intra.pepsico.com
+    name: pep-eiap-cgf-cle-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-eiap-cgf-cle-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cle-rest-api-gw01-tls-1
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cle-rest-api.dev.intra.pepsico.com
+    name: pep-eiap-cgf-cle-dev-cv-gw-2-https-443
+    port:
+      name: https-pep-eiap-cgf-cle-dev-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cle-rest-api-gw01-tls-1
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

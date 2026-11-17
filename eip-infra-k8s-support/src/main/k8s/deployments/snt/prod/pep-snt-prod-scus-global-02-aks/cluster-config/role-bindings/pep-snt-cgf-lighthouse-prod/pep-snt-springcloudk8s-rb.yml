@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-snt-springcloudk8s-rb
+  namespace: pep-snt-cgf-lighthouse-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-snt-springcloudk8s-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-snt-cgf-lighthouse-prod
+    name: pep-snt-cgf-lighthouse-prod-sa

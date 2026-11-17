@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: spaceservice-gro-pog-gtmgro02-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - spaceservice-gro-pog-gtmgro02.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/space
+    route:
+    - destination:
+        host: pep-pcaf-api-spaceservice-gro-pog.pep-eiap-flna-gtmgro-02-dev.svc.cluster.local
+        port:
+          number: 80

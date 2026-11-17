@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+  labels:
+    app: pep-eip-pepiris-adminapp-webapp
+  name: pep-eip-pepiris-adminapp-webapp-vs
+  namespace: pep-eiap-cgf-pepiris-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepiris-preprod/pep-eiap-cgf-pepiris-preprod-cv-gw
+  hosts:
+  - pep-eip-pepiris-adminapp-webapp.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - pepirisportal.preprod.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pepiris-adminapp-webapp.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 80

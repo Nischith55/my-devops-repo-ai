@@ -1,0 +1,13 @@
+---
+# ##
+# patch prometheus server deployment.
+# ##
+
+_jt_ja_json_spec_patch:
+  # patch command line argument (not supported ones)
+  - op: add
+    path: "/spec/affinity/nodeAffinity\
+            /requiredDuringSchedulingIgnoredDuringExecution\
+            /nodeSelectorTerms/-"
+    value:
+      "{{ system_np_node_selector_term }}"

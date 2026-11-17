@@ -1,0 +1,107 @@
+---
+# #################################################################
+# Every Kustomize folder should have the generator for applications
+# or add-on
+# ##
+# Format: (type: object)
+# #################################################################
+
+global_defaults: {}
+
+override_vars: []
+
+instances: []
+
+components:
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Operator Component
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - name: operator
+
+    override_vars:
+    # This should be in inventory/default
+    - istio_operator_params
+    # This should be in inventory/<environment>
+    - istio_operator_env_params
+    # This should be in inventory/<environment>/host_vars/<cluster_name>
+    - istio_operator_host_params
+
+    global_defaults:
+      # always target namespace
+      namespace: istio-operator
+      # source namespace of resources that need to be kustomized (if exists)
+      src_namespace: &op_target_ns istio-operator
+
+
+    # --
+    # Begin list  of instances of this component
+    # --
+    instances:
+
+    - name: &inst_01_vers '1.10.3'
+      version: *inst_01_vers
+      revision: &inst_01_rev 1-10-3
+      tag: *inst_01_vers
+
+      # ##
+      # kustomize configuration
+      #   static: type(list)
+      #   external_commands: type(list)
+      # ##
+      kustomize_conf:
+
+        # ~~~
+        # All resources
+        # ~~~
+        resources:
+          static: []
+          generated:
+            external_commands:
+            - name: istioctl
+              #use_default_cmd: True
+              method: operator_dump
+              args:
+              - revision: *inst_01_rev
+                tag: *inst_01_vers
+              kwargs:
+                output_path_var: dump_output_path
+        # ~~~
+        # All patches
+        # ~~~
+        patch_items:
+        - inline:
+            target:
+              kind: Deployment
+            patch:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                # IMPORTANT: required not used
+                name: not-used
+              spec:
+                replicas: 3
+                template:
+                  spec:
+                    nodeSelector:
+                      kubernetes.azure.com/mode: system
+                      kubernetes.io/os: linux
+                    tolerations:
+                    - key: CriticalAddonsOnly
+                      operator: Exists
+                    # make sure we run only 1 instance in zones
+                    topologySpreadConstraints:
+                    - maxSkew: 1
+                      topologyKey: topology.kubernetes.io/zone
+                      # Hard Constraint
+                      whenUnsatisfiable: DoNotSchedule
+                      labelSelector:
+                        matchLabels:
+                          name: istio-operator-1-10-3
+                    containers:
+                    - name: istio-operator
+                      env:
+                      # The namespaces the operator controller watches, could be
+                      # namespace list separated by comma, eg. 'ns1,ns2'
+                      - name: WATCH_NAMESPACE
+                        value: istio-system

@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pep-eip-global-cmp-ui-pdb
+  namespace: pep-eiap-global-cmp-qa
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pep-eip-global-cmp-ui

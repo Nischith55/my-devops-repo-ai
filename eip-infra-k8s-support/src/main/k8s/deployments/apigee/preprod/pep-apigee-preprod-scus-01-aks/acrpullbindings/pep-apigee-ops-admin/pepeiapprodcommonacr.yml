@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapprodcommonacr
+  namespace: pep-apigee-ops-admin
+spec:
+  acrServer: pepeiapprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc/resourcegroups/pep-apigee-preprod-scus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-apigee-preprod-scus-01-aks-agentpool
+  # serviceAccountName: <add if different than default>

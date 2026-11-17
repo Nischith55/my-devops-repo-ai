@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-eip-latam-cim-sales-sql-processor
+  name: pepsico-eip-latam-cim-sales-sql-processor-vs
+  namespace: pep-eiap-latam-gtm-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-preprod/pep-eiap-latam-gtm-preprod-cv-gw
+  hosts:
+  - pepsico-eip-latam-cim-sales-sql-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-latam-cim-sales-sql-processor.pep-eiap-latam-gtm-preprod.svc.cluster.local
+        port:
+          number: 80

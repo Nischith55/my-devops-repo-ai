@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-sizeclsseq-qa-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-shp-sizeclsseq-qa.genp.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - pcaf-shp-sizeclsseq-qa-genp.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-sizeclsseq.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://q2.pfnaweb.mypepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link
+      - x-source
+      - Access-Control-Allow-Origin  
+      exposeHeaders:
+      - x-total-count
+      - x-source  

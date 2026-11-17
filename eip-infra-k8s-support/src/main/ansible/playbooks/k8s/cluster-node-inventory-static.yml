@@ -1,0 +1,77 @@
+---
+# ##
+# Description:
+#   This playbook contains general cluster node management tasks post install.
+# Requirements:
+#  - You must have the ssh private key file for the corresponding public key
+#    that was included when the cluster was provisioned. NOTE: it is different
+#    for each environment.
+# ##
+
+
+- name: PLAY_GENERATE_CLUSTER_NODE_INVENTORY
+  # cluster name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    cluster_name: "{{ inventory_hostname }}"
+    kube_context_name: "{{ cluster_name }}"
+
+  tasks:
+
+    - name: GENERATE_CLUSTER_NODE_INVENTORY_BLOCK
+      block:
+
+        - name: PRINT_PATHS_FROM_VARS_FILES
+          debug:
+            msg: |
+              k8s_inv_env_base_dir: {{ k8s_inv_env_base_dir }}
+              k8s_generated_aks_inv_dir: {{ k8s_generated_aks_inv_dir }}
+
+        - name: GENERATE_CLUSTER_NODE_INVENTORY
+          include_tasks:
+            file: tasks/inventory/cluster-node-inventory-generate.yml
+          vars:
+            params_task:
+              kube_context: "{{ kube_context_name }}"
+              inventory_file: |-
+                {{ 
+                  (k8s_generated_aks_inv_dir, cluster_name + '.yml') 
+                  | path_join 
+                }}
+              inventory_group_name: |-
+                {{ cluster_name | replace('-', '_') }}
+
+
+      when: ("generate_inv_cluster" in (run_task | default("")).split())
+
+# ##
+# Static Inventory Play
+# ##
+
+- name: CLUSTER_NODES_LIFECYCLE
+  hosts: "{{ target }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - name: EXECUTE_CMD_ON_NODE_BLOCK
+      block:
+
+        - name: WAIT_FOR_SSH_BANNERS
+          wait_for_connection:
+            delay: "{{ ssh_delay | default('5') | int }}"
+            timeout: "{{ ssh_timeout | default('300') | int }}"
+
+        - name: DO_WORK_ON_NODE_TODO
+          command: ls -l /etc/sysctl.conf
+          register: cmd_result
+
+        - name: PRINT_RESULT
+          debug:
+            msg: "{{ cmd_result }}"
+      when: >-
+        ("exec_cmd_node" in (run_task | default("")).split())

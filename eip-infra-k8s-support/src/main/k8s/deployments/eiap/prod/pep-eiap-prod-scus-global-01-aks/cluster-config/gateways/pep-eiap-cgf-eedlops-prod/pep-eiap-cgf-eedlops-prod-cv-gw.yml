@@ -1,0 +1,94 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-eedlops-prod-cv-gw
+  namespace: pep-eiap-cgf-eedlops-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-cgf-eedlops-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-eedlops-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-eedlops-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - ai-obs-mlflow-server.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-mgmt-backend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-observability-framework.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-logtoarize.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-multiprocessing.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-bff-gateway.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-dashboard-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-program-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-project-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ml-instrumentation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-rbac.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-rai-compliance.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-trace-exporter-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-itsm-alert-integrator.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-onboarding-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-documentation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - arize-resource-provisioner.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-copilot-bridge-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-eedlops-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-eedlops-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ai-obs-mlflow-server.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-mgmt-backend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-observability-framework.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-logtoarize.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ai-obs-model-multiprocessing.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-bff-gateway.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-dashboard-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-program-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-backend-project-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ml-instrumentation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-rbac.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-rai-compliance.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-trace-exporter-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-itsm-alert-integrator.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-onboarding-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-documentation.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - arize-resource-provisioner.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-aisp-pepvigil-copilot-bridge-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-eedlops-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-eedlops-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

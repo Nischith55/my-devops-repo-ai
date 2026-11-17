@@ -1,0 +1,37 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- $labels := .Values.global.labels -}}
+{{- $appChartlabels := include "app-chart.labels" . }}
+
+{{- if .Values.configmapFromFile.enabled }}
+
+{{- /* Merge both maps into one iterable structure */ -}}
+{{- $all := dict -}}
+{{- range $k, $v := .Values.configmapFromFile.configurations }}
+{{- $_ := set $all $k (dict "type" "single" "value" $v) }}
+{{- end }}
+{{- range $k, $v := .Values.configmapFromFile.jsonconfigurations }}
+{{- $_ := set $all $k (dict "type" "json" "value" $v) }}
+{{- end }}
+
+{{- range $name, $item := $all }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-configmap
+  namespace: {{ $namespace }}
+  labels:
+    {{- $appChartlabels | nindent 4 }}
+data:
+{{- if eq $item.type "single" }}
+  {{ $name }}.yml: |
+{{ $item.value.config | indent 4 }}
+{{- else if eq $item.type "json" }}
+{{- range $filename, $content := $item.value.config }}
+  {{ $filename }}: |
+{{ $content | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}

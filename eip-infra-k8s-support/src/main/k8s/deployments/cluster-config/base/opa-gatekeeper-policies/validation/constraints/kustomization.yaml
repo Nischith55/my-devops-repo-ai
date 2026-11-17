@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- block-load-balancer.yaml
+- block-node-port.yaml
+- container-image-must-not-have-latest-tag.yaml
+- container-must-have-limits-and-requests.yaml
+- container-must-have-limits.yaml
+- container-must-have-requests.yaml
+- must-have-probes.yaml
+- pod-distruption-budget.yaml
+- replicalimit.yaml
+- restrictrepo.yaml
+# - containerdenyemptydirnosizelimit.yaml
+# - gatekeeper-sync-config.yaml
+# - horizontal-pod-autoscaler.yaml
+# - psp-allow-privilege-escalation-container.yaml
+# - psp-privileged-container.yaml
+# - verify-1.25.yaml
+# - virtualservicedenyduplicate.yaml

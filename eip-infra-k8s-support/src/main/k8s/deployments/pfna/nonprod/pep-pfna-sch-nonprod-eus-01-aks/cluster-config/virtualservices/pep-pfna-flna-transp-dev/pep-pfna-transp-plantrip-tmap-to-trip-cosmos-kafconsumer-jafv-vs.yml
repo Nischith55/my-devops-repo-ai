@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-plantrip-tmap-to-trip-cosmos-kafconsumer-jafv-vs
+  namespace: pep-pfna-flna-transp-dev
+  labels:
+      app: pep-pfna-transp-plantrip-tmap-to-trip-cosmos-kafconsumer
+spec:
+  hosts:
+  - pep-pfna-transp-plantrip-tmap-to-trip-cosmos-kafconsumer.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/plannedtrips/bronze-feed
+    route:
+    - destination:
+        host: pep-pfna-transp-plantrip-tmap-to-trip-cosmos-kafconsumer.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80
+  

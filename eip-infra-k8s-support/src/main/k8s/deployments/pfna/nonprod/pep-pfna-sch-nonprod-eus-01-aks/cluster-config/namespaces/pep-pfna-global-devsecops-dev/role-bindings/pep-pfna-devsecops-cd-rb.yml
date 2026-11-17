@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-pfna-devsecops-cd-rb
+  namespace: pep-pfna-global-devsecops-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-sch-devsecops-cd-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-pfna-global-devsecops-dev
+    name: pep-pfna-buildagent

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gpg-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gpg-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SNT_Global_Payment_Gateway/_git/gpg-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-gpg-preprod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gpg-preprod-admin
+    description: Admin privileges to gpg-preprod
+    policies:
+    - p, proj:gpg-preprod:gpg-preprod-admin, applications, *, gpg-preprod/*, allow
+    - p, proj:gpg-preprod:gpg-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:gpg-preprod:gpg-preprod-admin, repositories, *, gpg-preprod/*, allow
+    groups:
+    - "Team.App.DPS.GPG.Preprod"
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gpg-preprod-user
+    description: Read-only privileges to gpg-preprod
+    policies:
+    - p, proj:gpg-preprod:gpg-preprod-user, applications, get, gpg-preprod/*, allow
+    - p, proj:gpg-preprod:gpg-preprod-user, applications, sync, gpg-preprod/*, allow
+    - p, proj:gpg-preprod:gpg-preprod-user, repositories, get, gpg-preprod/*, allow
+    - p, proj:gpg-preprod:gpg-preprod-user, applications, action/apps/Deployment/restart, gpg-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.DPS.GPG.Preprod"
+    - "Team.Support.EIAP.READ"

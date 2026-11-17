@@ -1,0 +1,26 @@
+---
+# generated file please do not edit
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: control-plane-main
+  namespace: istio-system
+spec:
+  meshConfig:
+    defaultConfig:
+      tracing:
+        zipkin:
+          address: jaeger-backend-collector.observability.svc.cluster.local:9411
+    defaultDestinationRuleExportTo:
+    - '*'
+    defaultServiceExportTo:
+    - '*'
+    defaultVirtualServiceExportTo:
+    - '*'
+    disablePolicyChecks: true
+    enableAutoMtls: true
+    enablePrometheusMerge: true
+    h2UpgradePolicy: DO_NOT_UPGRADE
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY
+    rootNamespace: pep-eiap-istio-config

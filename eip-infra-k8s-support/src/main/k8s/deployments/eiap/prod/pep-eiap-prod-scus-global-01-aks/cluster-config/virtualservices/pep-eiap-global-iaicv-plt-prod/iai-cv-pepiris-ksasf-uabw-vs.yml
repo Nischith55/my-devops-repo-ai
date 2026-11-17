@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: iai-cv-pepiris-ksasf-uabw-vs
+  namespace: pep-eiap-global-iaicv-plt-prod
+  labels:
+      app: iai-cv-pepiris-ksasf
+spec:
+  hosts:
+  - iai-cv-pepiris-ksasf-prod-admin-portal.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - pepirisportal.mypepsico.com
+  gateways:
+  - pep-eiap-global-iaicv-plt-prod/pep-eiap-global-iaicv-plt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: iai-cv-pepiris-ksasf.pep-eiap-global-iaicv-plt-prod.svc.cluster.local
+        port:
+          number: 8000
+  

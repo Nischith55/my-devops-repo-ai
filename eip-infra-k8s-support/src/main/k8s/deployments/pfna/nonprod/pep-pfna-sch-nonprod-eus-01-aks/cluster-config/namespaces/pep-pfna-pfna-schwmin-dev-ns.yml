@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-pfna-schwmin-dev
+  labels:
+    env-nonprod: "true"
+    project: schwmin
+    sector: pfna
+    team: pfna-schwmin
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: scwarehouseintegratornon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-cmdb-app-service-id: 1a3f14f0-b251-4507-8eaf-b640c2ccfd9d
+    pep-environment: Development
+    

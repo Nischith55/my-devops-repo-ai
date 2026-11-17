@@ -1,0 +1,174 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-iwms-prod-cv-gw
+  namespace: pep-pfna-flna-iwms-prod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-iwms-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-iwms-prod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-iwms-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pfna-flna-iwms-prod-api-core-docks.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-inventory.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-picking.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-production-transfer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-shift-summary.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-yards.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-dispatches.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-home.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-kpi.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-load-status.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-location.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-picking.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-shipping.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-tripplan.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-picking.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-yards.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-docks.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-inv-activity.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-home-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-picking-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-shipping-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-dispatches-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-tripplan-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-location-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-iwms-quick-report-frontend-service.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-iwms-quick-report-backend-service.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-home-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-tripplan-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-location-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-load-status-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-shipping-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-kpi-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-dock-door-performance.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-dispatches-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-shift-summary-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-production-transfer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-picking-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-docks-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-activity-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-picking-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-shift-summary-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui-temp.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-iwms-prod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-iwms-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-prod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pfna-flna-iwms-prod-api-core-docks.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-inventory.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-picking.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-production-transfer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-shift-summary.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-yards.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-dispatches.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-home.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-kpi.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-load-status.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-location.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-picking.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-shipping.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-tripplan.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - iwms.mypepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-picking.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-yards.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-docks.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-core-inv-activity.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-home-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-picking-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-shipping-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-dispatches-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-tripplan-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-api-location-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-iwms-quick-report-frontend-service.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-iwms-quick-report-backend-service.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-home-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-tripplan-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-location-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-load-status-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-shipping-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-kpi-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-dock-door-performance.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-dispatches-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-shift-summary-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-production-transfer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-picking-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-docks-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-activity-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-picking-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-shift-summary-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pfna-smartwarehouse-core-inventory-poc.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-iwms-prod-ui-temp.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-iwms-prod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-iwms-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - iwms.mypepsico.com
+    name: pep-pfna-flna-iwms-prod-cv-gw-1-https-443
+    port:
+      name: https-pep-pfna-flna-iwms-prod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-prod-scus-iwms-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

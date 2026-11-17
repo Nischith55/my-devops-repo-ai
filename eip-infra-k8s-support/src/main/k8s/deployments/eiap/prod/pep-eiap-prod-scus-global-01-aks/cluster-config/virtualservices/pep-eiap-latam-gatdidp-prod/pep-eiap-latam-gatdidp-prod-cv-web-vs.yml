@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-latam-gatdidp-prod-cv-web-vs
+  namespace: pep-eiap-latam-gatdidp-prod
+  labels:
+    app: pep-eiap-latam-gatdidp-prod-cv-web
+spec:
+  hosts:
+    - gatorade-api.pepsico.com
+    - pep-eiap-latam-gatdidp-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-gatdidp-prod/pep-eiap-latam-gatdidp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-latam-gatdidp-prod-cv-web.pep-eiap-latam-gatdidp-prod.svc.cluster.local
+        port:
+          number: 80

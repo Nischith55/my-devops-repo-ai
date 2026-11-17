@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 0128aec0-9af6-48bd-b269-99f27f5f2f43
+  name: pep-cmp-cmp-nuhi-dev-sa
+  namespace: pep-cmp-cmp-nuhi-dev

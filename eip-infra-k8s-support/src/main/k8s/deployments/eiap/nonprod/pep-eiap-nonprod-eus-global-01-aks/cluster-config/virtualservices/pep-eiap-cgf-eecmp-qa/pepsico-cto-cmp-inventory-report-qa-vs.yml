@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:28:35Z"
+  generation: 1
+  name: pepsico-cto-cmp-inventory-report-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638230304"
+  uid: 3f0f7f0f-5f71-4a67-877e-4790c72953ac
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-inventory-report-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/inventory/report
+    route:
+    - destination:
+        host: pepsico-cto-cmp-inventory-report.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

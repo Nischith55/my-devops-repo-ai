@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-iaicv-qa
+    project: iaicv
+    sector: cgf
+    servicename_aks: iaicv-computervision
+    team: cgf-iaicv
+  name: pep-eiap-cgf-iaicv-qa

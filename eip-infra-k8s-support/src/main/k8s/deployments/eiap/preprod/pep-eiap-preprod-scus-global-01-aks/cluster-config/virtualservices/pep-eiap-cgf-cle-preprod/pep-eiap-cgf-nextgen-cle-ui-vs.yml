@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-cgf-nextgen-cle-ui-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["nextgencle.ite.mypepsico.com","pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"tls":[{"match":[{"port":443,"sniHosts":["nextgencle.ite.mypepsico.com","pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"]}],"route":[{"destination":{"host":"pep-eiap-cgf-nextgen-cle-ui.pep-eiap-cgf-cle-preprod.svc.cluster.local","port":{"number":443}}}]}]}}
+  labels:
+    app: pep-eiap-cgf-nextgen-cle-ui
+  name: pep-eiap-cgf-nextgen-cle-ui-vs
+  namespace: pep-eiap-cgf-cle-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-cle-preprod/pep-eiap-cgf-cle-preprod-cv-gw
+  hosts:
+  - nextgencle.ite.mypepsico.com
+  - pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - nextgencle.ite.mypepsico.com
+      - pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: pep-eiap-cgf-nextgen-cle-ui.pep-eiap-cgf-cle-preprod.svc.cluster.local
+        port:
+          number: 443

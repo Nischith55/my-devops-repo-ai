@@ -1,0 +1,58 @@
+---
+- name: Tag Namespace
+  hosts: localhost 
+  connection: local
+  collections:
+    - kubernetes.core
+    - azure.azcollection
+    - ansible.utils
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_TENANT_ID' ) }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks: 
+    - name: set variables
+      set_fact:
+        cluster_name: "{{ vars['cluster_name'] }}"
+        resource_group: "{{ vars['resource_group'] }}"
+        department: "{{ vars['department'] }}"
+        env: "{{ vars['env'] }}"
+        script_dir: "{{ lookup('env', 'script_dir') }}"
+        
+    - name: Get facts for one Azure Kubernetes Service
+      azure.azcollection.azure_rm_aks_info:
+        name: "{{ cluster_name }}"
+        resource_group: "{{ resource_group }}"
+      register: aks_info
+    
+    - debug:
+        msg: "{{ aks_info.aks[0].tags.crosscharge_aks }}"
+    
+    - name: Tag namespaces
+      block: 
+        - debug:
+            msg: "this is inside namespace tagging block"
+        
+        - name: connection test
+          command: kubectl get namespaces 
+
+        - name: Get list of namespaces
+          kubernetes.core.k8s_info:
+            kind: namespace 
+          register: namespaces
+
+        - name: add label to existing namespaces 
+          include_tasks: namespace-label-crosscharge.yml
+          with_items: "{{ namespaces.resources }}"
+          vars:
+            script_dir_task: "{{ script_dir }}"
+            department_task: "{{ department }}"
+            env_task: "{{ env }}"
+            cluster_name_task: "{{ cluster_name }}"
+
+      when: aks_info.aks[0].tags.crosscharge_aks is defined

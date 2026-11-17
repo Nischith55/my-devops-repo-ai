@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-pfna-e2eorder-prod
+    project: e2eorder
+    sector: pfna
+    servicename_aks: och-hhnext
+    team: pfna-e2eorder
+  name: pep-eiap-pfna-e2eorder-prod

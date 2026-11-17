@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pbna-wse-lighthouse-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pbna-wse-lighthouse-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-wse-lighthouse-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-pbna-lightho-qa
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pbna-wse-lighthouse-qa-admin
+    description: Admin privileges to pbna-wse-lighthouse-qa
+    policies:
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-admin, applications, *, pbna-wse-lighthouse-qa/*, allow
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-admin, repositories, *, pbna-wse-lighthouse-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pbna-wse-lighthouse-qa-user
+    description: Read-only privileges to pbna-wse-lighthouse-qa
+    policies:
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-user, applications, get, pbna-wse-lighthouse-qa/*, allow
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-user, applications, sync, pbna-wse-lighthouse-qa/*, allow
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-user, repositories, get, pbna-wse-lighthouse-qa/*, allow
+    - p, proj:pbna-wse-lighthouse-qa:pbna-wse-lighthouse-qa-user, applications, action/apps/Deployment/restart, pbna-wse-lighthouse-qa/*, allow
+    groups:
+    - "Team.Support.PBNA.NonProd.lighth"
+    - "Team.Support.EIAP.READ"

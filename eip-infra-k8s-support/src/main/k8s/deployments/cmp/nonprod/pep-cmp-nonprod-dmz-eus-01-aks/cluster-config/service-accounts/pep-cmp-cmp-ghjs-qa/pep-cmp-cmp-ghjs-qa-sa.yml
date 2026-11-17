@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 20e79628-98b2-4c3f-87a2-8bcde3a5d114
+  name: pep-cmp-cmp-ghjs-qa-sa
+  namespace: pep-cmp-cmp-ghjs-qa

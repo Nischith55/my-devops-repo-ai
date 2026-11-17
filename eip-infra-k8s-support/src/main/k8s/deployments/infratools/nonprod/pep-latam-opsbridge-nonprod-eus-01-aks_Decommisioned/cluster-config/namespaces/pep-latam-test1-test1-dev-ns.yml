@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-latam-test1-test1-dev
+    project: test1
+    sector: test1
+    servicename_aks: operation-bridge
+    team: test1-test1
+  name: pep-latam-test1-test1-dev

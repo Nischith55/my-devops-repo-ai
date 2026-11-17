@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-geographyservice-pog-gro-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-geographyservice-gro-pog.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/geography
+    route:
+    - destination:
+        host: pep-pcaf-api-geographyservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local

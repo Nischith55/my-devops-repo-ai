@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: pep-cto-ee-pepgenx-team-administration
+    meta.helm.sh/release-namespace: pep-eiap-cgf-pepgenx-prod
+  labels:
+    app: pepgenx-team-administration
+    app.kubernetes.io/instance: pep-cto-ee-pepgenx-team-administration
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: '20240718.1'
+    helm.sh/chart: platform-chart-0.1.1
+  name: pepgenx-team-administration
+  namespace: pep-eiap-cgf-pepgenx-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepgenx-prod/pep-eiap-cgf-pepgenx-prod-cv-gw
+  hosts:
+  - pepgenx-team-administration.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepgenx-team-administration.pep-eiap-cgf-pepgenx-prod.svc.cluster.local
+        port:
+          number: 8080

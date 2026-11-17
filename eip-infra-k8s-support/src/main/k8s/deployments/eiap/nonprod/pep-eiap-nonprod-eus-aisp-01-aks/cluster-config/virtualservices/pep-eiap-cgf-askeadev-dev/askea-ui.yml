@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"askea-ui","app.kubernetes.io/instance":"askea-ui-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"askea-ui","namespace":"pep-eiap-cgf-askeadev-dev"},"spec":{"gateways":["pep-eiap-cgf-askeadev-dev/pep-eiap-cgf-askeadev-dev-cv-gw"],"hosts":["askea.dev.pepsico.com","askea-ui.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"askea-ui.pep-eiap-cgf-askeadev-dev.svc.cluster.local","port":{"number":3000}}}]}]}}
+
+'
+    labels:
+        app: askea-ui
+        app.kubernetes.io/instance: askea-ui-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: askea-ui
+    namespace: pep-eiap-cgf-askeadev-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-askeadev-dev/pep-eiap-cgf-askeadev-dev-cv-gw
+    hosts:
+    - askea.dev.pepsico.com
+    - askea-ui.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - architecture.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: askea-ui.pep-eiap-cgf-askeadev-dev.svc.cluster.local
+                port:
+                    number: 3000

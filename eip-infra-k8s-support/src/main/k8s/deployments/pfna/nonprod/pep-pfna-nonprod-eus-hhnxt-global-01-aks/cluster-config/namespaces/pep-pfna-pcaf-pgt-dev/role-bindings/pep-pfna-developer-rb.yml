@@ -1,0 +1,16 @@
+---
+# Generated File do not edit manually
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-pfna-developer-rb
+  namespace: pep-pfna-pcpgt-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-pfna-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.PFNA.RG.AKS.NONPROD.Contributor
+    name: de7790e2-da36-4223-a308-cefdc4e9e544

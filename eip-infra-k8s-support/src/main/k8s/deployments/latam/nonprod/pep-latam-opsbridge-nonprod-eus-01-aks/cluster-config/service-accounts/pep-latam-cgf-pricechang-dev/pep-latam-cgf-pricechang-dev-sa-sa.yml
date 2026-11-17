@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-latam-cgf-pricechang-dev-sa
+  namespace: pep-latam-cgf-pricechang-dev

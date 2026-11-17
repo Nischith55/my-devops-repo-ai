@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"b2b-bff-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"b2b-bff","namespace":"pep-dps-europe-bff-prod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["b2b-bff.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-bff.pep-dps-europe-bff-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: b2b-bff
+    app.kubernetes.io/instance: b2b-bff-prod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: b2b-bff
+  namespace: pep-dps-europe-bff-prod
+spec:
+  gateways:
+  - pep-dps-europe-bff-prod/pep-dps-europe-bff-prod-cv-gw
+  hosts:
+  - b2b-bff.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-bff.pep-dps-europe-bff-prod.svc.cluster.local
+        port:
+          number: 8080

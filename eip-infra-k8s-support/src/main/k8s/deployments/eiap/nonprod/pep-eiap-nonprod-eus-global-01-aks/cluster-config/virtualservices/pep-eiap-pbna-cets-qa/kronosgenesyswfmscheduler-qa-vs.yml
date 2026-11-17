@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: kronosgenesyswfmscheduler
+  name: kronosgenesyswfmscheduler-qa-vs
+  namespace: pep-eiap-pbna-cets-qa
+spec:
+  gateways:
+  - pep-eiap-pbna-cets-qa/pep-eiap-pbna-cets-qa-cv-gw
+  hosts:
+  - kronosgenesyswfmscheduler-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: kronosgenesyswfmscheduler.pep-eiap-pbna-cets-qa.svc.cluster.local
+        port:
+          number: 80

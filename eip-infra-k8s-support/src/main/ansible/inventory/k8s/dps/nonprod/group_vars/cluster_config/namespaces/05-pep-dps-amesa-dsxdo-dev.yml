@@ -1,0 +1,40 @@
+---
+ns_pep_dps_amesa_dsxdo_dev:
+  
+  name: pep-dps-amesa-dsxdo-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: amesa-dsxdo
+    sector: amesa
+    project: dsxdo
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: fmcs-non-prod
+    pep-cmdb-app-service-id: "417422ee836c06502d6757d0deaad326"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-amesa-dsxdo-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['amesa_dsxdo'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-amesa-dsxdo-dev-sa-token
+    namespace: pep-dps-amesa-dsxdo-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-amesa-dsxdo-dev-sa"

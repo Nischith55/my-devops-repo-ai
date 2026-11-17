@@ -1,0 +1,213 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger: 
+- none
+pr: 
+- none 
+
+parameters:
+  - name: env
+    displayName: 'env'
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+  - name: command
+    type: string
+  - name: namespace_list
+    displayName: namespace_list
+    type: boolean
+    default: false 
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - name: env
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: prod
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+      value: preprod
+    ${{ else }}:
+      value: nonprod
+  - name: clusters_env
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: prod
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+      value: prod
+    ${{ else }}:
+      value: nonprod
+
+stages: 
+- stage: execute_command
+  displayName: Execute command on clusters
+  variables:
+    - name: poolname
+      ${{ if eq(parameters.env, 'prod') }}:
+        value: 'pep-eiap-prod-scus-infra-02-aks-agents'
+      ${{ else }}:
+        value: 'pep-eiap-nonprod-gwc-infra-02-aks-agents'
+        #value: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+  pool: 
+      name: $(poolname)
+  jobs:
+  - job: get_list
+    displayName: Get list
+    steps:
+    # - task: Bash@3
+    #   displayName: 'test_task'
+    #   name: test_task
+    #   inputs:
+    #     targetType: 'inline'
+    #     script: |
+    #       echo "starting the script execution. "
+    #       ansible --version
+    #       echo "after version"
+    #       source ~/venv/python38-ansible211/bin/activate
+    #       ansible --version 
+    #       echo "finally ---> "
+    #       exit 1
+    - task: PythonScript@0
+      displayName: get_list
+      name: get_list
+      inputs:
+        scriptSource: 'filePath'
+        scriptPath: '$(system.defaultWorkingDirectory)/src/main/azure_devops/pipelines/templates/get_clusters.py'
+        arguments: "$(clusters_env) $(system.defaultWorkingDirectory)/src/main/azure_devops/pipelines/templates/clusters_pools.json"
+        pythonInterpreter: '/usr/bin/python3'
+
+  - job: execute_command
+    displayName: Execute command on clusters
+    dependsOn: get_list
+    variables:
+      input_json: $[ dependencies.get_list.outputs['get_list.data_json'] ]
+    strategy:
+      matrix: $[ dependencies.get_list.outputs['get_list.data_json'] ]
+    pool: $(agentpool)
+    steps:    
+    - template: templates/set_config_namespace_tagging.yml
+      parameters:
+        cluster: $(cluster)
+        env: $(env)
+
+    - task: Bash@3
+      displayName: 'execute_command'
+      name: execute_command
+      continueOnError: true
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "starting the script execution. "
+          type=`echo $(cluster) | cut -d "-" -f 2`
+          # output=`${{ parameters.command }}`
+          kubectl get deploy --all-namespaces --no-headers | awk '{print $1}' | sort | grep -i ^pep- | uniq -c | awk '{print $2, $1}' > "$(Build.ArtifactStagingDirectory)/$(cluster).txt"
+          #kubectl get deploy -A | wc -l > "$(Build.ArtifactStagingDirectory)/$(cluster).txt"
+          #kubectl get ns -o jsonpath="{.items[*].metadata.name}" | sed 's/ /\n/g' > "$(Build.ArtifactStagingDirectory)/$(cluster).txt"
+          #kubectl get virtualservice -A -o json | jq -r '.items[].spec.hosts[]' | grep -v "intra.pepsico.com" | sed 's/ /\n/g' > "$(Build.ArtifactStagingDirectory)/$(cluster).txt"
+          #kubectl get virtualservice -A -o json | jq -r '.items[].spec.hosts[]' | grep -v "*pepsico.com" | sed 's/ /\n/g' > "$(Build.ArtifactStagingDirectory)/$(cluster).txt"
+          #echo "$output"
+          # conf_map_name=`kubectl get configmap -n pep-$type-elastic-client-01 -o jsonpath="{.items[*].metadata.name}" | sed 's/ /\n/g' | grep filebeat-config`
+          # echo "config map name is $conf_map_name "
+          # server1=`kubectl get configmap $conf_map_name -n pep-$type-elastic-client-01 -o jsonpath="{.data.*}" | grep 'hosts: ' | cut -d '"' -f 2`
+          # echo "server 1 is $server1"
+          # server2=`kubectl get configmap $conf_map_name -n pep-$type-elastic-client-01 -o jsonpath="{.data.*}" | grep 'hosts: ' | cut -d '"' -f 4`
+          # echo "server 2 is $server2"
+          # for i in `kubectl get nodes -o jsonpath="{.items[*].metadata.name}" | sed 's/ /\n/g'`;
+          # do 
+          #   if [[ $i == *"npu"* ]]; then
+          #     echo "Node name $i"
+          #   else 
+          #     echo "Node name $i and not user node pool. so skipping."
+          #     continue
+          #   fi
+          #   kubectl debug node/$i -it --image=mcr.microsoft.com/dotnet/runtime-deps:6.0 -n  pep-$type-infra-dev
+          #   sleep 5
+          #   apt-get update 
+          #   apt install netcat
+          #   nc -zv $server1 
+          #   nc -zv $server2
+          #   exit 
+          # done
+
+      env:
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/'
+        ArtifactName: 'output'
+        publishLocation: 'Container'
+  
+  - job: Final_output
+    dependsOn: execute_command
+    timeoutInMinutes: 0
+    condition: ${{ eq(parameters.namespace_list, true) }}
+    displayName: Final output 
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+          buildType: 'current'
+          downloadType: 'specific'
+          downloadPath: '$(Build.ArtifactStagingDirectory)'
+          cleanDestinationFolder: true
+    
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          cd $(Build.ArtifactStagingDirectory)/output/
+          ls -lrth
+          for dir in `ls -lrth | awk '{print $9}'`;
+          do
+            cluster_name="${dir%%.*}"
+            echo $cluster_name
+            while read p; do
+              namespace=$(echo $p | awk '{print $1}')
+              count=$(echo $p | awk '{print $2}')
+              echo "$cluster_name,$namespace,$count" >> $(Build.ArtifactStagingDirectory)/full_list.txt
+            done <$dir
+          done
+    
+    - task: CmdLine@2
+      displayName: python_configuration
+      inputs:
+        script: |
+          # mkdir -p ~/venv
+          # mkdir -p ~/venv/python38-ansible211
+          # source ~/venv/python38-ansible211/bin/activate
+          . /opt/venv/python38-ansible211/bin/activate
+          python3.8 -m pip install pandas
+          
+    - task: PythonScript@0
+      inputs:
+        scriptSource: 'inline'
+        arguments: $(Build.ArtifactStagingDirectory)
+        pythonInterpreter: '/opt/venv/python38-ansible211/bin/python3'
+        script: |
+          #mkdir -p ~/venv
+          #mkdir -p ~/venv/python38-ansible211
+          #source ~/venv/python38-ansible211/bin/activate
+          #python3 -m pip install pandas
+          import pandas as pd
+          import sys
+          file_txt=sys.argv[1] + "/full_list.txt"
+          file_csv=sys.argv[1] + "/full_list.csv"
+          images = pd.read_csv(file_txt, delimiter = ',', header = None)
+          images.columns = ['Cluster_Name', 'Namespace', 'Deploy_Count']
+          #images.columns = ['Cluster_Name','Deploy_Count']
+          images.to_csv(file_csv, index = None)
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/full_list.csv'
+        ArtifactName: 'output'
+        publishLocation: 'Container'

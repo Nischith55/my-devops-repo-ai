@@ -1,0 +1,112 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-fmcs-qa-cv-gw
+  namespace: pep-dps-cgf-fmcs-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-fmcs-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-fmcs-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-fmcs-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dss-fmcs-qa-new.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dss-fmcs-cep-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-test-fmcs-ui-kit-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-fmcs-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-fmcs-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-dss-fmcs-qa-new.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dss-fmcs-cep-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-ui.qa.mypepsico.com
+    - pep-test-fmcs-ui-kit-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - fmcs-support-forms-uikit-test.qa.mypepsico.com
+    name: pep-dps-cgf-fmcs-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-fmcs-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - fmcs-support-forms-ui.qa.mypepsico.com
+    name: pep-dps-cgf-fmcs-qa-cv-gw-3-https-443
+    port:
+      name: https-pep-dps-cgf-fmcs-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-fmcs-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - fmcs-support-forms-uikit-test.qa.mypepsico.com
+    name: pep-dps-cgf-fmcs-qa-cv-gw-4-https-443
+    port:
+      name: https-pep-dps-cgf-fmcs-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-uikit-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-itc-prod
+  labels:
+    env-prod: "true"
+    project: itc
+    sector: cgf
+    team: cgf-itc
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: itcontrolsagenticautomationprod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: ae4185da47e47ed0531cc5df016d4311
+    pep-cmdb-app-service-id: 105f3caec3ec7ed0613dce05990131aa
+    pep-environment: Production
+    

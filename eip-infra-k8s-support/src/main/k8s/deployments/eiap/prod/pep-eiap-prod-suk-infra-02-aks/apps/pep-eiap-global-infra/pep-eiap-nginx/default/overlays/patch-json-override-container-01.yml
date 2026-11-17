@@ -1,0 +1,7 @@
+---
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+  - mountPath: /secrets
+    name: all-gw-secrets
+    readOnly: true

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-infratools-cgf-shared-dev
+    pep-cmdb-app-service-id: 9a27792b877b851001ee400d0ebb35da
+    pep-cmdb-bus-app-id: 6aaec0f9db3e8c10c2b5f3813996197a
+    pep-environment: Development
+    project: shared
+    sector: cgf
+    servicename_aks: infratools
+    team: cgf-shared
+  name: pep-infratools-cgf-shared-dev

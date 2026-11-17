@@ -1,0 +1,27 @@
+---
+# defaults for spec -> values -> global
+
+__icp_spec_values_global:
+
+  controlPlaneSecurityEnabled: true
+
+  logging:
+    level: default:info
+
+  meshExpansion:
+    enabled: false
+    useILB: false
+
+  proxy:
+    autoInject: enabled
+
+##
+# NOTE: override if needed as we do a combine and default is first always first
+##
+__icp_spec_values_global_params: |-
+  {{
+    __icp_spec_values_global
+    |
+    combine((icp_spec_values_global | default({})), recursive=True)
+  }}
+

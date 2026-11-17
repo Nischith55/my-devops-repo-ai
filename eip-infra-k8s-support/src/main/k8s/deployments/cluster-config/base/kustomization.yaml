@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- opa-gatekeeper-policies/validation/constraints
+
+patchesJson6902:
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sRequiredResources
+      name: container-must-have-limits-and-requests
+    path: global-add-excludednamespaces.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sRequiredResources
+      name: container-must-have-limits-and-requests
+    path: global-add-excemptimages.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerLimits
+      name: container-must-have-limits
+    path: global-add-excludednamespaces.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerLimits
+      name: container-must-have-limits
+    path: global-add-excemptimages.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerRequests
+      name: container-must-have-requests
+    path: global-add-excludednamespaces.yaml 
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sContainerRequests
+      name: container-must-have-requests
+    path: global-add-excemptimages.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sRequiredProbes
+      name: must-have-probes
+    path: global-add-excludednamespaces.yaml
+
+  - target:
+      group: constraints.gatekeeper.sh
+      version: v1beta1
+      kind: K8sAllowedRepos
+      name: restrictrepo
+    path: global-add-excludednamespaces.yaml 

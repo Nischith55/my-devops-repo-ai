@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_psd_qa:
+  
+  name: pep-dps-europe-psd-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-psd
+    sector: europe
+    project: psd
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dpsdsdvisibilityappservice
+    pep-cmdb-app-service-id: "c3ba487fc3ee3194ad658535990131a9"
+    pep-cmdb-bus-app-id: "a0ee40fddb3e8c10c2b5f381399619cd"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-psd-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_psd'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-psd-qa-sa-token
+    namespace: pep-dps-europe-psd-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-psd-qa-sa"

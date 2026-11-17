@@ -1,0 +1,61 @@
+---
+# ##
+# Playbook to manage istio configuration lifecycle.
+#
+# - This playbook only address POST - istio configuration (i.e. istio must be
+# already installed).
+# ##
+
+- name: PLAY_ISTIO_CONFIG_LIFECYCLE
+  # cluster_name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    task_list: "{{ (run_task | default('')).split() }}"
+    cluster_name: "{{ inventory_hostname }}"
+    kube_context_name: "{{ cluster_name }}"
+    #CLI# cp_name
+    # The variable for istio gateway params MUST match
+    _gwy_cfg_vars: |-
+      {{ q('varnames', '^' + (cp_name | replace('-', '_')) +
+                            '_istio_gateways_params$') }}
+    gwys_cfg_query: |-
+      {{ q('vars', *_gwy_cfg_vars) }}
+
+  tasks:
+
+    - name: ADD_ISTIO_CP_CONFIG_BLOCK
+      block:
+
+        - name: ASSERT_ONLY_SINGLE_ELEMENT
+          assert:
+            that:
+              - (gwys_cfg_query | length) == 1
+            fail_msg: |
+              There should only be a single list for vars (non zero): 
+                {{ gwys_cfg_query }}
+              We got: {{ _gwy_cfg_vars }}
+
+        - name: PRINT_ISTIO_CONTROL_PLANE_CONFIG
+          debug:
+            msg: |
+              gateways:
+                {{ (gwys_cfg_query | first)  
+                    | to_nice_yaml(indent=2, width=1337) | trim | indent (2) }}
+          when: (play_print_params | default('false') | bool)
+
+        - name: CREATE_ALL_ISTIO_INGRESS_GATEWAYS
+          include_tasks:
+            file: tasks/create-config-from-template-and-apply-list.yml
+          vars:
+            params_cfg_obj_list:
+              output_base_dir: "{{ istio_mgmt_deploy_base_dir }}"
+              # TODO: We only pick in-gateways when we have out-gateways
+              # we need to merge into 1 list
+              cfg_obj_list: "{{ (gwys_cfg_query | first)['in-gateways'] }}"
+              kube_context: "{{ kube_context_name }}"
+              template_src: istio-config/gateway.yml.j2
+      when: ('gateways_create' in task_list)
+

@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dcs-pg-jms-service-jfnt-vs
+  namespace: pep-eiap-cgf-fss-dev
+  labels:
+      app: dcs-pg
+spec:
+  hosts:
+  - pep-fss-dev-dcs-pg-jms-service.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-fss-dev/pep-eiap-cgf-fss-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /DmMethods/servlet/DoMethod
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-eiap-cgf-fss-dev.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /ACS/servlet
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-eiap-cgf-fss-dev.svc.cluster.local
+        port:
+          number: 9080
+  

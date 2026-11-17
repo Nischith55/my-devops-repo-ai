@@ -1,0 +1,8 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-node-lease
+  labels:
+    istio-injection: disabled

@@ -1,0 +1,50 @@
+---
+# ##
+# ABBREVIATION:
+# - pep-eiap -> pe
+# ##
+
+# must match [add-ons|apps]/<app_name>, where app_name is below value
+pe_aks_init_app_name: pep-eiap-aks-init
+
+# The namespace in SOURCE files -- i.e. in base directory change
+pe_aks_init_src_namespace: pep-eiap-ops-admin
+
+# target namespace!
+pe_aks_init_target_namespace: |-
+  {{ pe_aks_init_namespace | default(pe_aks_init_src_namespace) }}
+
+# ##
+# All directories
+# ##
+
+# apps manifest go under namespace (target)
+pe_aks_init_deploy_app_root_dir: |-
+  {{ (apps_deploy_base_dir, pe_aks_init_target_namespace, pe_aks_init_app_name) 
+    | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory NOTE: apps 
+pe_aks_init_source_app_root_dir: |-
+  {{ (k8s_apps_base_dir, pe_aks_init_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+app_pep_eiap_aks_init_setting:
+
+  #app_name
+  name: "{{ pe_aks_init_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with app prefix or app abbrv prefix and 
+  # ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^pe_aks_init_.+_component_setting$'))
+    }}
+

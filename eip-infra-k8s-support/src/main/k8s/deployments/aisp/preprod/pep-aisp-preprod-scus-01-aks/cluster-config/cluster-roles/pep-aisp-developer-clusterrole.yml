@@ -1,0 +1,195 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-aisp-developer-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - nodes
+    - namespaces
+    - persistentvolumes
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pod
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - ''
+    resources:
+    - persistentvolumeclaims
+    verbs:
+    - '*'
+-   apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    verbs:
+    - '*'
+-   apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - podtemplates
+    - pods
+    - pods/attach
+    - pods/binding
+    - pods/eviction
+    - pods/exec
+    - pods/log
+    - pods/portforward
+    - pods/proxy
+    - pods/status
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - services
+    - services/proxy
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - secrets
+    verbs:
+    - create
+    - list
+    - patch
+    - update
+    - watch
+-   apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs:
+    - '*'
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - '*'
+-   apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    - api
+    - autoscaling
+    - batch
+    - networking.istio.io
+    resources:
+    - '*/status'
+    - '*/scale'
+    verbs:
+    - '*'
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - virtualservices
+    - destinationrules
+    verbs:
+    - '*'
+-   apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    verbs:
+    - '*'
+-   apiGroups:
+    - policy
+    resources:
+    - poddisruptionbudgets 
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+  - kustomize.toolkit.fluxcd.io
+  resources:
+  - kustomizations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - helm.toolkit.fluxcd.io
+  resources:
+  - helmreleases
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - source.toolkit.fluxcd.io
+  resources:
+  - buckets
+  - helmcharts
+  - gitrepositories
+  - helmrepositories
+  - ocirepositories
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - flagger.app
+  resources:
+  - canaries
+  - metrictemplates
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pac.weave.works
+  resources:
+  - policies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - gitops.weave.works/v1alpha1
+  resources:
+  - gitopsclusters
+  verbs:
+  - get
+  - list
+  - watch

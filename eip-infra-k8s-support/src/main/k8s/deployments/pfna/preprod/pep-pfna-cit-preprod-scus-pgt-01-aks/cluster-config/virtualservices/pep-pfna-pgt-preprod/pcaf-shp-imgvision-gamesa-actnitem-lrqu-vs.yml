@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-imgvision-gamesa-actnitem-lrqu-vs
+  namespace: pep-pfna-pgt-preprod
+  labels:
+      app: pcaf-shp-imgvision-gamesa-actnitem
+spec:
+  hosts:
+  - pcaf-shp-imgvision-gamesa-actnitem.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-preprod/pep-pfna-pgt-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-imgvision-gamesa-actnitem.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80
+  

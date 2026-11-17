@@ -1,0 +1,36 @@
+# The chart's kube-mode Role grants get/list/create/delete on batch/jobs but not
+# `watch`, which `kubectl wait --for=condition=complete job/...` needs. Without
+# it the Kaniko build succeeds but the wait step exits non-zero, so the step goes
+# red and the image-tag output is never emitted for downstream jobs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: arc-runner-kaniko-job-watch
+  namespace: pep-eiap-global-devsecops-dev
+  labels:
+    app.kubernetes.io/part-of: pep-eiap-arc
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: arc-runner-kaniko-job-watch
+  namespace: pep-eiap-global-devsecops-dev
+  labels:
+    app.kubernetes.io/part-of: pep-eiap-arc
+subjects:
+  - kind: ServiceAccount
+    # runner-set/helm-values.yaml pins serviceAccountName to this SA, so the
+    # chart's generated *-gha-rs-kube-mode SA is never created.
+    name: pep-eiap-buildagent
+    namespace: pep-eiap-global-devsecops-dev
+roleRef:
+  kind: Role
+  name: arc-runner-kaniko-job-watch
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-amazonackmanager-v2-vyec-vs
+  namespace: pep-eiap-och-na-qa
+  labels:
+      app: pep-och-amazonackmanager-v2
+spec:
+  hosts:
+  - pep-och-amazonackmanager-v2-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-na-qa/pep-eiap-och-na-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-amazonackmanager-v2.pep-eiap-och-na-qa.svc.cluster.local
+        port:
+          number: 8080
+  

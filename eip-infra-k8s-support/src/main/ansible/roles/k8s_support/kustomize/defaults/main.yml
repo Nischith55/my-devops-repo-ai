@@ -1,0 +1,2 @@
+---
+kustomize_cmd: "{{ kustomize_cmd_ovrd | default('kustomize') }}"

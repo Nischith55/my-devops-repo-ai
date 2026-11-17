@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-global-snt-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-global-snt-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_SnT_Projects/_git/pep-global-snt-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-scaop-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-global-snt-prod-admin
+        description: Admin privileges to pep-global-snt-prod
+        policies:
+        - p, proj:pep-global-snt-prod:pep-global-snt-prod-admin, applications, *, pep-global-snt-prod/*, allow
+        - p, proj:pep-global-snt-prod:pep-global-snt-prod-admin, repositories, *, pep-global-snt-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-global-snt-prod-user
+        description: Read-only privileges to pep-global-snt-prod
+        policies:
+        - p, proj:pep-global-snt-prod:pep-global-snt-prod-user, applications, get, pep-global-snt-prod/*, allow
+        - p, proj:pep-global-snt-prod:pep-global-snt-prod-user, applications, sync, pep-global-snt-prod/*, allow
+        - p, proj:pep-global-snt-prod:pep-global-snt-prod-user, repositories, get, pep-global-snt-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.oppfna.prod"
+        - "Team.Support.EIAP.READ"
+    

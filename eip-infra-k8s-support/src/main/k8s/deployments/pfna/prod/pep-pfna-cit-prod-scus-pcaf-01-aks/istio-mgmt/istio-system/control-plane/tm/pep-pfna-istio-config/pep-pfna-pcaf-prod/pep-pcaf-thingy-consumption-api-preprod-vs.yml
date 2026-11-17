@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-thingy-consumption-api-preprod-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-thingy-consumption-api-preprod.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    headers:
+      request:
+        remove:
+          - "Content-Type"
+        add:
+          Content-Type: "application/json"     
+    route:
+    - destination:
+        host: pep-pcaf-thingy-consumption-api.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

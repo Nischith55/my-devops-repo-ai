@@ -1,0 +1,44 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+parameters:
+  - name: cr_number
+    displayName: Change Request
+    type: string
+  
+  
+variables:
+  - group: pipeline_approval_creds
+  - name: agent_pool
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+stages:
+- stage: Pipeline_Approval
+  displayName: Pipeline Approval
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: Pipeline_Approval
+    steps:
+    - task: Bash@3
+      displayName: 'validation'
+      inputs:
+        targetType: 'inline'
+        script: |
+          project="HAND_HELD_NEXT"
+          CI=$(jq --arg app_ci $project '.[$app_ci]' $(system.defaultWorkingDirectory)/src/main/azure_devops/pipelines/templates/ci_mapping.json)
+          echo "CI is $CI"
+          Output=`curl -s -X POST "https://pepsico.service-now.com/api/inpe/cmp/change_validation" -H 'Content-Type: application/json' -u $(client_id):$(password) -d "{\"u_number\": \"${{ parameters.cr_number }}\",\"u_application_ci\": $CI,\"u_group_name\": \"$(assignment_group)\"}"`
+          echo "Output is $Output"
+          status=`echo $Output | jq '.result.Validation'`
+          reason=`echo $Output | jq '.result.Message[]'`
+          if [[ "$status" == "true" ]]; then
+            echo "Good to approve."
+          else
+            echo "Validation failed with below reason(s). $reason "
+            exit 1
+          fi

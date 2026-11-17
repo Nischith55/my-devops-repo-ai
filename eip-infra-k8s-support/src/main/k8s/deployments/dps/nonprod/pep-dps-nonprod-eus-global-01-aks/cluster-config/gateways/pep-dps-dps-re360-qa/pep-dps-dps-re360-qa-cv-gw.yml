@@ -1,0 +1,140 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-re360-qa-cv-gw
+  namespace: pep-dps-dps-re360-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-re360-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-re360-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-re360-qa-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-file-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-xda-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-caf-common-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-config-loader-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-metrics-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-graph-fedration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-nginx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-insights-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-caf-personalisation-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-jbp-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-jbp-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-chatbot-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-sf-data-migration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-poc-ai-nego-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-content-creator-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-sell-and-lead-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-re360-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - usretail360.qa.pepsico.com
+    - pep-dps-dps-re360-qa-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-file-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-xda-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-caf-common-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-config-loader-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-metrics-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-graph-fedration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-nginx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-caf-insights-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-caf-personalisation-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360assets.qa.pepsico.com
+    - usr360-lite-jbp-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-jbp-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-chatbot-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usr360-lite-sf-data-migration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-poc-ai-nego-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-content-creator-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq-sell-and-lead-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-re360-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-re360-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - usretail360.qa.pepsico.com
+    name: pep-dps-dps-re360-qa-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-re360-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-re360-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - usr360assets.qa.pepsico.com
+    name: pep-dps-dps-re360-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-re360-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: usr360assets.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

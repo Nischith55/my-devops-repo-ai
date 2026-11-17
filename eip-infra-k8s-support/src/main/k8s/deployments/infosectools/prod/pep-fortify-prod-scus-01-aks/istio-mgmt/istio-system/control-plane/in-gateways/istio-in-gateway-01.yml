@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-fortify-ingress-gw01
+  servers:
+  - hosts:
+    - "*.fortify.gw01.aks01.scus.prod.azure.intra.pepsico.com" 
+    name: istio-in-gateway-01-wildcard-https-443
+    port:
+      name: https-fot-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-fortify-prod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ssc.pepasm.net    
+    - csc.pepasm.net 
+    - dastapi.pepasm.net  
+    - dastutility.pepasm.net
+    - wise.pepasm.net 
+    name: istio-in-gateway-01-asm-https-443
+    port:
+      name: https-asm-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-forfity-prod-asm-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - "*.fortify.gw01.aks01.scus.prod.azure.intra.pepsico.com"
+    - ssc.pepasm.net    
+    - csc.pepasm.net 
+    - dastapi.pepasm.net  
+    - dastutility.pepasm.net
+    - wise.pepasm.net
+    name: istio-in-gateway-01-wildcard-http-80
+    port:
+      name: http-fot-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  

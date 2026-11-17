@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 825451c0-7a81-4522-ae48-6d77e66cf688
+  name: pep-cmp-cmp-marit-dev-sa
+  namespace: pep-cmp-cmp-marit-dev

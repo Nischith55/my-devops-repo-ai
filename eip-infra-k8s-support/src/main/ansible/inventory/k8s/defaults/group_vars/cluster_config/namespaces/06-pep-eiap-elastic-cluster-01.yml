@@ -1,0 +1,31 @@
+---
+# ##
+# NOTES:
+# - This should only ever be used by AKS Clusters that host Elastic Cluster
+#
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+# Elastic Search Server
+ns_pep_eiap_elastic_cluster_01:
+
+  name: pep-eiap-elastic-cluster-01
+
+  labels:
+    istio-injection: enabled
+    eck-managed: !!str true
+
+  generic_secrets: |-
+    {{ elastic_cluster_01_generic_secrets | default([]) }}
+
+  registry_secrets: |-
+    {{ elastic_cluster_01_registry_secrets | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ elastic_cluster_01_tls_secrets_names | default([]) }}

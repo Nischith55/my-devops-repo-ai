@@ -1,0 +1,35 @@
+---
+ns_pep_eiap_cgf_pogaks_dev:
+  
+  name: pep-eiap-cgf-pogaks-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-pogaks
+    sector: cgf
+    project: pogaks
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-pogaks-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_pogaks'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-pogaks-dev-sa-token
+    namespace: pep-eiap-cgf-pogaks-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-pogaks-dev-sa"

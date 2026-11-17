@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cgf-europe-mfgcons-dev
+  labels:
+    env-nonprod: "true"
+    project: mfgcons
+    sector: europe
+    team: europe-mfgcons
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: gsft-shopfloorpro
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: bdbec03ddb3e8c10c2b5f38139961927
+    pep-cmdb-app-service-id: 0b534fef9738be501351f2c0f053af64
+    pep-environment: Development
+    

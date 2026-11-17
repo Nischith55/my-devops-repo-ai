@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 5416b3329345a6500f44f3ed1dba1063
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: bffmerch
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalabffproductselectioneuropeprod
+    team: europe-bffmerch
+  name: pep-eiap-europe-bffmerch-prod

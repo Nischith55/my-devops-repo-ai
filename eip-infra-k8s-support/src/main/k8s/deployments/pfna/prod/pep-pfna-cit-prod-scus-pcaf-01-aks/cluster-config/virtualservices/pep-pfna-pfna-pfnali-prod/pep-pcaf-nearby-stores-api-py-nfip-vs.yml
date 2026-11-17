@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-nearby-stores-api-py-nfip-vs
+  namespace: pep-pfna-pfna-pfnali-prod
+  labels:
+      app: pep-pcaf-nearby-stores-api-py
+spec:
+  hosts:
+  - pep-pcaf-nearby-stores-api-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pfnali-prod/pep-pfna-pfna-pfnali-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-nearby-stores-api-py.pep-pfna-pfna-pfnali-prod.svc.cluster.local
+        port:
+          number: 80
+  

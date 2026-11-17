@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 8e1f174bdbabdf008a0e138b4b961949
+    pep-cmdb-bus-app-id: ddbe003ddb3e8c10c2b5f38139961985
+    pep-environment: Production
+    project: fss
+    sector: cgf
+    servicename_aks: formulaspecificationsystem-documentmanagementprod
+    team: cgf-fss
+  name: pep-aisp-cgf-fss-prod

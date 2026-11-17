@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-spark-lite-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepsico-spark-lite-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pepsico-spark-lite-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-sparklte-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-spark-lite-dev-admin
+    description: Admin privileges to pepsico-spark-lite-dev
+    policies:
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-admin, applications, *, pepsico-spark-lite-dev/*, allow
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-admin, repositories, *, pepsico-spark-lite-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-spark-lite-dev-user
+    description: Read-only privileges to pepsico-spark-lite-dev
+    policies:
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-user, applications, get, pepsico-spark-lite-dev/*, allow
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-user, applications, sync, pepsico-spark-lite-dev/*, allow
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-user, repositories, get, pepsico-spark-lite-dev/*, allow
+    - p, proj:pepsico-spark-lite-dev:pepsico-spark-lite-dev-user, applications, action/apps/Deployment/restart, pepsico-spark-lite-dev/*, allow
+    groups:
+    - "Team.Support.EUROPE.NonProd.SPARKLT"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

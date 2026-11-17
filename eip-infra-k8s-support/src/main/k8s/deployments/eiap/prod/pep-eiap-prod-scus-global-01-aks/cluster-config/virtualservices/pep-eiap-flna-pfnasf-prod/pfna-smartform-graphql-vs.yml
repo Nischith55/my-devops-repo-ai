@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pfna-smartform-graphql-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pfna-smartform-graphql.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/graphql"}}],"route":[{"destination":{"host":"pfna-smartform-graphql.pep-eiap-flna-pfnasf-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: pfna-smartform-graphql
+  name: pfna-smartform-graphql-vs
+  namespace: pep-eiap-flna-pfnasf-prod
+spec:
+  gateways:
+  - pep-eiap-flna-pfnasf-prod/pep-eiap-flna-pfnasf-prod-cv-gw
+  hosts:
+  - pfna-smartform-graphql.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /graphql
+    route:
+    - destination:
+        host: pfna-smartform-graphql.pep-eiap-flna-pfnasf-prod.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,324 @@
+#jinja2:variable_start_string:'[%' , variable_end_string:'%]'
+global:
+  fullnameOverride: [% deployment_name %]
+  namespace: [% namespace %]
+
+  labels:
+    app: [% deployment_name %]
+
+{% if pvc_enable is defined and pvc_enable %}
+  pvc:
+    enabled: true
+    accessModes:
+{% for items in pvc_accessModes %}
+    - [% items %]
+{% endfor %}
+    storageClass: [% pvc_storageClass %]
+    storageRequest: [% pvc_storageRequest %]
+    mountPath: [% pvc_mountpath %]
+{% endif %}
+
+{% if spc_enable is defined and spc_enable%}
+  secretManagement:
+    enabled: true
+    secretProviderClassName: [% spc_name %]
+    mountPath: [% spc_mountPath %]
+    clientId: [% spc_clientid %]
+    keyvaultName: [% spc_keyvault %]
+    tenantId: [% spc_tenantid %]
+    objects:
+{% for items in spc_object %}
+    - secretName: [% items.secretName %]
+      data:
+{% for item2 in items.data %}
+      - objectName: [% item2.objectName %]
+        objectType: secret
+        key : [% item2.key %]
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+platform-chart:
+{% if autoscalingEnabled is defined and autoscalingEnabled %}
+  autoscalingEnabled: true
+  hpaConfigMinReplicas: [% hpaConfigMinReplicas %]
+  hpaConfigMaxReplicas: [% hpaConfigMaxReplicas %]
+{% if hpa_cpu_enable is defined and hpa_cpu_enable %}
+  targetCPUUtilizationPercentage: [% targetCPUUtilizationPercentage %]
+{% endif %}
+{% if hpa_memory_enable is defined and hpa_memory_enable %}
+  targetMemoryUtilizationPercentage: [% targetMemoryUtilizationPercentage %]
+{% endif %}
+{% endif %}
+{% if pdbEnabled is defined and pdbEnabled %}
+  pdbEnabled: true
+{% if pdbMaxUnavailable is defined and pdbMaxUnavailable != None %}
+  pdbMaxUnavailable: [% pdbMaxUnavailable %]
+{% endif %}
+{% if pdbMinAvailable is defined and pdbMinAvailable != None %}
+  pdbMinAvailable: [% pdbMinAvailable %]
+{% endif %}
+  pdbSelector:
+    app: [% pdbSelector %]
+{% endif %}
+
+{% if sc_mountOptions | length > 0 %}
+  storageClass:
+    enabled: false 
+    name: [% sc_name %]
+    mountOptions:
+{% for items in sc_mountOptions %}
+    - [% items %]
+{% endfor %}
+    resourceGroup: [% sc_resourceGroup %]
+    sku: [% sc_sku %]
+    storageAccount: [% sc_storageAccount %]
+    reclaimPolicy: [% sc_reclaimPolicy %]
+    volumeBindingMode: [% sc_volumeBindingMode %]
+    allowVolumeExpansion: [% sc_allowVolumeExpansion %]
+{% endif %}
+
+{% if vs_enable is defined and vs_enable %}
+  virtualService:
+    enabled: true
+    name: [% vs_name %]
+    hosts:
+{% for items in vs_hosts %}
+    - [% items %]
+{% endfor %}
+{% if vs_tls_status is defined and vs_tls_status %}
+    tlsTerminationOnPod: true
+{% else %}
+    tlsTerminationOnPod: false 
+{% endif %}
+    routes:
+{% for items in vs_routes_list %}
+    - prefix: [% items.prefix %]
+      destinationService: [% items.destination %]
+      port: [% items.port %]
+{% if items.rewrite != '' %}
+      rewrite:
+        [% items.rewrite %]
+{% endif %}
+{% if items.corsPolicy != '' %}
+      corsPolicy:
+        [% items.corsPolicy %]
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if dr_enable is defined and dr_enable %}
+  destinationRule:
+    enabled: true
+    namespace: [% dr_namespace %] 
+{% if dr_sessionAffinity is defined and dr_sessionAffinity %}
+    sessionAffinity: true
+{% else %}
+    sessionAffinity: false
+{% endif %}
+    trafficPolicy:
+      tls:
+{% for key, value  in dr_trafficpolicy_tls.items() %}
+        [% key %]: [% value %]
+{% endfor %}
+      outlierDetection:
+{% for key, value in dr_trafficpolicy_outlier.items() %}
+        [% key %]: [% value %]
+{% endfor %}
+{% endif %}
+
+{% if pvc_status is defined and pvc_status == 'Bound' %}
+  pv:
+    enabled: true 
+    fileShare: [% pv_shareName %]
+    accessSecret: [% pv_accessSecret %]
+    storageClass: [% pv_storageClass %]
+    resourceGroup: [% pv_resourceGroup %]
+    storageAccount: [% pv_storageAccount %]
+{% if sc_mountOptions | length > 0 %}
+    mountOptions:
+{% for items in sc_mountOptions %}
+    - [% items %]
+{% endfor %}
+{% endif %}
+{% endif %}
+  
+app-chart:
+  replicaCount: [% replica_count %]
+   
+  selector:
+    app: [% selector %]
+
+  image:
+    repository: [% image_name %]
+    tag: [% image_tag %]
+
+{% if initContainersStatus %}
+{% if appd_status is defined and appd_status %}
+  appD:
+    enabled: true
+    image: [% appd_image %]
+{% if appd_resources is defined and appd_resources %}
+    resources: 
+      [% appd_resources_data | to_nice_yaml(indent=2) | indent(6) %]
+{% endif %}
+{% endif %}
+{% if apm_status is defined and apm_status %}
+  apm:
+    enabled: true
+{% if apm_resources is defined and apm_resources %}
+    resources: 
+      [% apm_resources | to_nice_yaml(indent=2) | indent(6) %]
+{% endif %}
+{% endif %}
+{% if initContainersList is defined and initContainersList | length > 0 %}
+  initContainers:
+{% for items in initContainersList %}
+  - [% items | to_nice_yaml(indent=2) | indent(4) %]
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if sa_name is defined and sa_name != None %}
+  serviceAccount: 
+    create: false
+    name: [% sa_name %]
+{% endif %}
+
+{% if strategy_status is defined and strategy_status %}
+  strategy: 
+{% if rolling_maxSurge is defined and rolling_maxSurge != None %}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: [% rolling_maxSurge %]
+      maxUnavailable: [% rolling_maxUnavailable %]
+{% endif %}
+{% if rolling_recreate is defined and rolling_recreate %}
+    type: Recreate
+{% endif %}
+{% endif %}
+
+{% if ports_list is defined and ports_list | length > 0 %}
+  containerPorts:           
+{%- for items in ports_list %}     
+  - port: [% items.port %]
+    name: [% items.name %]
+{%- endfor %}
+{% endif %}
+
+
+{% if probe_status is defined and probe_status %}
+  probes:                                       
+    enabled: true
+{% if live_status is defined and live_status %}
+    liveness:
+{% if live_httpGet is defined and live_httpGet %}
+      path: [% live_path %]
+      port: [% live_port %]
+{% endif %}
+{% if live_exec is defined and live_exec %}
+      command:
+{% for items in live_command %}
+      - [% items %]
+{% endfor %}
+{% endif %}
+      initialDelaySeconds: [% live_initialDelaySeconds %]
+      periodSeconds: [% live_periodSeconds %]
+      timeoutSeconds: [% live_timeoutSeconds %]
+{% endif %}
+{% if readiness_status %}
+    readiness:
+{% if readiness_httpGet is defined and readiness_httpGet %}
+      path: [% readiness_path %]
+      port: [% readiness_port %]
+{% endif %}
+{% if readiness_exec is defined and readiness_exec %}
+      command:
+{% for items in readiness_command %}
+      - [% items %]
+{% endfor %}
+{% endif %}
+      initialDelaySeconds: [% readiness_initialDelaySeconds %]
+      periodSeconds: [% readiness_periodSeconds %]
+      timeoutSeconds: [% readiness_timeoutSeconds %]
+{% endif %}
+{% endif %}
+
+
+{% if secretRefList | length > 0 %}
+  envFromSecretRef:
+{% for items in secretRefList %}
+  - secretRef: 
+      name: [% items %]
+{% endfor %}
+{% endif %}
+
+
+{% if env_list | length > 0 %}
+  env: 
+{% for items in env_list %}
+  - name: [% items.name %]
+    value: [% items.value %]
+{% endfor %}
+{% endif %}
+
+
+{% if configmapRefList | length > 0 %}
+  envFromConfigMapRef:
+{% for items in configmapRefList %}
+  - configMapRef:
+      name: [% items %]
+{% endfor %}
+{% endif %}
+
+
+{% if env_key_list | length > 0 %}
+  envFromSecrets:
+{% for items in env_key_list %}
+  - name: [% items.main_name %]
+    secret:
+      name: [% items.name %]
+      key: [% items.key %]
+{% endfor %}
+{% endif %}
+
+{% if configmap_keys is defined and configmap_keys %}
+  configmaps:
+    enabled: true
+    configurations:
+{% for items in configmap_data %}
+    - name: [% items.name %]
+      config:
+{% for key, value in items.data.items() %}
+{% if '.sh' in key %}
+        [% key %]: |
+          [% value|indent(10) %]
+{% elif '.json' in key %}
+        [% key %]: |
+          [% value|indent(10) %]
+{% else %}
+        [% key %]: [% value %]
+{% endif %}
+{% endfor %}
+{%- endfor %}
+{% endif %}
+
+{% if configmapFromFile_enable is defined and configmapFromFile_enable %}
+  configmapFromFile:
+    enabled: true 
+    configurations:
+{% for items in configmap_fromfile_data %}
+      [% items.name %]:
+        config: 'test'
+{% if items.mount %}
+        tobeMounted: true
+        mountPath: [% items.vol_mountpath %]
+        volumeName: [% items.volname %]
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if resources_status is defined and resources_status %}
+  resources:
+    [% resources_data | to_nice_yaml(indent=2) | indent(4)%]
+{% endif %}

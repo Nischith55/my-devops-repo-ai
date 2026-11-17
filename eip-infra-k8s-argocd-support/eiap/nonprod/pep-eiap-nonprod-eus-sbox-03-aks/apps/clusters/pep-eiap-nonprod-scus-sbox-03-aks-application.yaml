@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8sresources-pep-eiap-nonprod-scus-sbox-03-aks
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: k8s-resources
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+  destination:    
+    name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: argocd
+  source:
+    repoURL:  https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+    targetRevision: platform
+    path: eiap/nonprod/pep-eiap-nonprod-scus-sbox-03-aks/apps
+    directory:
+      recurse: true
+      jsonnet: {}

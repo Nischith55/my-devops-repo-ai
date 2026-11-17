@@ -1,0 +1,35 @@
+---
+ns_pep_pfna_flna_gtmothr_preprod:
+  
+  name: pep-pfna-flna-gtmothr-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-gtmothr
+    sector: flna
+    project: gtmothr
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-gtmothr-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_gtmothr'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-gtmothr-preprod-sa-token
+    namespace: pep-pfna-flna-gtmothr-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-gtmothr-preprod-sa"

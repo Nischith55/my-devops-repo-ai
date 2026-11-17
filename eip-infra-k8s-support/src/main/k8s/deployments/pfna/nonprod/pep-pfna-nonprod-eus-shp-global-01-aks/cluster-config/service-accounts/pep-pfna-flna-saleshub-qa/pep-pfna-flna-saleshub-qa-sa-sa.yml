@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pfna-flna-saleshub-qa-sa
+  namespace: pep-pfna-flna-saleshub-qa

@@ -1,0 +1,189 @@
+
+steps:
+- task: PythonScript@0
+  displayName: "Extract Azure KV secrets"
+  name: "GettingAzureCreds"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+    arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+  env:
+    PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+    NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+    PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+    NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+    PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+    PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+    PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+    NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+    PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+
+- task: PythonScript@0
+  displayName: "Set Azure credentials"
+  name: "SettingAzureCreds"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+    arguments: "${{ parameters.service_principal_backend }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: PythonScript@0
+  displayName: "Set Service Principal"
+  name: "SettingServicePrincipal"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_config_spn.py'
+    arguments: "${{ parameters.service_principal }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: Bash@3
+  displayName: "install-py-packages"
+  inputs:
+    targetType: 'inline'
+    script: |
+      export PATH=$PATH:/home/neipd999/.local/bin
+      pip3 install python-hcl2
+      pip3 install pypi-json             
+      
+# - task: PythonScript@0
+#   displayName: 'control-plane-upgrade'
+#   name: control_plane_upgrade
+#   condition: eq('${{ parameters.plane_select_control_plane }}', 'control_plane_upgrade')
+#   inputs:
+#     scriptSource: 'filePath'
+#     scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/prod_upgrade.py'
+#     workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+#     arguments: '"${{ parameters.path_of_nodepools }}" "${{ parameters.plane_select_control_plane }}" "${{ parameters.list_of_nodepools }}" "${{ parameters.versions }}"   "${{ parameters.ResourceName }}"   "${{ parameters.path_of_mandatory }}"   "${{ parameters.path_of_defaults }}"      "${{ parameters.max_surge }}"'
+#     pythonInterpreter: /usr/bin/python3
+
+- task: DownloadPipelineArtifact@2
+  displayName: 'download files'
+  inputs:
+    artifactName: 'modified-tfvars1'
+    downloadPath: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+
+
+
+- task: PythonScript@0
+  displayName: 'system-pool-upgrade'
+  name: system_pool_upgrade
+  condition: eq('${{ parameters.plane_select_system_pool }}', 'system_pool_upgrade')
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/new_np_countChange.py'
+    workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+    arguments: '"${{ parameters.path_of_nodepools }}" "${{ parameters.plane_select_system_pool }}" "${{ parameters.list_of_nodepools }}" "${{ parameters.version }}" "${{ parameters.ResourceName }}" "${{ parameters.max_surge }}"  "${{ parameters.mode }}" "${{ parameters.system_pool }}" "${{ parameters.old_system_pool }}" $(MinMaxValue.avC) $(MinMaxValue.max_availableCount) "${{ parameters.vmSize }}" $(MinMaxValue.maxCount_array) $(MinMaxValue.mini)  '   
+    pythonInterpreter: /usr/bin/python3
+
+  
+- task: PythonScript@0
+  displayName: 'user-pool-upgrade'
+  name: user_pool_upgrade
+  condition: eq('${{ parameters.plane_select_user_pool }}', 'user_pool_upgrade')
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/new_np_countChange.py'
+    workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+    arguments: '"${{ parameters.path_of_nodepools }}" "${{ parameters.plane_select_user_pool }}" "${{ parameters.list_of_nodepools }}" "${{ parameters.version }}" "${{ parameters.ResourceName }}" "${{ parameters.max_surge }}"  "${{ parameters.mode }}" "${{ parameters.user_pool }}" "${{ parameters.old_user_pool }}" $(MinMaxValue.avC) $(MinMaxValue.max_availableCount) "${{ parameters.vmSize }}" $(MinMaxValue.maxCount_array)  $(MinMaxValue.mini)'   
+    pythonInterpreter: /usr/bin/python3
+
+
+
+- task: Bash@3
+  displayName: "terraform-plan-with-updated-tfvars"
+  inputs:
+    targetType: 'inline'
+    workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}'
+    script: |
+      set -e
+      terraform -v
+      mkdir temp
+      cd temp
+      pwd
+      if [[ "${{parameters.Functional_Area}}" == "pfna" ]] || [[ "${{parameters.Functional_Area}}" == "snt" ]] || [[ "${{parameters.Functional_Area}}" == "infratools" ]] || [[ "${{parameters.Functional_Area}}" == "infosectools" ]] || [[ "${{parameters.Functional_Area}}" == "cmp" ]] || [[ "${{parameters.Functional_Area}}" == "pbna" ]] || [[ "${{parameters.Functional_Area}}" == "dps" ]] || [[ "${{parameters.Functional_Area}}" == "cmptest" ]] || [[ "${{parameters.Functional_Area}}" == "cgf" ]] || [[ "${{parameters.Functional_Area}}" == "automation" ]] || [[ "${{parameters.Functional_Area}}" == "aisp" ]] || [[ "${{parameters.Functional_Area}}" == "pepgenx" ]]; then
+          export TF_VAR_subscription=$(subscription_id_others)
+          echo "subscription set to subscription_id_others"
+      elif ([[ "${{parameters.Region}}" == "suk" ]] || [[ "${{parameters.Region}}" == "ae" ]] || [[ "${{parameters.Region}}" == "gwc" ]]) && ([[ "${{parameters.env}}" == "nonprod" ]] || [[ "${{parameters.env}}" == "preprod" ]]); then
+          export TF_VAR_subscription=$(subscription_id_other_regions)
+          echo "subscription set to subscription_id_other_regions"
+      else
+          export TF_VAR_subscription=$SUBSCRIPTION
+          echo "subscription set to KV subscription"
+      fi
+      export TF_VAR_tenantid=$TENANTID
+      export TF_VAR_clientid=$CLIENTID
+      export TF_VAR_clientsecret=$CLIENTSECRET
+      
+      export TF_VAR_lp_admin_username=$USER_NAME
+      if [[ "${{parameters.env}}" == "preprod" ]]; then
+        export TF_VAR_lp_ssh_key=$LINUX_PASS_PREPROD
+      elif [[ "${{parameters.env}}" == "prod" ]]; then
+        export TF_VAR_lp_ssh_key=$LINUX_PASS_PROD
+      elif [[ "${{parameters.env}}" == "prod-dr" ]]; then
+        export TF_VAR_lp_ssh_key=$LINUX_PASS_PROD
+      else
+        export TF_VAR_lp_ssh_key=$LINUX_PASS_NONPROD
+      fi  
+      export TF_VAR_wp_admin_username=$USER_NAME
+      export TF_VAR_wp_admin_password=$WIN_PASS
+      echo "Current directory: $(pwd)"
+      git config --global http.$(terraform_modules_repo).extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+      cp -r $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}/* .
+      cp -r $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{parameters.Region}}/${{parameters.ResourceType}}/${{parameters.resource_name}}/defaults-${{parameters.resource_name}}.tfvars .
+      cp -r $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{parameters.Region}}/${{parameters.ResourceType}}/${{parameters.resource_name}}/mandatory-${{parameters.resource_name}}.tfvars .
+      cp -r $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{parameters.Region}}/${{parameters.ResourceType}}/${{parameters.resource_name}}/nodepools-${{parameters.resource_name}}.tfvars .
+      rm kube-configs.tf
+      ls        
+      terraform init -backend-config="storage_account_name=$(storage_account_name_for_backend)" \
+                      -backend-config="container_name=$(container_name_for_backend)" \
+                      -backend-config="key=$(key_for_backend)" \
+                      -backend-config="resource_group_name=$(resource_group_name_for_backend)"
+      terraform fmt
+      terraform plan -input=false -var 'resource_name_to_create=${{parameters.resource_name}}' -var-file 'defaults-${{parameters.resource_name}}.tfvars' -var-file 'mandatory-${{parameters.resource_name}}.tfvars' -var-file 'nodepools-${{parameters.resource_name}}.tfvars' -out=$(Build.BuildNumber)
+      terraform fmt
+      terraform apply -parallelism='${{ parameters.parallelism }}' $(Build.BuildNumber)  
+  env:
+    USER_NAME: $(admin_username)
+    LINUX_PASS_NONPROD: $(linux_admin_ssh_key_nonprod)
+    LINUX_PASS_PREPROD: $(linux_admin_ssh_key_preprod)
+    LINUX_PASS_PROD: $(linux_admin_ssh_key_prod)
+    WIN_PASS: $(windows_admin_password)
+
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}/temp'
+    Contents: |
+      nodepools-${{parameters.resource_name}}.tfvars
+      mandatory-${{parameters.resource_name}}.tfvars
+      defaults-${{parameters.resource_name}}.tfvars
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: modified-tfvars'
+  inputs:
+    ArtifactName: 'modified-tfvars2'
+    
+- task: CopyFiles@2
+  displayName: 'copy terraform plan to artifacts'
+  condition: succeeded()
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/resources/${{Parameters.Region}}/${{parameters.ResourceType}}/${{parameters.ResourceName}}/temp'
+    Contents: |
+      $(Build.BuildNumber)
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'publish terraform plan'
+  condition: succeeded()
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildNumber)'
+    ArtifactName: 'tfplan2'
+
+
+

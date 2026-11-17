@@ -1,0 +1,49 @@
+trigger: none
+parameters:
+  - name: new_version
+    displayName: AzureRm version
+    type: string
+
+variables: 
+  - group: repo_access_token
+
+  - name: nonprod_eus_agents
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  - name: agent_pool
+    value: $(nonprod_eus_agents)
+
+pool:
+    name: $(agent_pool)
+    
+steps: 
+- task: Bash@3
+  displayName: pre-requisite
+  inputs:
+    targetType: 'inline'
+    script: |
+        pip3 install --upgrade pip
+        pip3 install ansible
+ 
+- task: Ansible@0
+  displayName: 'Run Ansible Playbook'
+  inputs:
+    ansibleInterface: 'agentMachine'
+    playbookPathOnAgentMachine: 'src/ansible/playbooks/version_automation.yml'
+  env:
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+    version: ${{ parameters.new_version}}
+    git_username: $(svcuser_automation)
+    git_token: $(svcautoPersonalAccessToken)
+
+- task: Bash@3
+  displayName: 'PR to main branch'
+  inputs:
+    targetType: 'inline'
+    script: |
+      export AZURE_DEVOPS_EXT_PAT=$(svcautoPersonalAccessToken)
+      pip3 install azure-devops   
+      az repos pr create --organization https://dev.azure.com/PepsiCoIT/ --project EIP-Infrastructure --repository eip-infra-azure-terraform-support --source-branch $(Build.SourceBranchName) --target-branch main --title "Merge Request for AzureRm migration" --description "Mandatory Pull Request to be Approved/Completed to keep the main branch updated !! "
+
+
+

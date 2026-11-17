@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    pep-cmdb-app-service-id: 0f985d81473e2ad0f206dcdb416d43ae
+    pep-cmdb-bus-app-id: 6f3ba19d1b7228105f7bcbf2604bcb76
+    pep-environment: Preprod
+    project: savvyochn
+    sector: pbna
+    servicename_aks: pbnasavvyoch
+    team: pbna-savvyochn
+  name: pep-pbna-pbna-savvyochn-preprod

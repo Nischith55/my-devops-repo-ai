@@ -1,0 +1,16 @@
+enableRuntimeDefaultSeccompProfile: true
+global:
+  cattle:
+    psp:
+      enabled: false
+    # clusterId: c-4g4mm
+    # systemProjectId: p-jwtvp
+    url: 'https://rancher.eus.prod.azure.intra.pepsico.com'
+image:
+  repository: rancher/kubectl
+  tag: v1.20.2
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL

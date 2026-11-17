@@ -1,0 +1,44 @@
+# runner-set/helm-values.yaml overrides serviceAccountName to pep-pfna-buildagent
+# (for the Azure workload-identity federated credential), so the chart no longer
+# creates its own kube-mode ServiceAccount or binds the kube-mode Role. These
+# permissions are what containerMode.type=kubernetes needs to run each workflow
+# step as a pod in this namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: arc-kube-mode-buildagent
+  namespace: pep-pfna-global-devsecops-prod
+  labels:
+    app.kubernetes.io/part-of: pep-pfna-arc
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: arc-kube-mode-buildagent
+  namespace: pep-pfna-global-devsecops-prod
+  labels:
+    app.kubernetes.io/part-of: pep-pfna-arc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: arc-kube-mode-buildagent
+subjects:
+  - kind: ServiceAccount
+    name: pep-pfna-buildagent
+    namespace: pep-pfna-global-devsecops-prod

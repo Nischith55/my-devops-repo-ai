@@ -1,0 +1,78 @@
+---
+# ##
+# Task to generate Kustomize overlays from Jinja 2 templates. NOTE: The input
+# variable MUST follow the conventions and structure.
+#
+# NOTES:
+# - we use core generate-file-from-template task
+# INPUTS:
+# - params_gen_overlay
+#     params: <subtask params>
+# ##
+
+- name: GENERATE_OVERLAYS_FROM_TEMPLATES_BLOCK
+  block:
+
+    - name: HANDLE_KUSTOMIZATION_OVERLAY_FILE
+      include_tasks:
+        file: "{{ ___generate_template_task }}"
+      vars:
+        _kp: "{{ ___pgo_params['kustomization'] }}"
+        params_gen:
+          template_src: "{{ _kp['template_kust_src'] }}"
+          template_dest: "{{ _kp['template_kust_dest'] }}"
+          # kustomization file needs the whole ___pgo_params
+          template_params: "{{ ___pgo_params }}"
+      when: (___pgo_params['kustomization'] is defined)
+
+    - name: HANDLE_K8S_RESOURCES_GENERATE
+      include_tasks:
+        file: "{{ ___generate_template_task }}"
+      vars:
+        params_gen:
+          template_src: "{{ _pobj['template_k8s_src'] }}"
+          template_dest: "{{ _pobj['template_k8s_dest'] }}"
+          template_params: "{{ _pobj }}"
+      when: >
+        (_pobj['template_k8s_src'] is defined)
+      loop: "{{ ___pgo_params['k8s_resources'] | default([]) }}"
+      loop_control:
+        loop_var: _pobj
+        label: "{{ _pobj['name'] }}"
+
+    - name: HANDLE_PATCHES_MERGE
+      include_tasks:
+        file: "{{ ___generate_template_task }}"
+      vars:
+        params_gen:
+          template_src: "{{ _pobj['template_merge_src'] }}"
+          template_dest: "{{ _pobj['template_merge_dest'] }}"
+          template_params: "{{ _pobj }}"
+      when: >
+        (_pobj['template_merge_src'] is defined)
+      loop: "{{ ___pgo_params['patches'] }}"
+      loop_control:
+        loop_var: _pobj
+        label: "{{ _pobj['name'] }}"
+
+    - name: HANDLE_PATCHES_JSON6902
+      include_tasks:
+        file: "{{ ___generate_template_task }}"
+      vars:
+        params_gen:
+          template_src: "{{ _pobj['template_json_src'] }}"
+          template_dest: "{{ _pobj['template_json_dest'] }}"
+          template_params: "{{ _pobj }}"
+      when: >
+        (_pobj['template_json_src'] is defined)
+      loop: "{{ ___pgo_params['patches'] }}"
+      loop_control:
+        loop_var: _pobj
+        label: "{{ _pobj['name'] }}"
+
+  # block vars
+  vars:
+    # we are 3 levels deep, so 3 underscores for local vars
+    ___generate_template_task: tasks/core/generate-file-from-template.yml
+    ___pgo_in: "{{ params_gen_overlay }}"
+    ___pgo_params: "{{ ___pgo_in['params'] }}"

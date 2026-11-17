@@ -1,0 +1,85 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: pep-eiap-cgf-shcomo-dev-cv-gw
+    namespace: pep-eiap-cgf-shcomo-dev
+spec:
+    selector:
+        istio: pep-eiap-ingress-gw01
+    servers:
+    -   hosts:
+        - dummy-passthrough-pep-eiap-cgf-shcomo-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-cgf-shcomo-dev-cv-gw-tls-443
+        port:
+            name: https-pep-eiap-cgf-shcomo-dev-cv-gw-tls-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: PASSTHROUGH
+    -   hosts:
+        - dummy-pep-eiap-cgf-shcomo-dev.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - should-cost-ds-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - should-cost-agentic-ai-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-cgf-shcomo-dev-cv-gw-https-443
+        port:
+            name: https-pep-eiap-cgf-shcomo-dev-cv-gw-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pep-eiap-nonprod-eus-global-02-aks-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - dummy-pep-eiap-cgf-shcomo-dev-80.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - should-cost-ds-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - should-cost-agentic-ai-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+        - procurementai.dev.pepsico.com
+        name: pep-eiap-cgf-shcomo-dev-cv-gw-http-80
+        port:
+            name: http-pep-eiap-cgf-shcomo-dev-cv-gw-80
+            number: 80
+            protocol: http
+        tls:
+            httpsRedirect: true
+    -   hosts:
+        - procurementai.dev.pepsico.com
+        name: pep-eiap-cgf-shcomo-dev-cv-gw-3-https-443
+        port:
+            name: pep-eiap-cgf-shcomo-dev-cv-gw-3-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: procurementai.dev-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE

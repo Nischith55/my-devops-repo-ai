@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pepsico-global-schub-whse-web","app.kubernetes.io/instance":"pepsico-global-schub-whse-web-sit","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"pepsico-global-schub-whse-web-vs","namespace":"pep-pfna-pfna-schwhseint-qa"},"spec":{"gateways":["pep-pfna-pfna-schwhseint-qa/pep-pfna-pfna-schwhseint-qa-cv-gw"],"hosts":["schwmiwebapp-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-global-schub-whse-web.pep-pfna-pfna-schwhseint-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+        meta.helm.sh/release-name: pepsico-global-schub-whse-web
+        meta.helm.sh/release-namespace: pep-pfna-pfna-schwhseint-qa
+    labels:
+        app: pepsico-global-schub-whse-web
+        app.kubernetes.io/instance: pepsico-global-schub-whse-web-sit
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: pepsico-global-schub-whse-web-vs
+    namespace: pep-pfna-pfna-schwhseint-qa
+spec:
+    gateways:
+    - pep-pfna-pfna-schwhseint-qa/pep-pfna-pfna-schwhseint-qa-cv-gw
+    hosts:
+    - schwmiwebapp-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - schwmi.ite.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-global-schub-whse-web.pep-pfna-pfna-schwhseint-qa.svc.cluster.local
+                port:
+                    number: 8080

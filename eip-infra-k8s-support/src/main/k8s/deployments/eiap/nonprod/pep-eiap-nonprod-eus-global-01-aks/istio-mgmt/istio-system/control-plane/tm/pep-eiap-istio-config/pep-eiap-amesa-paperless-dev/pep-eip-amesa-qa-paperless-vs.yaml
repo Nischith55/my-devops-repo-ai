@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-amesa-qa-paperless-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eip-amesa-qa-paperless.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - paperless.qa.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-qa-paperless.pep-eiap-amesa-paperless-dev.svc.cluster.local
+        port:
+          number: 80

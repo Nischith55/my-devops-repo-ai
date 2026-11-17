@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 27ea6ad0-ced8-4aee-a2bd-d4b001316472
+  name: pep-cmp-cmp-tesmoa-dev-sa
+  namespace: pep-cmp-cmp-tesmoa-dev

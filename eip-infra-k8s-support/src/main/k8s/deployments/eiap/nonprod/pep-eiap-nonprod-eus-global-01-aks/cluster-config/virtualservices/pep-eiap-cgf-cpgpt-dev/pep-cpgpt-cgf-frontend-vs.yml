@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-cpgpt-cgf-frontend
+  name: pep-cpgpt-cgf-frontend-vs
+  namespace: pep-eiap-cgf-cpgpt-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-cpgpt-dev/pep-eiap-cgf-cpgpt-dev-cv-gw
+  hosts:
+  - pep-cpgpt-cgf-frontend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  #- cockpitgpt.dev.pepsico.com
+  - cockpitgpt.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cpgpt-cgf-frontend.pep-eiap-cgf-cpgpt-dev.svc.cluster.local
+        port:
+          number: 3000

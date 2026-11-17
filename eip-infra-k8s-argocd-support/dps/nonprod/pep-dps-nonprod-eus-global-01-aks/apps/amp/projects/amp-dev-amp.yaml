@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: amp-dev-amp
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for amp-dev-amp   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/amp-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-amp-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: amp-dev-amp-admin
+    description: Admin privileges to amp-dev-amp
+    policies:
+    - p, proj:amp-dev-amp:amp-dev-amp-admin, applications, *, amp-dev-amp/*, allow
+    - p, proj:amp-dev-amp:amp-dev-amp-admin, repositories, *, amp-dev-amp/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: amp-dev-amp-user
+    description: Read-only privileges to amp-dev-amp
+    policies:
+    - p, proj:amp-dev-amp:amp-dev-amp-user, applications, get, amp-dev-amp/*, allow
+    - p, proj:amp-dev-amp:amp-dev-amp-user, applications, sync, amp-dev-amp/*, allow
+    - p, proj:amp-dev-amp:amp-dev-amp-user, repositories, get, amp-dev-amp/*, allow
+    - p, proj:amp-dev-amp:amp-dev-amp-user, applications, action/apps/Deployment/restart, amp-dev-amp/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

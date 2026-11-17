@@ -1,0 +1,66 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger: 
+- none
+pr: 
+- none 
+
+parameters:
+  - name: env
+    displayName: 'env'
+    type: string
+    values:
+      - NONPROD
+      - PREPROD
+      - PROD
+  - name: cluster_name
+    type: string
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+stages: 
+- stage: execute_command
+  displayName: Execute command on clusters
+  variables:
+    - name: poolname
+      ${{ if eq(parameters.env, 'prod') }}:
+        value: 'pep-eiap-prod-scus-infra-02-aks-agents'
+      ${{ else }}:
+        value: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+  pool: 
+      name: $(poolname)
+  jobs:
+  - job: execute_command
+    displayName: Execute command on clusters
+    steps:    
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: ${{ parameters.env }}
+
+    - task: Bash@3
+      displayName: 'execute_command'
+      name: execute_command
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "starting the script execution. "
+          timeout 5s kubectl logs argocd-redis-ha-server-0 -n argocd > "$(Build.ArtifactStagingDirectory)/${{ parameters.cluster_name }}.txt"
+          ls -lrt "$(Build.ArtifactStagingDirectory)"
+      env:
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/'
+        ArtifactName: 'output'
+        publishLocation: 'Container'

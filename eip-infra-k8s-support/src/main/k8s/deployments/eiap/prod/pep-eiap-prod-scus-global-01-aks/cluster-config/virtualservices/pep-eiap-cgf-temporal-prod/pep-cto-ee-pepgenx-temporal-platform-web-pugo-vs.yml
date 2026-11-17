@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cto-ee-pepgenx-temporal-platform-web-pugo-vs
+  namespace: pep-eiap-cgf-temporal-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-cto-ee-pepgenx-temporal-platform-web.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-temporal-prod/pep-eiap-cgf-temporal-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cto-ee-pepgenx-temporal-platform-web.pep-eiap-cgf-temporal-prod.svc.cluster.local
+        port:
+          number: 8080
+  

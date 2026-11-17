@@ -1,0 +1,37 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sDisallowedTags",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/K8sDisallowedTags:default/container-image-must-not-have-latest-tag"
+    },
+    "name": "container-image-must-not-have-latest-tag"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "exemptImages": [
+        "openpolicyagent/opa-exp:latest",
+        "openpolicyagent/opa-exp2:latest",
+        "gcr.io/google-containers/pause:latest",
+        "busybox:latest"
+      ],
+      "tags": [
+        "latest"
+      ]
+    }
+  }
+}

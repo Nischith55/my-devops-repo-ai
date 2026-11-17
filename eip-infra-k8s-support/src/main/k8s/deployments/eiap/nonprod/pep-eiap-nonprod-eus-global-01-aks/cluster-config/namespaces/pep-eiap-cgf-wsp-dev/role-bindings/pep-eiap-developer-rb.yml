@@ -1,0 +1,21 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-cgf-wsp-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-cgf-wsp-sp
+    name: d441af2f-f3fa-4993-a9c0-631bface941b
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.MyPepsiCo.AKS.NonProd.Admins
+    name: d6214fcd-54e3-42af-953b-394c158cfb26

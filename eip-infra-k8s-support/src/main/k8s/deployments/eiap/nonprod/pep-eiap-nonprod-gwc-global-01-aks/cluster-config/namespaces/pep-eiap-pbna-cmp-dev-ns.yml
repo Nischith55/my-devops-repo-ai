@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-pbna-cmp-dev
+    project: cmp
+    sector: pbna
+    team: pbna-cmp
+  name: pep-eiap-pbna-cmp-dev

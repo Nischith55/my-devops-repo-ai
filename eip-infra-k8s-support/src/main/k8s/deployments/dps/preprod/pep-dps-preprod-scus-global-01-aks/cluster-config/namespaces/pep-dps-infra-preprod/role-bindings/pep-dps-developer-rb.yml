@@ -1,0 +1,29 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-03-23 12:17:26
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-dps-developer-rb
+  namespace: pep-dps-global-devsecops-preprod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-dps-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-dps-global-devsecops-preprod
+    name: default
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-dps-svc-dps-infra-sp
+    name: 2822624f-6db7-4c3e-bb9e-63dc840ea1d4
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-nonprod-devsecops-spn
+    name: 17e4954c-637f-4c1c-bb3a-ff0a6a69a108

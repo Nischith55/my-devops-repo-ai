@@ -1,0 +1,54 @@
+---
+# #############################################################################
+# This is the specification (additional) for api-resources mainly to source
+# parameters or variables and storage location for the manifest
+# resource_subdir:
+#  - use this per resource to override the default which is plural for resource kind.
+# FORMAT:
+# k8s_api_resources: [object]
+#   defaults: [object] (global defaults)
+#   resources: [object]
+#     [k8s_api_resc_name_1]: [object]
+#       ...
+#     [k8s_api_resc_name_2]: [object]
+#       ...
+#     ...
+#
+# #############################################################################
+
+k8s_api_resources_cfg:
+
+  # BEGIN: Global
+  defaults:
+    manifest_root_dirname: cluster-config
+
+  # BEGIN:
+  resources:
+    # namespaces
+    namespaces:
+      short_name: ns
+      # resource_subdir
+
+    clusterroles:
+      short_name: cr
+
+    clusterrolebindings:
+      short_name: crb
+
+    # istio gateway manifest are stored at a different location
+    gateways:
+      manifest_root_dirname: istio-mgmt
+      resource_subdir: "{{ resc_namespace }}/{{ control_plane_name }}/gateways"
+
+    rolebindings:
+      short_name: rb
+
+    secrets:
+      short_name: scrt
+
+    serviceaccounts:
+      short_name: sa
+
+    roles:
+      short_name: ro
+

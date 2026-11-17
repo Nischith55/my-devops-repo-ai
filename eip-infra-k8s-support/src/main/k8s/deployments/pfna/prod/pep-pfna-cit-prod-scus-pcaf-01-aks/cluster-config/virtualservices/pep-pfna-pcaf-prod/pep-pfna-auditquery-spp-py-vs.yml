@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-auditquery-spp-py
+  name: pep-pfna-auditquery-spp-py-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pep-pfna-auditquery-spp-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - requestId
+      - docCategory
+      - gpid
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-pfna-auditquery-spp-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-auditquery-spp-py.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080

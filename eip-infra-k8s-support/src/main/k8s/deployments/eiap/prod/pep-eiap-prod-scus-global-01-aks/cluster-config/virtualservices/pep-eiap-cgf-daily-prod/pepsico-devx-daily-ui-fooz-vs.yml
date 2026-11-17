@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-devx-daily-ui-fooz-vs
+  namespace: pep-eiap-cgf-daily-prod
+  labels:
+      app: pepsico-devx-daily-ui
+spec:
+  hosts:
+  - pep-eiap-cgf-daily-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-daily-prod/pep-eiap-cgf-daily-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-devx-daily-ui.pep-eiap-cgf-daily-prod.svc.cluster.local
+        port:
+          number: 80
+  

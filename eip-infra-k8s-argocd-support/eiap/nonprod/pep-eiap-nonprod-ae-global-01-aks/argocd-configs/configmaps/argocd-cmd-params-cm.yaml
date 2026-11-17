@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  dexserver.disable.tls: "true"
+  redis.server: argocd-redis-ha-haproxy:6379
+  server.dex.server: http://argocd-dex-server:5556
+  server.dex.server.plaintext: "true"
+  server.dex.server.strict.tls: "false"
+  server.insecure: "true"
+kind: ConfigMap
+metadata:  
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd  
+  name: argocd-cmd-params-cm
+  namespace: argocd

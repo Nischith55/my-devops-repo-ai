@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-europe-eugscaf-prod
+    project: eugscaf
+    sector: europe
+    team: europe-eugscaf
+  name: pep-eiap-europe-eugscaf-prod

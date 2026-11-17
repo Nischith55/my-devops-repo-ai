@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-config-manager-hfwf-vs
+  namespace: pep-eiap-och-edt-prod
+  labels:
+      app: pep-och-config-manager
+spec:
+  hosts:
+  - pep-och-config-manager.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-config-manager.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 8080
+  

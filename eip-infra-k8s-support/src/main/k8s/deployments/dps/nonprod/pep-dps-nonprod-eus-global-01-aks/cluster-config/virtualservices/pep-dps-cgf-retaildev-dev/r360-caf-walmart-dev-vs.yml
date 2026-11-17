@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: r360-caf-walmart-dev-vs
+  namespace: pep-dps-cgf-retaildev-dev
+spec:
+  gateways:
+  - pep-dps-cgf-retaildev-dev/pep-dps-cgf-retaildev-dev-cv-gw
+  hosts:
+  - r360-caf-walmart-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: r360-caf-walmart.pep-dps-cgf-retaildev-dev.svc.cluster.local
+        port:
+          number: 8080

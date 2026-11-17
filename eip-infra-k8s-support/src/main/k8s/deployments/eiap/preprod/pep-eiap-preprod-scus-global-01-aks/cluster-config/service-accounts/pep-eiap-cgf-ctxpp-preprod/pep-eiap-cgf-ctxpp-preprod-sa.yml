@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: ecafb826-3d53-44c2-a57c-b5aeda4c1999
+  name: pep-eiap-cgf-ctxpp-preprod-sa
+  namespace: pep-eiap-cgf-ctxpp-preprod

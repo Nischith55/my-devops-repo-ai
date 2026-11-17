@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 6c0dd046c34d2e10613dce0599013130
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: bffckout
+    sector: europe
+    servicename_aks: b2bpepsiconnectportaladminbffcheckouteuropeprod
+    team: europe-bffckout
+  name: pep-dps-europe-bffckout-prod

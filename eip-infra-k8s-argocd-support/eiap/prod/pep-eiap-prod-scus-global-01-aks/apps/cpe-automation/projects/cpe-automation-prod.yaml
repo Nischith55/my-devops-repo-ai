@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cpe-automation-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cpe-automation-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Cloud_Platform_Enablement/_git/cpe-automation-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-cpefinops-prod 
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cpe-automation-prod-admin
+        description: Admin privileges to cpe-automation-prod
+        policies:
+        - p, proj:cpe-automation-prod:cpe-automation-prod-admin, applications, *, cpe-automation-prod/*, allow
+        - p, proj:cpe-automation-prod:cpe-automation-prod-admin, repositories, *, cpe-automation-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cpe-automation-prod-user
+        description: Read-only privileges to cpe-automation-prod
+        policies:
+        - p, proj:cpe-automation-prod:cpe-automation-prod-user, applications, get, cpe-automation-prod/*, allow
+        - p, proj:cpe-automation-prod:cpe-automation-prod-user, applications, sync, cpe-automation-prod/*, allow
+        - p, proj:cpe-automation-prod:cpe-automation-prod-user, repositories, get, cpe-automation-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.Azure.Platform.Enablement"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-qfna-acp-prod-sa
+  namespace: pep-eiap-qfna-acp-prod

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-agro-wrapper
+  name: pep-eip-agro-wrapper-vs
+  namespace: pep-eiap-global-eip-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eip-preprod/pep-eiap-global-eip-preprod-cv-gw
+  hosts:
+  - pep-eip-agro-wrapper.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-agro-wrapper.pep-eiap-global-eip-preprod.svc.cluster.local
+        port:
+          number: 80

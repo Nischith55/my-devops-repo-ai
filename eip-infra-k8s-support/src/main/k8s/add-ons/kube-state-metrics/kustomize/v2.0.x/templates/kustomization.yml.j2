@@ -1,0 +1,45 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  INPUTS
+    - params_tmpl: a map or object
+    - resource_base_dir
+
+  # In case you want to re-generate as new, drop the following line
+  # Generated:  {{ lookup('pipe','date \"+%Y-%m-%d %H:%M:%S %Z\"') }}
+  NOTES
+   - rendering whole arrays via to_nice_yaml: trim is required to remove
+     the trailing new-line
+   - also indent spec is (indentfirst renamed as first)
+    indent(s, width=4, first=False, blank=False)
+   - kustomize: 
+      - v3 and above 'bases' is deprecated, use resources
+      - also 'local' resource MUST be relative path
+
+#}
+{% set _p = params_tmpl['params'] %}
+{% if _p['images'] is defined %}
+{% set _images = _p['images'] %}
+{% endif %}
+{% if params_tmpl['resources'] is defined %}
+{% set _resources = params_tmpl['resources'] %}
+{% endif %}
+---
+# generated file please do not edit
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+{% if _resources is defined %}
+resources:
+  {{ _resources | to_nice_yaml(indent=2) | trim | indent(2) }}
+{% endif %}
+# Adds namespace to all resources.
+namespace: {{ _p['namespace'] }}
+
+patchesStrategicMerge:
+  - patch-deployment.yml
+
+{% if _images is defined %}
+images:
+  {{ _images | to_nice_yaml(indent=2) | trim | indent(2) }}
+{% endif %}
+

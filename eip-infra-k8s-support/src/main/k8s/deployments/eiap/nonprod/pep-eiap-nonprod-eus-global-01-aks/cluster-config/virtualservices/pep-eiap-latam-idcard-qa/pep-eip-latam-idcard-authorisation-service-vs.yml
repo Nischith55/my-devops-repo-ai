@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: authorisation-service
+  name: pep-eip-latam-idcard-authorisation-service-vs
+  namespace: pep-eiap-latam-idcard-qa
+spec:
+  gateways:
+  - pep-eiap-latam-idcard-qa/pep-eiap-latam-idcard-qa-cv-gw
+  hosts:
+  - pep-eip-latam-idcard-authorisation-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-idcard-authorisation-service.pep-eiap-latam-idcard-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,43 @@
+---
+- name: creates temp directory
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-dir"
+    state: directory
+
+- template:
+    src: create-directory.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-dir/new-dir.yml" #variable from pipeline
+    
+- name: directories to create
+  include_vars:
+    file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-dir/new-dir.yml" #variable from pipeline
+    name: directories_to_create
+
+- name: Create a directory if it does not exist
+  file:
+    path: "{{ source_directory }}/{{ directories_to_create[item] }}"
+    state: directory
+  with_items: "{{ directories_to_create }}"
+  register: directories_to_create_op
+
+- name: Copy files
+  copy:
+    dest: "{{ source_directory }}/{{ directories_to_create[item] }}/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/readme.txt"
+    force: true
+  register: copy_op
+  with_items: "{{ directories_to_create }}"
+  when: item is match("nginx-directory")
+
+- name: Get updated files from git repository 
+  git: 
+    repo: "https://{{ svcuser | urlencode }}:{{ pat | urlencode }}@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support"
+    dest: /azp/agent/_work/1/s/src/tmp1
+    version: "{{ gitbranch }}"
+
+- name: Copy generated directories to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ clustername }}/"
+    src: "/azp/agent/_work/1/s/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ clustername }}/"
+    force: true
+  register: copy_op

@@ -1,0 +1,180 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-aiqr360-dev-cv-gw
+  namespace: pep-dps-dps-aiqr360-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-aiqr360-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiqr360-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-aiqr360-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-aiqr360-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-nginx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-promotions-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-common-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-voice-to-text-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-jbp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-dev-ghapp.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusdatarouter-ai-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-chroma-db.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusdatarouter-ai-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-poc-ai-nego-ui-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-pepgenx-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-doc-processor-mcp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-knowledge-rag-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-pepgenx-adapter-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-chatbot-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusai-document-ingestor-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-sf-data-migration-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusgit-ai-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusgit-ai-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-sell-and-lead-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-equipment-dashboard-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-planner-agent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-content-creator-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-metrics-mcp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusvisit-iq-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiqr360-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-aiqr360-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - usaiq.dev.pepsico.com
+    - pep-dps-dps-aiqr360-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-nginx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-promotions-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aiqassets.dev.pepsico.com
+    - gusr360-lite-caf-common-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-voice-to-text-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-jbp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-dev-ghapp.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusdatarouter-ai-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-chroma-db.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusdatarouter-ai-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-poc-ai-nego-ui-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-pepgenx-proxy-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-doc-processor-mcp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-auth-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-knowledge-rag-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusagentic-poc-pepgenx-adapter-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-chatbot-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusai-document-ingestor-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusr360-lite-sf-data-migration-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusgit-ai-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusgit-ai-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-sell-and-lead-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-equipment-dashboard-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-planner-agent-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-content-creator-service-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusaiq-metrics-mcp-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - gusvisit-iq-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiqr360-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-aiqr360-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - usaiq.dev.pepsico.com
+    name: pep-dps-dps-aiqr360-dev-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-aiqr360-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-aiqr360-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - aiqassets.dev.pepsico.com
+    name: pep-dps-dps-aiqr360-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-aiqr360-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: aiqassets.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

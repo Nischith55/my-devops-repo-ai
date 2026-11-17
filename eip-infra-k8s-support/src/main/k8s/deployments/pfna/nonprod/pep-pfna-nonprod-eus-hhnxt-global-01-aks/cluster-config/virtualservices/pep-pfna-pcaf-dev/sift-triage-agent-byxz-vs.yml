@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: sift-triage-agent-byxz-vs
+  namespace: pep-pfna-pcaf-dev
+  labels:
+      app: sift-triage-agent
+spec:
+  hosts:
+  - sift-triage-agent-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: sift-triage-agent.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 8080
+  

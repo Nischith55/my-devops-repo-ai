@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pepconnect-b2bweb-india-bmjz-vs
+  namespace: pep-dps-europe-pepconnind-preprod
+  labels:
+      app: pepsico-pepconnect-b2bweb-india
+spec:
+  hosts:
+  - pep-dps-preprod-pepsiconnectindia.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  - pepsiconnectindia.preprod.pepsico.com
+  gateways:
+  - pep-dps-europe-pepconnind-preprod/pep-dps-europe-pepconnind-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-india.pep-dps-europe-pepconnind-preprod.svc.cluster.local
+        port:
+          number: 80
+  

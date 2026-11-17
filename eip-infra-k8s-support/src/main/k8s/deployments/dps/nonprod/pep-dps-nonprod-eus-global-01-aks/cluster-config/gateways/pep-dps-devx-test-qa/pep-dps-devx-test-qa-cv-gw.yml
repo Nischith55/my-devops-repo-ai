@@ -1,0 +1,132 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-devx-test-qa-cv-gw
+  namespace: pep-dps-devx-test-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-devx-test-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-devx-test-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-devx-test-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-devx-test-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing2-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-trunk-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-qa-testing-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-5-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-1-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-qa-testing-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-mxhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-cohf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-mxhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-co-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-co-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-ushf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-latamhf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latamhf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-ushf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latamhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-mx-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-na-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-nahf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-5-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-latam-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-4-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-cohf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latam-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-devx-test-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-devx-test-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-devx-test-qa-80.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing2-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-trunk-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-qa-testing-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-5-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-1-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-qa-testing-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-2-mxhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-cohf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-mxhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-co-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-co-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-ushf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-latamhf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latamhf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-ushf-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latamhf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-mx-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-na-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-4-nahf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-5-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-product-testing-backend512-3-latam-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-4-mx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-cohf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-2-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-1-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepdpsbackend-3-latam-hf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-devx-test-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-devx-test-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

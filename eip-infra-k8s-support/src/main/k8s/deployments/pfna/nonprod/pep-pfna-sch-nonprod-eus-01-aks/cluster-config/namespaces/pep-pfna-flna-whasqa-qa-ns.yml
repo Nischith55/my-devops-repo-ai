@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-pfna-flna-whasqa-qa
+    pep-cmdb-app-service-id: 2263684387c3d11c2b90426d0ebb3533
+    pep-cmdb-bus-app-id: e6be443ddb3e8c10c2b5f381399619ce
+    pep-environment: QA
+    project: whasqa
+    sector: flna
+    servicename_aks: ics-inventorycontrolsystemnon-prod
+    team: flna-whasqa
+  name: pep-pfna-flna-whasqa-qa

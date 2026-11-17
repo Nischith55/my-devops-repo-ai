@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-afhblue-prod-cv-gw
+  namespace: pep-dps-cgf-afhblue-prod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-afhblue-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-afhblue-prod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-afhblue-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-cgf-afhblue-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-ui-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-agent-comm-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-bff-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-user-mgmt-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-activity-processor-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-afhblue-prod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-afhblue-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-cgf-afhblue-prod-80.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-ui-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afhblueprint.pepsico.com
+    - afh-blueprint-agent-comm-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-bff-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-user-mgmt-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afh-blueprint-activity-processor-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-cgf-afhblue-prod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-afhblue-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - afhblueprint.pepsico.com
+    name: pep-dps-cgf-afhblue-prod-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-afhblue-prod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: afhblueprint-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-pepconnect-b2bweb-thailand
+  name: pepsico-pepconnect-b2bweb-thailand-dev-vs
+  namespace: pep-dps-cgf-pepconntha-dev
+spec:
+  gateways:
+  - pep-dps-cgf-pepconntha-dev/pep-dps-cgf-pepconntha-dev-cv-gw
+  hosts:
+  - pepsico-pepconnect-b2bweb-thailand-dev.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  - kookahpuenkhun.dev.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-thailand.pep-dps-cgf-pepconntha-dev.svc.cluster.local
+        port:
+          number: 80

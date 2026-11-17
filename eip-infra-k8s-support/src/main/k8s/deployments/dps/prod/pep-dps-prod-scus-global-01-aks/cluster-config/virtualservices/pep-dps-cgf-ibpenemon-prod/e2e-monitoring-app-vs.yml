@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: e2e-monitoring-app
+  name: e2e-monitoring-app-vs
+  namespace: pep-dps-cgf-ibpenemon-prod
+spec:
+  gateways:
+  - pep-dps-cgf-ibpenemon-prod/pep-dps-cgf-ibpenemon-prod-cv-gw
+  hosts:
+  - e2e-monitoring-app.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /e2emonitoring-ibp
+    route:
+    - destination:
+        host: e2e-monitoring-app.pep-dps-cgf-ibpenemon-prod.svc.cluster.local
+        port:
+          number: 8080

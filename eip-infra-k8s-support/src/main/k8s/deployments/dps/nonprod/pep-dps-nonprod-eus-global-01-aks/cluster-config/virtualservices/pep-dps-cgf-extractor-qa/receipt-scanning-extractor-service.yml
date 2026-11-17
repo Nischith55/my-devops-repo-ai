@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: receipt-scanning-extractor-service
+    app.kubernetes.io/instance: receipt-scanning-extractor-service-qa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: receipt-scanning-extractor-service
+  namespace: pep-dps-cgf-extractor-qa
+spec:
+  gateways:
+  - pep-dps-cgf-extractor-qa/pep-dps-cgf-extractor-qa-cv-gw
+  hosts:
+  - receipt-scanning-extractor-service.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-extractor-service.pep-dps-cgf-extractor-qa.svc.cluster.local
+        port:
+          number: 8082

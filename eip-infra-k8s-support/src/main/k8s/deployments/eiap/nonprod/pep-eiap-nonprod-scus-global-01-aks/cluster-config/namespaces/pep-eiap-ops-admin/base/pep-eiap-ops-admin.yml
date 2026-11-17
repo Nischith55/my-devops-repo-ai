@@ -1,0 +1,11 @@
+---
+# Generated File do not edit manually -- try to regenerate
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-ops-admin
+  labels:
+    istio-injection: disabled
+    team: eiap-admins
+    cluster-name: pep-eiap-nonprod-scus-global-01-aks
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE

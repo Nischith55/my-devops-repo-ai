@@ -1,0 +1,17 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-operator
+  namespace: istio-operator
+spec:
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

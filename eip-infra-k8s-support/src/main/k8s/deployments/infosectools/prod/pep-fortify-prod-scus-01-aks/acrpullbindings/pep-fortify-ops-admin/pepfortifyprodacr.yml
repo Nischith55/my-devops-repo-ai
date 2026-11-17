@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapprodcommonacr
+  namespace: pep-fortify-ops-admin
+spec:
+  acrServer: pepeiapprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/bbfb8d7c-7f66-4690-9a6a-0aec959d9035/resourceGroups/pep-fortify-prod-scus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-fortify-prod-scus-01-aks-agentpool
+  # serviceAccountName: <add if different than default>

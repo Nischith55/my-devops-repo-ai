@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-gscaf-salesforce-connector
+    app.kubernetes.io/instance: pep-gscaf-salesforce-connector-dev
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: pep-gscaf-salesforce-connector
+  namespace: pep-dps-cgf-gscafso-dev
+spec:
+  gateways:
+  - pep-dps-cgf-gscafso-dev/pep-dps-cgf-gscafso-dev-cv-gw
+  hosts:
+  - pep-gscaf-salesforce-connector-dev.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-gscaf-salesforce-connector.pep-dps-cgf-gscafso-dev.svc.cluster.local
+        port:
+          number: 8080

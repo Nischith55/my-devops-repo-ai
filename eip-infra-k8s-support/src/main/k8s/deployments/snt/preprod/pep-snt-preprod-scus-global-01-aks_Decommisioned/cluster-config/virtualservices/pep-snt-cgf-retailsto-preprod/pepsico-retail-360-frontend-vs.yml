@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-retail-360-frontend-vs","namespace":"pep-snt-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["retail360.preprod.pepsico.com","pepsico-retail-360-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-retail-360-frontend.pep-snt-cgf-retailsto-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: pepsico-retail-360-frontend-vs
+  namespace: pep-snt-cgf-retailsto-preprod
+spec:
+  gateways:
+  - pep-snt-cgf-retailsto-preprod/pep-snt-cgf-retailsto-preprod-cv-gw
+  hosts:
+  - retail360.preprod.pepsico.com
+  - pepsico-retail-360-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-retail-360-frontend.pep-snt-cgf-retailsto-preprod.svc.cluster.local
+        port:
+          number: 80

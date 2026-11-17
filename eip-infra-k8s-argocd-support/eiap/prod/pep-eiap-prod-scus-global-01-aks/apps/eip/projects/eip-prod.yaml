@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eip-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for eip-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIP/_git/eip-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-latam-gtm-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eip-prod-admin
+        description: Admin privileges to eip-prod
+        policies:
+        - p, proj:eip-prod:eip-prod-admin, applications, *, eip-prod/*, allow
+        - p, proj:eip-prod:eip-prod-admin, repositories, *, eip-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: eip-prod-user
+        description: Read-only privileges to eip-prod
+        policies:
+        - p, proj:eip-prod:eip-prod-user, applications, get, eip-prod/*, allow
+        - p, proj:eip-prod:eip-prod-user, applications, sync, eip-prod/*, allow
+        - p, proj:eip-prod:eip-prod-user, repositories, get, eip-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.LATAM.GTM.Developer"
+        - "Team.Support.EIAP.READ"
+    

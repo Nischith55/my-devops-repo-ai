@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-cto-cmp-order-asset-creation-kwar-vs
+  namespace: pep-eiap-global-cmp-preprod
+  labels:
+      app: pepsico-cto-cmp-order-asset-creation
+spec:
+  hosts:
+  - pepsico-cto-cmp-order-asset-creation-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cmp-preprod/pep-eiap-global-cmp-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-asset-creation.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://cmp.mypepsico.com
+      allowMethods:
+      - DELETE
+      - PUT
+      - GET
+  
+      allowCredentials: true
+      allowHeaders:
+      - Accept-Encoding
+      - Access-Control-Allow-Methods
+      exposeHeaders:
+      - Access-Control-Allow-Headers
+      - Access-Control-Request-Method
+       
+  

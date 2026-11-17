@@ -1,0 +1,9 @@
+####### BEGIN Added recently --pep-cmp-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_cmp_cgf_decvh_dev
+  - ns_pep_cmp_cgf_dcfvgn_dev
+  - ns_pep_cmp_test_test_qa
+####### END Added recently --pep-cmp-nonprod-eus-01-aks######

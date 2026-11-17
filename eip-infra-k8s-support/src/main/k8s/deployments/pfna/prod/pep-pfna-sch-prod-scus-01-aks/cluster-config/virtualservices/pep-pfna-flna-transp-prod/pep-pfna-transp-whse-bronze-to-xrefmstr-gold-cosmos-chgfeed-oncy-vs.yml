@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-whse-bronze-to-xrefmstr-gold-cosmos-chgfeed-oncy-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-whse-bronze-to-xrefmstr-gold-cosmos-chgfeed
+spec:
+  hosts:
+  - pep-pfna-transp-whse-bronze-to-xrefmstr-gold-cosmos-chgfeed.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/warehouse-xrefmaster-changefeed
+    route:
+    - destination:
+        host: pep-pfna-transp-whse-bronze-to-xrefmstr-gold-cosmos-chgfeed.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

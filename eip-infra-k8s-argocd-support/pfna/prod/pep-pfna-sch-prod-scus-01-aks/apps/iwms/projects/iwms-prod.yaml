@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iwms-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iwms-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_Warehouse_Automation/_git/pepsico-iwms-quick-report-argocd-config
+      - peppfnaschprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-prod-scus-01-aks
+        namespace: pep-pfna-flna-iwms-prod
+      - name: pep-pfna-sch-prod-scus-01-aks
+        namespace: pep-pfna-sch-ops-admin
+      roles:
+      - name: iwms-prod-admin
+        description: Admin privileges to iwms-prod
+        policies:
+        - p, proj:iwms-prod:iwms-prod-admin, applications, *, iwms-prod/*, allow
+        - p, proj:iwms-prod:iwms-prod-admin, repositories, *, iwms-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iwms-prod-user
+        description: Read-only privileges to iwms-prod
+        policies:
+        - p, proj:iwms-prod:iwms-prod-user, applications, get, iwms-prod/*, allow
+        - p, proj:iwms-prod:iwms-prod-user, applications, sync, iwms-prod/*, allow
+        - p, proj:iwms-prod:iwms-prod-user, repositories, get, iwms-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.NGPWM.Admins"
+        - "Team.Support.EIAP.READ"
+    

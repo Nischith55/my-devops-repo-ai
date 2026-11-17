@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: global-snt-cbrain-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for global-snt-cbrain-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SnT_Away_From_Home/_git/Global-SnT-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-combrain-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: global-snt-cbrain-qa-admin
+        description: Admin privileges to global-snt-cbrain-qa
+        policies:
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-admin, applications, *, global-snt-cbrain-qa/*, allow
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-admin, repositories, *, global-snt-cbrain-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: global-snt-cbrain-qa-user
+        description: Read-only privileges to global-snt-cbrain-qa
+        policies:
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-user, applications, get, global-snt-cbrain-qa/*, allow
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-user, applications, sync, global-snt-cbrain-qa/*, allow
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-user, repositories, get, global-snt-cbrain-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:global-snt-cbrain-qa:global-snt-cbrain-qa-user, applications, action/apps/Deployment/restart, global-snt-cbrain-qa/*, allow
+        groups:
+        - "Team.Support.aisp.CommercialBrain.Dev.Contributors"
+        - "Team.Support.EIAP.READ"
+    

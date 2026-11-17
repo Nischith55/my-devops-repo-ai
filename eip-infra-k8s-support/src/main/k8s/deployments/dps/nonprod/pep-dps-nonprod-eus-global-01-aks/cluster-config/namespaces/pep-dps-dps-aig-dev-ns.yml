@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-aig-dev
+  labels:
+    env-nonprod: "true"
+    project: aig
+    sector: dps
+    team: dps-aig
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: directtostoredeliveryvisibility
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: d49b607987d8b9d04f62fe28dabb35d4
+    pep-cmdb-app-service-id: d09ba07987d8b9d04f62fe28dabb3527
+    pep-environment: Development
+    

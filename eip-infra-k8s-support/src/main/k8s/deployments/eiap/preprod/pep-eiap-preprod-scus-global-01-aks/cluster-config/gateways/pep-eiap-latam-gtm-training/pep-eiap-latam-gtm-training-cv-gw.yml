@@ -1,0 +1,162 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-latam-gtm-training-cv-gw
+  namespace: pep-eiap-latam-gtm-training
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-latam-gtm-training.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-gtm-training-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-latam-gtm-training-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pepsico-eip-latam-bank-deposit-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-vansalesorder-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cim-order-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cim-sales-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cle-replay-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-backend-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-occ-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-ack-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-order-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-portfolio-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-segment-survey-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-settlement-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-vanload-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-bank-deposit-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-bank-deposit-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-portfolio-sfdc-dispatch-training.global.gw01.aks01.scus.prenprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-segment-survey-datalake-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-execution-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-eip-latam-b2b-customerorder-och-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-generic-customerorder-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-datalake-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-common-error-handler-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-processor-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-gtm-training-cv-gw-https-443
+    port:
+      name: https-pep-eiap-latam-gtm-training-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepsico-eip-latam-bank-deposit-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-vansalesorder-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cim-order-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cim-sales-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-cle-replay-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-consolidated-orders-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-backend-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-occ-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customer-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-ack-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-order-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-portfolio-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-segment-survey-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-settlement-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-intake-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-vanload-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-ingest-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-bank-deposit-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-bank-deposit-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-portfolio-sfdc-dispatch-training.global.gw01.aks01.scus.prenprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-survey-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-segment-survey-datalake-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-product-listing-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-execution-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-route-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-br-route-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-eip-latam-b2b-customerorder-och-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-generic-customerorder-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-sap-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-customerorder-translator-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-sfdc-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-dataservice-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-qreturns-datalake-dispatch-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-common-error-handler-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-processor-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-eip-latam-visit-list-data-service-training.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-gtm-training-cv-gw-http-80
+    port:
+      name: http-pep-eiap-latam-gtm-training-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

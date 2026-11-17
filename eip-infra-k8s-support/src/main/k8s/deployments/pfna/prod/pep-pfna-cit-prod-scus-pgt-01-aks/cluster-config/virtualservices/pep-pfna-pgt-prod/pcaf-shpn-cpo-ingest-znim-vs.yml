@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shpn-cpo-ingest-znim-vs
+  namespace: pep-pfna-pgt-prod
+  labels:
+      app: pcaf-shpn-cpo-ingest
+spec:
+  hosts:
+  - pcaf-shpn-cpo-ingest.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shpn-cpo-ingest.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+  

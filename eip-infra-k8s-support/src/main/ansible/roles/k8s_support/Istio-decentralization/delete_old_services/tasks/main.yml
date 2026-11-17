@@ -1,0 +1,82 @@
+### Delete Old Istio services like Virtual Services, Side car and Destination rules
+
+# - name: checking sidecar generated or not 
+#   stat: 
+#     path: "{{ mypath }}/Artifacts/sc-manifests"
+#   register: sc_status
+
+# - debug:
+#     msg: "Sidecar manifest folder is not present. Nothing to delete. "
+#   when: sc_status.stat.isdir is not defined
+
+- name: Get the Sidecar 
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1alpha3
+    kind: Sidecar 
+    namespace: "pep-{{ department }}-istio-config"
+  register: sidecar_old
+
+- name: loop through the Sidecar manifest files 
+  include_tasks: sc_delete.yml
+  with_items: "{{ sidecar_old.resources }}"
+  # with_fileglob: 
+  # - "{{ mypath }}/Artifacts/sc-manifests/*"
+  # when: sc_status.stat.isdir is defined and sc_status.stat.isdir
+
+# - name: checking Virtual Services generated or not 
+#   stat: 
+#     path: "{{ mypath }}/Artifacts/vs-manifests"
+#   register: vs_status
+
+# - debug:
+#     msg: "Virtual Service manifest folder is not present. Nothing to delete. "
+#   when: vs_status.stat.isdir is not defined
+
+### fetch virtual services from cluster
+- name: Get list of virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+    namespace: "pep-{{ department }}-istio-config"
+  register: virtualservices_old
+
+- name: loop through the Virtualservice manifest files 
+  include_tasks: vs_delete.yml
+  with_items: "{{ virtualservices_old.resources }}"
+  # with_fileglob:
+  # - "{{ mypath }}/Artifacts/vs-manifests/*"
+  # when: vs_status.stat.isdir is defined and vs_status.stat.isdir
+
+# - name: checking Destination rule generated or not 
+#   stat: 
+#     path: "{{ mypath }}/Artifacts/dr-manifests"
+#   register: dr_status
+
+# - debug:
+#     msg: "Destination rule manifest folder is not present. Nothing to delete. "
+#   when: dr_status.stat.isdir is not defined
+
+### fetch destination rules from cluster
+- name: Get list of destination rules
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule 
+    namespace: "pep-{{ department }}-istio-config"
+  register: destinationrules_old
+
+- name: loop through the Destinationrule manifest files 
+  include_tasks: dr_delete.yml
+  with_items: "{{ destinationrules_old.resources }}"
+  # with_fileglob:
+  # - "{{ mypath }}/Artifacts/dr-manifests/*"
+  # when: dr_status.stat.isdir is defined and dr_status.stat.isdir
+- block:
+  - name: "deleting pep-{{ department }}-istio-config namespace "
+    kubernetes.core.k8s: 
+      state: absent 
+      api_version: v1
+      kind: namespace
+      name: "pep-{{ department }}-istio-config"
+  rescue:
+  - debug:
+      msg: "Deletion of pep-{{ department }}-istio-config failed. "

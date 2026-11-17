@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-fsma-dev
+  labels:
+    env-nonprod: "true"
+    project: fsma
+    sector: flna
+    team: flna-fsma
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: dps-dispatchplanningsystemnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 0cbe08f9db3e8c10c2b5f38139961928
+    pep-cmdb-app-service-id: d87268438783d11c2b90426d0ebb3576
+    pep-environment: Development
+    

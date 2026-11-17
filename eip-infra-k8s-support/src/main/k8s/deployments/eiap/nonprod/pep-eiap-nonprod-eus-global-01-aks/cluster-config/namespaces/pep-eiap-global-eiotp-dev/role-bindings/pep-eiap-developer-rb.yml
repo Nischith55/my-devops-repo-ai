@@ -1,0 +1,33 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-global-eiotp-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.Global.EIOTP.Developer
+    name: b2a241b8-1076-47e2-a9b9-6f48792c657f
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-global-eiotp-sp
+    name: 871d11a3-7ba1-4f97-a15d-bb5ee6682ef7
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # Team.Support.EIAP.Global.EIOTP.NonProd.Contributor
+    name: 60a83d64-3f8b-4632-9256-6b2e52531fcb
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # Team.Support.EIAP.Global.EIOTP.NonProd.ContributorNoDelete
+    name: 7daceee1-ead2-4145-a18e-44f06cb151ae
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # Team.Support.EIAP.Global.EIOTP.NonProd.Reader
+    name: 5e7b232c-2066-4dda-9d41-d49b9f005b7a

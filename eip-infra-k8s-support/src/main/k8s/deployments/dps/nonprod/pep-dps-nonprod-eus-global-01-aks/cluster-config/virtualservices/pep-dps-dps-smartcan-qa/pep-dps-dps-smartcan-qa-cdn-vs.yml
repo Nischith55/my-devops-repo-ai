@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-smartcan-qa-cv-cdn-vs
+  namespace: pep-dps-dps-smartcan-qa
+spec:
+  hosts:
+    - smartcancms.qa.pepsico.com
+  gateways:
+  - "pep-dps-dps-smartcan-qa/pep-dps-dps-smartcan-qa-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-smartcan-titan-app.pep-dps-dps-smartcan-qa.svc.cluster.local"
+        port:
+          number: 80

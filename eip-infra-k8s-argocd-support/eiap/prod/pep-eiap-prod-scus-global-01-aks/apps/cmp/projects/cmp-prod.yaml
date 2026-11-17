@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cmp-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cmp-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PepsiCo_CloudMarketPlace/_git/cmp-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-global-cmp-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-dvxinfra-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cmp-prod-admin
+        description: Admin privileges to cmp-prod
+        policies:
+        - p, proj:cmp-prod:cmp-prod-admin, applications, *, cmp-prod/*, allow
+        - p, proj:cmp-prod:cmp-prod-admin, repositories, *, cmp-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cmp-prod-user
+        description: Read-only privileges to cmp-prod
+        policies:
+        - p, proj:cmp-prod:cmp-prod-user, applications, get, cmp-prod/*, allow
+        - p, proj:cmp-prod:cmp-prod-user, applications, sync, cmp-prod/*, allow
+        - p, proj:cmp-prod:cmp-prod-user, repositories, get, cmp-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.CMP.Developer"
+        - "Team.Support.EIAP.READ"
+    

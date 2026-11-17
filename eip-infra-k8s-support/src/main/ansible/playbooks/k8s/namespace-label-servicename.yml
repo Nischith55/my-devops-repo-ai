@@ -1,0 +1,143 @@
+- name: set namespace fact 
+  set_fact:
+    namespace: "{{ item.namespace | trim | lower }}"
+    pep_cmdb_bus_app_id: "{{ item.pep_cmdb_bus_app_id | trim | lower }}"
+    pep_cmdb_app_service_id: "{{ item.pep_cmdb_app_service_id | trim | lower }}"
+    pep_environment: "{{ item.pep_environment | trim }}"
+
+# - name: replace special characters in servicename_aks 
+#   set_fact: 
+#     servicename: "{{ servicename | regex_replace(inner_item.0, inner_item.1) }}"
+#   loop:
+#   - ['\(', '-']
+#   - ['\&', '-']
+#   - ['\<', '-']
+#   - ['\,', '-']
+#   - ['\/', '-']
+#   - [' ', '']
+#   - ['\+', '-plus']
+#   - ['\)', '-']
+#   - ['\--', '-']
+#   loop_control:
+#     loop_var: inner_item
+#   no_log: True
+# - name: remove last character if any 
+#   set_fact:
+#     servicename: "{{ servicename[:-1] }}"
+#   when: servicename[-1] == '-'
+# - debug: 
+#     msg: "{{ servicename }}"
+    
+
+- name: add label to the namespace              
+  kubernetes.core.k8s:
+    state: patched
+    kind: namespace
+    name: "{{ namespace }}"
+    definition:
+      metadata:
+        labels:
+          pep-cmdb-bus-app-id: "{{ pep_cmdb_bus_app_id }}"
+          pep-cmdb-app-service-id: "{{ pep_cmdb_app_service_id }}"
+          pep-environment: "{{ pep_environment }}"
+  register: label_updated
+
+- name: update files when label changed
+  block: 
+  - name: check if the file exists
+    stat:
+      path: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+    register: file_stat_result
+  
+  - name: get namespace labels            
+    kubernetes.core.k8s:
+      kind: namespace
+      name: "{{ namespace }}"
+    register: ns_label
+
+  - set_fact:
+      labels: "{{ ns_label.result.metadata.labels }}"
+  
+  - name: update existing file 
+    block:
+    - name: read the existing file 
+      slurp:
+        src: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+      register: yml_file_content
+    - name: decode the content 
+      set_fact: 
+        decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+    - name: update yml file  content 
+      ansible.utils.update_fact: 
+        updates: 
+          - path: decoded_yml.metadata.labels.pep-cmdb-bus-app-id
+            value: "{{ pep_cmdb_bus_app_id }}"
+          - path: decoded_yml.metadata.labels.pep-cmdb-app-service-id
+            value: "{{ pep_cmdb_app_service_id }}"
+          - path: decoded_yml.metadata.labels.pep-environment
+            value: "{{ pep_environment }}"
+      register: decoded_yml_updated
+
+    - name: encode the updated yml
+      set_fact: 
+        encoded_yml_updated: "{{ decoded_yml_updated.decoded_yml | to_nice_yaml(indent=2) }}"
+
+    - name: write the updated one to the file 
+      copy:
+        content: "{{ decoded_yml_updated.decoded_yml | to_nice_yaml(indent=2) }}"
+        dest: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+    
+    when: file_stat_result.stat.exists
+  
+  - name: create new file 
+    block:
+    - debug:  
+        msg: "File doesn't exist. Hence creating."
+    
+    - name: creating the file 
+      copy:
+        dest: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+        content: |
+          ---
+          apiVersion: v1
+          kind: Namespace
+          metadata: 
+            name: 
+            labels: 
+    - name: read the file content  
+      slurp:
+        src: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+      register: yml_file_content
+
+    - name: decode the content 
+      set_fact: 
+        decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+    - name: update yml file  content 
+      ansible.utils.update_fact: 
+        updates: 
+          - path: decoded_yml.metadata.name
+            value: "{{ namespace }}"  
+          - path: decoded_yml.metadata.labels
+            value: "{{ labels }}"
+          - path: decoded_yml.metadata.labels.pep-cmdb-bus-app-id
+            value: "{{ pep_cmdb_bus_app_id }}"
+          - path: decoded_yml.metadata.labels.pep-cmdb-app-service-id
+            value: "{{ pep_cmdb_app_service_id }}"
+          - path: decoded_yml.metadata.labels.pep-environment
+            value: "{{ pep_environment }}"
+      register: decoded_yml_updated
+
+    - name: encode the updated yml
+      set_fact: 
+        encoded_yml_updated: "{{ decoded_yml_updated.decoded_yml | to_nice_yaml(indent=2) }}"
+
+    - name: write the updated one to the file 
+      copy:
+        content: "{{ decoded_yml_updated.decoded_yml | to_nice_yaml(indent=2) }}"
+        dest: "{{ script_dir_task }}/src/main/k8s/deployments/{{ department_task }}/{{ env_task }}/{{ cluster_name_task }}/cluster-config/namespaces/{{ namespace }}-ns.yml"
+    
+    when: not file_stat_result.stat.exists
+
+  when: label_updated.changed

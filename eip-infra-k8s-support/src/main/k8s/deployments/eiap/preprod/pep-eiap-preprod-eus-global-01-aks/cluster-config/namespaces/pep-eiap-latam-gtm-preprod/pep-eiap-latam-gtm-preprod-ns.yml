@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-latam-gtm-preprod
+  labels:
+    env-preprod: 'true'
+    environment: preprod
+    project: gtm
+    sector: latam
+    team: latam-gtm
+    istio-injection: enabled

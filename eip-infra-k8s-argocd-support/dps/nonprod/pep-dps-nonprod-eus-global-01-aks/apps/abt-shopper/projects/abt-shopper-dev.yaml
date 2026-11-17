@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: abt-shopper-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for abt-shopper-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-abt-shopper-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-abts-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: abt-shopper-dev-admin
+    description: Admin privileges to abt-shopper-dev
+    policies:
+    - p, proj:abt-shopper-dev:abt-shopper-dev-admin, applications, *, abt-shopper-dev/*, allow
+    - p, proj:abt-shopper-dev:abt-shopper-dev-admin, repositories, *, abt-shopper-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: abt-shopper-dev-user
+    description: Read-only privileges to abt-shopper-dev
+    policies:
+    - p, proj:abt-shopper-dev:abt-shopper-dev-user, applications, get, abt-shopper-dev/*, allow
+    - p, proj:abt-shopper-dev:abt-shopper-dev-user, applications, sync, abt-shopper-dev/*, allow
+    - p, proj:abt-shopper-dev:abt-shopper-dev-user, repositories, get, abt-shopper-dev/*, allow
+    - p, proj:abt-shopper-dev:abt-shopper-dev-user, applications, action/apps/Deployment/restart, abt-shopper-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"

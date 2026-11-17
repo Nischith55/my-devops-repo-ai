@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-latam-leap-dev-cv-web-vs
+  namespace: pep-eiap-latam-leap-dev
+  labels:
+    app: pep-eiap-latam-leap-dev-cv-web
+spec:
+  hosts:
+    - leapsre.dev.mypepsico.com
+    - pep-eiap-latam-leap-dev-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-leap-dev/pep-eiap-latam-leap-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-latam-leap-dev-cv-web.pep-eiap-latam-leap-dev.svc.cluster.local
+        port:
+          number: 80

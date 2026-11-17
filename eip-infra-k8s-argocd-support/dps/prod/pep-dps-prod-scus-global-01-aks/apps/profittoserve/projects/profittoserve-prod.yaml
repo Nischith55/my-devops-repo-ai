@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: profittoserve-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for profittoserve-prod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/profittoserve-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-ctxpts-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: profittoserve-prod-admin
+    description: Admin privileges to profittoserve-prod
+    policies:
+    - p, proj:profittoserve-prod:profittoserve-prod-admin, applications, *, profittoserve-prod/*, allow
+    - p, proj:profittoserve-prod:profittoserve-prod-admin, repositories, *, profittoserve-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: profittoserve-prod-user
+    description: Read-only privileges to profittoserve-prod
+    policies:
+    - p, proj:profittoserve-prod:profittoserve-prod-user, applications, get, profittoserve-prod/*, allow
+    - p, proj:profittoserve-prod:profittoserve-prod-user, applications, sync, profittoserve-prod/*, allow
+    - p, proj:profittoserve-prod:profittoserve-prod-user, repositories, get, profittoserve-prod/*, allow
+    - p, proj:profittoserve-prod:profittoserve-prod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devops" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.DPS.Prod.CTXPTS"

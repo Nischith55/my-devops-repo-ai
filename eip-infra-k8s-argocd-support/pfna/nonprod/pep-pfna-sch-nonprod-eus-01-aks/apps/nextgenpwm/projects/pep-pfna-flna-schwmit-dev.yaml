@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nextgenpwm-tctdev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-schwmit-dev
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: nextgenpwm-admin-tctdev
+    description: Admin privileges to nextgenpwm-tctdev
+    policies:
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-admin-tctdev, applications, *, nextgenpwm-tctdev/*, allow
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-admin-tctdev, repositories, *, nextgenpwm-tctdev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: nextgenpwm-user-tctdev
+    description: Read-only privileges to nextgenpwm-tctdev
+    policies:
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-user-tctdev, applications, get, nextgenpwm-tctdev/*, allow
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-user-tctdev, applications, sync, nextgenpwm-tctdev/*, allow
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-user-tctdev, repositories, get, nextgenpwm-tctdev/*, allow
+    - p, proj:nextgenpwm-tctdev:nextgenpwm-user-tctdev, applications, action/apps/Deployment/restart, nextgenpwm-tctdev/*, allow
+    groups:
+    - "Team.Support.NGPWM.Admins"
+    - "Team.Support.NGPWM.Dev"

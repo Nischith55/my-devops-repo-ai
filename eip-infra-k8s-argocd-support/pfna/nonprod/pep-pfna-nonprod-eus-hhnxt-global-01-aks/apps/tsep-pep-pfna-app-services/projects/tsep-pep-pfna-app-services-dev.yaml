@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-pep-pfna-app-services-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-pep-pfna-app-services-dev   
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-pep-pfna-app-services-argocd-configs
+      - peppfnanonprodhhnextacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-pcaf-dev
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: tsep-pep-pfna-app-services-dev-admin
+        description: Admin privileges to tsep-pep-pfna-app-services-dev
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-admin, applications, *, tsep-pep-pfna-app-services-dev/*, allow
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-admin, repositories, *, tsep-pep-pfna-app-services-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-pep-pfna-app-services-dev-user
+        description: Read-only privileges to tsep-pep-pfna-app-services-dev
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-user, applications, get, tsep-pep-pfna-app-services-dev/*, allow
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-user, applications, sync, tsep-pep-pfna-app-services-dev/*, allow
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-user, repositories, get, tsep-pep-pfna-app-services-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tsep-pep-pfna-app-services-dev:tsep-pep-pfna-app-services-dev-user, applications, action/apps/Deployment/restart, tsep-pep-pfna-app-services-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

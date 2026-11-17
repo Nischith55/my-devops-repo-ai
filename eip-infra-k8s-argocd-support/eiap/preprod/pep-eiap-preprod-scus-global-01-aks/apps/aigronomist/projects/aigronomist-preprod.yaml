@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aigronomist-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aigronomist-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_Global_Digital_Agro/_git/aigronomist-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/*
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-aigron-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aigronomist-preprod-admin
+        description: Admin privileges to aigronomist-preprod
+        policies:
+        - p, proj:aigronomist-preprod:aigronomist-preprod-admin, applications, *, aigronomist-preprod/*, allow
+        - p, proj:aigronomist-preprod:aigronomist-preprod-admin, repositories, *, aigronomist-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aigronomist-preprod-user
+        description: Read-only privileges to aigronomist-preprod
+        policies:
+        - p, proj:aigronomist-preprod:aigronomist-preprod-user, applications, get, aigronomist-preprod/*, allow
+        - p, proj:aigronomist-preprod:aigronomist-preprod-user, applications, sync, aigronomist-preprod/*, allow
+        - p, proj:aigronomist-preprod:aigronomist-preprod-user, repositories, get, aigronomist-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:aigronomist-preprod:aigronomist-preprod-user, applications, action/apps/Deployment/restart, aigronomist-preprod/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.AIGRON"
+        - "Team.Support.EIAP.READ"
+    

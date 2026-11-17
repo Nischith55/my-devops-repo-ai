@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: afh-menupro-temporal-qa-web-vs
+  namespace: pep-dps-dps-afhmenu-qa
+spec:
+  gateways:
+  - pep-dps-dps-afhmenu-qa/pep-dps-dps-afhmenu-qa-cv-gw
+  hosts:
+  - afh-menupro-temporal-qa-web.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-temporal-qa-web.pep-dps-dps-afhmenu-qa.svc.cluster.local
+        port:
+          number: 80

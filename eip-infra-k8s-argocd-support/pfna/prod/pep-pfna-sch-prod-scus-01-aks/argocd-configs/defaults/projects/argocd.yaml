@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for SCH   
+  sourceRepos:
+  - peppfnaschprodacr.azurecr.io/helm  
+  - pepeiapprodcommonacr.azurecr.io/helm 
+  - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PFNA_Warehouse_Automation/_git/pep-pfna-whse-autoschedular-argocd-config
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/pep-pfna-mfgpro-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/pep-pfna-transp-argocd-config  
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-pfna-meslite-cloud-argocd-config
+  - https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-sch-wse-lighthouse-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/transportation/_git/pep-pfna-dap-argocd-config
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/pep-latam-tct-argocd-config
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ehs-middleware-ehs-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/mfgproplus-ai-chat-client-api-mfgproplus-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-schiso-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PFNA_Warehouse_Automation/_git/pepsico-iwms-quick-report-argocd-config
+  - https://dev.azure.com/PepsiCoIT/IT_Supply_Chain_Data_and_Analytics_Program/_git/pfna-sch-iwms-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  roles:  
+  - name: argocd-user
+    description: Read-only privileges to argocd
+    policies:
+    - p, proj:argocd:argocd-user, applications, get, argocd/*, allow
+    - p, proj:argocd:argocd-user, applications, sync, argocd/*, allow
+    - p, proj:argocd:argocd-user, repositories, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"

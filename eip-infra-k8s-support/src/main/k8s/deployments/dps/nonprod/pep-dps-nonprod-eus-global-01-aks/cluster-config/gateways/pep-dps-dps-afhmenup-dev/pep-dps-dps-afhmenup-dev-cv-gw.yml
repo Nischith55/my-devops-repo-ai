@@ -1,0 +1,126 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-afhmenup-dev-cv-gw
+  namespace: pep-dps-dps-afhmenup-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-afhmenup-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-afhmenup-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-afhmenup-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - afh-menupro-auditengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-fileproxy-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-orchestrator.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-recoengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-scraping-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-search-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-dps-afhmenup-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-temporal-dev-web.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-insights.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-adf-menuengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-rays-agents-core.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-afhmenup-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-afhmenup-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - afh-menupro-auditengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-fileproxy-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-orchestrator.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-recoengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-scraping-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-search-api.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afhmenupro.dev.pepsico.com
+    - pep-dps-dps-afhmenup-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-temporal-dev-web.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-insights.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-menupro-adf-menuengine.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afh-rays-agents-core.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - afhmenuaudit.dev.pepsico.com
+    name: pep-dps-dps-afhmenup-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-afhmenup-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - afhmenupro.dev.pepsico.com
+    name: pep-dps-dps-afhmenup-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-dps-afhmenup-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-afhmenup-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - afhmenuaudit.dev.pepsico.com
+    name: pep-dps-dps-afhmenup-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-afhmenup-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: afhmenuaudit.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,57 @@
+---
+# WARNING: Dangerous this will delete and apply a generated manifest.
+# INPUT:
+#   params_del_apply:
+#     deploy_dir:
+#     resource: the resource to first delete
+#     resc_obj: resource config
+#       name: Must be present
+#     template_src: A template source to generate from
+#     kube-context:
+# BEHAVIOR INPUTS:
+#   - print_params: whether to print parameters
+#   - skip_generate: skip generating config files from templates
+#   - skip_kctl: skip applying config to cluster
+
+- name: DELETE_RESOURCE_GENERATE_MANIFEST_APPLY
+  block:
+
+    - name: TASK_PRINT_PARAMS
+      debug:
+        msg: |
+          Resource Config:
+            {{ __resc_obj | to_nice_yaml(indent=2, width=1337) 
+                | trim | indent(2) }}
+      when: (print_params | default('false') | bool)
+      
+    - name: DELETE_RESOURCE
+      block:
+
+        - name: DELETE_RESOURCE
+          include_role:
+            name: k8s_support/kubectl
+            tasks_from: execute
+          vars:
+            kube_context: "{{ __kube_context }}"
+            kctl_action: delete
+            kctl_action_args: "{{ __resc }} {{ __resc_obj['name'] }}"
+          # option to skip
+          when: (not (skip_kctl | default('false') | bool))
+
+        - name: APPLY_MANIFEST
+          include_tasks:
+            file: "tasks/cluster-config\
+                  /create-config-from-template-and-apply.yml"
+          vars:
+            params_create_cfg:
+              kube_context: "{{ __kube_context }}"
+              template_src: "{{ __tmpl_src }}"
+              output_base_dir: "{{ __deploy_dir }}"
+              params_cfg: "{{ __resc_obj }}"
+  vars:
+    __pt: "{{ params_del_apply }}"
+    __deploy_dir: "{{ __pt['deploy_dir'] }}"
+    __resc: "{{ __pt['resource'] }}"
+    __resc_obj: "{{ __pt['resc_obj'] }}"
+    __tmpl_src: "{{ __pt['template_src'] }}"
+    __kube_context: "{{ __pt['kube_context'] }}"

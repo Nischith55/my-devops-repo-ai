@@ -1,0 +1,40 @@
+{#
+  This generates a JsonPatches6902 data that is referenced from path.
+  INPUTS:
+    - params_tmpl:
+        json6902:
+#}
+{% set _p = params_tmpl %}
+{% set _pj = _p['json6902'] %}
+{% set _pjns = _pj['nodeSelector'] | default({}) %}
+{% set _pjnt = _pj['tolerations'] | default([]) %}
+{% set _pjigw = _pj['ingressGateways'] | default([]) %}
+---
+{% for _igw in _pjigw %}
+# Gateway {{ _igw['index'] }}
+{% if  _igw['enabled'] is defined %}
+- op: replace
+  path: /spec/components/ingressGateways/{{ _igw['index'] }}/enabled
+  value: {{ _igw['enabled'] }}
+{% endif %}
+# IP -- required, IMPORTANT the Kind: Service index is 2
+{% if  _igw['lb-ip'] is defined %}
+- op: add
+  path: /spec/components/ingressGateways/{{ _igw['index'] }}/k8s/overlays/2/patches/-
+  value: 
+    path: spec.loadBalancerIP
+    value: {{ _igw['lb-ip'] }}
+{% endif %}
+{% if (_pjns | length) > 0 %}
+- op: replace
+  path: /spec/components/ingressGateways/{{ _igw['index'] }}/k8s/nodeSelector
+  value:
+    {{ _pjns | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+{% endif %}
+{% if (_pjnt | length) > 0 %}
+- op: replace
+  path: /spec/components/ingressGateways/{{ _igw['index'] }}/k8s/tolerations
+  value:
+    {{ _pjnt | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: walmart-luminate
+  name: walmart-luminate-vs
+  namespace: pep-snt-cgf-walmart-preprod
+spec:
+  gateways:
+  - pep-snt-cgf-walmart-preprod/pep-snt-cgf-walmart-preprod-cv-gw
+  hosts:
+  - walmart-luminate.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: walmart-luminate.pep-snt-cgf-walmart-preprod.svc.cluster.local
+        port:
+          number: 80

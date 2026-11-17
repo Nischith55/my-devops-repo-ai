@@ -1,0 +1,24 @@
+---
+# IMPORTANT:
+# - please create the k8s service pep-eiap-ingest-01
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-ingest-02
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-ingest-02.infra.gw01.aks02.eus.preprod.azure.intra.pepsico.com
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - pep-eiap-ingest-02.infra.gw01.aks02.eus.preprod.azure.intra.pepsico.com
+      route:
+        - destination:
+            host: pep-eiap-ingest-02.pep-eiap-elastic-cluster-02.svc.cluster.local
+            port:
+              number: 9200
+          weight: 100

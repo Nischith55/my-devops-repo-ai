@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-onepep-dev
+    project: onepep
+    sector: cgf
+    servicename_aks: onepepcafservice-na
+    team: cgf-onepep
+  name: pep-eiap-cgf-onepep-dev

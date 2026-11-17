@@ -1,0 +1,34 @@
+---
+ns_pep_eiap_cgf_scards_dev:
+  
+  name: pep-eiap-cgf-scards-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-scards
+    sector: cgf
+    project: scards
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-scards-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_scards'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-scards-dev-sa-token
+    namespace: pep-eiap-cgf-scards-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-scards-dev-sa"

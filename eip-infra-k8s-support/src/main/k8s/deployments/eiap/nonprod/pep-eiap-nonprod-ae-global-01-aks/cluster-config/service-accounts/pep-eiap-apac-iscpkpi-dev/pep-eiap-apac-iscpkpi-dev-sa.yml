@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: ead89768-3456-4763-8fa2-9478b9c5c810
+  name: pep-eiap-apac-iscpkpi-dev-sa
+  namespace: pep-eiap-apac-iscpkpi-dev

@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-eip-latam-bank-deposit-sfdc-dispatch-qa-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-eip-latam-bank-deposit-sfdc-dispatch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/direct-replay
+    route:
+    - destination:
+        host: pepsico-eip-latam-bank-deposit-sfdc-dispatch.pep-eiap-latam-gtm-qa.svc.cluster.local
+        port:
+          number: 80

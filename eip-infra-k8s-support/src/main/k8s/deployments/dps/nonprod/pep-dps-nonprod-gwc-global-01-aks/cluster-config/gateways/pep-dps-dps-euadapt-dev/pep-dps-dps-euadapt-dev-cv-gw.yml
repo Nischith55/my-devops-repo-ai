@@ -1,0 +1,82 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-euadapt-dev-cv-gw
+  namespace: pep-dps-dps-euadapt-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-euadapt-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-euadapt-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-euadapt-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-dps-euadapt-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-gateway.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-audit.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-admin.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-dashboard.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-dashboard-backend.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - dsx-adaptor-pricing-engine-utility.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-odm.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-mock-service.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-admin.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-gateway.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-audit.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-euadapt-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-euadapt-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-dps-euadapt-dev-80.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-gateway.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-audit.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-admin.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-dashboard.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-dashboard-backend.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - dsx-adaptor-pricing-engine-utility.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-odm.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - adapter-mock-service.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-admin.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-audit.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - sandbox-adapter-gateway.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-euadapt-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-euadapt-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

@@ -1,0 +1,159 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: pep-eiap-cgf-launchp-qa-cv-gw
+    namespace: pep-eiap-cgf-launchp-qa
+spec:
+    selector:
+        istio: pep-eiap-ingress-gw01
+    servers:
+    -   hosts:
+        - dummy-passthrough-pep-eiap-cgf-launchp-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-cgf-launchp-qa-cv-gw-tls-443
+        port:
+            name: https-pep-eiap-cgf-launchp-qa-cv-gw-tls-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: PASSTHROUGH
+    -   hosts:
+        - pep-eiap-cgf-launchp-qa-cv.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-launchpad-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-teams-workflow-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-ld-journey-orc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-teams-proxy-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-launchpad-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-tools-workflow-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-infra-workflow-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-dso-wf-proxy-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-order-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-lms-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-event-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-profile-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-order-orc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-profile-management-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-scheduler-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-launchpad-generic-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-adgroup-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-approval-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-workflow-utility-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-approval-engine-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-product-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-devsecops-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-source-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-deboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-testing-utils-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-cgl-rule-management-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-pepcc-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        name: pep-eiap-cgf-launchp-qa-cv-gw-https-443
+        port:
+            name: https-pep-eiap-cgf-launchp-qa-cv-gw-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - devx-launchpad.qa.mypepsico.com
+        - pep-eiap-cgf-launchp-qa-cv.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-launchpad-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-teams-workflow-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-ld-journey-orc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-teams-proxy-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-launchpad-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-tools-workflow-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-infra-workflow-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-dso-wf-proxy-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-order-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-lms-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-event-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-profile-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-order-orc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-profile-management-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-scheduler-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-launchpad-generic-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-adgroup-proxy-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-approval-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-workflow-utility-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-approval-engine-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-product-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-devsecops-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-source-onboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-user-deboarding-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-testing-utils-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pep-cgf-devx-cgl-rule-management-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - pepsico-cgf-devx-pepcc-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+        - devx-pepcc.qa.mypepsico.com
+        name: pep-eiap-cgf-launchp-qa-cv-gw-http-80
+        port:
+            name: http-pep-eiap-cgf-launchp-qa-cv-gw-80
+            number: 80
+            protocol: http
+        tls:
+            httpsRedirect: true
+    -   hosts:
+        - devx-launchpad.qa.mypepsico.com
+        name: pep-eiap-cgf-launchp-qa-cv-gw-https-1-443
+        port:
+            name: https-pep-eiap-cgf-launchp-qa-cv-gw-1-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: pep-eiap-cgf-launchp-qa-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE
+    -   hosts:
+        - devx-pepcc.qa.mypepsico.com
+        name: pep-eiap-cgf-launchp-qa-cv-gw-4-https-443
+        port:
+            name: pep-eiap-cgf-launchp-qa-cv-gw-4-443
+            number: 443
+            protocol: https
+        tls:
+            cipherSuites:
+            - AES128-GCM-SHA256
+            - AES256-GCM-SHA384
+            - ECDHE-ECDSA-AES128-SHA
+            - ECDHE-ECDSA-AES256-SHA
+            - ECDHE-ECDSA-AES128-GCM-SHA256
+            - ECDHE-ECDSA-AES256-GCM-SHA384
+            - ECDHE-RSA-AES128-GCM-SHA256
+            - ECDHE-RSA-AES256-GCM-SHA384
+            credentialName: devx-pepcc.qa-gw01-tls
+            maxProtocolVersion: TLSV1_3
+            minProtocolVersion: TLSV1_2
+            mode: SIMPLE

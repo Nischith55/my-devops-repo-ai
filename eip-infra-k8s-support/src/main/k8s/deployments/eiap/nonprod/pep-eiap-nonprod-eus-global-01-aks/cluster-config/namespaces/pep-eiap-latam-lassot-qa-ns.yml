@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-latam-lassot-qa
+    pep-cmdb-app-service-id: 79335f61c30fa150b5c1729dc001318a
+    pep-cmdb-bus-app-id: 7d335f61c30fa150b5c1729dc001315c
+    pep-environment: QA
+    project: lassot
+    sector: latam
+    servicename_aks: revenuemanagementanalyticsedflatam
+    team: latam-lassot
+  name: pep-eiap-latam-lassot-qa

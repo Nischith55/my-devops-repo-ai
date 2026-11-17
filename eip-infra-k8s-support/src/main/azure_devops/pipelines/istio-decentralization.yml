@@ -1,0 +1,307 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+parameters:
+  - name: cluster_name
+    type: string
+  - name: env
+    displayName: 'env'
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+  - name: department
+    displayName: 'department'
+    type: string
+    values:
+      - eiap
+      - apigee
+      - arize
+      - cmp
+      - dps
+      - fortify
+      - infratools
+      - kafka
+      - latam-opsbridge
+      - paas-infratools
+      - pbna
+      - pfna
+      - snt
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+      - na
+      - essa
+      - apac
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-cit-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'dps'), eq(parameters.Region, 'sea'))}}:
+      value: pep-dps-prod-sea-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'dps'), eq(parameters.Region, 'suk'))}}:
+      value: pep-dps-prod-suk-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+stages:
+- stage: pre_checks
+  displayName: pre_checks
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: Pre_Checks
+    timeoutInMinutes: 0
+    steps:
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+    
+    - template: templates/istio_dcz_pre_check.yml
+      parameters:
+        env: ${{ parameters.env }}
+        department: ${{ parameters.department }}
+        cluster_name: ${{ parameters.cluster_name }}
+        Region: ${{ parameters.Region }}
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(system.defaultWorkingDirectory)/Artifacts/'
+        ArtifactName: 'Artifacts'
+        publishLocation: 'Container'
+
+#__________________________________________________________________________________________________________________
+
+- stage: checkforapproval_pre_check
+  displayName: manual-check-for-pre-checks
+  dependsOn: pre_checks
+  pool: 
+    name: $(agent_pool)
+  jobs:
+  - job: manual_approval
+    pool: server 
+    timeoutInMinutes: 120 # job times out in 60 mins
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 120 # task times out in 60 min
+      inputs:
+        instructions: 'Validate the Virtualservices hosts duplicates. Reject if something is wrong or duplicates found.'
+
+#_____________________________________________________________________________________________________________________
+- stage: Manifests_Generate
+  displayName: generate-manifests 
+  dependsOn: checkforapproval_pre_check
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: Generate_Manifests
+    timeoutInMinutes: 0
+    steps:
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+
+    - template: templates/istio_dcz_manifest_generate.yml
+      parameters:
+        env: ${{ parameters.env }}
+        department: ${{ parameters.department }}
+        cluster_name: ${{ parameters.cluster_name }}
+        Region: ${{ parameters.Region }}
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(system.defaultWorkingDirectory)/Artifacts/'
+        ArtifactName: 'Artifacts'
+        publishLocation: 'Container'
+
+#__________________________________________________________________________________________________________________
+
+- stage: checkforapproval_pre
+  displayName: manual-check-for-generated-manifests
+  dependsOn: Manifests_Generate
+  pool: 
+    name: $(agent_pool)
+  jobs:
+  - job: manual_approval
+    pool: server 
+    timeoutInMinutes: 120 # job times out in 60 mins
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 120 # task times out in 60 min
+      inputs:
+        instructions: 'Validate the generated Manifests before proceeding to apply. Reject if something is wrong.'
+
+#__________________________________________________________________________________________________________________
+
+- stage: Manifests_apply
+  displayName: apply-manifests
+  dependsOn: checkforapproval_pre
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: apply_manifests
+    timeoutInMinutes: 0
+    steps: 
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+    
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'specific'
+        downloadPath: '$(system.defaultWorkingDirectory)/'
+
+    - template: templates/istio_dcz_manifest_apply.yml
+      parameters:
+        env: ${{ parameters.env }}
+        department: ${{ parameters.department }}
+        cluster_name: ${{ parameters.cluster_name }}
+        Region: ${{ parameters.Region }}
+        svcuser: $(svcuser_automation)
+        svcPersonalAccessToken: $(svcautoPersonalAccessToken)
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(system.defaultWorkingDirectory)/Artifacts/'
+        ArtifactName: 'Artifacts'
+        publishLocation: 'Container'
+      condition: always()
+
+#__________________________________________________________________________________________________________________
+
+- stage: manual_check_after_apply_failed
+  displayName: manual-check-after-apply-failed
+  dependsOn: Manifests_apply
+  condition: failed('Manifests_apply')
+  pool: 
+    name: $(agent_pool)
+  jobs:
+  - job: manual_approval
+    pool: server 
+    timeoutInMinutes: 120 # job times out in 60 mins
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 120 # task times out in 60 min
+      inputs:
+        instructions: 'Reject this to re-run apply stage. Approve this to Revert everything back.'
+
+#__________________________________________________________________________________________________________________
+
+- stage: checkforapproval_delete
+  displayName: manual-check-after-apply-post-checks
+  dependsOn: Manifests_apply
+  pool: 
+    name: $(agent_pool)
+  jobs:
+  - job: manual_approval
+    pool: server 
+    timeoutInMinutes: 120 # job times out in 60 mins
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 120 # task times out in 60 min
+      inputs:
+        instructions: 'Validate the post checks and confirm to proceed to delete the old Sidecar, Virtual services and destination rules. Please configure the rancher-istio to use the rootNamespace: istio-system and ensure the hpa configuration of istiod is appropriate, to continue with the pipeline execution.'
+
+#__________________________________________________________________________________________________________________
+
+- stage: Revert_everything
+  displayName: Revert_everything
+  dependsOn: 
+  - checkforapproval_delete
+  - manual_check_after_apply_failed
+  condition: or(failed('checkforapproval_delete'), succeeded('manual_check_after_apply_failed'))
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: Revert_everything
+    timeoutInMinutes: 0
+    steps: 
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'specific'
+        downloadPath: '$(system.defaultWorkingDirectory)/'
+    
+    - template: templates/istio_dcz_revert_everything.yml
+      parameters:
+        env: ${{ parameters.env }}
+        department: ${{ parameters.department }}
+        cluster_name: ${{ parameters.cluster_name }}
+        Region: ${{ parameters.Region }}
+
+#__________________________________________________________________________________________________________________
+
+
+- stage: Delete_Old_Services
+  displayName: Delete_Old_Services
+  dependsOn: checkforapproval_delete
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: delete_old_services
+    timeoutInMinutes: 0
+    steps: 
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'specific'
+        downloadPath: '$(system.defaultWorkingDirectory)/'
+    
+    - template: templates/istio_dcz_delete_old_services.yml
+      parameters:
+        env: ${{ parameters.env }}
+        department: ${{ parameters.department }}
+        cluster_name: ${{ parameters.cluster_name }}
+        Region: ${{ parameters.Region }}
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(system.defaultWorkingDirectory)/Artifacts/'
+        ArtifactName: 'Artifacts'
+        publishLocation: 'Container'
+      condition: always()

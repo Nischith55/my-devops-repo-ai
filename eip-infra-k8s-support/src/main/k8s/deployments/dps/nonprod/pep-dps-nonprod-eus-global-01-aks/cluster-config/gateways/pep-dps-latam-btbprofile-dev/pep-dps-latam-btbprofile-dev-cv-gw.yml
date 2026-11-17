@@ -1,0 +1,154 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-btbprofile-dev-cv-gw
+  namespace: pep-dps-latam-btbprofile-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-btbprofile-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbprofile-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-btbprofile-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-latam-btbprofile-dev-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-mx-sample-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-synch-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-gt-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-gt-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-prospective-customer-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-synch-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbprofile-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-btbprofile-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-latam-btbprofile-dev-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-mx-sample-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-bff-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-synch-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - profile-b2b-mx.dev.pepsico.com
+    - b2b-profile-admin-bff-gt-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-gt-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - profile-b2b-co.dev.pepsico.com
+    - b2b-cnc-prospective-customer-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-mx-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-stores-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-segments-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-na-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-profile-synch-co-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btbprofile-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-btbprofile-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - profile-b2b-mx.dev.pepsico.com
+    name: pep-dps-latam-btbprofile-dev-cv-gw-3-https-443
+    port:
+      name: pep-dps-latam-btbprofile-dev-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-mx.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-co.dev.pepsico.com
+    name: pep-dps-latam-btbprofile-dev-cv-gw-4-https-443
+    port:
+      name: pep-dps-latam-btbprofile-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-co.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

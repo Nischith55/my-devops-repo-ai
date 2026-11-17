@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- pep-eiap-cgf-eecmp-dev/pep-eiap-cgf-eecmp-dev-cv-cdn-vs.yml
+- pep-eiap-infra-dev/pep-eiap-nginx-vs.yml
+- test

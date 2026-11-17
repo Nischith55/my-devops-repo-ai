@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-orderintake-twlb-vs
+  namespace: pep-pbna-pbna-savvyochn-preprod
+  labels:
+      app: pep-och-orderintake
+spec:
+  hosts:
+  - pep-och-orderintake-n.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pbna-pbna-savvyochn-preprod/pep-pbna-pbna-savvyochn-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-orderintake.pep-pbna-pbna-savvyochn-preprod.svc.cluster.local
+        port:
+          number: 80
+  

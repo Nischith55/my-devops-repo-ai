@@ -1,0 +1,121 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: container-must-have-limits
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlocknp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-infra-dev
+    - pep-eiap-istio-config
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-dev
+    - pep-eiap-global-cep-qa
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    - argocd
+    # CMP OPA Exception Request 
+    - pep-eiap-global-cmp-dev
+    - pep-eiap-global-cmp-qa
+    - pep-eiap-global-infra-dev
+    - default
+    - pep-eiap-cgf-swaggerhub-dev
+    - pep-eiap-cgf-cvopa-dev
+    # OPA Exception  - RITM6685215
+    - pep-eiap-pbna-whseauto-dev
+    - pep-eiap-qfna-whseauto-dev
+    # OPA Exception -RITM8021809
+    - pep-eiap-global-iai-dev
+    - pep-eiap-cgf-iaicv-qa
+    # OPA exception pepgenx praseed approval
+    - pep-eiap-cgf-pepgenx-dev
+    - pep-eiap-cgf-pepgenx-qa
+    # OPA exception praseed approval 
+    - pep-eiap-pfna-ipp-dev
+    # OPA exception praseed approval 
+    - pep-eiap-cgf-launchp-dev
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    scope: '*'
+  parameters:
+    cpu: "2"
+    memory: "4Gi"
+    exemptImages:
+    - cyberark/secrets-provider-for-k8s*
+    - docker.io/istio/*
+    - docker.elastic.co/observability/*
+    - appdynamics/*
+    - docker.io/appdynamics/*
+    # OPA Exception RITM4348977 Pricingai-dev
+    - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-ds-logic*
+    - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-event-manager*
+    # OPA Exception SCTASK5028734 Label Right Application
+    - myartifactory.mypepsico.com/aks-iai-cv-plt-docker-dev/pep/eiap/labelright/labelright-backend-ml-api-2022*
+    # OPA Exception RITM4425383 Pricingai-dev
+    - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pricing-ai-manual-scenarios-api*
+    - myartifactory.mypepsico.com/gnrmpricingaccelerator-docker-dev-local/pep/eip/pep-eip-gnrm-pricingai-pricing-api*
+    # OPA Exception RITM4296288 SVT-Robotics
+    - 31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*
+    # OPA Exception RITM4600706 pep-och-amazon-flna-mop
+    - pepeiapnonprodglobalcommonacr.azurecr.io/omnichannelecommercehub_docker_local/pep/och/essa/edt/pep-och-amazon-flna-mop*
+     # OPA Exception RITM5155318
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-backend-ml-api-2022*
+    # OPA Exception RITM5184029
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/labelright/labelright-model-server-2023*
+    # OPA Exception RITM5179832
+    - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/vct-pyservices-persistence*
+    # OPA Exception RITM5230731
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pfb-pricing-solution-webapp-api*
+    # OPA Exception - Dedicated nodepool - VCT - npvctu1z1
+    - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/tm1-spot-dsi-pbna*
+    - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/tm1-spot-dsi-flus*
+    # OPA Exception - RITM5456883 pep-eiap-pfna-vct-dev
+    - myartifactory.mypepsico.com/aks-pepeiappfnavct-dev-local/pep/eiap/dsi-caching-testing*
+    # OPA Exception - INC08630347 for pep-eiap-cgf-rmispecs-dev and pep-eiap-cgf-rmispecs-qa
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/specification-digitization-api*
+    # OPA Exception - RITM6207621 for pep-eiap-global-iai-dev 
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/iai-cv-pepiris-inference-ray-service*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/pep-iai-cv-perspective-correction*
+    # OPA Exception RITM6299207 smartscan for pep-eiap-cgf-smartcan-dev
+    - pepsmartcandveus1acr.azurecr.io/hasura/graphql-engine*
+    - pepsmartcandveus1acr.azurecr.io/pep.smartcan.titan*
+    # OPA Exception -Jayantmail - SCTASK7419191
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/iai-promotional-strip-removal-2024*
+    # OPA Exception  - RITM6685215
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pbna/svt/svt-softbot-platform*
+    # OPA Exception  - RITM6861077
+    - pepeiapnonprodglobalcommonacr.azurecr.io/eus-perf-perf3*
+    # OPA Exception  - RITM6911628
+    - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/duaas-translationservice-api*
+    #Cross-Team Sync Required to Resolve Production Data Ingestion Failure
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-multiprocessing*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-logtoarize*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-mgmt-backend*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/model-observability-framework*

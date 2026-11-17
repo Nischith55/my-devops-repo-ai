@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: kafka-avro-producer
+  name: kafka-avro-producer-qa-vs
+  namespace: pep-eiap-global-services-qa
+spec:
+  gateways:
+  - pep-eiap-global-services-qa/pep-eiap-global-services-qa-cv-gw
+  hosts:
+  - kafka-avro-producer-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: kafka-avro-producer.pep-eiap-global-services-qa.svc.cluster.local
+        port:
+          number: 80

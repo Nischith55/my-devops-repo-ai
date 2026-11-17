@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: grafana
+  name: pep-eiap-cgf-wsp-grafana-disk-vs
+  namespace: pep-eiap-nonprod-sri-test
+spec:
+  gateways:
+  - pep-eiap-nonprod-sri-test/pep-eiap-nonprod-sri-test-cv-gw
+  hosts:
+  - grafana-disk.mldeploy.gw01.aks04.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: grafana.pep-eiap-nonprod-sri-test.svc.cluster.local
+        port:
+          number: 3000

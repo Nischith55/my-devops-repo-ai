@@ -1,0 +1,107 @@
+global:
+  fullnameOverride: pep-eiap-cgf-psm-dev-api
+  namespace: pep-eiap-cgf-psm-dev
+
+  labels:
+    app: pep-eiap-cgf-psm-dev-api
+
+
+  secretManagement:
+    enabled: true
+    secretProviderClassName: cgf-psma-dev-secretproviderclass
+    mountPath: /mnt/psmdev-secret
+    clientId: be0da5f3-68e8-4fc7-a301-1781de162489
+    keyvaultName: cgf-psma-dev-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects:
+    - secretName: kv-secrets
+      data:
+      - objectName: Username
+        objectType: secret
+        key : MSSQL_USERNAME
+      - objectName: Password
+        objectType: secret
+        key : MSSQL_PASSWORD
+
+platform-chart:
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 1
+  hpaConfigMaxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+
+  virtualService:
+    enabled: true
+    name: pep-eiap-cgf-psm-dev-api-vs
+    hosts:
+    - pep-eiap-cgf-psm-dev-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    routes:
+    - prefix: /
+      destinationService: pep-eiap-cgf-psm-dev-api
+      port: 8000
+
+
+  
+app-chart:
+  replicaCount: 5
+   
+  selector:
+    app: pep-eiap-cgf-psm-dev-api
+
+  image:
+    repository: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/potato-sourcing-matrix-api-repo
+    tag: "20260311.2"
+
+  containerPorts:     
+  - port: 8000
+    name: "app-port"
+
+  serviceAccount: 
+    name: pep-eiap-cgf-psm-dev-sa
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+
+  probes:                                       
+    enabled: true
+    liveness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 60
+      periodSeconds: 60
+      timeoutSeconds: 30
+    readiness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 60
+      periodSeconds: 60
+      timeoutSeconds: 30
+
+  env: 
+  - name: AKS_ENV
+    value: DEV
+
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "2048Mi"
+    requests:
+      cpu: "50m"
+      memory: "512Mi"
+
+  envFromSecretRef:
+  - secretRef:
+      name: kv-secrets
+  # volumes:
+  #   csiKeyVault:
+  #     enabled: true
+  #     name: cgf-psma-dev-kv-volume
+  #     mountPath: "/mnt/psmdev-secret"
+  #     readOnly: true
+  #     secretProviderClass: "cgf-psma-dev-secretproviderclass"
+  #     driver: secrets-store.csi.k8s.io

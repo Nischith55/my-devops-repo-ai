@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-snt-nsgagent-dev-sa
+  namespace: pep-eiap-snt-nsgagent-dev

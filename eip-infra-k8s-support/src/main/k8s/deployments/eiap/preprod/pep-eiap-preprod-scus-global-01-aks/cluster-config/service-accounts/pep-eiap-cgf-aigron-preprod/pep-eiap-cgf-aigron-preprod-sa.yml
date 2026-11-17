@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 4bcd51ea-5294-41b3-99cb-b00ef6ed0610
+  name: pep-eiap-cgf-aigron-preprod-sa
+  namespace: pep-eiap-cgf-aigron-preprod

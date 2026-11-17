@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-pbna-halo-prod
+    project: halo
+    sector: pbna
+    servicename_aks: pbna-halo
+    team: pbna-halo
+  name: pep-eiap-pbna-halo-prod

@@ -1,0 +1,35 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ContainerDenyEmptyDirNoSizeLimit
+metadata:
+  name: containerdenyemptydirnosizelimit
+spec:
+  # warn: Istio injects emptyDirs without sizeLimit; deny blocks mesh workloads.
+  # Revisit deny once chart/injector sets sizeLimit or Istio volumes are exempted.
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+      - argocd
+      - gatekeeper-system
+      - default
+      - istio-ingress
+      - istio-system
+      - keda
+      - kube-node-lease
+      - kube-public
+      - kube-system
+      - kubecost
+      - monitoring
+      - pep-pepgenx-elastic-client-01
+      - pep-pepgenx-global-devsecops-dev
+      - pep-pepgenx-global-dev
+      - pep-pepgenx-snowdiscovery-nonprod
+      - pep-pepgenx-elastic-askadaa-01
+    kinds:
+      - apiGroups:
+          - apps
+          - ""        # core API group
+        kinds:
+          - DaemonSet
+          - Deployment
+          - StatefulSet
+          - Pod

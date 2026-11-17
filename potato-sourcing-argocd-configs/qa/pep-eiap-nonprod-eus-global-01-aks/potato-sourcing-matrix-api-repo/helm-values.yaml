@@ -1,0 +1,94 @@
+global:
+  fullnameOverride: pep-eiap-cgf-psm-qa-api
+  namespace: pep-eiap-cgf-psm-qa
+
+  labels:
+    app: pep-eiap-cgf-psm-qa-api
+
+  secretManagement:
+    enabled: true
+    secretProviderClassName: cgf-psma-qa-secretproviderclass1
+    mountPath: /mnt/psmqa-secret
+    clientId: ccc9b4b6-2ca3-4f28-9f41-c9903c470414
+    keyvaultName: cgf-psma-qa-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects:
+    - secretName: pep-eiap-cgf-psm-qa-api-secret1
+      data:
+      - objectName: Username
+        objectType: secret
+        key : MSSQL_USERNAME
+      - objectName: Password
+        objectType: secret
+        key : MSSQL_PASSWORD
+
+platform-chart:
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 3
+  hpaConfigMaxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+  virtualService:
+    enabled: true
+    name: pep-eiap-cgf-psm-qa-api-vs
+    hosts:
+    - pep-eiap-cgf-psm-qa-api-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    routes:
+    - prefix: /
+      destinationService: pep-eiap-cgf-psm-qa-api
+      port: 8000
+
+
+  
+app-chart:
+  replicaCount: 5
+   
+  selector:
+    app: pep-eiap-cgf-psm-qa-api
+
+  image:
+    repository: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/potato-sourcing-matrix-api-repo
+    tag: "20260311.6"
+
+  containerPorts:     
+  - port: 8000
+    name: "app-port"
+
+  serviceAccount: 
+    name: pep-eiap-cgf-psm-qa-sa
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+
+  probes:                                       
+    enabled: true
+    liveness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 180
+      periodSeconds: 60
+      timeoutSeconds: 30
+    readiness:
+      command:
+        - ls
+        - /tmp
+      initialDelaySeconds: 180
+      periodSeconds: 60
+      timeoutSeconds: 30
+
+  env: 
+  - name: AKS_ENV
+    value: QA
+
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "2048Mi"
+    requests:
+      cpu: "50m"
+      memory: "512Mi"

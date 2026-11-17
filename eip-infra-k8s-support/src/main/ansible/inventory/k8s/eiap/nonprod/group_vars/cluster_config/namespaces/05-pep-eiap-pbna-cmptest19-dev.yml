@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_pbna_cmptest19_dev:
+  
+  name: pep-eiap-pbna-cmptest19-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-cmptest19
+    sector: pbna
+    project: cmptest19
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-pbna-cmptest19-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_cmptest19'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

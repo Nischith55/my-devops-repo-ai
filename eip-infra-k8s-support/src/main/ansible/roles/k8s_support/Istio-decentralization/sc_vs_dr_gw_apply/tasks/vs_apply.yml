@@ -1,0 +1,100 @@
+###
+- name: read the file content  
+  slurp:
+    src: "{{ item.src }}"
+  register: yml_file_content
+
+- debug:
+    msg: "Item is {{ item.src }} and basename is {{ item.src | basename }}"
+
+- name: decode the content 
+  set_fact: 
+    decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+- name: set namespace  
+  set_fact:
+    namespace: "{{ decoded_yml.metadata.namespace }}"
+
+# - name: Apply Virtual Service block 
+#   block:
+- name: get already existing one in the namespace level.
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+    namespace: "{{ namespace }}"
+    name: "{{ decoded_yml.metadata.name }}"
+  register: existing_vs
+  when: '"-patch.yml" in item.src'
+
+- debug: var=existing_vs.resources 
+- name: ensures {{ namespace }} directory exists
+  file:
+    path: "{{ mypath }}/Artifacts/applied/{{ namespace }}"
+    state: directory 
+- name: copy existing one in applied folder.
+  copy:
+    content: "{{ existing_vs.resources[0] | to_nice_yaml }}"
+    dest: "{{ mypath }}/Artifacts/applied/{{ namespace }}/{{ item.src| basename }}"
+  when: '"-patch.yml" in item.src'
+
+- name: apply Virtualservice at namespace level 
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ decoded_yml }}"
+- debug:
+    msg: "applying the Virtualservice {{ decoded_yml.metadata.name }} for namespace {{ namespace }}"
+    
+- name: storing applied files.
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ mypath }}/Artifacts/applied/{{ namespace }}/"
+  when: '"-patch.yml" not in item.src'
+
+
+#########################################################################
+# - debug:
+#     msg: "pushing the file to the repo."
+- name: Creating directory for uploading files into git repo
+  file:
+    path: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/virtualservices/{{ decoded_yml.metadata.namespace }}"
+    state: directory
+- name: removing patch in file name if any 
+  set_fact:
+    temp_file: "{{ item.src| basename }}"
+- set_fact:
+    filename: "{{ temp_file.replace('-patch','') }}"
+- name: Copy folders
+  copy:
+    dest: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/virtualservices/{{ decoded_yml.metadata.namespace }}/{{ filename }}"
+    src: "{{ item.src }}"
+    force: true
+
+#############################################################################
+# - name: pushing the file to repo block 
+#   block:
+
+# - name: pushing to the repo. 
+#   include_role: 
+#       name: k8s_support/Istio-decentralization/git_push
+#   vars:
+#       path: "/tmp/git_repo_clone/src/main/k8s/deployments/{{ dept }}/{{ env }}/{{ cluster_name }}/cluster-config/virtualservices/{{ decoded_yml.metadata.namespace }}"
+#       src_file: "{{ item.src }}"
+  # rescue:
+  # - debug:
+  #     msg: "Pushing the file to the repo failed. Please push the file {{ item.src }} manually."
+
+  # rescue:
+  # - debug:
+  #     msg: "Applying the file failed. Reverting all applied changes so far. "
+
+  # - name: Undo applied in Virtual service stage.
+  #   include_tasks: revert_applied.yml
+  #   with_fileglob: 
+  #   - "{{ mypath }}/Artifacts/applied/*"
+  #   loop_control:
+  #       loop_var: inner_item
+  
+  # - fail: 
+  #     msg: "The apply failed in the middle. So reverted everything."
+
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-optmereu-prod-cv-web-vs
+  namespace: pep-dps-dps-optmereu-prod
+  labels:
+    app: pep-dps-dps-optmereu-prod-cv-web
+spec:
+  hosts:
+    - optimalmerch-eu.pepsico.com
+    - pep-dps-dps-optmereu-prod-cv.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-optmereu-prod/pep-dps-dps-optmereu-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-optmereu-prod-cv-web.pep-dps-dps-optmereu-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pfna-pfna-walmartdsd-dev-sa
+  namespace: pep-pfna-pfna-walmartdsd-dev

@@ -1,0 +1,27 @@
+k8s_sup_subjects:
+
+  # #########
+  # AD Groups -- SORT lexicographically by var name
+  # Required for Audit and Control 
+  # Update during Onboarding of Application teams(Update name with objectId from Azure portal(AAD))
+  # #########
+
+    pfna_hhnext:
+    name: de7790e2-da36-4223-a308-cefdc4e9e544
+    alias: Team.Support.PFNA.RG.AKS.NONPROD.Contributor
+    kind: Group
+
+    pfna_pgt:
+    name: 7463243d-38c8-4d8a-902d-3ccfe151919b
+    alias: Team.Support.PFNA.RG.AKS.PREPROD.Contributor
+    kind: Group
+
+    cgf_cle: 
+    name: e0bee19c-5b36-4188-8a1f-1311a099d23b
+    alias: Team.Support.EIAP.CGF.NextGenCLE.Developer
+    kind: Group
+
+    pfna_pcaf:
+    name: 81087a49-7ac5-4ab7-bdba-8d1e18cc929e
+    alias: Team.Support.PFNA.RG.AKS.PREPROD.Reader
+    kind: Group

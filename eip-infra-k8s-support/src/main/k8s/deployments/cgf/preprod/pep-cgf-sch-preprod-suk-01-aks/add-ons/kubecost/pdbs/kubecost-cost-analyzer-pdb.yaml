@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:   
+  name: kubecost-cost-analyzer-pdb
+  namespace: kubecost  
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cost-analyzer
+

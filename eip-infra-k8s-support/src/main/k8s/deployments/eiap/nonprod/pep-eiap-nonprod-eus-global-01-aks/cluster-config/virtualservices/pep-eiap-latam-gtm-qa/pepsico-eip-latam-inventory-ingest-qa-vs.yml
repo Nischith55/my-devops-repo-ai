@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-inventory-ingest
+  name: pepsico-eip-latam-inventory-ingest-qa-vs
+  namespace: pep-eiap-latam-gtm-qa
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-qa/pep-eiap-latam-gtm-qa-cv-gw
+  hosts:
+  - invntry.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/inventory
+    route:
+    - destination:
+        host: pepsico-eip-latam-inventory-ingest.pep-eiap-latam-gtm-qa.svc.cluster.local

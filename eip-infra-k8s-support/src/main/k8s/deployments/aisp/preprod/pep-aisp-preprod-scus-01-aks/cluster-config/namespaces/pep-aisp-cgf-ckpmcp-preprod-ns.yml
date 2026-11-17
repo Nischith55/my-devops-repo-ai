@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-aisp-cgf-ckpmcp-preprod
+  labels:
+    env-preprod: "true"
+    project: ckpmcp
+    sector: cgf
+    team: cgf-ckpmcp
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: cockpitgpt
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 3a366ca783b5b510f576d8426daad345
+    pep-cmdb-app-service-id: df87dd7d8312c65cf132cfefeeaad3de
+    pep-environment: Pre-Production
+    

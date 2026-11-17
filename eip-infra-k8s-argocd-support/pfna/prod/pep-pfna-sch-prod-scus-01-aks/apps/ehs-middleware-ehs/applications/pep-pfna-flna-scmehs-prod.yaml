@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ehs-middleware-ehs-prod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ehs-middleware-ehs-argocd-configs
+    targetRevision: develop 
+  - repoURL: peppfnaschprodacr.azurecr.io/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: ehs-middleware-ehs-prod
+      valueFiles:
+      - $values/prod/pep-pfna-sch-prod-scus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: prod
+          helm:  
+            enabled: false       
+            repo: peppfnaschprodacr.azurecr.io/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-pfna-sch-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: ehs-middleware-ehs-prod 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ehs-middleware-ehs-argocd-configs 
+              repoName: ehs-middleware-ehs-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: DL-PBCFSVVMSMW@pepsico.com

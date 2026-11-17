@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: iai-cv-pepiris-backend-common-ksabottlers
+    meta.helm.sh/release-namespace: pep-eiap-cgf-pepiris-preprod
+  labels:
+    app: iai-cv-pepiris-ksabottlers
+    app.kubernetes.io/instance: iai-cv-pepiris-backend-common-ksabottlers
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.1
+  name: iai-cv-pepiris-ksabottlers-vs
+  namespace: pep-eiap-cgf-pepiris-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepiris-preprod/pep-eiap-cgf-pepiris-preprod-cv-gw
+  hosts:
+  - iai-cv-pepiris-ksabottlers.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: iai-cv-pepiris-ksabottlers.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8000

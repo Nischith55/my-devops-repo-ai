@@ -1,0 +1,224 @@
+global:
+  fullnameOverride: "pep-eip-pbna-fivestar-ivr-service" 
+  namespace: test 
+  deployment:
+    enabled: false
+  service:
+    enabled: false
+  
+  rollout:
+    enabled: false    
+
+platform-chart:  
+  autoscalingEnabled: false  
+  pdbEnabled: false
+  
+  virtualService: 
+    enabled: false     
+
+  destinationRule:
+    enabled: false
+    
+app-chart:  
+  # configmap creation from file
+  configmapFromFile:
+  # enabled - default value is false, set it to true to create the configmap from file
+    enabled: true   
+    # configmaps to be created 
+    configurations: 
+      # name of the configmap - suffixed with -configmap
+      pep-eip-pbna-fivestar-ivr-service:
+        # config to be assigned to some random text - which is overwritten with contents of the file in the pipeline with --set-file flag
+        config: 'test'
+
+  analysisTemplates:
+    enabled: true
+    templates:
+    - name: http-requests
+      args:
+      - servicename
+      - namespace
+      - port
+      metrics:
+      - name: http-request  
+        interval: 10s
+        provider: job 
+        job:        
+          spec:  
+            ttlSecondsAfterFinished: 240     
+            template:   
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"          
+              spec:
+                containers:
+                - name: load-tester
+                  image: argoproj/load-tester:latest
+                  command: [sh, -xec]
+                  args:
+                  - |
+                    wrk -t1 -c1 -d5 -s report.lua http://{{args.servicename}}.{{args.namespace}}.svc.cluster.local:{{args.port}}/readyz  
+                restartPolicy: Never
+            backoffLimit: 0 
+
+  experiment:
+    enabled: true
+    duration: 20m  
+    progressDeadlineSeconds: 90
+    templates:
+    - name: version2   
+      replicas: 1    
+      service:      
+        name: pep-eip-pbna-fivestar-ivr-version2-svc     
+      podLabels:
+        app: pep-eip-pbna-fivestar-ivr-service-version2
+        version: version2
+      spec:
+        containers:
+        - env:
+          - name: OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: eiap.oauth.client-id
+                name: pep-eip-pbna-fivestar-ivr-secret
+          - name: OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: eiap.oauth.client-secret
+                name: pep-eip-pbna-fivestar-ivr-secret
+          image: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/shared-services/pep-eip-pbna-fivestar-ivr-service:20240116.1
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 15
+          name: pep-eip-pbna-fivestar-ivr-service
+          ports:
+          - containerPort: 8080
+            name: app-port
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/readiness
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 15
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+        securityContext:
+          runAsNonRoot: true
+        serviceAccount: test-sa
+        serviceAccountName: test-sa   
+    - name: version1
+      replicas: 1    
+      service:      
+        name: pep-eip-pbna-fivestar-ivr-version1-svc     
+      podLabels:
+        app: pep-eip-pbna-fivestar-ivr-service-version1
+        version: version1
+      spec:
+        containers:
+        - env:
+          - name: OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: eiap.oauth.client-id
+                name: pep-eip-pbna-fivestar-ivr-secret
+          - name: OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: eiap.oauth.client-secret
+                name: pep-eip-pbna-fivestar-ivr-secret
+          image: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/shared-services/pep-eip-pbna-fivestar-ivr-service:20240112.1
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 15
+          name: pep-eip-pbna-fivestar-ivr-service
+          ports:
+          - containerPort: 8080
+            name: app-port
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/readiness
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 15
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1000
+        securityContext:
+          runAsNonRoot: true
+        serviceAccount: test-sa
+        serviceAccountName: test-sa
+    analyses:
+    - name: version1-analysis
+      templateName: http-requests
+      args:
+      - name: servicename
+        value: pep-eip-pbna-fivestar-ivr-version1-svc 
+      - name: namespace
+        value: test
+      - name: port
+        value: "8080"
+    - name: version2-analysis
+      templateName: http-requests
+      args:
+      - name: servicename
+        value: pep-eip-pbna-fivestar-ivr-version2-svc 
+      - name: namespace
+        value: test
+      - name: port
+        value: "8080"
+    
+    
+
+### Scheduling section
+
+# node selector to schedule the pod on a specific node
+  nodeSelector: {}
+
+# tolerations to be set on the pod to get scheduled on the node where there are taints
+  tolerations: []
+
+# affinity to be set on the pods to co-schedule with other pods 
+  affinity: {}
+  
+## scheduling section ends ##

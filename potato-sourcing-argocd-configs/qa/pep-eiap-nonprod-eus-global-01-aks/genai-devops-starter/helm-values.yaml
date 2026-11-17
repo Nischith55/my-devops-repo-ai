@@ -1,0 +1,53 @@
+global:
+  fullnameOverride: pep-eiap-cgf-genai-qa-api
+  namespace: pep-eiap-cgf-genai-qa
+
+  labels:
+    app: pep-eiap-cgf-genai-qa-api
+
+platform-chart:
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 1
+  hpaConfigMaxReplicas: 2
+  targetCPUUtilizationPercentage: 70
+
+  virtualService:
+    enabled: true
+    name: pep-eiap-cgf-genai-qa-api-vs
+    hosts:
+      - pep-eiap-cgf-genai-qa-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    routes:
+      - prefix: /
+        destinationService: pep-eiap-cgf-genai-qa-api
+        port: 8000
+
+app-chart:
+  replicaCount: 1
+
+  selector:
+    app: pep-eiap-cgf-genai-qa-api
+
+  image:
+    repository: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/genai-devops-starter
+    tag: "latest"
+
+  containerPorts:
+    - port: 8000
+      name: app-port
+
+  serviceAccount:
+    name: pep-eiap-cgf-genai-qa-sa
+
+  env:
+    - name: APP_ENV
+      value: QA
+    - name: MOCK_MODE
+      value: "true"
+
+  resources:
+    limits:
+      cpu: "300m"
+      memory: "768Mi"
+    requests:
+      cpu: "100m"
+      memory: "256Mi"

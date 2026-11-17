@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-orderprocessor-lgow-vs
+  namespace: pep-pfna-pgt-prod
+  labels:
+      app: pcaf-orderprocessor
+spec:
+  hosts:
+  - pcaf-orderprocessor.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-orderprocessor.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+  

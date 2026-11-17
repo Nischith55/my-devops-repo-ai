@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: iai-cv-pepiris-ksasf
+    app.kubernetes.io/instance: iai-cv-pepiris-backend-common-ksasf
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.1
+  name: iai-cv-pepiris-ksasf-vs
+  namespace: pep-eiap-cgf-iaicv-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-iaicv-qa/pep-eiap-cgf-iaicv-qa-cv-gw
+  hosts:
+  - iai-cv-pepiris-ksa-sf-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: iai-cv-pepiris-ksasf.pep-eiap-cgf-iaicv-qa.svc.cluster.local
+        port:
+          number: 8000

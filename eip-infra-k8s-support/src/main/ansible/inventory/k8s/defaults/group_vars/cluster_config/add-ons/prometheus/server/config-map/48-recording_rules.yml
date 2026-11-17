@@ -1,0 +1,6 @@
+---
+# ##
+# Recording rules -- used to be plain rules
+# ##
+prom_recording_rules_yml_value_config_map: {}
+

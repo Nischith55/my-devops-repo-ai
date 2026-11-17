@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base/pep-dps-global-infra-prod_NGINX
+
+patches:
+- path: patch-nginx.yaml
+  target:
+    kind: Deployment
+    name: pep-dps-nginx
+    namespace: pep-dps-global-infra-prod

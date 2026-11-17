@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-services-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pep-pfna-services-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-flna-salesplus-qa
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-services-qa-admin
+    description: Admin privileges to pep-pfna-services-qa
+    policies:
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-admin, applications, *, pep-pfna-services-qa/*, allow
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-admin, repositories, *, pep-pfna-services-qa/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-services-qa-user
+    description: Read-only privileges to pep-pfna-services-qa
+    policies:
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-user, applications, get, pep-pfna-services-qa/*, allow
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-user, applications, sync, pep-pfna-services-qa/*, allow
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-user, repositories, get, pep-pfna-services-qa/*, allow
+    - p, proj:pep-pfna-services-qa:pep-pfna-services-qa-user, applications, action/apps/Deployment/restart, pep-pfna-services-qa/*, allow
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,117 @@
+### Apply new VS, DRs and Gateway. Delete old gateway also.
+- set_fact:
+    infratools_list: ['arize', 'infratools', 'kafka', 'latam-opsbridge', 'paas-infratools']
+- name: set department to push files 
+  set_fact:
+    dept: "infratools"
+  when: department in infratools_list
+- set_fact: 
+    dept: "infosectools"
+  when: department == "fortify"
+- set_fact:
+    dept: "{{ department }}"
+  when: 
+  - department not in infratools_list
+  - department != "fortify"
+- debug: var=dept 
+
+########################################################################################
+### git clone related tasks.
+- name: Creating directory for git clone
+  file:
+    path: /tmp/git_repo_clone
+    state: directory
+- name: Set destination repo URL from uri and pat
+  set_fact:
+    destination_repo_url: "https://{{ svcuser }}:{{ svcPersonalAccessToken }}@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support"
+    branch_name: "develop"
+- name: Clone GIT Repository
+  git:
+    repo: "{{ destination_repo_url }}"
+    dest: /tmp/git_repo_clone
+    clone: yes
+    update: yes
+    version: "{{ branch_name }}"
+- name: set git_config user.name 
+  command: "git config --global user.name {{ svcuser }}" 
+- name: set git_config user.email 
+  command: "git config --global user.email {{ svcuser }}@pepsico.com" 
+
+########################################################################################
+- name: Creates directory to store applied files
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/applied/"
+    state: directory
+- name: checking sidecar generated or not 
+  stat: 
+    path: "{{ mypath }}/Artifacts/sc-manifests"
+  register: sc_status
+
+- debug:
+    msg: "Sidecar manifest folder is not present. "
+  when: sc_status.stat.isdir is not defined
+
+- name: loop through the Sidecar manifest files 
+  include_tasks: sc_apply.yml
+  with_fileglob: 
+  - "{{ mypath }}/Artifacts/sc-manifests/*"
+  when: sc_status.stat.isdir is defined and sc_status.stat.isdir
+
+- name: checking Virtual Services generated or not 
+  stat: 
+    path: "{{ mypath }}/Artifacts/vs-manifests"
+  register: vs_status
+
+- debug:
+    msg: "Virtual Service manifest folder is not present. "
+  when: vs_status.stat.isdir is not defined
+
+- name: loop through the Virtualservice manifest files 
+  include_tasks: vs_apply.yml
+  with_filetree: 
+  - "{{ mypath }}/Artifacts/vs-manifests/"
+  when: 
+  - vs_status.stat.isdir is defined
+  - vs_status.stat.isdir
+  - item.state == 'file'
+
+- name: checking Destination rule generated or not 
+  stat: 
+    path: "{{ mypath }}/Artifacts/dr-manifests"
+  register: dr_status
+
+- debug:
+    msg: "Destination rule manifest folder is not present. "
+  when: dr_status.stat.isdir is not defined
+
+- name: loop through the Destinationrule manifest files 
+  include_tasks: dr_apply.yml
+  with_filetree:
+  - "{{ mypath }}/Artifacts/dr-manifests/"
+  when: 
+  - dr_status.stat.isdir is defined
+  - dr_status.stat.isdir
+  - item.state == 'file'
+
+- name: checking gateways generated or not 
+  stat: 
+    path: "{{ mypath }}/Artifacts/gw-manifests"
+  register: gw_status
+
+- debug:
+    msg: "Gateways manifest folder is not present. "
+  when: gw_status.stat.isdir is not defined
+
+- name: loop through the Gateway manifest files 
+  include_tasks: gw_apply.yml
+  with_fileglob: 
+  - "{{ mypath }}/Artifacts/gw-manifests/*"
+  when: gw_status.stat.isdir is defined and gw_status.stat.isdir
+
+
+##############################################################################
+- debug:
+    msg: "Final git push."
+- name: pushing to the repo. 
+  include_role: 
+      name: k8s_support/Istio-decentralization/git_push

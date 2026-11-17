@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 14052245-193f-4f09-b9f2-9778887ce0c7
+  name: pep-dps-dps-ghub-prod-sa
+  namespace: pep-dps-dps-ghub-prod

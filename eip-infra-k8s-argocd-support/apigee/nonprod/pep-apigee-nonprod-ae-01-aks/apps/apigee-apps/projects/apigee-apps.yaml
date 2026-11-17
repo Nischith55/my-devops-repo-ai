@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: apigee-apps
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-platform
+    spec:
+      description: Project for apigee-apps   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+      - us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-apigee-nonprod-ae-01-aks
+        namespace: apigee
+      - name: pep-apigee-nonprod-ae-01-aks
+        namespace: argocd
+      - name: pep-apigee-nonprod-ae-01-aks
+        namespace: cert-manager
+      roles:
+      - name: apigee-apps-admin
+        description: Admin privileges to apigee-apps
+        policies:
+        - p, proj:apigee-apps:apigee-apps-admin, applications, *, apigee-apps/*, allow
+        - p, proj:apigee-apps:apigee-apps-admin, repositories, *, apigee-apps/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: apigee-apps-user
+        description: Read-only privileges to apigee-apps
+        policies:
+        - p, proj:apigee-apps:apigee-apps-user, applications, get, apigee-apps/*, allow
+        - p, proj:apigee-apps:apigee-apps-user, applications, sync, apigee-apps/*, allow
+        - p, proj:apigee-apps:apigee-apps-user, repositories, get, apigee-apps/*, allow
+        groups:
+        - "Team.Support.Apigee.Read"
+        - "Team.Support.EIAP.READ"
+    

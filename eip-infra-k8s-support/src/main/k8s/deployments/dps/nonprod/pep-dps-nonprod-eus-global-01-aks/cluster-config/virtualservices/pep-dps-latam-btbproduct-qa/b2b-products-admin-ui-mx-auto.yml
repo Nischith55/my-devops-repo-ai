@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-products-admin-ui-mx-auto-qa:networking.istio.io/VirtualService:pep-dps-latam-btbproduct-qa/b2b-products-admin-ui-mx-auto
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-products-admin-ui-mx-auto-qa:networking.istio.io/VirtualService:pep-dps-latam-btbproduct-qa/b2b-products-admin-ui-mx-auto"},"labels":{"app":"b2b-products-admin-ui-mx-auto","app.kubernetes.io/instance":"b2b-products-admin-ui-mx-auto","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.9"},"name":"b2b-products-admin-ui-mx-auto","namespace":"pep-dps-latam-btbproduct-qa"},"spec":{"gateways":["pep-dps-latam-btbproduct-qa/pep-dps-latam-btbproduct-qa-cv-gw"],"hosts":["b2b-products-admin-ui-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","products-b2b-mx-auto.qa.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"b2b-products-admin-ui-mx-auto.pep-dps-latam-btbproduct-qa.svc.cluster.local","port":{"number":8080},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: b2b-products-admin-ui-mx-auto
+        app.kubernetes.io/instance: b2b-products-admin-ui-mx-auto
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.9
+    name: b2b-products-admin-ui-mx-auto
+    namespace: pep-dps-latam-btbproduct-qa
+spec:
+    gateways:
+    - pep-dps-latam-btbproduct-qa/pep-dps-latam-btbproduct-qa-cv-gw
+    hosts:
+    - b2b-products-admin-ui-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - products-b2b-mx-auto.qa.mypepsico.com
+    - products-b2b-mx-auto.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-products-admin-ui-mx-auto.pep-dps-latam-btbproduct-qa.svc.cluster.local
+                port:
+                    number: 8080

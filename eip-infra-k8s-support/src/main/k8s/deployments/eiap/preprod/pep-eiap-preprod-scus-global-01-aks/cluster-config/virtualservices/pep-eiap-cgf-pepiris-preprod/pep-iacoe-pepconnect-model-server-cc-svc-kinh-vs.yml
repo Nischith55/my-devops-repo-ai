@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-iacoe-pepconnect-model-server-cc-svc-kinh-vs
+  namespace: pep-eiap-cgf-pepiris-preprod
+  labels:
+      app: pep-iacoe-pepconnect-model-server-head-cc
+spec:
+  hosts:
+  - pep-iacoe-pepconnect-model-server-cc-svc.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-pepiris-preprod/pep-eiap-cgf-pepiris-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-cc-svc.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8000
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/pepiris
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-cc-svc.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8000
+  

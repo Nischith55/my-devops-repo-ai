@@ -1,0 +1,82 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-cmp-cmp-hysjk-dev-cv-gw
+  namespace: pep-cmp-cmp-hysjk-dev
+spec:
+  selector:
+    istio: pep-cmp-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-cmp-cmp-hysjk-dev.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-hysjk-dev-cv-gw-tls-443
+    port:
+      name: https-pep-cmp-cmp-hysjk-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-cmp-cmp-hysjk-dev-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-hysjk-dev-cv-gw-https-443
+    port:
+      name: https-pep-cmp-cmp-hysjk-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - gdkj.dev.pepsico.com
+    - pep-cmp-cmp-hysjk-dev-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-hysjk-dev-cv-gw-http-80
+    port:
+      name: http-pep-cmp-cmp-hysjk-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - gdkj.dev.pepsico.com
+    name: pep-cmp-cmp-hysjk-dev-cv-gw-https-1-443
+    port:
+      name: https-pep-cmp-cmp-hysjk-dev-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-cmp-hysjk-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

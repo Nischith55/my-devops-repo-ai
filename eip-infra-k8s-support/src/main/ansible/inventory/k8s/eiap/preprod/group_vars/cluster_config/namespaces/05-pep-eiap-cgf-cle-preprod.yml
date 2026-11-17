@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace CGF CLE
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_cle_preprod:
+  
+  name: pep-eiap-cgf-cle-preprod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cle
+    sector: cgf
+    project: cle
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cle'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role
+    - name: pep-eiap-cgf-cle-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings:
+        # name of the binding
+        - name: pep-eiap-springcloudk8s-rb

@@ -1,0 +1,62 @@
+####### BEGIN Added recently --pep-dps-nonprod-gwc-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_europe_btbota_dev
+  - ns_pep_dps_europe_accessbr_dev
+  - ns_pep_dps_amesa_dsxwado_dev
+  - ns_pep_dps_amesa_dsxdo_dev
+  - ns_pep_dps_europe_pepconnind_dev
+  - ns_pep_dps_europe_pepconnind_qa
+  - ns_pep_dps_europe_surveyeu_dev
+  - ns_pep_dps_europe_btbprofile_dev
+  - ns_pep_dps_europe_bffmerch_dev
+  - ns_pep_dps_europe_btbprofile_qa
+  - ns_pep_dps_cgf_dsxadaptor_dev
+  - ns_pep_dps_europe_pgcsui_dev
+  - ns_pep_dps_europe_pgcsdomain_dev
+  - ns_pep_dps_europe_pgcsbff_dev
+  - ns_pep_dps_europe_bffmerch_qa
+  - ns_pep_dps_europe_bffckout_qa
+  - ns_pep_dps_europe_bffckout_dev
+  - ns_pep_dps_europe_btbpromo_dev
+  - ns_pep_dps_europe_bfflylty_qa
+  - ns_pep_dps_europe_bfflylty_dev
+  - ns_pep_dps_europe_btbpromo_qa
+  - ns_pep_dps_europe_dtcjoy_dev
+  - ns_pep_dps_europe_btbcep_qa
+  - ns_pep_dps_europe_btboms_qa
+  - ns_pep_dps_europe_btboms_dev
+  - ns_pep_dps_europe_btbproduct_dev
+  - ns_pep_dps_europe_btblylty_qa
+  - ns_pep_dps_europe_btborch_qa
+  - ns_pep_dps_europe_btbproduct_qa
+  - ns_pep_dps_europe_btblylty_dev
+  - ns_pep_dps_europe_btborch_dev
+  - ns_pep_dps_europe_psd_qa
+  - ns_pep_dps_cgf_dtcjoykz_qa
+  - ns_pep_dps_europe_fmcshs_dev
+  - ns_pep_dps_europe_psd_dev
+  - ns_pep_dps_cgf_apprt_dev
+  - ns_pep_dps_cgf_apprt_qa
+  - ns_pep_dps_europe_bff_dev
+  - ns_pep_dps_europe_bff_qa
+  - ns_pep_dps_cgf_cct_dev
+  - ns_pep_dps_cgf_cct_qa
+  - ns_pep_dps_cgf_pepconnrou_qa
+  - ns_pep_dps_cgf_pepconnrou_dev
+  - ns_pep_dps_cgf_pepconnrus_qa
+  - ns_pep_dps_cgf_pepconnrus_dev
+  - ns_pep_dps_cgf_pepconntur_dev
+  - ns_pep_dps_cgf_pepconntur_qa
+  - ns_pep_dps_cgf_gscafso_qa
+  - ns_pep_dps_cgf_gscafso_dev
+  - ns_pep_dps_cgf_pepconnesp_qa
+  - ns_pep_dps_cgf_pepconnesp_dev
+  - ns_pep_dps_cgf_pepconnpol_dev
+  - ns_pep_dps_cgf_pepconnpol_qa
+  - ns_pep_dps_cgf_pepconnprt_qa
+  - ns_pep_dps_cgf_pepconnprt_dev
+  - ns_pep_dps_test_test_qa
+####### END Added recently --pep-dps-nonprod-gwc-global-01-aks######

@@ -1,0 +1,11 @@
+####### BEGIN Added recently --pep-infratools-prod-scus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_infratools_cgf_eiotptools_prod
+  - ns_pep_infratools_cgf_appdynamic_prod
+  - ns_pep_infratools_cgf_swaggerhub_prod
+  - ns_pep_infratools_cgf_awx_prod
+  - ns_pep_infratools_test_test_prod
+####### END Added recently --pep-infratools-prod-scus-01-aks######

@@ -1,0 +1,34 @@
+---
+ns_pep_snt_cgf_vcr_qa:
+  
+  name: pep-snt-cgf-vcr-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-vcr
+    sector: cgf
+    project: vcr
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-snt-cgf-vcr-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_vcr'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-snt-cgf-vcr-qa-sa-token
+    namespace: pep-snt-cgf-vcr-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-snt-cgf-vcr-qa-sa"

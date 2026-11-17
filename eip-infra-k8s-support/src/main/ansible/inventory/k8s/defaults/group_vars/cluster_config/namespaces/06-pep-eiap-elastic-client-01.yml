@@ -1,0 +1,20 @@
+---
+# IMPORTANT: 06/2021 -- Use of k8s pure kubernetes deployment NON eck managed
+ns_pep_eiap_elastic_client_01:
+
+  name: pep-eiap-elastic-client-01
+
+  labels:
+    istio-injection: enabled
+    # IMPORTANT: NOT eck managed
+    eck-managed: !!str false
+
+  generic_secrets: |-
+    {{  pep_eiap_elastic_client_01_misc_secrets| default([]) }}
+
+  registry_secrets: |-
+    {{ pep_eiap_elastic_client_01_registry_secrets | default([]) }}
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ pep_eiap_elastic_client_01_tls_secrets_names | default([]) }}

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-planningservice-sp-spmclient-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-planningservice-sp-spmclient.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/spmclient/plan
+    route:
+    - destination:
+        host: pep-pcaf-api-planningservice-sp-spmclient.pep-pfna-flna-gtmsp-prod.svc.cluster.local
+        port:
+          number: 80 

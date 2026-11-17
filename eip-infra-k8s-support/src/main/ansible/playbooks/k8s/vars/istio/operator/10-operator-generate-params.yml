@@ -1,0 +1,39 @@
+---
+# ##
+# IMPORTANT:
+# - must belong to group all (aka localhost)  
+# ##
+
+_iop_namespace_: "{{ iop_namespace | default('istio-operator') }} "
+_iop_system_namespace_: "{{ iop_system_namespace | default('istio-system') }}"
+_iop_tag_: "1.7.4"
+_iop_gen_dest_dir_: |-
+  {{ (k8s_add_ons_base_dir, 'istio', 'kustomize', 'operator', 'base') 
+      | path_join 
+  }}
+_iop_gen_manifest_path_: |-
+  {{ (_iop_gen_dest_dir_, 'operator-' +  _iop_tag_ + '.yml') | path_join }}
+
+_iop_gen_kust_path_: |-
+  {{ (_iop_gen_dest_dir_, 'kustomization.yml') | path_join }}
+
+# -- common operator parameters
+istio_operator_generator_params:
+
+  # for output file name (from istioctl operator dump and kustomize)
+  manifest_path: "{{ _iop_gen_manifest_path_ }}"
+  kustomization_path: "{{ _iop_gen_kust_path_ }}"
+  kustomization_yml: |
+    ---
+    # apiVersion and kind of Kustomization
+    apiVersion: kustomize.config.k8s.io/v1beta1
+    kind: Kustomization
+
+    resources:
+      - {{ _iop_gen_manifest_path_ | basename }}
+
+  # argument to generate istio-operator manifest
+  cmd_args: " --operatorNamespace {{ _iop_namespace_ }} \
+                  --istioNamespace {{ _iop_system_namespace_ }} \
+                  --tag {{ _iop_tag_ }}"
+

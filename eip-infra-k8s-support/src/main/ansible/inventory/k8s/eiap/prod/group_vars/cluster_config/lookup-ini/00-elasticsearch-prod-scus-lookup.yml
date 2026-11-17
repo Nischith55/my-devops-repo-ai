@@ -1,0 +1,28 @@
+---
+# Lookup data for elastic search which can be used in building secrets
+
+_lookup_es_prod_scus_01: |-
+  {{
+    q('ini_helper', 'elasticsearch-prod-scus',
+       keys_map=elasticsearch_section_keys_map, file=secrets_ini_file)
+    |
+    first
+  }}
+
+es_prod_scus_01_lookup_data:
+  # doubles up as secret name
+  name: "{{ _lookup_es_prod_scus_01['secret_name'] }}"
+
+  # secret data
+  host: "{{ _lookup_es_prod_scus_01['host'] }}"
+  port: "{{ _lookup_es_prod_scus_01['port'] }}"
+
+  url: "{{ _lookup_es_prod_scus_01['host'] + ':' \
+          +  _lookup_es_prod_scus_01['port'] }}"
+
+  username: "{{ _lookup_es_prod_scus_01['username'] }}"
+  password: "{{ _lookup_es_prod_scus_01['password'] }}"
+
+  kibana_host: "{{ _lookup_es_prod_scus_01['kibana_host'] }}"
+  kibana_port: "{{ _lookup_es_prod_scus_01['kibana_port'] }}"
+

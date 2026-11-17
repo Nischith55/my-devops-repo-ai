@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-amcx2-dev-cv-cdn-vs
+  namespace: pep-cmp-cmp-amcx2-dev
+spec:
+  hosts:
+    - amcx2.dev.pepsico.com
+  gateways:
+  - "pep-cmp-cmp-amcx2-dev/pep-cmp-cmp-amcx2-dev-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-cmp-cmp-amcx2-dev-cv-webdeploy.pep-cmp-cmp-amcx2-dev.svc.cluster.local"
+        port:
+          number: 80

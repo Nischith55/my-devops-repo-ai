@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-dtcloyalty-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-dtcloyalty-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PEPCommerce_Loyalty/_git/pep-dtcloyalty-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-europe-dtcjoy-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pep-dtcloyalty-dev-admin
+    description: Admin privileges to pep-dtcloyalty-dev
+    policies:
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-admin, applications, *, pep-dtcloyalty-dev/*, allow
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-admin, repositories, *, pep-dtcloyalty-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-dtcloyalty-dev-user
+    description: Read-only privileges to pep-dtcloyalty-dev
+    policies:
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-user, applications, get, pep-dtcloyalty-dev/*, allow
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-user, applications, sync, pep-dtcloyalty-dev/*, allow
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-user, repositories, get, pep-dtcloyalty-dev/*, allow
+    - p, proj:pep-dtcloyalty-dev:pep-dtcloyalty-dev-user, applications, action/apps/Deployment/restart, pep-dtcloyalty-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.Azure.DOP.Developers"
+    - "Team.Support.EIAP.READ"

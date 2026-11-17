@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: risingwave-console-vguh-vs
+  namespace: pep-pfna-flna-risingwave-qa
+  labels:
+      app: risingwave-console
+spec:
+  hosts:
+  - risingwave-console-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-risingwave-qa/pep-pfna-flna-risingwave-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: risingwave-console.pep-pfna-flna-risingwave-qa.svc.cluster.local
+        port:
+          number: 8020
+  

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: asip-pepgenx-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for asip-pepgenx-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-pepgenx-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: asip-pepgenx-prod-admin
+        description: Admin privileges to asip-pepgenx-prod
+        policies:
+        - p, proj:asip-pepgenx-prod:asip-pepgenx-prod-admin, applications, *, asip-pepgenx-prod/*, allow
+        - p, proj:asip-pepgenx-prod:asip-pepgenx-prod-admin, repositories, *, asip-pepgenx-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: asip-pepgenx-prod-user
+        description: Read-only privileges to asip-pepgenx-prod
+        policies:
+        - p, proj:asip-pepgenx-prod:asip-pepgenx-prod-user, applications, get, asip-pepgenx-prod/*, allow
+        - p, proj:asip-pepgenx-prod:asip-pepgenx-prod-user, applications, sync, asip-pepgenx-prod/*, allow
+        - p, proj:asip-pepgenx-prod:asip-pepgenx-prod-user, repositories, get, asip-pepgenx-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.EEPEPGENX"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.EEGenAI"
+    

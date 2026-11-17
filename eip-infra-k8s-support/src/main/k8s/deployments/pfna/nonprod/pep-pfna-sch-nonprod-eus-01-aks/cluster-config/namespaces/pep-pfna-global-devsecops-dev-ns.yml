@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Mahesh_2023_08_14
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: nonprod
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-pfna-global-devsecops-dev
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Development
+    project: devsecops
+    sector: global
+    servicename_aks: sch-pfna
+    team: global-devsecops
+  name: pep-pfna-global-devsecops-dev

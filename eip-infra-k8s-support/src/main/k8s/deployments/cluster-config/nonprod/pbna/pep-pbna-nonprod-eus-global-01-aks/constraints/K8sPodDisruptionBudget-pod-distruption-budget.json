@@ -1,0 +1,45 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sPodDisruptionBudget",
+  "metadata": {
+    "annotations": {},
+    "labels": {
+      "app.kubernetes.io/instance": "opa-constraints-pep-pbna-nonprod-eus-global-01-aks-dev"
+    },
+    "name": "pod-distruption-budget"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "kinds": [
+            "Deployment",
+            "ReplicaSet",
+            "StatefulSet"
+          ]
+        },
+        {
+          "apiGroups": [
+            "policy"
+          ],
+          "kinds": [
+            "PodDisruptionBudget"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "ReplicationController"
+          ]
+        }
+      ],
+      "scope": "*"
+    }
+  }
+}

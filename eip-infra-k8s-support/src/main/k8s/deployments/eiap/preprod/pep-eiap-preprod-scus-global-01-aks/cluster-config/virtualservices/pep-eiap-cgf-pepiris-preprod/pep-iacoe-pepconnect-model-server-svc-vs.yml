@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-iacoe-pepconnect-model-server-svc-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-iacoe-pepconnect-model-server-svc.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/gpa"}}],"route":[{"destination":{"host":"pep-iacoe-pepconnect-model-server-svc.pep-eiap-cgf-gpacommgt-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-iacoe-pepconnect-model-server-svc
+  name: pep-iacoe-pepconnect-model-server-svc-vs
+  namespace: pep-eiap-cgf-pepiris-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepiris-preprod/pep-eiap-cgf-pepiris-preprod-cv-gw
+  hosts:
+  - pep-iacoe-pepconnect-model-server-svc.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8000
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/pepiris
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8000        
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-cgf-pepiris-preprod.svc.cluster.local
+        port:
+          number: 8265          

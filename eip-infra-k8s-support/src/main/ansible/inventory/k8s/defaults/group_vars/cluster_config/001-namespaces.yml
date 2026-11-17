@@ -1,0 +1,101 @@
+---
+# ##
+# NOTES
+# - This will be the default namespace(s) format. Essentially all namespaces
+#   that logically need to be grouped should be in a variable.
+# - The cluster-setup-lifecycle script will not read any other global namespace
+#   variables.
+#
+# ##
+
+# common namespace defaults for all namespaces (override if neccessary)
+k8s_namespaces_defaults:
+  metadata:
+    labels:
+      istio-injection: enabled
+      environment: "{{ env }}"
+    annotations: {}
+
+# defaults for built-in namespaces
+k8s_builtin_namespaces_defaults:
+  metadata:
+    labels:
+      # always disable istio
+      istio-injection: disabled
+      environment: "{{ env }}"
+    annotations: {}
+
+# ##
+# Logical Global namespace variables.
+# ##
+
+k8s_builtin_namespaces:
+  - name: default
+    config_defaults: &builtin_001
+      - varname: k8s_builtin_namespaces_defaults
+        merge_strategy: list-append
+  - name: kube-node-lease
+    config_defaults: *builtin_001
+  - name: kube-public
+    config_defaults: *builtin_001
+  - name: kube-system
+    config_defaults: *builtin_001
+
+k8s_common_namespaces:
+  - name: appdynamics
+    config_defaults: &common_001
+      - varname: k8s_namespaces_defaults
+        merge_strategy: list-append
+  - name: aqua
+    config_defaults: *common_001
+  - name: elasticsearch
+    config_defaults: *common_001
+  - name: istio-operator
+    config_defaults: *common_001
+  - name: istio
+    config_defaults: *common_001
+  - name: monitoring
+    config_defaults: *common_001
+  - name: msi-acrpull
+    config_defaults: *common_001
+  - name: observability
+    config_defaults: *common_001
+  - name: kubernetes-dashboard
+    config_defaults: *common_001
+
+  - name: pep-eiap-ops-admin
+    config_defaults: *common_001
+
+    # All service accounts in this namespace
+    service_accounts:
+
+      # NOTE: we give the default SA servicenow-clusterrole so we can
+      # use it in daemonsets to access the api server with priveleges to
+      # read cluster data
+      - name: default
+        role_bindings:
+          - name: pep-eiap-servicenow-rb
+
+      # Should have cluster_admin access
+      - name: pep-eiap-admin-sa
+        cluster_role_bindings:
+          # name of the cluster role binding must exist
+          - name: pep-eiap-cluster-admin-crb
+
+      # Should only have service now cluster role
+      - name: pep-eiap-servicenow-sa
+        cluster_role_bindings:
+          # name of the cluster role binding must exist
+          - name: pep-eiap-servicenow-crb
+
+  - name: pep-eiap-istio-config
+    # IMPORTANT: we need istio disabled using builtin
+    config_defaults: *builtin_001
+
+# For AKS clusters that host Elastic Server, include these namespaces in the
+# the list (k8s_namespaces)
+k8s_elastic_server_namespaces:
+  - name: elastic-system
+    config_defaults: *common_001
+  - name: pep-eiap-elastic-cluster-01
+    config_defaults: *common_001

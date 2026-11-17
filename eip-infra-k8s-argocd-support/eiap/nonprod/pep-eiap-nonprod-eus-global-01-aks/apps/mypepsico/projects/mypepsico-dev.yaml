@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: mypepsico-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for mypepsico-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_DigitalServices_WebSolutions/_git/mypepsico-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-wsp-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: mypepsico-dev-admin
+        description: Admin privileges to mypepsico-dev
+        policies:
+        - p, proj:mypepsico-dev:mypepsico-dev-admin, applications, *, mypepsico-dev/*, allow
+        - p, proj:mypepsico-dev:mypepsico-dev-admin, repositories, *, mypepsico-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: mypepsico-dev-user
+        description: Read-only privileges to mypepsico-dev
+        policies:
+        - p, proj:mypepsico-dev:mypepsico-dev-user, applications, get, mypepsico-dev/*, allow
+        - p, proj:mypepsico-dev:mypepsico-dev-user, applications, sync, mypepsico-dev/*, allow
+        - p, proj:mypepsico-dev:mypepsico-dev-user, repositories, get, mypepsico-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:mypepsico-dev:mypepsico-dev-user, applications, action/apps/Deployment/restart, mypepsico-dev/*, allow
+        groups:
+        - "Team.Support.MyPepsiCo.AKS.NonProd.Admins"
+        - "Team.Support.EIAP.READ"
+    

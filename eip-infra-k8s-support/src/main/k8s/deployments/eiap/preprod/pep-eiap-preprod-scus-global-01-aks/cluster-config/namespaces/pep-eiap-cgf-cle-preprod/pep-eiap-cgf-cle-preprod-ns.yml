@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-cle-preprod
+  labels:
+    env-preprod: 'true'
+    environment: preprod
+    istio.io/rev: preprod-stable
+    project: cle
+    sector: cgf
+    team: cgf-cle

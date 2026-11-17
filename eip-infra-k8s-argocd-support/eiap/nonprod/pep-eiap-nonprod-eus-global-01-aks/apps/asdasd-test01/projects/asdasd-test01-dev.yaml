@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: asdasd-test01-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for asdasd-test01-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/asdasd-test01-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-cgf-devx-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: asdasd-test01-dev-admin
+    description: Admin privileges to asdasd-test01-dev
+    policies:
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-admin, applications, *, asdasd-test01-dev/*, allow
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-admin, repositories, *, asdasd-test01-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: asdasd-test01-dev-user
+    description: Read-only privileges to asdasd-test01-dev
+    policies:
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-user, applications, get, asdasd-test01-dev/*, allow
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-user, applications, sync, asdasd-test01-dev/*, allow
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-user, repositories, get, asdasd-test01-dev/*, allow
+    - p, proj:asdasd-test01-dev:asdasd-test01-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

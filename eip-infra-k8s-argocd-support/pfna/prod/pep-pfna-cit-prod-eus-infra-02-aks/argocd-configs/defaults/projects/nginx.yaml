@@ -1,0 +1,53 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nginx
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for nginx app
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support 
+  destinations:
+  - name: pep-pfna-cit-prod-eus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-eus-infra-02-aks
+    namespace: pep-pfna-global-infra
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-eus-infra-02-aks
+    namespace: default
+    server: https://kubernetes.default.svc
+  - name: pep-pfna-cit-prod-eus-hhnxt-01-aks
+    namespace: argocd
+    server: https://172.25.241.4:443
+  - name: pep-pfna-cit-prod-eus-hhnxt-01-aks
+    namespace: pep-pfna-global-infra
+    server: https://172.25.241.4:443
+  - name: pep-pfna-cit-prod-eus-hhnxt-01-aks
+    namespace: default
+    server: https://172.25.241.4:443
+  - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+    namespace: argocd
+    server: https://pep-pfna-cit-prod-eus-pcaf-01-aks-b969e193.privatelink.eastus.azmk8s.io:443
+  - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+    namespace: pep-pfna-global-infra
+    server: https://pep-pfna-cit-prod-eus-pcaf-01-aks-b969e193.privatelink.eastus.azmk8s.io:443
+  - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+    namespace: default
+    server: https://pep-pfna-cit-prod-eus-pcaf-01-aks-b969e193.privatelink.eastus.azmk8s.io:443
+  - name: pep-pfna-cit-prod-eus-pgt-01-aks
+    namespace: argocd
+    server: https://172.25.240.132:443
+  - name: pep-pfna-cit-prod-eus-pgt-01-aks
+    namespace: pep-pfna-global-prod
+    server: https://172.25.240.132:443
+  - name: pep-pfna-cit-prod-eus-pgt-01-aks
+    namespace: default
+    server: https://172.25.240.132:443

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-b2bvisitlistthailandbatch
+  name: pep-och-b2bvisitlistthailandbatch-vs
+  namespace: pep-eiap-och-edt-preprod
+spec:
+  gateways:
+  - pep-eiap-och-edt-preprod/pep-eiap-och-edt-preprod-cv-gw
+  hosts:
+  - pep-och-b2bvisitlistthailandbatch.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api/
+    route:
+    - destination:
+        host: pep-och-b2bvisitlistthailandbatch.pep-eiap-och-edt-preprod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 99fee4e7-1e23-4926-bbd3-87691e9cdfcb
+  name: pep-eiap-cgf-sworch-prod-sa
+  namespace: pep-eiap-cgf-sworch-prod

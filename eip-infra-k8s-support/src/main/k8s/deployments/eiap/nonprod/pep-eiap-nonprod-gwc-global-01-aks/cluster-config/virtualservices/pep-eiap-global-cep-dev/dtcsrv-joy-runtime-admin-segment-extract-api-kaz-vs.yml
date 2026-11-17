@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-admin-segment-extract-api-kaz
+  name: dtcsrv-joy-runtime-admin-segment-extract-api-kaz-vs
+  namespace: pep-eiap-global-cep-dev
+spec:
+  gateways:
+  - pep-eiap-global-cep-dev/pep-eiap-global-cep-dev-cv-gw
+  hosts:
+  - pep-joy-runtimeadminsegmentextractapikaz-dev.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-admin-segment-extract-api-kaz.pep-eiap-global-cep-dev.svc.cluster.local
+        port:
+          number: 80

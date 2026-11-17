@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: delivr-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for delivr-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxdevopsai-dsxdevops-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-europe-btbota-dev
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: delivr-dev-admin
+        description: Admin privileges to delivr-dev
+        policies:
+        - p, proj:delivr-dev:delivr-dev-admin, applications, *, delivr-dev/*, allow
+        - p, proj:delivr-dev:delivr-dev-admin, repositories, *, delivr-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: delivr-dev-user
+        description: Read-only privileges to delivr-dev
+        policies:
+        - p, proj:delivr-dev:delivr-dev-user, applications, get, delivr-dev/*, allow
+        - p, proj:delivr-dev:delivr-dev-user, applications, sync, delivr-dev/*, allow
+        - p, proj:delivr-dev:delivr-dev-user, repositories, get, delivr-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:delivr-dev:delivr-dev-user, applications, action/apps/Deployment/restart, delivr-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-gnddata-dev-cv-web-vs
+  namespace: pep-dps-dps-gnddata-dev
+  labels:
+    app: pep-dps-dps-gnddata-dev-cv-web
+spec:
+  hosts:
+    - genie.dev.mypepsico.com
+    - pep-dps-dps-gnddata-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-gnddata-dev/pep-dps-dps-gnddata-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-gnddata-dev-cv-web.pep-dps-dps-gnddata-dev.svc.cluster.local
+        port:
+          number: 80

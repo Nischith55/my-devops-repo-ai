@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: lghthouse-ai-labs-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for lghthouse-ai-labs-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/RD_Digital_Platform_Engineering/_git/lghthouse-ai-labs-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-snt-prod-scus-global-02-aks
+        namespace: pep-snt-cgf-lighthouse-prod
+      - name: pep-snt-prod-scus-global-02-aks
+        namespace: pep-snt-ops-admin
+      roles:
+      - name: lghthouse-ai-labs-prod-admin
+        description: Admin privileges to lghthouse-ai-labs-prod
+        policies:
+        - p, proj:lghthouse-ai-labs-prod:lghthouse-ai-labs-prod-admin, applications, *, lghthouse-ai-labs-prod/*, allow
+        - p, proj:lghthouse-ai-labs-prod:lghthouse-ai-labs-prod-admin, repositories, *, lghthouse-ai-labs-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: lghthouse-ai-labs-prod-user
+        description: Read-only privileges to lghthouse-ai-labs-prod
+        policies:
+        - p, proj:lghthouse-ai-labs-prod:lghthouse-ai-labs-prod-user, applications, get, lghthouse-ai-labs-prod/*, allow
+        - p, proj:lghthouse-ai-labs-prod:lghthouse-ai-labs-prod-user, applications, sync, lghthouse-ai-labs-prod/*, allow
+        - p, proj:lghthouse-ai-labs-prod:lghthouse-ai-labs-prod-user, repositories, get, lghthouse-ai-labs-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.RND.Lighthouse.Prod.DataAnalyst"
+        - "Team.Support.EIAP.READ"
+    

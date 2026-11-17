@@ -1,0 +1,91 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedRepos
+metadata:
+  name: restrictrepo
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlocknp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-infra-dev
+    - pep-eiap-istio-config
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-dev
+    - snyk-monitor
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    - default
+    - argocd
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+    labelSelector:
+      matchExpressions: []
+    namespaceSelector:
+      matchExpressions: []
+    scope: '*'
+  parameters:
+    repos:
+    - myartifactory.mypepsico.com/
+    - artifactory.mypepsico.com/
+    - artifactory.pepsico.pvt/
+    - pepeiapnonprodcommonacr.azurecr.io/
+    - docker.io/istio/
+    - cyberark/
+    - docker.elastic.co/observability/
+    - appdynamics/
+    - registry.rancher.com/rancher
+    - docker.io/appdynamics/
+    - pepeiapnonprodglobalcommonacr.azurecr.io/
+    - pepeiotpnonprodpriacr.azurecr.io/
+    - snacks2unonprodacr.azurecr.io/
+    - peppbnasckmnonprodeusacr.azurecr.io/
+    # OPA Exception RITM4296288 SVT-Robotics
+    - 31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/
+    # OPA Exemption RITM4327956 OCH-NA DEV and QA enviornments
+    - otel/
+    # OPA Exemption RITM4538301 OCH-NA DEV and QA enviornments 
+    - structurizr/onpremises
+    - rancher/
+    - docker.io/rancher/
+    # OPA Exception RITM6299207 smartscan
+    - pepsmartcandveus1acr.azurecr.io/
+    # SCTASK7334394 
+    - pepquikpick301acr.azurecr.io/
+    - wiziopublic.azurecr.io/wiz-app/
+    - wizio.azurecr.io/
+    - libreoffice/online
+    # OPA Exception for Nuclio Controller on 27 November 2025
+    - quay.io/nuclio/controller
+    - us-docker.pkg.dev/gloo-mesh/
+    # present in the live cluster but missing from git; re-added so a sync does not drop it
+    - pepvisionacr.azurecr.io/
+    # Akeyless secrets injector sidecar (akeyless/k8s-secrets-sidecar)
+    - akeyless/

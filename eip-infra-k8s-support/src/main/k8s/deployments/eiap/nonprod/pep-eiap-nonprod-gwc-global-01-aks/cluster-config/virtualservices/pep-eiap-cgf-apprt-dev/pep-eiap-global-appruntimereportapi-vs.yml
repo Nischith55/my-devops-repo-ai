@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-global-appruntimereportapi
+  name: pep-eiap-global-appruntimereportapi-vs
+  namespace: pep-eiap-cgf-apprt-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-apprt-dev/pep-eiap-cgf-apprt-dev-cv-gw
+  hosts:
+  - pep-eiap-global-appruntimereportapi.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprtdev-report-api
+    route:
+    - destination:
+        host: pep-eiap-global-appruntimereportapi.pep-eiap-cgf-apprt-dev.svc.cluster.local
+        port:
+          number: 80

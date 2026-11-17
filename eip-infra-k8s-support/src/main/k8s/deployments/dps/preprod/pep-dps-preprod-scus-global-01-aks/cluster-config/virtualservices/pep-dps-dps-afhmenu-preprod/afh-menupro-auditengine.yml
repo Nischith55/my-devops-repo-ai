@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"afh-menupro-auditengine-preprod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"afh-menupro-auditengine","namespace":"pep-dps-dps-afhmenu-preprod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["afh-menupro-auditengine-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"afh-menupro-auditengine.pep-dps-dps-afhmenu-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: afh-menupro-auditengine
+    app.kubernetes.io/instance: afh-menupro-auditengine-preprod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: afh-menupro-auditengine
+  namespace: pep-dps-dps-afhmenu-preprod
+spec:
+  gateways:
+  - pep-dps-dps-afhmenu-preprod/pep-dps-dps-afhmenu-preprod-cv-gw
+  hosts:
+  - afh-menupro-auditengine-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-auditengine.pep-dps-dps-afhmenu-preprod.svc.cluster.local
+        port:
+          number: 8080

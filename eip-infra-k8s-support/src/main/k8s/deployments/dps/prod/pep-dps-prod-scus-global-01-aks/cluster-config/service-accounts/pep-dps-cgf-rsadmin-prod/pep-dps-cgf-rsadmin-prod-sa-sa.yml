@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-dps-cgf-rsadmin-prod-sa
+  namespace: pep-dps-cgf-rsadmin-prod

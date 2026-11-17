@@ -1,0 +1,107 @@
+---
+# filebeat.yml -- configmap
+
+_es_fb_index_prefix: aks-filebeat-${K8S_CLUSTER_NAME}
+
+es_filebeat_yml_value_config_map:
+
+  # we are using autodiscover instead of static filebeat.inputs
+  filebeat.autodiscover:
+    providers:
+      - type: kubernetes
+        # PEP # changed from node to host
+        host: ${NODE_NAME}
+        hints.enabled: true
+        hints.default_config:
+          type: container
+          paths:
+            - /var/log/containers/*${data.kubernetes.container.id}.log
+
+  processors:
+    - add_cloud_metadata:
+    - add_host_metadata:
+
+  logging:
+    level: 'info'
+
+  cloud.id: ${ELASTIC_CLOUD_ID}
+  cloud.auth: ${ELASTIC_CLOUD_AUTH}
+
+  output.elasticsearch:
+    hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+    protocol: https
+    ssl:
+      enabled: true
+      certificate_authorities: ${PEP_CA_CERT_CHAIN}
+    # index: if set must setup template.name and template.pattern
+    index: |-
+      {{ _es_fb_index_prefix + '-%{[agent.version]}-%{+yyyy.MM.dd}' }}
+
+  # disable ILM? - we have to set the templates
+  setup.ilm:
+    enabled: false
+  setup.template:
+    # false means we have to load manually.
+    enabled: true
+    # default: legacy, other values: component, index
+    #DO NOT USE#type: index
+    # name of the template
+    name: "{{ _es_fb_index_prefix + '-%{[agent.version]}' }}"
+    # pattern
+    pattern: "{{ _es_fb_index_prefix + '-%{[agent.version]}-*' }}"
+    # default: false, but ES doc does not recommend to true, if more than one
+    # instance of metricbeat is started?
+    overwrite: false
+    settings:
+      index:
+        number_of_shards: 2
+        number_of_replicas: 1
+        # number_of_shards x 2 x 3 (allows split by 2 and then 3, etc..)
+        number_of_routing_shards: 64
+  # kibana config
+  setup.kibana:
+    hosts: ['${KIBANA_HOST:elasticsearch}:${KIBANA_PORT:5601}']
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+    protocol: https
+    ssl:
+      enabled: true
+      certificate_authorities: ${PEP_CA_CERT_CHAIN}
+    # Optional Kibana space ID. (uses default)
+    #space.id: ""
+
+    # ======================= Dashboards ===============================
+    # These settings control loading the sample dashboards to the Kibana
+    # index. Loading the dashboards are disabled by default and can be enabled
+    # either by setting the options here, or by using the `-setup` CLI flag or
+    # the `setup` command.
+    setup.dashboards:
+      # if false this has to be done in the kibana server
+
+      enabled: true
+      # The Elasticsearch index name. This overwrites the index name defined
+      # in the dashboards and index pattern. Example: testbeat-*
+      index: "{{ _es_fb_index_prefix + '-*' }}"
+      # In case the archive contains the dashboards from multiple Beats, 
+      # this lets you select which one to load. You can load all the 
+      # dashboards in the archive by setting this to the empty string.
+      # beat: filebeat
+
+      # The name of the Kibana index to use for setting the configuration.
+      # Default is ".kibana"
+      # kibana_index: .kibana
+
+      # Always use the Kibana API for loading the dashboards instead of
+      # autodetecting how to install the dashboards by first querying 
+      # Elasticsearch. (default: false)
+      always_kibana: true
+
+      # retry:
+      #   # Duration interval between Kibana connection retries.
+      #   interval: 1s
+
+      #   # Maximum number of retries before exiting with an error, 
+      #   # 0 for unlimited retrying.
+      #   maximum: 0

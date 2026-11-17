@@ -1,0 +1,52 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8snonroot
+  annotations:
+    metadata.gatekeeper.sh/title: "Require non-root containers"
+    metadata.gatekeeper.sh/version: 1.0.0
+    description: >-
+      Ensures that containers do not run as root. Containers must either set
+      runAsNonRoot=true or specify a non-zero runAsUser.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sNonRoot
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties: {}
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8snonroot
+
+        violation[{"msg": msg}] {
+          container := input_containers[_]
+          not is_non_root(container)
+          msg := sprintf("container <%v> must not run as root", [container.name])
+        }
+
+        is_non_root(container) {
+          sc := object.get(container, "securityContext", {})
+          sc.runAsNonRoot == true
+        }
+
+        is_non_root(container) {
+          sc := object.get(container, "securityContext", {})
+          runAsUser := object.get(sc, "runAsUser", -1)
+          runAsUser > 0
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.containers[_]
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.initContainers[_]
+        }
+
+        input_containers[c] {
+          c := input.review.object.spec.ephemeralContainers[_]
+        }

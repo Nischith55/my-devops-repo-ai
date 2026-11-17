@@ -1,0 +1,32 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- $name := include "platform-chart.fullname" . -}}
+{{- if and .Values.destinationRule.enabled (or .Values.global.deployment.enabled .Values.global.rollout.enabled .Values.global.statefulset.enabled) .Values.global.service.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ $name }}-dr
+  namespace: {{ $namespace }}
+  {{- with .Values.global.labels }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- include "platform-chart.labels" . | nindent 4 }}
+spec:
+  host: {{ .Values.destinationRule.destinationService | default $name}}.{{ $namespace }}.svc.cluster.local
+  {{- if .Values.destinationRule.sessionAffinity }}
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: IstioSessionAffinity
+          ttl: 0s
+  {{- end }}  
+  {{- if .Values.destinationRule.trafficPolicy }}
+  trafficPolicy:
+  {{- toYaml .Values.destinationRule.trafficPolicy | nindent 4 }} 
+  {{- end }} 
+  {{- if .Values.destinationRule.subsets }}
+  subsets:
+  {{- toYaml .Values.destinationRule.subsets | nindent 2 }} 
+  {{- end }}
+{{- end }}

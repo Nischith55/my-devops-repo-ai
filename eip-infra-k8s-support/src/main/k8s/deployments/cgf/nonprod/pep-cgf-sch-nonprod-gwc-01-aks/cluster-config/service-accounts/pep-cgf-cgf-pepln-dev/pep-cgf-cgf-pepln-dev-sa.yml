@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 89ac76a1-7f3b-4922-887a-a2b5cb7bf5a7
+  name: pep-cgf-cgf-pepln-dev-sa
+  namespace: pep-cgf-cgf-pepln-dev

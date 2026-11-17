@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: b2b-temporal-preprod-frontend-rhku-vs
+  namespace: pep-dps-latam-btborch-preprod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - b2b-temporal-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-latam-btborch-preprod/pep-dps-latam-btborch-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-temporal-preprod-frontend.pep-dps-latam-btborch-preprod.svc.cluster.local
+        port:
+          number: 7233
+  

@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"afh-menupro-orchestrator-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"afh-menupro-orchestrator","namespace":"pep-dps-dps-afhmenu-prod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["afh-menupro-orchestrator-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"afh-menupro-orchestrator.pep-dps-dps-afhmenu-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: afh-menupro-orchestrator
+    app.kubernetes.io/instance: afh-menupro-orchestrator-prod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: afh-menupro-orchestrator
+  namespace: pep-dps-dps-afhmenu-prod
+spec:
+  gateways:
+  - pep-dps-dps-afhmenu-prod/pep-dps-dps-afhmenu-prod-cv-gw
+  hosts:
+  - afh-menupro-orchestrator-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-orchestrator.pep-dps-dps-afhmenu-prod.svc.cluster.local
+        port:
+          number: 8080

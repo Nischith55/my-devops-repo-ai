@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: filestore-och-gwc-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for filestore-och-gwc-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Hand_Held_Next/_git/pep-pfna-shp-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-suk-global-01-aks
+        namespace: pep-eiap-och-edt-prod
+      - name: pep-eiap-prod-suk-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: filestore-och-gwc-prod-admin
+        description: Admin privileges to filestore-och-gwc-prod
+        policies:
+        - p, proj:filestore-och-gwc-prod:filestore-och-gwc-prod-admin, applications, *, filestore-och-gwc-prod/*, allow
+        - p, proj:filestore-och-gwc-prod:filestore-och-gwc-prod-admin, repositories, *, filestore-och-gwc-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: filestore-och-gwc-prod-user
+        description: Read-only privileges to filestore-och-gwc-prod
+        policies:
+        - p, proj:filestore-och-gwc-prod:filestore-och-gwc-prod-user, applications, get, filestore-och-gwc-prod/*, allow
+        - p, proj:filestore-och-gwc-prod:filestore-och-gwc-prod-user, applications, sync, filestore-och-gwc-prod/*, allow
+        - p, proj:filestore-och-gwc-prod:filestore-och-gwc-prod-user, repositories, get, filestore-och-gwc-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+    

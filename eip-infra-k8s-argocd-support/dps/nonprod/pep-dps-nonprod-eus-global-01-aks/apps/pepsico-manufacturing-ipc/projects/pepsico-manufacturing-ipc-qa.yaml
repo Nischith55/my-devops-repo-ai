@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-manufacturing-ipc-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-manufacturing-ipc-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/LATAM_IPC_TC/_git/pepsico-manufacturing-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-latamipc-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-manufacturing-ipc-qa-admin
+    description: Admin privileges to pepsico-manufacturing-ipc-qa
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-admin, applications, *, pepsico-manufacturing-ipc-qa/*, allow
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-admin, applications, get, argocd/*, allow
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-admin, repositories, *, pepsico-manufacturing-ipc-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-manufacturing-ipc-qa-user
+    description: Read-only privileges to pepsico-manufacturing-ipc-qa
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-user, applications, get, pepsico-manufacturing-ipc-qa/*, allow
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-user, applications, sync, pepsico-manufacturing-ipc-qa/*, allow
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-user, repositories, get, pepsico-manufacturing-ipc-qa/*, allow
+    - p, proj:pepsico-manufacturing-ipc-qa:pepsico-manufacturing-ipc-qa-user, applications, action/apps/Deployment/restart, pepsico-manufacturing-ipc-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.AzureSub.Admin"
+    - "Team.Support.EIAP.READ"

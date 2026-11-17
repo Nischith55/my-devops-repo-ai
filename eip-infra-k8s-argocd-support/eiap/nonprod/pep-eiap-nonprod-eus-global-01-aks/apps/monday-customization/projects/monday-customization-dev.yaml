@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: monday-customization-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for monday-customization-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_IT_Commercialization/_git/pepsico-monday-customization-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-monday-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: monday-customization-dev-admin
+        description: Admin privileges to monday-customization-dev
+        policies:
+        - p, proj:monday-customization-dev:monday-customization-dev-admin, applications, *, monday-customization-dev/*, allow
+        - p, proj:monday-customization-dev:monday-customization-dev-admin, repositories, *, monday-customization-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: monday-customization-dev-user
+        description: Read-only privileges to monday-customization-dev
+        policies:
+        - p, proj:monday-customization-dev:monday-customization-dev-user, applications, get, monday-customization-dev/*, allow
+        - p, proj:monday-customization-dev:monday-customization-dev-user, applications, sync, monday-customization-dev/*, allow
+        - p, proj:monday-customization-dev:monday-customization-dev-user, repositories, get, monday-customization-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:monday-customization-dev:monday-customization-dev-user, applications, action/apps/Deployment/restart, monday-customization-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.CMP.Read"
+        - "Team.Support.EIAP.READ"
+    

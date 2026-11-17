@@ -1,0 +1,40 @@
+---
+ns_pep_cgf_cgf_pepline_dev:
+  
+  name: pep-cgf-cgf-pepline-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-pepline
+    sector: cgf
+    project: pepline
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: pepline
+    pep-cmdb-app-service-id: "db2e13a69770ba101351f2c0f053af5c"
+    pep-cmdb-bus-app-id: "c32246b4c37e0e9897d1981f050131df"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-cgf-cgf-pepline-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-cgf-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-cgf-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_pepline'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-cgf-cgf-pepline-dev-sa-token
+    namespace: pep-cgf-cgf-pepline-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-cgf-cgf-pepline-dev-sa"

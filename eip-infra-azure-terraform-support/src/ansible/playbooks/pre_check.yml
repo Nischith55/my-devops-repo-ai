@@ -1,0 +1,17 @@
+---
+- name: Pre_Check
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: create directory
+      file:
+        path: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}"
+        state: directory
+
+    - name: import Pre_Check role
+      import_role:
+        name: pre_check
+      # no_log: true   
+      ignore_errors: true 
+

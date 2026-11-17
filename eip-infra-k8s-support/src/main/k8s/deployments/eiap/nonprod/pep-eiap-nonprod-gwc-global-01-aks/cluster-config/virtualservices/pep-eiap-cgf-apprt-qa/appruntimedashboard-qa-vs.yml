@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: appruntimedashboard-qa-vs
+  namespace: pep-eiap-cgf-apprt-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-apprt-qa/pep-eiap-cgf-apprt-qa-cv-gw
+  hosts:
+  - appruntimedashboard-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: appruntimedashboard.pep-eiap-cgf-apprt-qa.svc.cluster.local
+        port:
+          number: 80

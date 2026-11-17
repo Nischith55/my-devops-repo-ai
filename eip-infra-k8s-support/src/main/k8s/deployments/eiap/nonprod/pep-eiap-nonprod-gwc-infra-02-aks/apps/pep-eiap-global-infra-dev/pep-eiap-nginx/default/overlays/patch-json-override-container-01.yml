@@ -1,0 +1,9 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts
+  value:
+  - mountPath: /secrets
+    name: all-gw-secrets
+    readOnly: true

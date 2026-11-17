@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-loyalty-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for b2b-loyalty-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btblylty-prod
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btbproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-europe-btbprofile-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btblylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-btbproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-suk-global-01-aks
+    namespace: pep-dps-latam-globtbprof-prod
+    server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: 'PersistentVolume'
+
+  roles:
+  - name: b2b-loyalty-prod-admin
+    description: Admin privileges to b2b-loyalty-prod
+    policies:
+    - p, proj:b2b-loyalty-prod:b2b-loyalty-prod-admin, applications, *, b2b-loyalty-prod/*, allow
+    - p, proj:b2b-loyalty-prod:b2b-loyalty-prod-admin, repositories, *, b2b-loyalty-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: b2b-loyalty-prod-user
+    description: Read-only privileges to b2b-loyalty-prod
+    policies:
+    - p, proj:b2b-loyalty-prod:b2b-loyalty-prod-user, applications, get, b2b-loyalty-prod/*, allow
+    - p, proj:b2b-loyalty-prod:b2b-loyalty-prod-user, applications, sync, b2b-loyalty-prod/*, allow
+    - p, proj:b2b-loyalty-prod:b2b-loyalty-prod-user, repositories, get, b2b-loyalty-prod/*, allow
+    groups:
+    - "Team.Support.LATAM.Prod.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,8 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-23 12:17:26
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-eiap-nginx
+  namespace: pep-eiap-global-infra-dev

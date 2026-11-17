@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:28:38Z"
+  generation: 1
+  name: pepsico-cto-cmp-order-aks-stack-provisioning-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638230402"
+  uid: 63729c49-36ff-419b-b60c-a492ea008408
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-aks-stack-provisioning-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/order/aks-stack
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-aks-stack-provisioning.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

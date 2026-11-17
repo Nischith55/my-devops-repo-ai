@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 580033bd-e2d7-4901-a3a5-19ac363cd57d
+  name: pep-eiap-pbna-lighth-prod-sa
+  namespace: pep-eiap-pbna-lighth-prod

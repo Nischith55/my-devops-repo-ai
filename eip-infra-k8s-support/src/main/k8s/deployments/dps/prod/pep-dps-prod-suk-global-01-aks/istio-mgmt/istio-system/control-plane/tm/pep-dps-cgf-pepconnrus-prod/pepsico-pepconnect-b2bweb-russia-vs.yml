@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pepconnect-b2bweb-russia-vs
+  namespace: pep-dps-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pepconnect-b2bweb-russia.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - dogovorilis24.ru
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-russia.pep-dps-cgf-pepconnrus-prod.svc.cluster.local
+        port: 
+          number: 80

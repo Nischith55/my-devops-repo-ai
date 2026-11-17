@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 8d32a370-fb89-4c54-96d8-8749a7b7bfea
+  name: pep-eiap-cgf-dvxinfra-prod-sa
+  namespace: pep-eiap-cgf-dvxinfra-prod

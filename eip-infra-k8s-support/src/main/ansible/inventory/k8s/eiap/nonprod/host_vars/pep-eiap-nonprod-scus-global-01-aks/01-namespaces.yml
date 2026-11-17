@@ -1,0 +1,39 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_test1_test2_dev
+  - ns_pep_eiap_cgf_duaas_qa
+  - ns_pep_eiap_apac_cmp_dev
+  - ns_pep_eiap_flna_eiv_dev
+  - ns_pep_eiap_global_infra_dev
+  - ns_pep_eiap_global_mdp_dev
+  - ns_pep_eiap_test_demo_dev
+  - ns_pep_eiap_global_gaia_dev
+  - ns_pep_eiap_flna_couchbase_dev
+  - ns_pep_eiap_global_services_dev
+  - ns_pep_eiap_global_idt_dev
+  - ns_pep_eiap_flna_hhnext_dev    
+  - ns_pep_eiap_cgf_cle_dev
+  - ns_pep_eiap_cgf_f2p_dev
+  - ns_pep_eiap_pbna_pog_dev
+  - ns_pep_eiap_pbna_pog_qa
+  - ns_pep_eiap_global_services_qa
+  - ns_pep_eiap_global_mdp_qa
+  - ns_pep_eiap_global_cmp_dev
+  - ns_pep_eiap_flna_iacoe_dev
+  - ns_pep_eiap_pbna_halo_dev
+  - ns_pep_eiap_pbna_halo_qa
+  - ns_pep_eiap_flna_pgt_dev
+  - ns_pep_eiap_flna_pgt_qa
+  - ns_pep_eiap_flna_hhnext_qa
+  - ns_pep_eiap_flna_eiv_qa
+  - ns_pep_eiap_cgf_pdm_dev
+  - ns_pep_eiap_cgf_pdm_qa
+  - ns_pep_eiap_flna_gtm_dev
+  - ns_pep_eiap_flna_gtmds_dev
+  - ns_pep_eiap_pbna_plci_dev
+  - ns_pep_eiap_flna_gro_dev
+  - ns_pep_eiap_pfna_ipp_dev

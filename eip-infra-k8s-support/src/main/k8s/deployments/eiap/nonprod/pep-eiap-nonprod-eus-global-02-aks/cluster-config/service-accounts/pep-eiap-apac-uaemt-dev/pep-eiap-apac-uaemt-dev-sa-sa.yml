@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-apac-uaemt-dev-sa
+  namespace: pep-eiap-apac-uaemt-dev

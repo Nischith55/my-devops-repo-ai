@@ -1,0 +1,9 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  name: pepcgfschnonprodgwcacr
+  namespace: pep-cgf-ops-admin
+spec:
+  acrServer: pepcgfschnonprodgwcacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/0c1319a6-1def-4d09-a0ca-46d9b0812fbd/resourcegroups/pep-cgf-sch-nonprod-gwc-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-cgf-sch-nonprod-gwc-01-aks-agentpool

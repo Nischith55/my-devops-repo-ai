@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: autoschedular-dev-git
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://github.com/Global-SnT/tsep-pep-pfna-whse-autoschedular-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-whorch-dev  
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: autoschedular-dev-git-admin
+    description: Admin privileges to autoschedular-dev-git
+    policies:
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-admin, applications, *, autoschedular-dev-git/*, allow
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-admin, repositories, *, autoschedular-dev-git/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: autoschedular-dev-git-user
+    description: Read-only privileges to autoschedular-dev-git
+    policies:
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-user, applications, get, autoschedular-dev-git/*, allow
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-user, applications, sync, autoschedular-dev-git/*, allow
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-user, repositories, get, autoschedular-dev-git/*, allow
+    - p, proj:autoschedular-dev-git:autoschedular-dev-git-user, applications, action/apps/Deployment/restart, autoschedular-dev-git/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.PFNA.WHAutomation.Developer"
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.PFNA.whseas.Developer"

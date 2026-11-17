@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: spendwise-dashboard-api-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for spendwise-dashboard-api-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/spendwise-dashboard-api-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-ai4bisw-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: spendwise-dashboard-api-dev-admin
+        description: Admin privileges to spendwise-dashboard-api-dev
+        policies:
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-admin, applications, *, spendwise-dashboard-api-dev/*, allow
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-admin, repositories, *, spendwise-dashboard-api-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: spendwise-dashboard-api-dev-user
+        description: Read-only privileges to spendwise-dashboard-api-dev
+        policies:
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-user, applications, get, spendwise-dashboard-api-dev/*, allow
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-user, applications, sync, spendwise-dashboard-api-dev/*, allow
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-user, repositories, get, spendwise-dashboard-api-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:spendwise-dashboard-api-dev:spendwise-dashboard-api-dev-user, applications, action/apps/Deployment/restart, spendwise-dashboard-api-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.AI4BISW"
+        - "Team.Support.EIAP.READ"
+    

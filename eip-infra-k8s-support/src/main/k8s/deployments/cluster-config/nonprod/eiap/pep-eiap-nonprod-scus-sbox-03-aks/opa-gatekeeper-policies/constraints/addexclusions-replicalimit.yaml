@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/match/excludedNamespaces/0
+  value:
+    pep-eiap-cgfrd-labrt-dev
+    
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+    pep-eiap-cgf-labelright-qa

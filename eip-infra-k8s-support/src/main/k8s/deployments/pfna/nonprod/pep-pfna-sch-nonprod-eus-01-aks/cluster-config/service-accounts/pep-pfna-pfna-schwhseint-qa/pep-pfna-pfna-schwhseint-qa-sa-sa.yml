@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pfna-pfna-schwhseint-qa-sa
+  namespace: pep-pfna-pfna-schwhseint-qa

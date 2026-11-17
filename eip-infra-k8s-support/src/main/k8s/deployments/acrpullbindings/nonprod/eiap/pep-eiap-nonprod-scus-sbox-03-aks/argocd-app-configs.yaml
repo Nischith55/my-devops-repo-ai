@@ -1,0 +1,14 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-eiap-nonprod-scus-sbox-03-aks
+
+
+argoCDApplications:  
+  acrpullbindings-pep-eiap-nonprod-scus-sbox-03-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/acrpullbindings/nonprod/eiap/pep-eiap-nonprod-scus-sbox-03-aks

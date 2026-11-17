@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-ingest-01-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com"],"tls":[{"match":[{"port":443,"sniHosts":["pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com"]}],"route":[{"destination":{"host":"cluster-01-es-ingest.pep-eiap-elastic-cluster-01.svc.cluster.local","port":{"number":9200}},"weight":0},{"destination":{"host":"pep-eiap-ingest-01.pep-eiap-elastic-cluster-01.svc.cluster.local","port":{"number":9200}},"weight":100}]}]}}
+  labels:
+    app: undefined
+  name: pep-eiap-ingest-01-vs
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  gateways:
+  - pep-eiap-elastic-cluster-01/pep-eiap-elastic-cluster-01-cv-gw
+  hosts:
+  - pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: cluster-01-es-ingest.pep-eiap-elastic-cluster-01.svc.cluster.local
+        port:
+          number: 9200
+      weight: 0
+    - destination:
+        host: pep-eiap-ingest-01.pep-eiap-elastic-cluster-01.svc.cluster.local
+        port:
+          number: 9200
+      weight: 100

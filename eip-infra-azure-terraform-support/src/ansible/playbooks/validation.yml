@@ -1,0 +1,198 @@
+---
+- name: Validation
+  hosts: localhost
+  gather_facts: false
+  tasks:
+###################################
+    - name: show difference between pre_deployment and post_deployment files of systemnodes
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/systemnodes-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/systemnodes-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults1
+#########################################
+    - name: show difference between pre_deployment and post_deployment files of usernodes
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/usernodes-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/usernodes-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults2
+###################################
+    - name: show difference between pre_deployment and post_deployment files of podsstatus
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/podstatus-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/podstatus-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults3
+
+    # - name: Fail podsstatus
+    #   fail:
+    #     msg: "There is a difference between the pre_deployment and post_deployment files."
+    #   when: myresults3.changed == true
+
+#####################################
+    - name: show difference between pre_deployment and post_deployment files of cronjobs
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/cronjobs-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/cronjobs-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults4
+
+    - name: Fail cronjobs
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults4.changed == true
+##########################################
+    - name: show difference between pre_deployment and post_deployment files of statefulset
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/statefulset-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/statefulset-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults5
+
+    - name: Fail statefulset
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults5.changed == true
+########################################
+    - name: show difference between pre_deployment and post_deployment files of deploystatus
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/deploystatus-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/deploystatus-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults6
+
+    - name: Fail deploystatus
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults6.changed == true
+#################################
+    - name: show difference between pre_deployment and post_deployment files of nodestatus
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/nodestatus-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/nodestatus-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults7
+
+    # - name: Fail nodestatus
+    #   fail:
+    #     msg: "There is a difference between the pre_deployment and post_deployment files."
+    #   when: myresults7.changed == true
+##################################
+    - name: show difference between pre_deployment and post_deployment files of services
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/services-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/services-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults8
+
+    - name: Fail services
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults8.changed == true
+
+########################################
+    - name: show difference between pre_deployment and post_deployment files of storageclasses
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/storageclasses-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/storageclasses-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults9
+
+    - name: Fail storageclasses
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults9.changed == true
+###########################################
+    - name: show difference between pre_deployment and post_deployment files of pv
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/pv-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/pv-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults10
+
+    - name: Fail pv
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults10.changed == true
+#############################################
+    - name: show difference between pre_deployment and post_deployment files of daemon set
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/daemonset-status-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/daemonset-status-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults11
+
+    - name: Fail daemon set
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults11.changed == true
+# ############################################
+    - name: show difference between pre_deployment and post_deployment files of npu-node-status
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/npunodes-status-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/npunodes-status-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults14
+
+    # - name: Fail npu-node-status
+    #   fail:
+    #     msg: "There is a difference between the pre_deployment and post_deployment files."
+    #   when: myresults14.changed == true 
+# ############################################
+    - name: show difference between pre_deployment and post_deployment files of revert-cgroups-status
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/revert_cgroups-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/revert_cgroups-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults15
+
+    - name: Fail revert-cgroups-status
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults15.changed == true 
+      
+############################################   
+    - name: show difference between pre_deployment and post_deployment files of VirtualServiceList
+      copy:
+        src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/virtualserviceslist-pre-upgrade.txt"
+        dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/virtualserviceslist-post-upgrade.txt"
+      check_mode: yes
+      diff: true
+      register: myresults12
+
+    - name: Fail VirtualServiceList
+      fail:
+        msg: "There is a difference between the pre_deployment and post_deployment files."
+      when: myresults12.changed == true 
+# ############################################   
+    # - name: show difference between pre_deployment and post_deployment files of VirtualServiceStatus
+    #   copy:
+    #     src: "{{ working_dir }}/k8s_backups/{{ resourcename }}/pre/virtualservices-pre-upgrade.txt"
+    #     dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/post/virtualservices-post-upgrade.txt"
+    #   check_mode: yes
+    #   diff: true
+    #   register: myresults13
+    #   when: execute_curl_command | default({{ curl_pfna }})
+
+    # - name: Fail VirtualServiceStatus
+    #   fail:
+    #     msg: "There is a difference between the pre_deployment and post_deployment files."
+    #   when: 
+    #   - myresults13.changed == true 
+    #   - execute_curl_command | default({{ curl_pfna }})
+      
+

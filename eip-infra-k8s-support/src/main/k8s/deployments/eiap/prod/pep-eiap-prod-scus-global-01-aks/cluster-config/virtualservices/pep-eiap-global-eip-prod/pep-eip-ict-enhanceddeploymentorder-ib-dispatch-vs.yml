@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-ict-enhanceddeploymentorder-ib-dispatch
+  name: pep-eip-ict-enhanceddeploymentorder-ib-dispatch-vs
+  namespace: pep-eiap-global-eip-prod
+spec:
+  gateways:
+  - pep-eiap-global-eip-prod/pep-eiap-global-eip-prod-cv-gw
+  hosts:
+  - pep-eip-ict-enhanceddeploymentorder-ib-dispatch.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-ict-enhanceddeploymentorder-ib-dispatch.pep-eiap-global-eip-prod.svc.cluster.local
+        port:
+          number: 80

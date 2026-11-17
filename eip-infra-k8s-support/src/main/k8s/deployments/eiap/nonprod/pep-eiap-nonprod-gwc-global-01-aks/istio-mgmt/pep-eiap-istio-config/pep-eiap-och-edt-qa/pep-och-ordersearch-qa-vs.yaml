@@ -1,0 +1,61 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-ordersearch-qa-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-ordersearch-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api/orders
+    route:
+    - destination:
+        host: pep-och-ordersearch.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pep-och-falloutmanagement-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      exposeHeaders:
+      - x-total-count
+  - match:    
+    - ignoreUriCase: true
+      uri:
+        prefix: /v2/api/orders
+    route:
+    - destination:
+        host: pep-och-ordersearch.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pep-och-falloutmanagement-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ui-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT 
+      - PATCH
+      - DELETE 
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link 
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count    
+      - x-source         
+    

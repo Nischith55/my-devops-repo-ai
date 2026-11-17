@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"should-cost-agentic-ai-beta","app.kubernetes.io/instance":"should-cost-agentic-ai-beta-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"should-cost-agentic-ai-beta","namespace":"pep-eiap-cgf-shcomo-dev"},"spec":{"gateways":["pep-eiap-cgf-shcomo-dev/pep-eiap-cgf-shcomo-dev-cv-gw"],"hosts":["should-cost-agentic-ai-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"should-cost-agentic-ai-beta.pep-eiap-cgf-shcomo-dev.svc.cluster.local","port":{"number":8501}}}]}]}}
+
+'
+    labels:
+        app: should-cost-agentic-ai-beta
+        app.kubernetes.io/instance: should-cost-agentic-ai-beta-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: should-cost-agentic-ai-beta
+    namespace: pep-eiap-cgf-shcomo-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-shcomo-dev/pep-eiap-cgf-shcomo-dev-cv-gw
+    hosts:
+    - should-cost-agentic-ai-beta.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - procurementai.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: should-cost-agentic-ai-beta.pep-eiap-cgf-shcomo-dev.svc.cluster.local
+                port:
+                    number: 8501

@@ -1,0 +1,69 @@
+- name: get the configmap 
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: ConfigMap
+    name: "{{ item }}"
+    namespace: "{{ namespace }}"
+  register: cm_data
+
+- name: check for file 
+  block:
+  ########## configmap from file 
+  - name: get keys 
+    set_fact: 
+      cm_keys: "{{ cm_data.resources[0].data.keys() | list }}"
+
+  - name: look for .yml or .yaml in the keys 
+    set_fact: 
+      configmapFromFile_enable: true 
+    when: cm_keys[0] is match('.*\\.ya?ml$')
+
+  - name: set cmff name 
+    set_fact: 
+      configmapFromFile_name: "{{ item | regex_replace('-configmap$', '') }}"
+    when: configmapFromFile_enable is defined and configmapFromFile_enable
+  
+  - name: look for volumes for configmap 
+    set_fact: 
+      configmap_toMount: true 
+      configmapref_volname: "{{ configmapref_fullList | default([]) + [inner_item.name] }}"
+    with_items: "{{ outer_item.spec.template.spec.volumes }}"
+    when: inner_item.configMap is defined
+    loop_control: 
+      loop_var: inner_item
+  
+  - name: get volume details 
+    set_fact:
+      configmapref_mountPath: "{{ inner_item.mountPath }}"
+    when: 
+    - configmapref_volname != None
+    - inner_item.name == configmapref_volname
+    with_items: "{{ outer_item.spec.template.spec.containers[0].volumeMounts | default([]) }}"
+    loop_control: 
+      loop_var: inner_item
+  
+  - name: set final data in configmapfromfile 
+    set_fact: 
+      configmap_fromfile_data: "{{ configmap_fromfile_data | default([]) + [{'name': configmapFromFile_name, 'mount': configmap_toMount | default('false'), 'volname': configmapref_volname | default(''), 'vol_mountpath': configmapref_mountPath | default('') }] }}"
+    when: configmapFromFile_enable is defined and configmapFromFile_enable
+
+  ######### configmap from key values 
+  - name: look for .yml or .yaml in the keys 
+    set_fact: 
+      configmap_keys: true
+    when: 
+    - "'.yml' not in cm_keys[0]"
+    - "'.yaml' not in cm_keys[0]"
+  
+  - name: set cmff name 
+    set_fact: 
+      configmap_name: "{{ item | regex_replace('-configmap$', '') }}"
+    when: configmap_keys is defined and configmap_keys
+
+  - name: set configmap data 
+    set_fact: 
+      configmap_data: "{{ configmap_data | default([]) + [{'name': configmap_name, 'data': cm_data.resources[0].data }] }}"
+    when: configmap_name != None
+
+  when: 
+  - cm_data.resources is defined and (cm_data.resources | length > 0)

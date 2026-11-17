@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_flna_monday_prod:
+  
+  name: pep-eiap-flna-monday-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-monday
+    sector: flna
+    project: monday
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: monday.comprod
+    pep-cmdb-app-service-id: "04ee27d6873095104acb311d0ebb35bd"
+    pep-cmdb-bus-app-id: "88ee27d6873095104acb311d0ebb35ba"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-flna-monday-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_monday'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-flna-monday-prod-sa-token
+    namespace: pep-eiap-flna-monday-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-flna-monday-prod-sa"

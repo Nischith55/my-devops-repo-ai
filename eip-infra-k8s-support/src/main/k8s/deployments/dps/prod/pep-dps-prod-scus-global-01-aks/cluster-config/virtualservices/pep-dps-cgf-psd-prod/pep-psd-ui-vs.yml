@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-psd-ui-vs","namespace":"pep-dps-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-psd-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com","success.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-psd-ui.pep-dps-cgf-psd-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-psd-ui
+  name: pep-psd-ui-vs
+  namespace: pep-dps-cgf-psd-prod
+spec:
+  gateways:
+  - pep-dps-cgf-psd-prod/pep-dps-cgf-psd-prod-cv-gw
+  hosts:
+  - pep-psd-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - success.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-psd-ui.pep-dps-cgf-psd-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"duaas-webapp-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["duaas-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","doculingo.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"duaas-webapp.pep-eiap-cgf-duaas-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: duaas-webapp
+  name: duaas-webapp-vs
+  namespace: pep-eiap-cgf-duaas-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-duaas-prod/pep-eiap-cgf-duaas-prod-cv-gw
+  hosts:
+  - duaas-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - doculingo.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: duaas-webapp.pep-eiap-cgf-duaas-prod.svc.cluster.local
+        port:
+          number: 80

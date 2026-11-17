@@ -1,0 +1,17 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: default
+parameters:
+  skuName: Standard_LRS
+  cachingmode: ReadOnly
+  kind: Managed
+  resourceGroup: pep-pbna-och-k8s-prod-eus-01-rg
+  zoned: 'true'
+provisioner: disk.csi.azure.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pes-move-order-bulk-upload-service-gqaq-vs
+  namespace: pep-eiap-pbna-vms365-qa
+  labels:
+      app: pes-move-order-bulk-upload-service
+spec:
+  hosts:
+  - pep-pbna-pes-move-order-bulk-upload-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-vms365-qa/pep-eiap-pbna-vms365-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pes-move-order-bulk-upload-service.pep-eiap-pbna-vms365-qa.svc.cluster.local
+        port:
+          number: 80
+  

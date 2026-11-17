@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-dppautodls-qa
+  labels:
+    env-nonprod: "true"
+    project: dppautodls
+    sector: flna
+    team: flna-dppautodls
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: dpp-globaldailyproductionplannerflnanon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 4cbe08f9db3e8c10c2b5f38139961927
+    pep-cmdb-app-service-id: 466746b4978c1e506a15b2a3f153afea
+    pep-environment: QA
+    

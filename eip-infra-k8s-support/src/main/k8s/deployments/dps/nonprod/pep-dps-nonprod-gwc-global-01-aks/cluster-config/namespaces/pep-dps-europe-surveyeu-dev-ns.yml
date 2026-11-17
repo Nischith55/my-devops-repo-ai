@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: d09ba07987d8b9d04f62fe28dabb3527
+    pep-cmdb-bus-app-id: d49b607987d8b9d04f62fe28dabb35d4
+    pep-environment: Development
+    project: surveyeu
+    sector: europe
+    servicename_aks: directtostoredeliveryvisibility
+    team: europe-surveyeu
+  name: pep-dps-europe-surveyeu-dev

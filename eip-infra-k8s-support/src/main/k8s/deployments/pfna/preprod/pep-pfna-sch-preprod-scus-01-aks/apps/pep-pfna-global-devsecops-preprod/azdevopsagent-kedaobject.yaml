@@ -1,0 +1,44 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: pipeline-trigger-auth
+  namespace: pep-pfna-global-devsecops-preprod
+spec:
+  secretTargetRef:
+    - key: AZP_TOKEN
+      name: pep-pfna-svc-global-devsecops-azdevops
+      parameter: personalAccessToken
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: pepsico-pfna-global-devsecops-agent-scaledobject
+  namespace: pep-pfna-global-devsecops-preprod
+spec:
+  fallback:                                                 
+    failureThreshold: 3
+    replicas: 6
+  pollingInterval: 30
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  advanced:
+    restoreToOriginalReplicaCount: false
+    horizontalPodAutoscalerConfig:                         
+      name: keda-hpa-pepsico-pfna-global-devsecops-agent-scaledobject 
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 30
+          policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 15
+  scaleTargetRef:
+    name: azdevops-placeholder
+    envSourceContainerName: azdevops-agent
+  triggers:
+    - authenticationRef:
+        name: pipeline-trigger-auth
+      metadata:
+        organizationURLFromEnv: AZP_URL
+        poolID: '1397'
+      type: azure-pipelines

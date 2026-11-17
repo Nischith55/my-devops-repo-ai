@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-iacoe-labelright-backend-ml-api-http-qa
+  name: pep-iacoe-labelright-backend-ml-api-svc-qa-vs
+  namespace: pep-eiap-cgf-labelright-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-labelright-qa/pep-eiap-cgf-labelright-qa-cv-gw
+  hosts:
+  - pep-iacoe-labelright-backend-ml-api-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Timeout
+      - x-functions-key
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-iacoe-labelright-frontend-ui-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-iacoe-labelright-service-sync-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-iacoe-labelright-backend-api-svc-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://api-na.qa.mypepsico.com
+      - exact: https://labelright.ite.mypepsico.com
+      - exact: https://peplabelrightdevsa.z13.web.core.windows.net
+      - exact: https://labelrightglobal.qa.mypepsico.com
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-labelright-backend-ml-api-svc-qa.pep-eiap-cgf-labelright-qa.svc.cluster.local
+        port:
+          number: 8000

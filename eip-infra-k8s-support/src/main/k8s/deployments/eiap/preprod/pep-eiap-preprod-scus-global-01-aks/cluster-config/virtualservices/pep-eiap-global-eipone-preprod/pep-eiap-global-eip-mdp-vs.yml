@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-global-eip-mdp-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-global-eip-mdp.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/mdp/admin"}}],"route":[{"destination":{"host":"pep-eiap-global-eip-mdp.pep-eiap-global-eipone-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eiap-global-eip-mdp
+  name: pep-eiap-global-eip-mdp-vs
+  namespace: pep-eiap-global-eipone-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eipone-preprod/pep-eiap-global-eipone-preprod-cv-gw
+  hosts:
+  - pep-eiap-global-eip-mdp.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/mdp/admin
+    route:
+    - destination:
+        host: pep-eiap-global-eip-mdp.pep-eiap-global-eipone-preprod.svc.cluster.local
+        port:
+          number: 80

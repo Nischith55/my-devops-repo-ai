@@ -1,0 +1,57 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace FLNA IACOE
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_cle_dev:
+  
+  name: pep-eiap-cgf-cle-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cle
+    sector: cgf
+    project: cle
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cle'] }}"
+        - "{{ k8s_sup_subjects['cgf_cle_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _cgf_cle_spn_name }}"
+      registries: 
+        - pepeiapnonprodcgfcleacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _cgf_cle_spn_name }}"
+      # Any contents apart from what is in secret
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-cgf-cle-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+
+

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-collabcp-prod
+  labels:
+    env-prod: "true"
+    project: collabcp
+    sector: dps
+    team: dps-collabcp
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsicoretail360
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 979be81383a23554602934b5eeaad3d7
+    pep-cmdb-app-service-id: 5f9b2c1383a23554602934b5eeaad302
+    pep-environment: Production
+    

@@ -1,0 +1,143 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-emd-qa-cv-gw
+  namespace: pep-dps-cgf-emd-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-emd-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-emd-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-emd-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-cicdmaturity-caf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-hygieia-exec-dashboard-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-hygieia-execdashboard-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-hygieia-team-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - emd-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - emd-developer-analytics-service.qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-events-consumer-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-ado-workitem-events-consumer-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - emd-rays-agent-core-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-emd-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-emd-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-cicdmaturity-caf-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-hygieia-exec-dashboard-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-hygieia-execdashboard-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-hygieia-team-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cicddashboard.qa.intra.pepsico.com
+    - execdashboard.qa.intra.pepsico.com
+    - emd-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cicdmaturity.qa.mypepsico.com
+    - pep-cicdmaturity-caf-hygieia-execdashboard-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - emd-developer-analytics-service.qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-events-consumer-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cicdmaturity-caf-ado-workitem-events-consumer-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - emd-rays-agent-core-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-emd-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-emd-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - cicddashboard.qa.intra.pepsico.com
+    name: pep-dps-cgf-cicd-qa-cv-gw-2-https-443
+    port:
+      name: https-pep-dps-cgf-cicd-qa-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-cicddashboardqa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - execdashboard.qa.intra.pepsico.com
+    name: pep-dps-cgf-cicd-qa-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-cicd-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-execdashboardqa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cicdmaturity.qa.mypepsico.com
+    name: pep-dps-cgf-cicd-qa-cv-gw-3-https-443
+    port:
+      name: https-pep-dps-cgf-cicd-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-cicdmaturity-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

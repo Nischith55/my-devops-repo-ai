@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-gscaf-latam-consumer-vs
+  namespace: pep-dps-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-gscaf-latam-consumer.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-gscaf-latam-consumer.pep-dps-cgf-gscafso-prod.svc.cluster.local
+        port:
+          number: 80

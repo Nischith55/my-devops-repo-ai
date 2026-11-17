@@ -1,0 +1,4 @@
+image:
+  repository: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/openpolicyagent/gatekeeper
+  release: v3.20.0
+  pullPolicy: IfNotPresent

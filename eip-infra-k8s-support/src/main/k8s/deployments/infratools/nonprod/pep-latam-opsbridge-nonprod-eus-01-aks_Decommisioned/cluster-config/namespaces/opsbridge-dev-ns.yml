@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    deployments.microfocus.com/deployment-name: opsbridge-dev
+    deployments.microfocus.com/deployment-uuid: d4d58384-5899-468d-a631-c085f636ea81
+    kubernetes.io/metadata.name: opsbridge-dev
+    servicename_aks: operation-bridge
+  name: opsbridge-dev

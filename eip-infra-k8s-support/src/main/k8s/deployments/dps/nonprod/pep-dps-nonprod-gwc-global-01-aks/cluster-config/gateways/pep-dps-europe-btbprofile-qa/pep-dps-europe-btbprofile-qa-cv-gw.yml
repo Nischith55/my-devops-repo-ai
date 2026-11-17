@@ -1,0 +1,142 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-btbprofile-qa-cv-gw
+  namespace: pep-dps-europe-btbprofile-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-btbprofile-qa.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-btbprofile-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-btbprofile-qa-443.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-preprod-sample.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-preprod.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-cnc-content-in-auto-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-btbprofile-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-btbprofile-qa-80.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-preprod-sample.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-preprod.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-profile-admin-ui-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - profile-b2b-pl-hf.qa.pepsico.com
+    - profile-b2b-pl-auto.qa.pepsico.com
+    - profile-b2b-pl.qa.pepsico.com
+    - b2b-cnc-content-in-auto-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-btbprofile-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - profile-b2b-pl-hf.qa.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-europe-btbprofile-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-pl-hf.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-pl-auto.qa.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-europe-btbprofile-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-pl-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - profile-b2b-pl.qa.pepsico.com
+    name: pep-dps-europe-btbprofile-qa-cv-gw-5-https-443
+    port:
+      name: pep-dps-europe-btbprofile-qa-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: profile-b2b-pl.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

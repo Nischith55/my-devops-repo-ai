@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 64c1430e-e0a4-4d32-a865-7cb61eb6b05e
+  name: pep-dps-dps-collabcp-prod-sa
+  namespace: pep-dps-dps-collabcp-prod

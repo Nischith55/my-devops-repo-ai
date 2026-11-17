@@ -1,0 +1,90 @@
+---
+# ##
+# Generic wrapper task to create a config from template and apply the config
+# to the cluster.
+#
+# INPUT:
+#   params_create_cfg:
+#     output_dir:
+#     params_cfg:
+#       - extra_dir : MUST have if using output_dir
+#     kube-context:
+# BEHAVIOR INPUTS:
+#   - print_params: whether to print parameters
+#   - skip_generate: skip generating config files from templates
+#   - skip_kctl: skip applying config to cluster
+# ##
+- name: CREATE_CONFIG_AND_APPLY_BLOCK
+  block:
+
+    - name: CREATE_CONFIG_AND_APPLY_PRINT_PARAMS
+      debug:
+        msg: |
+          __output_dir: [{{ __output_dir }}]
+          __cfg_filename: [{{ __cfg_filename }}]
+          __cfg_params:
+            {{ __cfg_params | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+      # option to disable print_params
+      when: >-
+        (print_params | default('true') | bool)
+
+    - name: GENERATE_CONFIG_FROM_TEMPLATE_BLOCK
+      block:
+
+        - name: |
+            ENSURE_DEST_DIR {{ __output_dir }}
+          file:
+            path: "{{ __output_dir }}"
+            state: directory
+            mode: '0755'
+          delegate_to: localhost
+
+
+        - name: |
+            CREATE_CONFIG_FROM_TEMPLATE {{ _template_src }} | {{ __cfg_name }}
+          template:
+            src: "{{ _template_src }}"
+            dest: "{{ __output_file }}"
+            mode: "u=rw,g=r,o=r"
+          vars:
+            params_tmpl: "{{ __cfg_params }}"
+      # option to skip_generate
+      when: >-
+        (not (skip_generate | default('false') | bool))
+
+    - name: |
+        CONFIG_KUBECTL_APPLY {{ __output_file }}
+      include_role:
+        name: k8s_support/kubectl
+        tasks_from: execute
+      vars:
+        kube_context: "{{ __kube_context }}"
+        kctl_action: apply
+        kctl_action_args: "-f {{ __output_file }}"
+      # option to skip
+      when: >-
+        (not (skip_kctl | default('false') | bool) )
+
+  when: true
+  vars:
+    __cfg_params: "{{ params_create_cfg['params_cfg']  }}"
+    __cfg_name: "{{ __cfg_params['name'] }}"
+    # Template stuff
+    _template_src: "{{ params_create_cfg['template_src'] }}"
+    # use output_dir if provided, else use the default from config 
+    # (base_dir + extra_dirs)
+    __output_dir: |-
+      {{ 
+        params_create_cfg['output_dir'] 
+        | 
+        default(
+          (params_create_cfg['output_base_dir'], __cfg_params['extra_dirs']) 
+          | path_join
+        ) 
+      }}
+    # default name
+    __cfg_filename: |-
+      {{(__cfg_name + '-ns' + '.yml') if 'ns' in task else (__cfg_name + '.yml')}}
+    __output_file: "{{ (__output_dir, __cfg_filename) | path_join }}"
+    __kube_context: |-
+      {{ params_create_cfg['kube_context'] }}

@@ -1,0 +1,34 @@
+---
+ns_pep_eiap_cgf_iamservice_dev:
+  
+  name: pep-eiap-cgf-iamservice-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-iamservice
+    sector: cgf
+    project: iamservice
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-iamservice-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_iamservice'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-iamservice-dev-sa-token
+    namespace: pep-eiap-cgf-iamservice-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-iamservice-dev-sa"

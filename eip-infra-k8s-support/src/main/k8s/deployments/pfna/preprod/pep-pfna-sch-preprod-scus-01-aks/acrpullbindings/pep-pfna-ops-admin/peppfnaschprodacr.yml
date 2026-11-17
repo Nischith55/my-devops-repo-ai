@@ -1,0 +1,9 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  name: peppfnaschprodacr
+  namespace: pep-pfna-ops-admin
+spec:
+  acrServer: peppfnaschprodacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/498640c4-36eb-4566-b752-ca3d2939c544/resourcegroups/pep-pfna-sch-preprod-scus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-pfna-sch-preprod-scus-01-aks-agentpool

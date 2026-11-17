@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dpa-epod-service-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dpa-epod-service-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/AzDev_GT_Test/_git/dpa-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-cgf-devsol-dev
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: dpa-epod-service-dev-admin
+        description: Admin privileges to dpa-epod-service-dev
+        policies:
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-admin, applications, *, dpa-epod-service-dev/*, allow
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-admin, repositories, *, dpa-epod-service-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dpa-epod-service-dev-user
+        description: Read-only privileges to dpa-epod-service-dev
+        policies:
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-user, applications, get, dpa-epod-service-dev/*, allow
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-user, applications, sync, dpa-epod-service-dev/*, allow
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-user, repositories, get, dpa-epod-service-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dpa-epod-service-dev:dpa-epod-service-dev-user, applications, action/apps/Deployment/restart, dpa-epod-service-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.READ"
+    

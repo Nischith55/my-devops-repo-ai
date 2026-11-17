@@ -1,0 +1,192 @@
+---
+# Kibana Bits for ECK Monitor Cluster
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: &kib_name monitor-01-preprod-scus
+  namespace: pep-eiap-elastic-monitor-01
+spec:
+  version: !!str 7.16.2
+  image: &img_kibana001 docker.elastic.co/kibana/kibana:7.16.2
+  count: 2
+
+  elasticsearchRef:
+    # name of the ES cluster that this is attached to
+    name: monitor-01-preprod-scus
+
+  # ##
+  # secureSettings are all consolidated into 1 secret xpack-generic
+  # - the secret contains all kibana encryption keys
+  # ##
+  secureSettings:
+    - secretName: pep-eiap-preprod-scus-infra-02-aks-xpack-generic
+      entries:
+        - key: xpack.security.encryptionKey
+        - key: xpack.encryptedSavedObjects.encryptionKey
+        - key: xpack.reporting.encryptionKey
+
+  # HTTP Layer
+  http:
+    tls:
+      certificate:
+        # make sure this is installed in the namespace
+        secretName: &gw01_secret pep-eiap-preprod-scus-infra-02-aks-gw01-generic
+
+  #: Most of the kibana.yaml NOT ALL - read the docs go here
+  config:
+    csp:
+      strict: true
+
+    # ES Communications
+    elasticsearch:
+      # This is the default, but shown here for completeness
+      requestHeadersWhitelist:
+        - authorization
+
+    logging:
+      json: true
+      timezone: UTC
+      verbose: true
+
+    # Stack Monitoring
+    monitoring:
+      kibana:
+        collection:
+          enabled: false
+
+    server:
+      # Default 1mb
+      maxPayloadBytes: 104488960
+      ssl:
+        supportedProtocols:
+          - TLSv1.2
+    telemetry:
+      # we don't need to send anything to elastic
+      enabled: false
+
+    #: ~~ xpack settings
+
+    xpack:
+
+      # Enable Stack monitoring
+      monitoring:
+        collection:
+          enabled: true
+        ui:
+          enabled: true
+          container:
+            elasticsearch:
+              enabled: true
+        kibana:
+          collection:
+            enabled: false
+
+      #Webhook Config for alerts
+      actions:
+        allowedHosts: ["wsgnaq.qa.corp.pep.pvt"]
+        rejectUnauthorized: false
+
+
+      license_management:
+        # let's enabled license mgmt through UI
+        enabled: true
+
+      reporting:
+        enabled: true
+
+      security:
+        audit:
+          enabled: true
+        authc:
+          providers:
+            basic:
+              native1:
+                order: 0
+                description: Administrators Only
+            # saml:
+            #   pep_ite_saml:
+            #     order: 2
+            #     enabled: true
+            #     realm: pep_ite_saml
+            #     description: Log in with ITE Credentials
+          selector:
+            enabled: true
+        loginAssistanceMessage: |
+          EIAP Kibana - Please contact EIAP Admins for assistance
+        loginHelp: |
+          EIAP Kibana - Only TLS1.2 supported
+        # since we are reverse proxying
+        secureCookies: true
+        # session timeouts
+        session:
+          idleTimeout: 8h
+          lifespan: 24h
+
+  podTemplate:
+    # ES for Stack monitoring
+    metadata:
+      labels:
+        # to allow autodiscover by metricbeat
+        stack-monitoring.elastic.co/type: kb-monitor-01-preprod-scus
+      annotations:
+        co.elastic.logs/enabled: "true"
+
+    spec:
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # IMPORTANT: This is a small cluster, so we attempt to run kibana
+      # on the same nodes as the elastic monitor cluster. To Do this we
+      # do multiple things:
+      # - Ensure current elastic nodes have reasonable resource limit(s)
+      #   to accomodate the kibana node.
+      # - Use the right nodeSelector and tolerations.
+      # - We use the topology  spread constriants to max skew 1 (so it is
+      #   hint really, since we use ScheduleAnyways)
+      # - Third we do a "soft" podAffinity to select the elasticsearch nodes
+      # - make sure there are NO Cpu limits
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      nodeSelector:
+        # NOTE: we use the balance group
+        balance-group: ESMonitor01Pool
+
+      tolerations:
+        - key: ESMonitor01NodeOnlyZone1
+          operator: Exists
+        - key: ESMonitor01NodeOnlyZone2
+          operator: Exists
+        - key: ESMonitor01NodeOnlyZone3
+          operator: Exists
+
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            common.k8s.elastic.co/type: kibana
+
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: elasticsearch.k8s.elastic.co/cluster-name
+                  operator: In
+                  values:
+                  - monitor-01-preprod-scus
+              topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: kibana
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=2048"
+          resources:
+            limits:
+              memory: 2Gi
+              # cpu: 1100m
+            requests:
+              memory: 2Gi
+              # cpu: 1000m

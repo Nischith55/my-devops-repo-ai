@@ -1,0 +1,207 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:  
+  name: pep-eiap-k8sautomation-clusterrole
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - namespaces
+  - persistentvolumeclaims
+  - persistentvolumes
+  - pods
+  - pods/status
+  - pods/log
+  - events
+  verbs:
+  - patch
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ''
+  resources:
+  - configmaps
+  - serviceaccounts
+  verbs:
+  - '*'
+- apiGroups:
+  - ''
+  resources:
+  - pods/exec
+  - pods/eviction
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  - statefulsets
+  - replicasets
+  verbs:
+  - '*'
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
+- apiGroups:
+  - ''
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - daemonsets
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - deployments/scale
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - batch
+  resources:
+  - cronjob
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ''
+  resources:
+  - services
+  verbs:
+  - '*'
+- apiGroups:
+  - ''
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - '*'
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  - virtualservices
+  - sidecars
+  - destinationrules
+  verbs:
+  - '*'
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterroles
+  - clusterrolebindings
+  - roles
+  - rolebindings
+  verbs:
+  - '*'
+- apiGroups:
+  - argoproj.io
+  resources:
+  - appprojects
+  - applications
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - resourcequotas
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - nodes
+  - services
+  - persistentvolumes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  - configmaps
+  - secrets
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  - clusterroles
+  - clusterrolebindings
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["batch"]
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  - mutatingwebhookconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["gateway.networking.k8s.io"]
+  resources:
+  - gateways
+  - virtualservices
+  - sidecars
+  - destinationrules
+  verbs: ["*"]

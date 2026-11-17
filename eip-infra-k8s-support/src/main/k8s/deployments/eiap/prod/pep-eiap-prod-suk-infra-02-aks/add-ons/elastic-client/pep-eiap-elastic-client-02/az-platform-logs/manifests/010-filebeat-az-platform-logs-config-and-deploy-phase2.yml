@@ -1,0 +1,273 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-az-platform-logs-config
+  namespace: pep-eiap-elastic-client-02
+data:
+  EVENTHUB: pep-eiap-prod-suk-global-infra-aks-diag-01-evh
+  EVENTHUB_CONSUMER_GROUP: azure-diag-01-evh-01-cgrp
+  EVENTHUB_STORAGE_ACCOUNT: pe3004monitoring01sa
+  EVENTHUB_STORAGE_ACCOUNT_CONTAINER: filebeat-elastic-01-blob
+
+  beat-output-config.yml: |-
+
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # beats configs
+  # - Embedded Yaml Tips: ABSOLUTELY NO SPACES before the new line!!!
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  filebeat.yml: |
+  
+    filebeat:
+
+      inputs:
+        - type: azure-eventhub
+          eventhub: ${EVENTHUB}
+          consumer_group: ${EVENTHUB_CONSUMER_GROUP}
+          connection_string: ${EVENTHUB_CONNECT_STR}
+          storage_account: ${EVENTHUB_STORAGE_ACCOUNT}
+          storage_account_key: ${EVENTHUB_STORAGE_ACCOUNT_KEY}
+          storage_account_container: ${EVENTHUB_STORAGE_ACCOUNT_CONTAINER}
+
+    processors:
+
+    # --
+    # Add EIAP fields
+    # --
+    - decode_json_fields:
+        fields:
+        - message
+        process_array: false
+        max_depth: 2
+        target: ""
+        add_error_key: true
+    - add_fields:
+        fields:
+          ls-destination: "SUK"
+          source-component: "EVENT-HUB"
+          legacy-index: "fb-az-evh-diag-suk"
+
+          index_name_add: pep-eiap-prod-suk-infra-02-aks
+    - add_tags:
+        tags: ["Prod-SUK-Shared", "retain-logs"]
+    - script:
+        lang: javascript
+        source: >
+          function process(event) {
+            event.Put("fields.sn-application", "aks-pep-eiap-prod-suk-infra-02-aks" + "-" + event.Get("kubernetes.namespace"));
+            return event;
+          } 
+    # - script:
+    #     lang: javascript
+    #     source: >
+    #       function process(event) {
+    #         event.Put("fields.pep-aks-cluster", event.Get("fields.index_name_add"));
+    #         event.Put("fields.sn-application", "AKS-" + event.Get("fields.index_name_add"));
+
+    #         if (event.Get("kubernetes.namespace")) {
+    #         event.Put("fields.index_name_add", event.Get("kubernetes.namespace"));
+    #         event.Put("fields.sn-application", event.Get("fields.sn-application") + "-" + event.Get("kubernetes.namespace"));
+    #         }
+    #         event.Put("fields.legacy-index", fb-az-evh-diag-suk);
+    #         return event;
+    #       }    
+    setup.template.name: "pep-logs-template"
+    setup.template.pattern: "aks-*"
+    setup.ilm.enabled: false  
+    output.elasticsearch:
+        hosts: [https://33d4a6a83cd14cf48959307e81b0d6cb.privatelink.uksouth.azure.elastic-cloud.com:9243]
+        api_key: "HVxtt5QBFN0Tg2fWr2am:vsM7iKL7RTm2yii8SbGUYQ"
+        index: "%{[fields][sn-application]}"
+        #index: "aks-pep-dps-nonprod-eus-global-01-aks-%{[kubernetes.namespace]}"
+        #index: "dps-nonprod-eus-global-01-%{[kubernetes][namespace]}"
+        #index: "%{[fields][cluster_name]}-%{[kubernetes][namespace]}"
+        worker: 4
+        bulk_max_size: 4000
+        ssl.verification_mode: none           
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-evh-az-platform-logs
+  namespace: pep-eiap-elastic-client-02
+  labels:
+    k8s-app: &app_name fb-evh-az-platform-logs
+spec:
+
+  replicas: 1
+  
+  selector:
+    matchLabels:
+      k8s-app: *app_name
+
+  template:
+
+    metadata:
+      labels:
+        k8s-app: *app_name
+        app: *app_name
+        version: 7.16.1
+
+    spec:
+      hostAliases:
+      - ip: "172.23.36.71"
+        hostnames:
+        - "33d4a6a83cd14cf48959307e81b0d6cb.privatelink.uksouth.azure.elastic-cloud.com"
+      # PEP: 
+      # - Deployment run only on system node pool taints
+      # - also lock down the node selector
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+      # DONT need it serviceAccountName: filebeat
+      dnsPolicy: ClusterFirstWithHostNet
+      # TODO: reach out to Elastic Support, we should be run this as
+      # hostNetwork: false and hence nonroot
+      hostNetwork: true 
+      securityContext:
+        runAsUser: 0
+      terminationGracePeriodSeconds: 30
+      # All volumes
+      volumes:
+
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: &fb_plat_config filebeat-az-platform-logs-config
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:   
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+          # beats-entrypoint-config
+          - configMap:
+              name: beats-entrypoint-config
+              optional: false
+              items:
+                - key: entrypoint.sh
+                  # must be relative
+                  path: bin/entrypoint.sh
+                  # 0755 -> 493
+                  mode: 493
+
+          # beats-common-config
+          - configMap:
+              name: *fb_plat_config
+              optional: false
+              items:
+                - key: beat-output-config.yml
+                  # must be relative
+                  path: etc/beat-output-config.yml
+
+          # filebeat-az-platform-logs-config
+          - configMap:
+              name: *fb_plat_config
+              optional: false
+              items:
+                - key: filebeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.16.1
+        command:
+          - /projected/bin/entrypoint.sh
+        args:
+        - filebeat
+        - -e
+        - -c 
+        - /projected/etc/beat-output-config.yml 
+        - -c 
+        - /projected/etc/beat.yml 
+        env:
+
+        - name: ELASTICSEARCH_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: &shared_sec elastic-client-shared
+              key: ELASTICSEARCH_USERNAME
+
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: *shared_sec
+              key: ELASTICSEARCH_PASSWORD
+
+        - name: EVENTHUB_CONNECT_STR
+          valueFrom: 
+            secretKeyRef:
+              name: *shared_sec
+              key: EVH_PLATFORM_LOGS_CONNECT_STR
+
+        - name: EVENTHUB_STORAGE_ACCOUNT_KEY
+          valueFrom: 
+            secretKeyRef:
+              name: *shared_sec
+              key: EVH_PLATFORM_LOGS_SA_KEY
+
+        - name: INDEX_PREFIX
+          value: fb
+ 
+        - name: INDEX_SUFFIX
+          valueFrom: &eventhub_name
+            configMapKeyRef:
+              name: *fb_plat_config
+              key: EVENTHUB
+
+        - name: EVENTHUB
+          valueFrom: *eventhub_name
+
+        - name: EVENTHUB_CONSUMER_GROUP
+          valueFrom:
+            configMapKeyRef:
+              name: *fb_plat_config
+              key: EVENTHUB_CONSUMER_GROUP
+
+        - name: EVENTHUB_STORAGE_ACCOUNT
+          valueFrom:
+            configMapKeyRef:
+              name: *fb_plat_config
+              key: EVENTHUB_STORAGE_ACCOUNT
+
+        - name: EVENTHUB_STORAGE_ACCOUNT_CONTAINER
+          valueFrom:
+            configMapKeyRef:
+              name: *fb_plat_config
+              key: EVENTHUB_STORAGE_ACCOUNT_CONTAINER
+
+        resources:
+          limits:
+            memory: 12000Mi
+          requests:
+            cpu: 800m
+            memory: 12000Mi
+
+        volumeMounts:
+        # PEP: 
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true

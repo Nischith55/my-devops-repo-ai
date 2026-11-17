@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-dtvtpo-dev-cv-web-vs
+  namespace: pep-dps-dps-dtvtpo-dev
+  labels:
+    app: pep-dps-dps-dtvtpo-dev-cv-web
+spec:
+  hosts:
+    #- dtv-tpo.dev.mypepsico.com
+    - pep-dps-dps-dtvtpo-dev-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-dtvtpo-dev/pep-dps-dps-dtvtpo-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-dtvtpo-dev-cv-web.pep-dps-dps-dtvtpo-dev.svc.cluster.local
+        port:
+          number: 80

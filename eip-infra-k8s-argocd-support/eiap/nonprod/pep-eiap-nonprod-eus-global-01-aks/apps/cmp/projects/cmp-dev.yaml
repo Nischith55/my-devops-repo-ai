@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmp-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmp-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PepsiCo_CloudMarketPlace/_git/cmp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-global-cmp-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-cgf-devxinfr-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: cmp-dev-admin
+    description: Admin privileges to cmp-dev
+    policies:
+    - p, proj:cmp-dev:cmp-dev-admin, applications, *, cmp-dev/*, allow
+    - p, proj:cmp-dev:cmp-dev-admin, repositories, *, cmp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: cmp-dev-user
+    description: Read-only privileges to cmp-dev
+    policies:
+    - p, proj:cmp-dev:cmp-dev-user, applications, get, cmp-dev/*, allow
+    - p, proj:cmp-dev:cmp-dev-user, applications, sync, cmp-dev/*, allow
+    - p, proj:cmp-dev:cmp-dev-user, repositories, get, cmp-dev/*, allow
+    - p, proj:cmp-dev:cmp-dev-user, applications, action/apps/Deployment/restart, cmp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CMP.Developer"
+    - "Team.Support.EIAP.READ"

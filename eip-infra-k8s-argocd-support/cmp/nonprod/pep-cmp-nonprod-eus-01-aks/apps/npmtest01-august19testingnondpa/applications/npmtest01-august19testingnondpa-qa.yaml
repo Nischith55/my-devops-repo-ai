@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: npmtest01-august19testingnondpa-qa-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/npmtest01-august19testingnondpa-argocd-configs
+    targetRevision: develop 
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: npmtest01-august19testingnondpa-qa
+      valueFiles:
+      - $values/qa/pep-cmp-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: qa
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-cmp-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: npmtest01-august19testingnondpa-qa 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/npmtest01-august19testingnondpa-argocd-configs 
+              repoName: npmtest01-august19testingnondpa-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: Dl@pepsico.com

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_latam_och_prod:
+  
+  name: pep-eiap-latam-och-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-och
+    sector: latam
+    project: och
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: pepcommerceochglobalna
+    pep-cmdb-app-service-id: "2e0a923ddb149850ccfa65494b9619c2"
+    pep-cmdb-bus-app-id: "aa0ad23ddb149850ccfa65494b961944"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-och-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_och'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-latam-och-prod-sa-token
+    namespace: pep-eiap-latam-och-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-latam-och-prod-sa"

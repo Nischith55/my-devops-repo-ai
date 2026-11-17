@@ -1,0 +1,108 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-ctxpts-prod-cv-gw
+  namespace: pep-dps-dps-ctxpts-prod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-ctxpts-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-dps-ctxpts-prod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-ctxpts-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-ctxpts-prod-cv.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-dps-dps-ctxpts-prod-cv-web.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ctx-profit-serve-api.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-dps-dps-ctxpts-prod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-ctxpts-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ctx-pts.mypepsico.com
+    - pep-dps-dps-ctxpts-prod-cv.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-dps-dps-ctxpts-prod-cv-web.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ctx-profit-serve-api.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - ctx.mypepsico.com
+    name: pep-dps-dps-ctxpts-prod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-ctxpts-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - ctx-pts.mypepsico.com
+    name: pep-dps-dps-ctxpts-prod-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-ctxpts-prod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-ctxpts-prod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ctx.mypepsico.com
+    name: pep-dps-dps-ctxpts-prod-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-ctxpts-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: ctx-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

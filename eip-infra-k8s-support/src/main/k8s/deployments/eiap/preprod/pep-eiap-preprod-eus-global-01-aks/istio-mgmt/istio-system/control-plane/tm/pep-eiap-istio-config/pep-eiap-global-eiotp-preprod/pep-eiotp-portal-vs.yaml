@@ -1,0 +1,22 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiotp-portal-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - iotui.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  - pepsense.preprod.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: management-portal.pep-eiap-global-eiotp-preprod.svc.cluster.local
+        port:
+          number: 8080

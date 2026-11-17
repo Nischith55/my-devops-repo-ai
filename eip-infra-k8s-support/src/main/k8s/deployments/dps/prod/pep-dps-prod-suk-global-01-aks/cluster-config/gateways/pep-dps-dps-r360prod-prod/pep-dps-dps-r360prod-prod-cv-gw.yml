@@ -1,0 +1,172 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-r360prod-prod-cv-gw
+  namespace: pep-dps-dps-r360prod-prod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-r360prod-prod.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    name: pep-dps-dps-r360prod-prod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-r360prod-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-dps-dps-r360prod-prod-cv.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-nginx.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-frontend.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-config-loader.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-auth.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-caf-personalisation.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-file-auth.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-sntdps-prod-r360-caf-nginx.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-caf-common.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-metrics.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-graph-fedration.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-xda.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-promotions-frontend-dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-jbp-frontend-dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-insights-ui-lib.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-jbp.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euagentic-poc-knowledge-rag.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-chatbot.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euagentic-poc-pepgenx-adapter.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euai-document-ingestor.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-planner-agent.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-content-creator-service.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-voice-to-text.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-sell-and-lead.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    name: pep-dps-dps-r360prod-prod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-r360prod-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-prod-suk-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - euretail360.pepsico.com
+    - pep-dps-dps-r360prod-prod-cv.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-nginx.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-frontend.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-config-loader.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-auth.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-caf-personalisation.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-file-auth.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - pep-sntdps-prod-r360-caf-nginx.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360assets.pepsico.com
+    - eur360-lite-caf-common.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-metrics.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-caf-graph-fedration.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euretail360assets.pepsico.com
+    - eur360-caf-xda.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-promotions-frontend-dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-jbp-frontend-dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-insights-ui-lib.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - eur360-lite-jbp.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euagentic-poc-knowledge-rag.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-chatbot.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euagentic-poc-pepgenx-adapter.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euai-document-ingestor.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-planner-agent.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-content-creator-service.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-voice-to-text.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - euaiq-sell-and-lead.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    name: pep-dps-dps-r360prod-prod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-r360prod-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - euretail360.pepsico.com
+    name: pep-dps-dps-r360prod-prod-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-r360prod-prod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-r360prod-prod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - eur360assets.pepsico.com
+    name: pep-dps-dps-r360prod-prod-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-r360prod-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: eur360assets-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - euretail360assets.pepsico.com
+    name: pep-dps-dps-euretail360assets-prod-cv-gw-5-https-443
+    port:
+      name: pep-dps-dps-euretail360assets-prod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-euretail360assets-prod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

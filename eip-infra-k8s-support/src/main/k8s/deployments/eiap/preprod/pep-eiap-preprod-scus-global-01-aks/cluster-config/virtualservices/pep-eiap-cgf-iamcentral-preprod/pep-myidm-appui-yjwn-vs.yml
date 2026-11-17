@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-myidm-appui-yjwn-vs
+  namespace: pep-eiap-cgf-iamcentral-preprod
+  labels:
+      app: pep-myidm-appui
+spec:
+  hosts:
+  - pep-cgf-preprod-pep-myidm-appui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - iamcentral.preprod.mypepsico.com
+  gateways:
+  - pep-eiap-cgf-iamcentral-preprod/pep-eiap-cgf-iamcentral-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-myidm-appui.pep-eiap-cgf-iamcentral-preprod.svc.cluster.local
+        port:
+          number: 8080
+  

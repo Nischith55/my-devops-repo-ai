@@ -1,0 +1,35 @@
+---
+ns_pep_infratools_cgf_awx_dev:
+  
+  name: pep-infratools-cgf-awx-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-awx
+    sector: cgf
+    project: awx
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-infratools-cgf-awx-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-infratools-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-infratools-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_awx'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-infratools-cgf-awx-dev-sa-token
+    namespace: pep-infratools-cgf-awx-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-infratools-cgf-awx-dev-sa"

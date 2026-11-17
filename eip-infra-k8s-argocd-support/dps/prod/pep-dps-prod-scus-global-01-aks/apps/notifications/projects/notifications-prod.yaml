@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: notifications-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for notifications-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-notify-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: notifications-prod-admin
+    description: Admin privileges to notifications-prod
+    policies:
+    - p, proj:notifications-prod:notifications-prod-admin, applications, *, notifications-prod/*, allow
+    - p, proj:notifications-prod:notifications-prod-admin, repositories, *, notifications-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: notifications-prod-user
+    description: Read-only privileges to notifications-prod
+    policies:
+    - p, proj:notifications-prod:notifications-prod-user, applications, get, notifications-prod/*, allow
+    - p, proj:notifications-prod:notifications-prod-user, applications, sync, notifications-prod/*, allow
+    - p, proj:notifications-prod:notifications-prod-user, repositories, get, notifications-prod/*, allow
+    groups:
+    - "Team.App.DPS.DSSNotifications.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,35 @@
+---
+ns_pep_pbna_pbna_pepcommerc_dev:
+  
+  name: pep-pbna-pbna-pepcommerc-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-pepcommerc
+    sector: pbna
+    project: pepcommerc
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pbna-pbna-pepcommerc-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pbna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pbna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_pepcommerc'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pbna-pbna-pepcommerc-dev-sa-token
+    namespace: pep-pbna-pbna-pepcommerc-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pbna-pbna-pepcommerc-dev-sa"

@@ -1,0 +1,40 @@
+---
+ns_pep_aisp_cgf_fss_prod:
+  
+  name: pep-aisp-cgf-fss-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-fss
+    sector: cgf
+    project: fss
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: formulaspecificationsystem-documentmanagementprod
+    pep-cmdb-app-service-id: "8e1f174bdbabdf008a0e138b4b961949"
+    pep-cmdb-bus-app-id: "ddbe003ddb3e8c10c2b5f38139961985"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-aisp-cgf-fss-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-aisp-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-aisp-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_fss'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-aisp-cgf-fss-prod-sa-token
+    namespace: pep-aisp-cgf-fss-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-aisp-cgf-fss-prod-sa"

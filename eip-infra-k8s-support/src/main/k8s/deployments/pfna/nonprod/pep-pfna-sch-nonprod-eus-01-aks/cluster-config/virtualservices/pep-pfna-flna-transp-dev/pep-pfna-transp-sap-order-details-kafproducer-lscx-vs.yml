@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-sap-order-details-kafproducer-lscx-vs
+  namespace: pep-pfna-flna-transp-dev
+  labels:
+      app: pep-pfna-transp-sap-order-details-kafproducer
+spec:
+  hosts:
+  - pep-pfna-transp-sap-order-details-kafproducer.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/sap-intg-to-kafka
+    route:
+    - destination:
+        host: pep-pfna-transp-sap-order-details-kafproducer.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80
+  

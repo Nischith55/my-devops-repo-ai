@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-ordermanagement-ui-vs","namespace":"pep-pbna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-ordermanagement-ui.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Content-Type","Link","Access-Control-Allow-Origin"],"allowMethods":["POST","GET","PUT","PATCH","DELETE","OPTIONS"],"allowOrigins":[{"exact":"https://pep-och-ui.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com"}],"exposeHeaders":["x-total-count","x-source"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-och-ordermanagement-ui.pep-pbna-pbna-savvy-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-ordermanagement-ui
+  name: pep-och-ordermanagement-ui-vs
+  namespace: pep-pbna-pbna-savvy-preprod
+spec:
+  gateways:
+  - pep-pbna-pbna-savvy-preprod/pep-pbna-pbna-savvy-preprod-cv-gw
+  hosts:
+  - pep-och-ordermanagement-ui.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-och-ui.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-ordermanagement-ui.pep-pbna-pbna-savvy-preprod.svc.cluster.local
+        port:
+          number: 80

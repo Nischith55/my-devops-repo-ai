@@ -1,0 +1,96 @@
+---
+- debug:
+    msg: "{{ cluster_name }} and {{ env }} and {{ department }} and {{ mypath }}"
+- set_fact:
+    aks_type: "aks{{ cluster_name.split('-')[-2] }}"
+- name: set facts 
+  set_fact: 
+    cred_names: []
+    vs_http_details: []
+    vs_tls_details: []
+    ignore_ns_list: ['calico-system', 'cattle-fleet-system', 'cattle-gatekeeper-system', 'cattle-impersonation-system', 'cattle-system', 'istio-operator', 'istio-system', 'kube-node-lease', 'kube-public', 'kube-system', 'kubecost', 'kubernetes-dashboard', 'monitoring', 'msi-acrpull-system', 'twistlocknp', 'tigera-operator', 'pep-eiap-ops-admin', 'pep-eiap-istio-config', 'pep-eiap-elastic-client-01', 'pep-eiap-elastic-client-02', 'pep-eiap-elastic-cluster-01', 'pep-eiap-elastic-cluster-02', 'pep-eiap-elastic-monitor-01', 'pep-eiap-global-devsecops-dev', 'snyk-monitor', 'cert-manager-system', 'reloader', 'velero', 'flux-system', 'flagger', 'gitops-connector-system', 'policy-system', 'tigera-operator', 'default', 'pep-eiap-gremlin', 'aks-command', 'eicar-test', 'elasticsearch', 'local', 'wiz', 'pep-apigee-istio-config', 'pep-cmp-istio-config', 'pep-dps-istio-config', 'pep-fortify-istio-config', 'pep-infratools-istio-config', 'pep-kafka-istio-config', 'pep-latam-opsbridge-istio-config', 'pep-paas-infratools-istio-config', 'pep-pbna-istio-config', 'pep-pfna-istio-config', 'pep-snt-istio-config']
+### create a folder to store generated gateway manifest files
+- name: Creates directory to store manifest
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/gw-manifests/"
+    state: directory
+
+### fetch the gateway of the clusters
+- name: Get the gateway
+  kubernetes.core.k8s_info:
+    kind: Gateway 
+    api_version: networking.istio.io/v1beta1
+    namespace: istio-system
+    name: istio-in-gateway-01
+  register: gateway
+# - debug: var=gateway 
+
+### checking if the gateway secret present
+- name: validate if main credentials exists
+  kubernetes.core.k8s_info:
+    kind: secret
+    namespace: istio-system
+    name: "{{ cluster_name }}-gw01-tls" 
+  register: cluster_secret_status
+  failed_when: cluster_secret_status.resources is defined and (cluster_secret_status.resources | length != 1)
+
+### getting credential name for each custom domain
+- name: gather credential names 
+  set_fact:
+    cred_names: "{{ cred_names + [{'cred_name': item.tls.credentialName , 'hosts': item.hosts }] }}"
+  with_items: 
+  - "{{ gateway.resources[0].spec.servers }}"
+  when: 
+  - item.tls.credentialName is defined
+  no_log: True
+- debug: var=cred_names 
+
+### getting list of namespaces and virtual spaces.
+- name: Get list of namespaces
+  kubernetes.core.k8s_info:
+    kind: namespace 
+  register: namespaces
+  # no_log: True
+- name: Get list of virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+    # namespace: "pep-{{ department }}-istio-config"
+  register: virtualservices
+ 
+# - debug:
+#     msg: "{{ virtualservices }}"
+
+
+### gathering details of all http blocks in gateway file
+- name: get ns from vs destination with http
+  set_fact:
+    vs_http_details: "{{ vs_http_details | default([]) + [{ 'ns_name': item.spec.http[-1].route[0].destination.host.split('.')[1], 'vs_name': [ item.metadata.name ], 'hosts': item.spec.hosts }] }}"
+  with_items: "{{ virtualservices.resources }}"
+  when: item.spec.http is defined and item.metadata.namespace != "default"
+  # no_log: True
+
+### gathering details of all tls blocks in gateway file
+- name: get ns from vs destination with tls
+  set_fact:
+    vs_tls_details: "{{ vs_tls_details | default([]) + [{ 'ns_name': item.spec.tls[-1].route[0].destination.host.split('.')[1], 'vs_name': [ item.metadata.name ], 'hosts': item.spec.hosts }] }}"
+  with_items: "{{ virtualservices.resources }}"
+  when: item.spec.tls is defined and item.metadata.namespace != "default"
+  no_log: True
+
+- debug: var=vs_http_details
+### looping through each namespace to create a separate gateway file
+- name: call other file 
+  include_tasks: gwmanifestgenerate.yml
+  with_items: "{{ namespaces.resources }}"
+  vars: 
+    vs_http_list: "{{ vs_http_details }}"
+    vs_tls_list: "{{ vs_tls_details }}"
+    cred_names_full: "{{ cred_names }}"
+  when: item.metadata.name not in ignore_ns_list 
+
+- name: skipping the platform namespaces 
+  debug:
+    msg: "Skipping gateway {{ item.metadata.name }}"
+  with_items: "{{ namespaces.resources }}"
+  when: item.metadata.name in ignore_ns_list 

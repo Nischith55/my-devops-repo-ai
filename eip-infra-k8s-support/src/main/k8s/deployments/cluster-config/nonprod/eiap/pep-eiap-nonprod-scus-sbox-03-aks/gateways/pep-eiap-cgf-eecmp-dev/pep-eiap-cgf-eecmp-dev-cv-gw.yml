@@ -1,0 +1,81 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-eecmp-dev-cv-gw
+  namespace: pep-eiap-cgf-eecmp-dev
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - "dummy-passthrough-pep-eiap-cgf-eecmp-dev.gw01.aks03.scus.nonprod.azure.intra.pepsico.com"
+    name: "pep-eiap-cgf-eecmp-dev-cv-gw-tls-443"
+    port:
+      name: "https-pep-eiap-cgf-eecmp-dev-cv-gw-tls-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - "dummy-pep-eiap-cgf-eecmp-dev-443.gw01.aks03.scus.nonprod.azure.intra.pepsico.com"
+    name: "pep-eiap-cgf-eecmp-dev-cv-gw-https-443"
+    port:
+      name: "https-pep-eiap-cgf-eecmp-dev-cv-gw-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: "pep-eiap-nonprod-scus-sbox-03-aks-gw01-tls"
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cvp.dev.mypepsico.com
+    name: "pep-eiap-cgf-eecmp-dev-cv-gw-http-80"
+    port:
+      name: "http-pep-eiap-cgf-eecmp-dev-cv-gw-80"
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - cvp.dev.mypepsico.com
+    name: "pep-eiap-cgf-eecmp-dev-cv-gw-1-https-443"
+    port:
+      name: "https-pep-eiap-cgf-eecmp-dev-cv-gw-1-443"
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-cgf-eecmp-dev-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE

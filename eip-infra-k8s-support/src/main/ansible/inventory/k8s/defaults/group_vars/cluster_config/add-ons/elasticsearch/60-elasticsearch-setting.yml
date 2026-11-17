@@ -1,0 +1,48 @@
+---
+# ##
+# IMPORTANT:
+#   - Main variable name must be 
+#     'add_on_' + app_name.replace('-', '_') + '_settings'
+#   - <component_name> value SHOULD match the directory name where kustomize or
+#     templates are stored.
+#   - name KEY must be present and should be the name of app_name that matches
+#     the directory name
+# ##
+
+# default image tag -- override if needed or newer version of beats
+# note: this is reused for all components
+es_beats_image_tag: "7.10.0"
+
+# the app name
+es_app_name: elasticsearch
+
+# which namespace is this add-on targeted to.
+es_target_namespace: elasticsearch
+
+# which namespace is the original base manifest is targeted to.
+es_src_namespace: kube-system
+
+# This can be configure various components directory paths.
+es_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, es_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+es_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, es_app_name) | path_join }}
+
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+add_on_elasticsearch_setting:
+
+  # app_name
+  name: "{{ es_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with es_ and ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^es_.+_component_setting$'))
+    }}

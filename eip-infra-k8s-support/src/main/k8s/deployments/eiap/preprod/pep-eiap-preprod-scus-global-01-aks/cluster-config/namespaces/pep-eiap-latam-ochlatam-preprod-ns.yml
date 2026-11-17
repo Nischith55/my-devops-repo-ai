@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-latam-ochlatam-preprod
+  labels:
+    env-preprod: "true"
+    project: ochlatam
+    sector: latam
+    team: latam-ochlatam
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: pepsiconnectb2bochoutboundlatammexicoprod
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: a8f03f8e978883dc323778c11153afc2
+    pep-environment: Pre-Production
+    

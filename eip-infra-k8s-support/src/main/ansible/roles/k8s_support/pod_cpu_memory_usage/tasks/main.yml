@@ -1,0 +1,34 @@
+---
+- set_fact: 
+    namespace: "{{ item }}"
+    pods: {}
+
+- name: Get list of pods in namespace
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}" 
+  register: pods
+#  no_log: True
+
+- name: getting pod name and container name 
+  set_fact: 
+    pod_details: "{{ pod_details + [{'pod_name': inner_item.0.metadata.name, 'container_name': inner_item.1.name, 'cpu_limit': inner_item.1.resources.limits.cpu, 'memory_limit': inner_item.1.resources.limits.memory, 'namespace': namespace }] }}"
+  with_subelements:
+  - "{{ pods.resources }}"
+  - spec.containers
+  loop_control:
+    loop_var: inner_item
+  when: inner_item.0.metadata.name.startswith('dopapp-b2b-br') or inner_item.0.metadata.name.startswith('dopapp-b2b-cep-mx') or inner_item.0.metadata.name.startswith('dopapp-b2b-cl') or inner_item.0.metadata.name.startswith('dopapp-b2b-co') or inner_item.0.metadata.name.startswith('dopapp-b2b-do') or inner_item.0.metadata.name.startswith('dopapp-b2b-pe') or inner_item.0.metadata.name.startswith('dopadmin-b2b') or inner_item.0.metadata.name.startswith('pep-eiap-ingress-gw01')
+  no_log: True 
+
+- debug: var=pod_details
+
+- name: update cpu and memory limit to numbers
+  include_tasks: pod_usage.yml
+  with_items: "{{ pod_details }}"
+  loop_control:
+    loop_var: inner_item
+
+- debug: var=pod_metrics
+

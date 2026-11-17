@@ -1,0 +1,47 @@
+---
+# ##
+# We patch the Default azurefile storage class
+# IMPORTANT:
+# - AKS storage class are immutable, so we need to Delete and IMMEDIATELY
+#   apply!
+# - NOTE: This ends with built_in !!!!
+# ##
+pep_eiap_aks_azurefile_parameters:
+  skuName: Standard_LRS
+
+pep_eiap_aks_azurefile_patch_sto_class_built_in:
+
+  # CHECK with AKS Clusters on the name
+  
+
+  metadata:
+    name: azurefile
+    labels:
+      # THIS LABEL SHOULD BE THERE FOR DEFAULT STORAGE CLASS
+      addonmanager.kubernetes.io/mode: EnsureExists
+      kubernetes.io/cluster-service: "true"
+
+  # required: FILE Provisioner
+  provisioner: kubernetes.io/azure-file
+
+  # default Delete for std disk
+  reclaimPolicy: "{{ sc_aks_azurefile_reclaim_policy | default('Delete') }}"
+
+  allowVolumeExpansion: true
+  
+  # Always have this for aks (change)
+  volumeBindingMode: WaitForFirstConsumer
+
+  # ##
+  # File SMB CIFS -- mount options
+  # ##
+  mountOptions: |-
+    {{ sc_aks_azurefile_mount_opts | default(_sc_az_file_mnt_options) }}
+
+  # We cannot update the parameters!! No Zone
+  # REMEMBER: For File it's skuName NOT storageaccounttype
+  parameters: |-
+    {{
+      sc_aks_azurefile_params 
+        | default(pep_eiap_aks_azurefile_parameters)
+    }}

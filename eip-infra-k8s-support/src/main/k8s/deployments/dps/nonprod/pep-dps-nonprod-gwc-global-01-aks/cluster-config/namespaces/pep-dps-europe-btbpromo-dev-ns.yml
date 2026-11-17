@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: b77c879bc3f82e14863b7badc00131bc
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Development
+    project: btbpromo
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalpromotionseuropenon-prod
+    team: europe-btbpromo
+  name: pep-dps-europe-btbpromo-dev

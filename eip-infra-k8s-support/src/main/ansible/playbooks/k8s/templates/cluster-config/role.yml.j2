@@ -1,0 +1,31 @@
+#jinja2: lstrip_blocks: "True"
+{# 
+  Template to generate kind: ClusterRole or Role
+  In general we should not have any Role kind
+  INPUTS:
+    params_tmpl:
+      name:
+      namespace: (optional) required for kind Role
+      params:
+  NOTES:
+    - if there is a use case to FORCE a generation add a comment tag with
+      {{ lookup('pipe','date \"+%Y-%m-%d %H:%M:%S %Z\"') }}
+#}
+---
+# Generated File do not edit manually -- try to regenerate
+# {{ ansible_managed }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ params_tmpl['kind'] }}
+metadata:
+  name: {{ params_tmpl['name'] }}
+  {# namespace required for kind Role #}
+  {% if params_tmpl['kind'] == 'Role' %}
+  namespace: {{ params_tmpl['namespace'] }}
+  {% endif %}
+rules: 
+{# 
+  NOTES: 
+    - Be extremely careful NO variables in rules 
+    - and we render the yaml directly 
+#}
+{{ params_tmpl['rules'] | to_nice_yaml }}

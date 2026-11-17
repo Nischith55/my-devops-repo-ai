@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-latam-opsbridge-nginx-vs
+  namespace: pep-latam-opsbridge-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-latam-opsbridge-nginx-curl.latam.opsbridge.gw01.aks01.eus.nonprod.intra.pepsico.com
+  #pep-latam-opsbridge-nginx-curl.latam.opsbridge.gw01.aks01.eus.nonprod.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-latam-opsbridge-nginx.pep-latam-opsbridge-infra-dev.svc.cluster.local
+        port: 
+          number: 8080

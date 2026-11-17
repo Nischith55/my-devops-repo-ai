@@ -1,0 +1,104 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: k8s-resources
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+     argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for k8s platform components   
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support
+  - https://charts.rancher.io
+  - https://open-policy-agent.github.io/gatekeeper/charts
+  destinations:  
+  - name: pep-eiap-preprod-scus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+       
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: cattle-gatekeeper-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: calico-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: cattle-gatekeeper-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: default
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: istio-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: kube-node-lease
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: kube-public
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: kube-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: kubecost
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: monitoring
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: msi-acrpull-system
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-elastic-client-01
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-global-dev
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: tigera-operator
+    server: https://pep-eiap-nonprod-eus-global-02-aks-991txoh7.privatelink.eastus.azmk8s.io:443
+  
+
+  - name: pep-eiap-preprod-scus-global-01-aks
+    namespace: argocd
+    server: https://pep-eiap-preprod-scus-global-01-aks-04008f04.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-preprod-scus-global-01-aks
+    namespace: gatekeeper-system
+    server: https://pep-eiap-preprod-scus-global-01-aks-04008f04.privatelink.southcentralus.azmk8s.io:443
+
+  - name: pep-eiap-preprod-scus-global-01-aks
+    namespace: default
+    server: https://pep-eiap-preprod-scus-global-01-aks-04008f04.privatelink.southcentralus.azmk8s.io:443
+  
+  - name: pep-eiap-nonprod-scus-global-01-aks
+    namespace: argocd
+    server: https://pep-eiap-nonprod-scus-global-01-aks-9094a8a6.1826162c-e8b9-4d88-bb72-62bb7a49b9d9.privatelink.southcentralus.azmk8s.io:443
+  - name: pep-eiap-nonprod-scus-global-01-aks
+    namespace: default
+    server: https://pep-eiap-nonprod-scus-global-01-aks-9094a8a6.1826162c-e8b9-4d88-bb72-62bb7a49b9d9.privatelink.southcentralus.azmk8s.io:443
+  - name: pep-eiap-nonprod-scus-global-01-aks
+    namespace: gatekeeper-system
+    server: https://pep-eiap-nonprod-scus-global-01-aks-9094a8a6.1826162c-e8b9-4d88-bb72-62bb7a49b9d9.privatelink.southcentralus.azmk8s.io:443

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Prasad_2022-03-11
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: crosscharge
+    eck-managed: 'true'
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-elastic-cluster-02
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    servicename_aks: sharedaks
+  name: pep-eiap-elastic-cluster-02

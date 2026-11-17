@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: risingwave-frontend
+  name: risingwave-frontend-qa-vs
+  namespace: pep-dps-cgf-fmcs-qa
+spec:
+  gateways:
+  - pep-dps-cgf-fmcs-qa/pep-dps-cgf-fmcs-qa-cv-gw
+  hosts:
+  - risingwave-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: risingwave.pep-dps-cgf-fmcs-qa.svc.cluster.local
+        port:
+          number: 9011

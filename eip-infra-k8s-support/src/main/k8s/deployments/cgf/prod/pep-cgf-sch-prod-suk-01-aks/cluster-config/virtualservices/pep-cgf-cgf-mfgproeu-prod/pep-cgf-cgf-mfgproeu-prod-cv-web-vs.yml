@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cgf-cgf-mfgproeu-prod-cv-web-vs
+  namespace: pep-cgf-cgf-mfgproeu-prod
+  labels:
+    app: pep-cgf-cgf-mfgproeu-prod-cv-web
+spec:
+  hosts:
+    - mfgproplus-eu.pepsico.com
+    - pep-cgf-cgf-mfgproeu-prod-cv.cgfsch.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-cgf-cgf-mfgproeu-prod/pep-cgf-cgf-mfgproeu-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cgf-cgf-mfgproeu-prod-cv-web.pep-cgf-cgf-mfgproeu-prod.svc.cluster.local
+        port:
+          number: 80

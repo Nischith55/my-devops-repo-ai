@@ -1,0 +1,45 @@
+---
+# ##
+# Consolidated Control Plane Installation Parameters in the format of
+# IstioOperator Spec. Each should instantiate the parameters to generate the
+# manifest file which can be applied to a istio opertor.
+# INPUT
+#  - icp_name : The name of the control plane
+# ##
+
+istio_manifest_generator_params:
+
+  name: "{{ icp_name }}"
+
+  namespace: "{{ icp_namespace | default(_istio_system_namespace) }}"
+
+
+  # istio operator spec params
+  spec:
+
+    tag: "{{ icp_spec_tag | default(_istio_control_plane_tag) }}"
+
+    # IMPORTANT: this is experimental
+    #DO NOTE USE# revision: "{{ _istio_control_plane_revision }}"
+
+    # which profile to use
+    profile: "{{ icp_spec_profile | default('default') }}"
+
+    addonComponents: |-
+      {{ 
+        icp_spec_add_on_components | default(__icp_spec_add_on_components)
+      }}
+
+    components:
+
+      base: "{{ __icp_spec_component_base_params }}"
+
+      pilot: "{{ __icp_spec_component_pilot_params }}"
+
+      ingressGateways: "{{ __icp_spec_component_igwy_params }}"
+
+    meshConfig: "{{ __icp_spec_mesh_config_params }}"
+
+    # passthrough avoid if you can !!
+    values:
+      global: "{{ __icp_spec_values_global_params }}"

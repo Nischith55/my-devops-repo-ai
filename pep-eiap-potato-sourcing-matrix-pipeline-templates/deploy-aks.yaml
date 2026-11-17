@@ -1,0 +1,145 @@
+  steps:
+  - bash: |
+      sudo az aks install-cli
+      kubectl version --client
+      kubelogin --version
+    displayName: 'Kubelogin'
+    
+  - bash: | 
+      echo $(System.DefaultWorkingDirectory)
+      echo $(Pipeline.Workspace)
+      pwd
+      ls -lrt
+      
+  - download: current
+    patterns: '**'
+
+  - bash: |
+      git clone 'https://$(svcuser):$(svcPersonalAccessToken)@$(manifest_repo_url)' --branch $(manifest_branch) 
+      ls -al 
+      echo $(System.DefaultWorkingDirectory)/$(manifest_repo_name)/$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile) 
+      ls -al $(System.DefaultWorkingDirectory)/$(manifest_repo_name)/$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name) 
+      if [ -e $(System.DefaultWorkingDirectory)/$(manifest_repo_name)/$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile) ]; then 
+        echo "Deployment descriptor yaml exists in Repository."   
+      else 
+        echo "Deployment descriptor yaml does not exists in Repository." 
+        exit 1 
+      fi 
+    displayName: 'Check for Deployment yaml'  
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        if [ "$(ImageTag)" == "" ]; then
+          tag=$(Build.BuildNumber)  
+          echo "##vso[task.setvariable variable=tag]$tag"
+          echo $tag
+        else
+          tag=$(ImageTag)
+          echo "##vso[task.setvariable variable=tag]$tag"
+          echo $tag
+        fi
+    displayName: 'get tag'
+
+  - task: Bash@3
+    condition: or(eq(variables.env, 'preprod'),eq(variables.env, 'prod'))
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal -u $(eiap_client_id) -p $(eiao_client_secret) --tenant $(tenant_id)
+        az account set --subscription $(sub_id)
+  
+  - task: CmdLine@2
+    condition: and( or(eq(variables.env, 'preprod'),eq(variables.env, 'prod')),eq(variables.deployOnly, 'false'))
+    inputs:
+      script: |
+        az acr import  -n $(prodacr) --source $(acrrepoprefix)/$(acrreponame):$(Build.BuildNumber) -t $(acrrepoprefix)/$(acrreponame):$(Build.BuildNumber) --registry /subscriptions/$(nonprod_sub_id)/resourceGroups/$(resource_group)/providers/Microsoft.ContainerRegistry/registries/$(nonprodeiapacr)
+        az acr repository  list -n $(prodacrurl)
+        az acr repository show-tags -n $(prodacrurl) --repository $(acrrepoprefix)/$(acrreponame)
+    displayName: 'Push image using Azcli'
+
+  - task: CmdLine@2
+    condition: and( or(eq(variables.env, 'preprod'),eq(variables.env, 'prod')),eq(variables.deployOnly, 'true'))
+    inputs:
+      script: |
+        az acr import -n $(prodacr) --source $(acrrepoprefix)/$(acrreponame):$(ImageTag) -t $(acrrepoprefix)/$(acrreponame):$(ImageTag) --registry /subscriptions/$(nonprod_sub_id)/resourceGroups/$(resource_group)/providers/Microsoft.ContainerRegistry/registries/$(nonprodeiapacr)
+        az acr repository  list -n $(prodacrurl)
+        az acr repository show-tags -n $(prodacrurl) --repository $(acrrepoprefix)/$(acrreponame)
+    displayName: 'Push image using Az cli for deployOnly'
+    
+
+# Create new branch and push override file changes to new branch
+  - task: Bash@3    
+    name: "Manifest_Push"
+    displayName: 'Update & Push helm release'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(System.DefaultWorkingDirectory)/$(manifest_repo_name)
+        git pull
+        git branch
+        git checkout -b $(manifest_pr_branch)
+        git add -A
+        echo "##vso[task.setvariable variable=GIT_STATUS]$(git status --porcelain | head -1)"   
+        
+        git config --global user.email "$(svcuser)@pepsico.com"
+        git config --global user.name "$(svcuser)"
+                      
+        image=$(grep 'tag:'  $(System.DefaultWorkingDirectory)/$(manifest_repo_name)/$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile) | tail -n1 | awk '{ print $2}' | awk '{split($0,a,"\""); print a[2]}')
+        echo $image
+        echo sed -i s/$image/$(tag)/ ./$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile)
+        sed -i s/$image/"$(tag)"/ ./$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile)
+        echo "********** Start of File *************"
+        cat ./$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile)
+        echo "********** End Of File *************" 
+        git status
+        git add ./$(env)/${{ parameters.endpoint }}/$(Build.Repository.Name)/$(deploymentfile)
+        git commit -m "updated manifest file with $(tag)"
+        git pull
+        git push https://$(svcuser):$(svcPersonalAccessToken)@$(manifest_repo_url)
+        echo "git push https://$(svcuser):$(svcPersonalAccessToken)@$(manifest_repo_url)"
+  #Create pull request with the newly created branch to manifest repo branch
+  - pwsh: |  
+      $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"  
+      az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+      $pr_response=(az repos pr create --project $(System.TeamProject) --repository $(manifest_repo_name) --target-branch $(MANIFEST_BRANCH) --source-branch $(MANIFEST_PR_BRANCH)  --title "deployment $(tag)") | ConvertFrom-Json
+      $pr_num = $pr_response.pullRequestId 
+      #export pr_num=$(echo $pr_response | jq '.pullRequestId')
+      
+      Write-Output "$pr_num"
+      Write-Host "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num" 
+      
+    displayName: 'Create PR'
+    name: 'Create_PR'
+
+  #Complete pull request for non prod environments
+  - pwsh: |         
+        Write-Output "Merge PR: $(Create_PR.PR_NUM)"
+        $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"
+        az devops configure --defaults organization=$(System.CollectionUri) project=$(manifest_repo_name) --use-git-aliases true
+        $pr_approval_response=(az repos pr set-vote --id $(Create_PR.PR_NUM) --vote approve --org $(System.CollectionUri))
+        Write-Output "PR Status Declined: $(($pr_approval_response | ConvertFrom-Json -Depth 1).hasDeclined)"
+        $pr_response=(az repos pr update --id $(Create_PR.PR_NUM) --status completed --merge-commit-message "Merged PR $(Create_PR.PR_NUM): deployment $(tag)" --org $(System.CollectionUri) --delete-source-branch true --bypass-policy true --bypass-policy-reason "Close PR with service account")  | ConvertFrom-Json
+        $pr_num = $pr_response.pullRequestId 
+        #export pr_num=$(echo $pr_response | jq '.pullRequestId')
+        
+        Write-Output "PR completed:$pr_num"
+        Write-Host "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num" 
+    condition: or(eq(variables.env, 'dev'), eq(variables.env, 'qa'), eq(variables.env, 'preprod'))
+    displayName: 'Complete PR'
+    name: 'Complete_PR'
+
+  #Complete pull request for prod environments
+  - pwsh: |
+      Write-Output "Merge PR: $(Create_PR.PR_NUM)"
+      $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"
+      az devops configure --defaults organization=$(System.CollectionUri) project=$(manifest_repo_name) --use-git-aliases true
+      $pr_num = $pr_response.pullRequestId 
+      #export pr_num=$(echo $pr_response | jq '.pullRequestId')
+      
+      Write-Output "PR waiting for approval"
+      Write-Host "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num"
+    condition: eq(variables.env, 'prod')
+    displayName: 'Complete PR Prod Environments'
+    name: 'Complete_PR_Prod'

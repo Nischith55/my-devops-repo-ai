@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: b2b-trinodb-dev-trino-ibev-vs
+  namespace: pep-dps-europe-btborch-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - b2b-trinodb-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-europe-btborch-dev/pep-dps-europe-btborch-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-trinodb-dev-trino.pep-dps-europe-btborch-dev.svc.cluster.local
+        port:
+          number: 8080
+  

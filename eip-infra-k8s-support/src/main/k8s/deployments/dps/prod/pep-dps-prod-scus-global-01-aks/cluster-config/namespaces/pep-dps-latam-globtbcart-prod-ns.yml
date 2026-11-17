@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: f24f92b347a116d496306621e36d4398
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: globtbcart
+    sector: latam
+    servicename_aks: b2bpepsiconnectportalcartsamericasprod
+    team: latam-globtbcart
+  name: pep-dps-latam-globtbcart-prod

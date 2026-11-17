@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: b80700eb-825b-4b27-8864-93a5a8cd7aad
+  name: pep-eiap-cgf-devx-qa-sa
+  namespace: pep-eiap-cgf-devx-qa

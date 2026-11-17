@@ -1,0 +1,6 @@
+####### BEGIN Added recently --pep-pfna-cit-preprod-eus-pcaf-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+####### END Added recently --pep-pfna-cit-preprod-eus-pcaf-01-aks######

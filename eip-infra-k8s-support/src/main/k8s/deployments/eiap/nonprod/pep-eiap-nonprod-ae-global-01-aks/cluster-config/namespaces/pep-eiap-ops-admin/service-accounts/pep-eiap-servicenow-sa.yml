@@ -1,0 +1,8 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-03-01 10:20:43
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-servicenow-sa
+  namespace: pep-eiap-ops-admin

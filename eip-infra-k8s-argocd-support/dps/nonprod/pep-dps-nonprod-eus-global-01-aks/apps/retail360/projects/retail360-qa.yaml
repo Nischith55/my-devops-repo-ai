@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: retail360-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for retail360-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-retailqa-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-aiqr360-qa
+    server: https://kubernetes.default.svc
+  roles:
+  - name: retail360-qa-admin
+    description: Admin privileges to retail360-qa
+    policies:
+    - p, proj:retail360-qa:retail360-qa-admin, applications, *, retail360-qa/*, allow
+    - p, proj:retail360-qa:retail360-qa-admin, applications, get, argocd/*, allow
+    - p, proj:retail360-qa:retail360-qa-admin, repositories, *, retail360-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: retail360-qa-user
+    description: Read-only privileges to retail360-qa
+    policies:
+    - p, proj:retail360-qa:retail360-qa-user, applications, get, retail360-qa/*, allow
+    - p, proj:retail360-qa:retail360-qa-user, applications, sync, retail360-qa/*, allow
+    - p, proj:retail360-qa:retail360-qa-user, repositories, get, retail360-qa/*, allow
+    - p, proj:retail360-qa:retail360-qa-user, applications, action/apps/Deployment/restart, retail360-qa/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

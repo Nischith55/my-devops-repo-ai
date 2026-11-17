@@ -1,0 +1,31 @@
+# SAML integration for user management and RBAC, enterprise key required
+# Ref: https://github.com/kubecost/docs/blob/master/user-management.md
+saml:
+  enabled: true
+  secretName: "kubecost-okta"  
+  #metadataSecretName: "kubecost-okta-metadata" # One of metadataSecretName or idpMetadataURL must be set. defaults to metadataURL if set
+  idpMetadataURL: "https://secure.pepsico.com/app/exk1tgnp6e4w0ymzF0h8/sso/saml/metadata"
+  appRootURL: "https://kubecost-cost-analyzer.infra.gw01.aks02.eus.prod.azure.intra.pepsico.com" # sample URL
+  authTimeout: 1440 # number of minutes the JWT will be valid
+  # redirectURL:  # callback URL redirected to after logout
+  audienceURI: "https://kubecost-cost-analyzer.infra.gw01.aks02.eus.prod.azure.intra.pepsico.com" # by convention, the same as the appRootURL, but any string uniquely identifying kubecost to your saml IDP. Optional if you follow the convention
+  # nameFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified" # If your SAML provider requires a specific nameid format
+  # isGLUUProvider: false # An additional URL parameter must be appended for GLUU providers
+  #  NameFormat:urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified
+  encryptionCertSecret: "kubecost-saml-cert"  ## disabling for debugging
+  decryptionKeySecret: "kubecost-saml-decryption-key" ## disabling for debugging
+  rbac:
+    enabled: true # disabling for debugging
+    groups:
+      - name: admin
+        enabled: true # if admin is disabled, all SAML users will be able to make configuration changes to the kubecost frontend
+        assertionName: "pepappkubecostroles" # a SAML Assertion, one of whose elements has a value that matches on of the values in assertionValues
+        assertionValues:
+          - "kubecost_admin"
+      - name: readonly
+        enabled: true # if readonly is disabled, all users authorized on SAML will default to readonly
+        assertionName:  "pepappkubecostroles"
+        assertionvalues:
+          - "kubecost_user"
+    customGroups: # not needed for simple admin/readonly RBAC
+      - assertionName: "pepappkubecostroles"

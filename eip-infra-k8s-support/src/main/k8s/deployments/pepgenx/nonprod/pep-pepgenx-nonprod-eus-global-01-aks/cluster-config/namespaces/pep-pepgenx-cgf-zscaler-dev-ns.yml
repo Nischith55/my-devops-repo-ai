@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pepgenx-cgf-zscaler-dev
+  labels:
+    env-nonprod: "true"
+    project: zscaler
+    sector: cgf
+    team: cgf-zscaler
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: daipepgenx
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 7f0e42b8c3ba46d8b74985359901310f
+    pep-cmdb-app-service-id: 841e42b8c3ba46d8b7498535990131f7
+    pep-environment: Development
+    

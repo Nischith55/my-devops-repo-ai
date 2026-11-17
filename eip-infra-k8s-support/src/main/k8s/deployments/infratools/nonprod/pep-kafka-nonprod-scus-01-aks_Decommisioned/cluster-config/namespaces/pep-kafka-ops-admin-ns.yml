@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-kafka-nonprod-eus-01-aks
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-kafka-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    servicename_aks: infratools
+    team: eiap-admins
+  name: pep-kafka-ops-admin

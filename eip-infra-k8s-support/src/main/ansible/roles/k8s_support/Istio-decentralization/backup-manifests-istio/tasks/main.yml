@@ -1,0 +1,98 @@
+---
+### create a folder to store manifest backups
+- name: Creates directory to store manifest backups
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/manifests_backup/"
+    state: directory
+
+### fetch the gateway of the cluster
+- name: Get the gateway
+  kubernetes.core.k8s_info:
+    kind: Gateway 
+    api_version: networking.istio.io/v1beta1
+    namespace: istio-system
+    name: istio-in-gateway-01
+  register: gateway
+
+
+### store gateway manifest
+- name: bakcup gateway 
+  copy:
+    dest: "{{ mypath }}/Artifacts/manifests_backup/istio-in-gateway-01.yml"
+    content: "{{ item | to_nice_yaml }}"
+  with_items: "{{ gateway.resources }}"
+
+### fetch virtual services from cluster
+- name: Get list of virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+    namespace: "pep-{{ department }}-istio-config"
+  register: virtualservices
+
+
+### store Virtual service manifests
+- name: backup virtual services 
+  copy:
+    dest: "{{ mypath }}/Artifacts/manifests_backup/{{ item.metadata.name }}.yml"
+    content: "{{ item | to_nice_yaml }}"
+  with_items: "{{ virtualservices.resources }}"
+
+### fetch destination rules from cluster
+- name: Get list of destination rules
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule 
+    namespace: "pep-{{ department }}-istio-config"
+  register: destinationrules
+
+
+### store Destination rule manifests
+- name: backup Destination rules
+  copy:
+    dest: "{{ mypath }}/Artifacts/manifests_backup/{{ item.metadata.name }}.yml"
+    content: "{{ item | to_nice_yaml }}"
+  with_items: "{{ destinationrules.resources }}"
+
+### fetch Sidecar from cluster
+- name: Get list of side car
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1alpha3
+    kind: Sidecar 
+    namespace: "pep-{{ department }}-istio-config"
+  register: sidecars
+
+
+### store Sidecar manifests
+- name: backup Sidecar 
+  copy:
+    dest: "{{ mypath }}/Artifacts/manifests_backup/{{ item.metadata.name }}.yml"
+    content: "{{ item | to_nice_yaml }}"
+  with_items: "{{ sidecars.resources }}"
+
+### counting no.of Virtual Services, destination rules and namespaces
+
+- name: Get list of namespaces
+  kubernetes.core.k8s_info:
+    kind: namespace 
+  register: namespaces
+
+- name: Get list of virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService
+  register: virtualservices_count
+
+- name: Get list of destination rules
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: DestinationRule
+  register: destinationrules_count
+
+- set_fact:
+    ns_count: "{{ namespaces.resources | length }}"
+    vs_count: "{{ virtualservices_count.resources | length }}"
+    dr_count: "{{ destinationrules_count.resources | length }}"
+
+- debug: 
+    msg: " Total Namespaces {{ ns_count }}, Total VirtualServices {{ vs_count }}, Total Destinationrules {{ dr_count }}."

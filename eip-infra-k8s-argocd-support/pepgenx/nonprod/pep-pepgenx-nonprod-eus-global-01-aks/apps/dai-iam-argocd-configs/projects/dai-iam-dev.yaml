@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dai-iam-dev
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dai-iam-dev
+      sourceRepos:
+      - https://github.com/PepsiCo-AISP/dai-iam-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      - peppepgenxnonprodeusacr.azurecr.io
+      destinations:
+      - name: pep-pepgenx-nonprod-eus-global-01-aks
+        namespace: pep-pepgenx-cgf-aiseciam-dev
+      - name: pep-pepgenx-nonprod-eus-global-01-aks
+        namespace: pep-pepgenx-ops-admin
+      roles:
+      - name: dai-iam-dev-admin
+        description: Admin privileges to dai-iam-dev
+        policies:
+        - p, proj:dai-iam-dev:dai-iam-dev-admin, applications, *, dai-iam-dev/*, allow
+        - p, proj:dai-iam-dev:dai-iam-dev-admin, repositories, *, dai-iam-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dai-iam-dev-user
+        description: Read-only privileges to dai-iam-dev
+        policies:
+        - p, proj:dai-iam-dev:dai-iam-dev-user, applications, get, dai-iam-dev/*, allow
+        - p, proj:dai-iam-dev:dai-iam-dev-user, applications, sync, dai-iam-dev/*, allow
+        - p, proj:dai-iam-dev:dai-iam-dev-user, repositories, get, dai-iam-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dai-iam-dev:dai-iam-dev-user, applications, action/apps/Deployment/restart, dai-iam-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.AZURE.aks.aisec.admins"

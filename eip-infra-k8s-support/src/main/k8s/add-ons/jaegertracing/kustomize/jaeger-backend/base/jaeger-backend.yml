@@ -1,0 +1,22 @@
+---
+# ##
+# Template that can be used to configure the jaeger instance
+# ##
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-backend
+spec:
+
+  # ##
+  # We will use the base default allInOne -- this is NOT production ready!
+  # The main backend components, Agent, Collector and Query service, are all
+  # packaged into a single executable which is configured (by default) to use
+  # in-memory storage.
+  # ##
+  strategy: allInOne
+
+  # ingress
+  ingress:
+    # disable
+    enabled: false

@@ -1,0 +1,207 @@
+---
+- name: create temp directory for istio
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio"
+    state: directory
+
+- name: create temp directory for pfx file
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/pfx"
+    state: directory
+
+
+- name: wilcard
+  shell: nslookup {{ wildcard }} | grep -i Address | awk 'NR==2'
+  args:  
+    chdir: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio"
+  register: wc
+
+- name: set fact for wc IP address 
+  set_fact:
+    wc_ip: "{{ wc.stdout | regex_replace('Address: (\\S+).*', '\\1') }}"
+
+
+
+- template:
+    src: istio-values.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio/values.yaml"
+
+- name: Add Rancher chart repo
+  kubernetes.core.helm_repository:
+    name: rancher-charts
+    repo_url: " https://charts.rancher.io"
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: cat the file
+  shell: cat "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio/values.yaml"
+
+- name: Deploy Rancher-istio  
+  kubernetes.core.helm:
+    name: rancher-istio
+    chart_ref: rancher-charts/rancher-istio
+    chart_version: "{{ istioVersion }}"
+    release_namespace: istio-system
+    values_files:
+      - "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio/values.yaml"
+    # state: present  
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: create temp directory for sidecar
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/sidecar"
+    state: directory
+
+
+- template:
+    src: istio-global-sidecar.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/sidecar/global-sidecar.yaml"
+
+
+- name: Creating side-car 
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/sidecar/global-sidecar.yaml"
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/rancher-istio/istio"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/istio/"
+    force: true
+  register: copy_op
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/sidecars/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/sidecar/"
+    force: true
+  register: copy_op
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- name: set pass for pfx file
+  set_fact:
+    my_pass: "{{ secret }}"
+
+- ansible.builtin.debug:
+    msg: "{{ my_pass }}"
+
+
+- name: Dump/Parse PKCS#12 file
+  community.crypto.openssl_pkcs12:
+    action: parse
+    force: true
+    src: '/tmp/{{ filename }}'
+    path: '/tmp/privatekey.pem'
+    privatekey_passphrase: "{{ my_pass }}"
+    passphrase: "{{ my_pass }}"
+    state: present
+  register: output
+
+
+- name: Get the key part
+  ansible.builtin.debug:
+    msg: >-
+      {{
+        lookup('file', '/tmp/privatekey.pem') |
+        regex_replace("[\s\S.]*(-----BEGIN.* PRIVATE KEY-----[\s\S.]*-----END.* PRIVATE KEY-----)[\s\S.]*", "\1")
+      }}
+  no_log: true
+  register: key
+
+
+# copied the key details 
+- name: testing
+  ansible.builtin.copy:
+    content: "{{ key.msg }}"
+    dest: "/tmp/private_key.key"
+
+- name: Get the cert part
+  ansible.builtin.debug:
+    msg: >-
+      {{
+        lookup('file', '/tmp/privatekey.pem') |
+        regex_findall("-----BEGIN CERTIFICATE-----[\s\S.]*END\s*CERTIFICATE-----[\s\S.]*", "")
+      }}
+  no_log: true    
+  register: cert
+
+
+
+# Copying the cert details
+- name: testing
+  ansible.builtin.copy:
+    content: "{{ cert.msg[0] }}"
+    dest: "/tmp/certificate.crt"
+  register: cert11
+
+- name: Dump information related to certificate.................................
+  ansible.builtin.debug:
+    var: cert11
+#__________________________________________________________________________________________________________________________________________
+
+
+
+- name: create temp directory for secretcreation
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/secretcreation"
+    state: directory
+
+
+- template:
+    src: istio-gw01-secretcreation.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/secretcreation/gw-01-tls-secretss.yml"
+
+
+- name: Creating secret
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/secretcreation/gw-01-tls-secretss.yml"
+  no_log: true
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+# #____________________________________________________________________________________________
+- name: create temp directory for Gateway
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway"
+    state: directory
+- set_fact:
+    aks_type: "aks{{ resourcename.split('-')[-2] }}"
+- template:
+    src: istio-in-gw-infra-ns.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway/{{ prefix }}-{{ infrans }}-cv-gw.yaml"
+
+
+- name: Creating IGW
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway/{{ prefix }}-{{ infrans }}-cv-gw.yaml"
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}//cluster-config/gateways/{{ prefix }}-{{ infrans }}/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway/{{ prefix }}-{{ infrans }}-cv-gw.yaml"
+    force: true
+  register: copy_op
+
+
+# # # #______________________________________________________________________________________________________________________________________________
+
+

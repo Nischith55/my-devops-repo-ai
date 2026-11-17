@@ -1,0 +1,133 @@
+---
+# ABBREVIATIONS:
+#  _kured_ -> kured_v1.7.0
+
+_kured_1_7_0_name: v1.7.0
+
+# _kured_img_name: |-
+#   {{ kured_v1.7.0_image_name | v1.7.0('mcr.microsoft.com/aks/kured') }}
+
+# _kured_img_tag: |-
+#   {{ kured_v1.7.0_image_tag | v1.7.0('v0.1.0-alpha') }}
+
+# where the overlays dir is for kustomize build e.g.
+_kured_dest_root_dir: |-
+  {{ (kured_deploy_app_root_dir, _kured_1_7_0_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_kured_manifests_dest_dir: |-
+  {{ (_kured_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_kured_overlays_dest_dir: |-
+  {{ (_kured_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_kured_manifest_path: |-
+  {{ (_kured_manifests_dest_dir, 
+      kured_app_name + '-' + _kured_1_7_0_name + '.yml') | path_join 
+  }}
+
+# can be shared
+_kured_kustomize_resource_base_dir: |-
+  {{ (kured_source_app_root_dir, 'kustomize', _kured_1_7_0_name, 'base') 
+      | path_join 
+  }}
+
+# -- meta parameters
+_kured_meta_params:
+
+  # component name
+  name: "{{ _kured_1_7_0_name }}"
+
+  # app name
+  app_name: "{{ kured_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ kured_target_namespace }}"
+
+
+# # -- build parameters
+
+_kured_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _kured_overlays_dest_dir }}"
+    output_path: "{{ _kured_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_kured_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # override namespace
+    namespace:  "{{ _kured_meta_params['namespace'] }}"
+    
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _kured_kustomize_resource_base_dir 
+            | relpath(_kured_manifests_dest_dir) 
+        }}
+
+#     # # Images
+#     # images:
+#     #   - name: mcr.microsoft.com/aks/kured:v0.1.0-alpha
+#     #     newName: "{{ _kured_img_name }}"
+#     #     newTag: "{{ _kured_img_tag }}"
+
+#   # no patches currently
+#   patches:
+#     # patch both strategic merge and json6902
+#     - name: patch-server-deploy
+#       # strategic merge
+#       template_merge_src: "{{ kct_template_spec_merge_src }}"
+#       template_merge_dest: |-
+#         {{ 
+#           (_kured_overlays_dest_dir, 'patch-merge-deployment.yml') | path_join
+#         }}
+#       target: 
+#         group: apps
+#         version: v1
+#         kind: Deployment
+#         name: kured-controller-manager
+#         namespace: "{{ kured_src_namespace }}"
+
+#       # this is the merge patch.
+#       merge:
+#         spec:
+#           # override replicas
+#           replicas: |-
+#             {{ kured_replicas | v1.7.0('2') | int }}
+#           template:
+#             spec:
+#               # set node selector and tolerations
+#               nodeSelector: "{{ system_np_node_selector }}"
+#               # override all tolerations since it's a list
+#               tolerations: "{{ system_np_tolerations }}"
+#       # # deployment json patch
+#       # template_json_src: "{{ kct_json6902_patch_src }}"
+#       # template_json_dest: |-
+#       #   {{ (_kured_overlays_dest_dir,
+#       #        'patch-json-kured.yml') | path_join }}
+#       # # any json patches (we use statefulset patch)
+#       # json6902:
+
+# ##
+# Make the final settings
+# ##
+# kured_1_7_0_component_setting: |-
+#   {{
+#     _kured_meta_params
+#   }}
+
+kured_1_7_0_component_setting: |-
+  {{
+    _kured_meta_params
+    |
+    combine(_kured_build_params, recursive=True)
+  }}
+

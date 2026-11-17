@@ -1,0 +1,18 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msi-acrpull-controller-manager
+  namespace: msi-acrpull-system
+spec:
+  replicas: 2
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

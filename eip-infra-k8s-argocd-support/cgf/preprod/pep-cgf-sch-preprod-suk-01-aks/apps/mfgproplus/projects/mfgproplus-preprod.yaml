@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: mfgproplus-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for mfgproplus-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/pep-pfna-mfgpro-argocd-configs
+      - pepcgfschprodsukacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-preprod-suk-01-aks
+        namespace: pep-cgf-cgf-mfgproeu-preprod
+      - name: pep-cgf-sch-preprod-suk-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: mfgproplus-preprod-admin
+        description: Admin privileges to mfgproplus-preprod
+        policies:
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-admin, applications, *, mfgproplus-preprod/*, allow
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-admin, repositories, *, mfgproplus-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: mfgproplus-preprod-user
+        description: Read-only privileges to mfgproplus-preprod
+        policies:
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-user, applications, get, mfgproplus-preprod/*, allow
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-user, applications, sync, mfgproplus-preprod/*, allow
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-user, repositories, get, mfgproplus-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:mfgproplus-preprod:mfgproplus-preprod-user, applications, action/apps/Deployment/restart, mfgproplus-preprod/*, allow
+        groups:
+        - "Team.Support.PFNA.Mfgpro.Developer"
+        - "Team.Support.EIAP.READ"
+    

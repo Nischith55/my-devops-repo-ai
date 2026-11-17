@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-globalfileservice-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-globalfileservice.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+    - uri:
+        prefix: /v1/api/files
+      ignoreUriCase: true
+    - uri:
+        prefix: /management/  
+    route:
+    - destination:
+        host: pep-och-globalfileservice.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 80     

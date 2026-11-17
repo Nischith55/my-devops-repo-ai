@@ -1,0 +1,138 @@
+---
+# ##
+# istio-operator kustomization and patches.
+# ##
+
+istio_operator_name: operator
+
+# ##
+# component meta information
+# ##
+istio_operator_meta:
+
+  # component_name
+  name: "{{ istio_operator_name }}"
+
+  # namespace where this control plane is installed
+  namespace: "{{ _istio_operator_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+# we use common templates
+_iop_src_templates_dir: "{{ istio_control_plane_templates_dir }}"
+_iop_common_template: |-
+  {{ (_iop_src_templates_dir, 'control-plane.yml.j2') | path_join }}
+_iop_component_kustomize_resource_base_dir: |-
+  {{ (istio_source_app_root_dir, 'kustomize', istio_operator_meta['name'], 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_iop_component_dest_root_dir: |-
+  {{ (istio_deploy_app_root_dir, istio_operator_meta['name']) | path_join }}
+# general template out directory and kustomize build-in dir
+_iop_component_overlays_dest_dir: |-
+  {{ (_iop_component_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_iop_component_manifests_dest_dir: |-
+  {{ (_iop_component_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_iop_manifest_path: |-
+  {{ 
+    (_iop_component_manifests_dest_dir,  istio_operator_meta['name'] + '.yml')
+    | path_join 
+  }}
+
+# re-usable patch target
+__iop_deploy_target:
+  group: apps
+  version: v1
+  kind: Deployment
+  # source or base the name should match
+  name: istio-operator
+  # we need what the base source has..
+  namespace: "{{ _istio_operator_source_namespace }}"
+
+# control plane main build params
+_iop_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _iop_component_overlays_dest_dir }}"
+    output_path: "{{ _iop_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_iop_component_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _iop_component_kustomize_resource_base_dir 
+            | relpath(_iop_component_manifests_dest_dir) 
+        }}
+    images:
+      - name: &img001 docker.io/istio/operator
+        newName: *img001
+        newTag: "{{ _istio_operator_tag }}"
+
+  patches:
+
+    # patch both strategic merge and json6902
+    - name: patch-istio-operator-deployment
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_iop_component_overlays_dest_dir, 'patch-merge-deployment.yml')
+          |
+          path_join
+        }}
+      template_json_src: "{{ kct_json6902_patch_src }}"
+      template_json_dest: |-
+        {{ 
+          (_iop_component_overlays_dest_dir, 'patch-json-deployment.yml')
+          |
+          path_join
+        }}
+
+      target: "{{ __iop_deploy_target }}"
+      # this is the merge patch.
+      merge:
+        spec:
+          template:
+            # TODO: make it overridable using combine
+            spec: "{{ aks_system_np_deployment_spec }}"
+          
+      # this is deployment common patch env remove or add
+      json6902:
+        # Replace WATCH_NAMESPACE (watch the index)
+        - op: replace
+          path: /spec/template/spec/containers/0/env/0/value
+          value: "{{ _istio_system_namespace }}"
+
+        # WAIT_FOR_RESOURCES_TIMEOUT
+        #- op: replace
+        #  path: /spec/template/spec/containers/0/env/4/value
+        #  value: {{ TODO_ADD_VAR to change }}
+
+        # whenever we test REVISION -- watch the index num
+        #- op: replace
+        #  path: /spec/template/spec/containers/0/env/5/value
+        #  value: {{ TODO_VAR_WITH_REVISION }}
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+istio_operator_component_setting: |-
+  {{
+    istio_operator_meta
+    |
+    combine(_iop_build_params, recursive=True)
+  }}
+

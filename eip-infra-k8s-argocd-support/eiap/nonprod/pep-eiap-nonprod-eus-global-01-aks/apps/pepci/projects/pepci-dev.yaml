@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepci-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepci-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-cgf-pepci-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepci-dev-admin
+    description: Admin privileges to pepci-dev
+    policies:
+    - p, proj:pepci-dev:pepci-dev-admin, applications, *, pepci-dev/*, allow
+    - p, proj:pepci-dev:pepci-dev-admin, repositories, *, pepci-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepci-dev-user
+    description: Read-only privileges to pepci-dev
+    policies:
+    - p, proj:pepci-dev:pepci-dev-user, applications, get, pepci-dev/*, allow
+    - p, proj:pepci-dev:pepci-dev-user, applications, sync, pepci-dev/*, allow
+    - p, proj:pepci-dev:pepci-dev-user, repositories, get, pepci-dev/*, allow
+    - p, proj:pepci-dev:pepci-dev-user, *, delete, *, deny
+    - p, proj:pepci-dev:pepci-dev-user, applications, action/apps/Deployment/restart, pepci-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.PepCI"

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-hrsev-prod
+    project: hrsev
+    sector: global
+    servicename_aks: cgf-automation
+    team: global-hrsev
+  name: pep-eiap-global-hrsev-prod

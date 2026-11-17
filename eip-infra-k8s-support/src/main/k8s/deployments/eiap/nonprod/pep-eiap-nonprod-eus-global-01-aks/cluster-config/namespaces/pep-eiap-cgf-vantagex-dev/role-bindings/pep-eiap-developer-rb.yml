@@ -1,0 +1,21 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-03-23 12:17:26
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-developer-rb
+  namespace: pep-eiap-cgf-vantagex-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-developer-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-svc-cgf-vantagex-sp
+    name: d8bb3c67-920c-4d6c-ba8e-47e77300c10c
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.Azure.Vanxdashboard
+    name: 1ec1cbe3-1b44-4034-b528-907904f472c6

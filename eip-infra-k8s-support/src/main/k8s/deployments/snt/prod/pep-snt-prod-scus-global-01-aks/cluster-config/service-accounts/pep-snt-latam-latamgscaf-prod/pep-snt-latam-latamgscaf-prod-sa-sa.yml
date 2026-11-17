@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-snt-latam-latamgscaf-prod-sa
+  namespace: pep-snt-latam-latamgscaf-prod

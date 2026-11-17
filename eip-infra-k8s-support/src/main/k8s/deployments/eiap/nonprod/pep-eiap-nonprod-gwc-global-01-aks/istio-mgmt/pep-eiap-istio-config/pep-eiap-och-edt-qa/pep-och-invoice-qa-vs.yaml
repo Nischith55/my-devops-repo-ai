@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-invoice-qa-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-invoice-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-invoice.pep-eiap-och-edt-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-developerportal-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ops-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact:  https://pep-och-developerportal-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact:  https://pep-och-ops-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count

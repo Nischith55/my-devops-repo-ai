@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-toggle-preprod-cv-web-vs
+  namespace: pep-dps-dps-toggle-preprod
+  labels:
+    app: pep-dps-dps-toggle-preprod-cv-web
+spec:
+  hosts:
+    - feature-toggle.preprod.pepsico.com
+    - pep-dps-dps-toggle-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-toggle-preprod/pep-dps-dps-toggle-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-toggle-preprod-cv-web.pep-dps-dps-toggle-preprod.svc.cluster.local
+        port:
+          number: 80

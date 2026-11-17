@@ -1,0 +1,86 @@
+jobs:
+- job: Snyk_Scan
+  displayName: 'snyk-scan'  
+  steps:
+  - task: PythonScript@0
+    displayName: "Extract Azure KV secrets"
+    name: "GetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+      arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+    env:
+      PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+      NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+      PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+      NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+      PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+      PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+      PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+      NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+      PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+      
+  - task: PythonScript@0
+    displayName: "Set Azure credentials"
+    name: "SetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+      arguments: "${{ parameters.service_principal }}"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+  
+  - task: DownloadPipelineArtifact@2
+    displayName: 'download terraform plan'
+    inputs:
+      artifactName: 'tfplan'
+      downloadPath: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+  
+  - task: Bash@3
+    displayName: "Snyk Scan for Modules"
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+      script: |
+        set -e
+        terraform -v      
+        echo "Current directory: $(pwd)"
+        git config --global http.$(terraform_modules_repo).extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+        if [[ "${{parameters.ResourceType}}" == "azure-kubernetes-services" ]]; then
+            rm kube-configs.tf
+        fi
+        ls
+        terraform init -backend-config="storage_account_name=$(storage_account_name_for_backend)" \
+                       -backend-config="container_name=$(container_name_for_backend)" \
+                       -backend-config="key=$(key_for_backend)" \
+                       -backend-config="resource_group_name=$(resource_group_name_for_backend)"
+        terraform validate
+
+        cd $(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}/${{parameters.snyk_path}}
+        export SNYK_AUTH_TOKEN=$SNYK_AUTH_TOKEN
+        snyk auth $SNYK_AUTH_TOKEN
+        snyk iac test .  --severity-threshold=high
+    env:
+      SNYK_AUTH_TOKEN: $(snyk_scan_auth_token)
+  - task: Bash@3
+    displayName: "Snyk Scan for Tfplan"
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+      script: |
+        #export SNYK_AUTH_TOKEN=${{parameters.SNYK_AUTH_TOKEN}}
+        export SNYK_AUTH_TOKEN=$SNYK_AUTH_TOKEN
+        snyk auth $SNYK_AUTH_TOKEN
+        terraform show -json $(Build.BuildNumber) > tf-plan.json
+        
+        if [[ "${{parameters.ResourceType}}" == "storage-account" ]]; then
+          snyk iac test tf-plan.json  --severity-threshold=critical
+        else
+          snyk iac test tf-plan.json  --severity-threshold=high
+        fi  
+    env:
+      SNYK_AUTH_TOKEN: $(snyk_scan_auth_token)
+
+        

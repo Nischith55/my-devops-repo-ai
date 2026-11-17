@@ -1,0 +1,27 @@
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # . /opt/venv/python310-ansible211/bin/activate
+      pip install "ansible-core==2.14.6"
+      ansible-galaxy collection install kubernetes.core --force
+      ansible-galaxy collection install cloud.common --force
+      ansible-galaxy collection install azure.azcollection --force --no-deps
+      ansible-galaxy collection install ansible.utils --force
+      ansible-galaxy collection install community.general --force  
+      ls -lrt ~/.ansible/collections/ansible_collections/
+      # pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+      pip3 install -r ~/.ansible/collections-ansible211/ansible_collections/azure/azcollection/requirements.txt
+      pip3 install pyyaml
+      ansible-playbook -e '{"cluster_name":"${{ parameters.cluster }}"}'  src/main/ansible/playbooks/k8s/get_crosscharge.yml
+      
+  displayName: 'get_crosscharge_details'
+  name: 'get_crosscharge_details'
+  env:
+    script_dir: $(system.defaultWorkingDirectory)
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+    AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID: $(SUBSCRIPTION_ID_CLUSTER)
+    AAD_SERVICE_PRINCIPAL_TENANT_ID: $(AZURE_TENANT)
+    

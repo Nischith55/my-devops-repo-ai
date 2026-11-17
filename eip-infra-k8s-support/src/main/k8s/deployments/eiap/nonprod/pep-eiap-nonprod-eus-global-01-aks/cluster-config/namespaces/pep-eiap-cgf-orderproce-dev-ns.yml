@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: orderproce
+    sector: cgf
+    servicename_aks: supplychainautomationservicesfororderprocessing
+    team: cgf-orderproce
+  name: pep-eiap-cgf-orderproce-dev

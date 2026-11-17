@@ -1,0 +1,16 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-01 10:20:43
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger-operator
+spec:
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

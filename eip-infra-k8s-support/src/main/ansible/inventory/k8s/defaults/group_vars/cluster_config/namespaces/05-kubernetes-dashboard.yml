@@ -1,0 +1,20 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+#  - If this is a new namespace PLEASE make sure to add it in
+#    06-common-namespaces.yml
+# ##
+
+ns_kubernetes_dashboard:
+
+  name: kubernetes-dashboard
+
+  labels:
+    istio-injection: enabled
+
+  # override for tls_sercret names a list of map with 'secret_name' key
+  tls_secrets: |-
+    {{ kubernetes_dashboard_tls_secrets_names | default([]) }}

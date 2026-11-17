@@ -1,0 +1,58 @@
+- name: Update versioning
+  vars:
+    repo_path: "/tmp/repo"
+    version: "{{ lookup('env','version') }}"
+  block:
+    - name: Clone git repository
+      ansible.builtin.git:
+       repo: "https://{{lookup('env','git_username')}}:{{lookup('env','git_token')}}@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-azure-terraform-support" 
+       dest: "{{repo_path}}"
+       clone: yes
+       update: yes
+       version: "gpu_upgrade_joe"
+      register: git_clone
+    
+    - name: Find version.tf files
+      ansible.builtin.find:
+        paths: "{{repo_path}}/src"
+        patterns: 
+          - "versions.tf"
+          - "kube-configs.tf"
+        recurse: yes
+      register: files_list
+
+    - name: Update the version.tf
+      replace:
+        path: "{{ item.path }}"
+        regexp: '(azurerm\s*=\s*\{[^}]*?version\s*=\s*)"[^"]*"'
+        replace: '\1"{{ version }}"'
+      with_items: "{{ files_list.files }}"
+      when: files_list.files | length > 0
+
+    - name: Git status
+      command: "git status --porcelain"
+      args:
+        chdir: "{{repo_path}}"
+      register: git_status
+
+    - name: debug git status
+      debug:
+        msg: "Git status output : {{ git_status.stdout }} "
+
+    - name: ADD the files
+      command: "git add ."
+      args:
+        chdir: "{{repo_path}}"
+      when: git_status.stdout != ""
+
+    - name: COMMIT the Changes
+      command: "git -c user.name='Joel Anto Williams N' -c user.email='joelantowilliams.n.contractor@pepsico.com' commit -m 'Add manifest'"
+      args:
+        chdir: "{{repo_path}}"
+      when: git_status.stdout != ""
+ 
+    - name: PUSH the changes
+      command: "git push origin gpu_upgrade_joe"
+      args:
+        chdir: "{{repo_path}}"
+      when: git_status.stdout != ""

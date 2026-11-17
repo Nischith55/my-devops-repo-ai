@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-eiotp-preprod
+    pep-cmdb-app-service-id: 8bf83e8c1ba5fb8864eb8597dc4bcb4b
+    pep-cmdb-bus-app-id: dfbe083ddb3e8c10c2b5f38139961991
+    pep-environment: Preprod
+    project: eiotp
+    sector: global
+    servicename_aks: eiotp
+    team: global-eiotp
+  name: pep-eiap-global-eiotp-preprod

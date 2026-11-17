@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ehs-middleware-ehs-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for ehs-middleware-ehs-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ehs-middleware-ehs-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-scmehs-dev
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+  roles:
+  - name: ehs-middleware-ehs-dev-admin
+    description: Admin privileges to ehs-middleware-ehs-dev
+    policies:
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-admin, applications, *, ehs-middleware-ehs-dev/*, allow
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-admin, repositories, *, ehs-middleware-ehs-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: ehs-middleware-ehs-dev-user
+    description: Read-only privileges to ehs-middleware-ehs-dev
+    policies:
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-user, applications, get, ehs-middleware-ehs-dev/*, allow
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-user, applications, sync, ehs-middleware-ehs-dev/*, allow
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-user, repositories, get, ehs-middleware-ehs-dev/*, allow
+    - p, proj:ehs-middleware-ehs-dev:ehs-middleware-ehs-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.AZURE.MYEHS"

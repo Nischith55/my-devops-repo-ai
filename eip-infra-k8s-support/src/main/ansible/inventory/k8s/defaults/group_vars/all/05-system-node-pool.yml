@@ -1,0 +1,50 @@
+---
+# Default variables for system node pools, for use in kustomizations
+# patching original deployments
+
+# :-------  Deployment
+# ##
+# nodeSelector : System Node Pool
+# ##
+
+system_np_node_selector:
+  # we only support linux nodes
+  kubernetes.io/os: linux
+  # this is AKS generated label for all system node pools
+  kubernetes.azure.com/mode: system
+
+# system node pool when using affinity (use required)
+system_np_node_selector_term:
+  # requiredDuringSchedulingIgnoredDuringExecution/nodeSelectorTerms/-
+  matchExpressions:
+  - key: kubernetes.io/os
+    operator: In
+    values:
+    - linux
+  - key: kubernetes.azure.com/mode
+    operator: In
+    values:
+    - system
+
+# ##
+# tolerations ( a list)
+# ##
+
+system_np_tolerations:
+- key: CriticalAddonsOnly
+  operator: Exists
+
+# :-------  Daemonset
+
+#: Convenient daemonset spec
+
+aks_daemonset_spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  tolerations:
+  # tolerate every taint
+  - operator: Exists
+
+aks_system_np_deployment_spec:
+  nodeSelector: "{{ system_np_node_selector }}"
+  tolerations: "{{ system_np_tolerations }}"

@@ -1,0 +1,61 @@
+---
+# ##
+# Generic Kustomize build task from templates or copy files.
+# INPUTS:
+# - params_kust_gen_build:
+#     params:
+# ##
+- name: GENERATE_AND_BUILD_KUSTOMIZE_BLOCK
+  block:
+
+    - name: GENERATE_OVERLAYS_FROM_TEMPLATE
+      include_tasks:
+        # force relative resolution from this dir, so fails if moved.
+        file: ./generate/overlays-from-template.yml
+      vars:
+        params_gen_overlay:
+          params: "{{ __kgb_params }}"
+      when: (not (skip_generate | default('false') | bool))
+
+    - name: KUSTOMIZE_BUILD_BLOCK
+      block:
+
+        - name: ENSURE_KUSTOMIZE_BUILD_OUT_DIR
+          include_tasks:
+            file: tasks/core/mkdirs.yml
+          vars:
+            params_mkdirs:
+              path: "{{ __kustomize_out_file }}"
+
+        - name: KUSTOMIZE_BUILD
+          include_role:
+            name: k8s_support/kustomize
+            tasks_from: execute
+          vars:
+            kustomize_action: build
+            kustomize_action_args: |-
+              {{ __kustomize_src_dir }} -o {{ __kustomize_out_file }}
+
+        # build out file mode is correct
+        - name: ENSURE_BUILD_OUT_FILE_MODE ({{ __kustomize_out_file }})
+          file:
+            path: "{{ __kustomize_out_file }}"
+            state: file
+            mode: "u=rw,g=r,o=r"
+
+      vars:
+        __kgb_m: "{{ __kgb_params['manifest'] }}"
+        __kustomize_src_dir: "{{ __kgb_m['input_dir'] }}"
+        __kustomize_out_file: "{{ __kgb_m['output_path'] }}"
+      # option to skip and anything that startswith kustomize
+      when: >-
+        (not (skip_kustomize | default('false') | bool))
+        and
+        (
+          __kgb_params['manifest'] is defined 
+        )
+
+  # block vars
+  vars:
+    __kgb: "{{ params_kust_gen_build }}"
+    __kgb_params: "{{ __kgb['params'] }}"

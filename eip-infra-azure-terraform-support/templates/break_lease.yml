@@ -1,0 +1,98 @@
+jobs:
+- job: Break_Lease
+  displayName: 'state-file-break-lease'  
+  steps:
+  - task: PythonScript@0
+    displayName: "Extract Azure KV secrets"
+    name: "GetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py' 
+      arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+    env:
+      PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+      NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+      PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+      NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+      PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+      PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+      PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+      NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+      PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+      
+  - task: PythonScript@0
+    displayName: "Set Azure credentials"
+    name: "SetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+      arguments: "${{ parameters.service_principal }}"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+
+  - task: Bash@3
+    displayName: "break-lease-script"
+    inputs:
+      targetType: 'inline'
+      script: |
+        set -e
+        az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
+        az account set --subscription $(ARM_SUBSCRIPTION_ID)
+        #az account show
+        i=$(az group exists -n ${{ parameters.resource_group_name_for_backend }})
+        echo $i
+          if [[ "$i" == "true" ]]; then
+            echo "#####################################################"
+            echo "Resource Group ${{ parameters.resource_group_name_for_backend }} exists!!!"
+            echo "#####################################################"
+            j=$(az storage account check-name --name ${{ parameters.storage_account_name_for_backend }} --query "reason" --out tsv)
+              if [[ "$j" == "AlreadyExists" ]]; then 
+                echo "#####################################################"
+                echo "Storage Account ${{ parameters.storage_account_name_for_backend }} exists!!!"
+                echo "#####################################################"  
+                k=$(az storage container exists --account-name ${{ parameters.storage_account_name_for_backend }} --account-key $(az storage account keys list -g ${{ parameters.resource_group_name_for_backend }} -n ${{ parameters.storage_account_name_for_backend }} --query [0].value -o tsv) --name ${{ parameters.container_name_for_backend }} --query "exists" --out tsv)
+                  if [[ "$k" == "true" ]]; then 
+                    echo "#####################################################"
+                    echo "Storage Account Container ${{ parameters.container_name_for_backend }} exists!!!"
+                    echo "#####################################################"  
+                    l=$(az storage blob exists --account-name ${{ parameters.storage_account_name_for_backend }} --account-key $(az storage account keys list -g ${{ parameters.resource_group_name_for_backend }} -n ${{ parameters.storage_account_name_for_backend }} --query [0].value -o tsv) --container-name ${{ parameters.container_name_for_backend }} --name ${{ parameters.state_file_name }} --query "exists" --out tsv)
+                      if [[ "$l" == "true" ]]; then 
+                        echo "#####################################################"
+                        echo "Terraform State Blob ${{ parameters.state_file_name }} exists!!!"
+                        echo "#####################################################"
+                        az storage blob lease break --account-name ${{ parameters.storage_account_name_for_backend }} --account-key $(az storage account keys list -g ${{ parameters.resource_group_name_for_backend }} -n ${{ parameters.storage_account_name_for_backend }} --query [0].value -o tsv) --container-name ${{ parameters.container_name_for_backend }} --blob-name ${{ parameters.state_file_name }}
+                        if [[ $? -eq 0 ]]; then
+                          echo "#####################################################"
+                          echo "Terraform State Blob ${{ parameters.state_file_name }} lease broken successfully!!!"
+                          echo "#####################################################"
+                        else
+                          echo "#####################################################"
+                          echo "Terraform State Blob ${{ parameters.state_file_name }} lease not broken!!!"
+                          echo "#####################################################"
+                        fi
+                      else 
+                        echo "#####################################################"
+                        echo "Terraform State Blob ${{ parameters.state_file_name }} DOES NOT EXISTS in ${{ parameters.container_name_for_backend }}"
+                        echo "#####################################################"
+                        exit 1
+                      fi
+                  else 
+                    echo "#####################################################"
+                    echo "Storage Account Container ${{ parameters.container_name_for_backend }} DOES NOT EXISTS in STORAGE ACCOUNT ${{ parameters.storage_account_name_for_backend }}!!!"
+                    echo "#####################################################"
+                    exit 1
+                  fi
+              else 
+                echo "#####################################################"
+                echo "Storage Account ${{ parameters.storage_account_name_for_backend }} DOES NOT EXISTS!!!"
+                echo "#####################################################"
+                exit 1
+              fi              
+          else 
+            echo "#####################################################"
+            echo "Resource Group ${{ parameters.resource_group_name_for_backend }} DOES NOT EXISTS!!!"
+            echo "#####################################################"
+            exit 1
+          fi

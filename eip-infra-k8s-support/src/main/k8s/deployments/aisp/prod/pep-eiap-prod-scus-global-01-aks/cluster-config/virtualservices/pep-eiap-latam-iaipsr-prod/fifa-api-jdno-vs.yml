@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: fifa-api-jdno-vs
+  namespace: pep-eiap-latam-iaipsr-prod
+  labels:
+      app: fifa-api
+spec:
+  hosts:
+  - fifa-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-iaipsr-prod/pep-eiap-latam-iaipsr-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: fifa-api.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+        port:
+          number: 80
+  

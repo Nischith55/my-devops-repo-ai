@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: customer-communication-tool-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for customer-communication-tool-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/customer-communication-tool-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-ae-global-01-aks
+    namespace: pep-dps-dps-cct-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-ae-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: customer-communication-tool-dev-admin
+    description: Admin privileges to customer-communication-tool-dev
+    policies:
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-admin, applications, *, customer-communication-tool-dev/*, allow
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-admin, repositories, *, customer-communication-tool-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: customer-communication-tool-dev-user
+    description: Read-only privileges to customer-communication-tool-dev
+    policies:
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-user, applications, get, customer-communication-tool-dev/*, allow
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-user, applications, sync, customer-communication-tool-dev/*, allow
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-user, repositories, get, customer-communication-tool-dev/*, allow
+    - p, proj:customer-communication-tool-dev:customer-communication-tool-dev-user, applications, action/apps/Deployment/restart, customer-communication-tool-dev/*, allow
+    groups:
+    - "Team.Support.ST.PAM.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

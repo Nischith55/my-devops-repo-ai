@@ -1,0 +1,16 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-apigee-servicenow-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-apigee-servicenow-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-apigee-ops-admin
+    name: pep-apigee-servicenow-sa

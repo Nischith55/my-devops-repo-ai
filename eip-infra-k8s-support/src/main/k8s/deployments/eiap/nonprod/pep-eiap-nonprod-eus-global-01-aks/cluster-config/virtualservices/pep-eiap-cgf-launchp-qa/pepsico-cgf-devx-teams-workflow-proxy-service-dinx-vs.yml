@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-cgf-devx-teams-workflow-proxy-service-dinx-vs
+  namespace: pep-eiap-cgf-launchp-qa
+  labels:
+      app: pepsico-cgf-devx-teams-workflow-proxy-service
+spec:
+  hosts:
+  - pepsico-cgf-devx-teams-proxy-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-launchp-qa/pep-eiap-cgf-launchp-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cgf-devx-teams-workflow-proxy-service.pep-eiap-cgf-launchp-qa.svc.cluster.local
+        port:
+          number: 80
+  

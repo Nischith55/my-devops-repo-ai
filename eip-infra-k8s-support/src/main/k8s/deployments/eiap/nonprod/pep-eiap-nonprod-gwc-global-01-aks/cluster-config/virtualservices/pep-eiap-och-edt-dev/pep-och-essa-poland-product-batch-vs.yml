@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-essa-poland-product-batch
+  name: pep-och-essa-poland-product-batch-vs
+  namespace: pep-eiap-och-edt-dev
+spec:
+  gateways:
+  - pep-eiap-och-edt-dev/pep-eiap-och-edt-dev-cv-gw
+  hosts:
+  - pep-och-essa-poland-product-batch.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-essa-poland-product-batch.pep-eiap-och-edt-dev.svc.cluster.local
+        port:
+          number: 8080

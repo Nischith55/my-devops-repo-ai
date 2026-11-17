@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-platform-camunda-svc
+  name: pep-och-platform-camunda-svc-vs
+  namespace: pep-eiap-och-na-prod
+spec:
+  gateways:
+  - pep-eiap-och-na-prod/pep-eiap-och-na-prod-cv-gw
+  hosts:
+  - pep-och-platform-camunda-svc.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-platform-camunda-svc.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80

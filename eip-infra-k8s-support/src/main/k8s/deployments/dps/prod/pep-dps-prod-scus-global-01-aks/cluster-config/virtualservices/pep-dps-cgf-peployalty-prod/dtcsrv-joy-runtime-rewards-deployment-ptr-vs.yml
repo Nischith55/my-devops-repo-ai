@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-rewards-deployment-ptr
+  name: dtcsrv-joy-runtime-rewards-deployment-ptr-vs
+  namespace: pep-dps-cgf-peployalty-prod
+spec:
+  gateways:
+  - pep-dps-cgf-peployalty-prod/pep-dps-cgf-peployalty-prod-cv-gw
+  hosts:
+  - pep-joy-runtimerewardsdeploymentptr.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-rewards-deployment-ptr.pep-dps-cgf-peployalty-prod.svc.cluster.local
+        port:
+          number: 80

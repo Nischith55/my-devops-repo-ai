@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-eiap-amesa-paperless-prod
+    project: paperless
+    sector: amesa
+    team: amesa-paperless
+  name: pep-eiap-amesa-paperless-prod

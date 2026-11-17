@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-catax-quvm-vs
+  namespace: pep-pfna-pgt-preprod
+  labels:
+      app: pcaf-shp-catax
+spec:
+  hosts:
+  - pcaf-shp-catax.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-preprod/pep-pfna-pgt-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-catax.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.preprod.mypepsico.com
+      - exact: https://pp.uap.pepenv.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - Authorization
+      - Link
+       
+  

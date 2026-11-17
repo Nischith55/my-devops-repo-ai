@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vendingfsvmiddlewareservice-ufml-vs
+  namespace: pep-eiap-pbna-vms365-prod
+  labels:
+      app: vendingfsvmiddlewareservice
+spec:
+  hosts:
+  - pep-pbna-prod-vendingfsvmiddlewareservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-vms365-prod/pep-eiap-pbna-vms365-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vendingfsvmiddlewareservice.pep-eiap-pbna-vms365-prod.svc.cluster.local
+        port:
+          number: 80
+  

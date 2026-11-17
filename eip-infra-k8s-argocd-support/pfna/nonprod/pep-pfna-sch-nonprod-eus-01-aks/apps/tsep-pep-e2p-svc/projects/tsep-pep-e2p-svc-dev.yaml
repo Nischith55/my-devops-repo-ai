@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-pep-e2p-svc-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-pep-e2p-svc-dev  
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-pep-e2p-svc-argocd-configs
+      - peppfnaschnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-flna-epgiri-dev
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: tsep-pep-e2p-svc-dev-admin
+        description: Admin privileges to tsep-pep-e2p-svc-dev
+        policies:
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-admin, applications, *, tsep-pep-e2p-svc-dev/*, allow
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-admin, repositories, *, tsep-pep-e2p-svc-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-pep-e2p-svc-dev-user
+        description: Read-only privileges to tsep-pep-e2p-svc-dev
+        policies:
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-user, applications, get, tsep-pep-e2p-svc-dev/*, allow
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-user, applications, sync, tsep-pep-e2p-svc-dev/*, allow
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-user, repositories, get, tsep-pep-e2p-svc-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tsep-pep-e2p-svc-dev:tsep-pep-e2p-svc-dev-user, applications, action/apps/Deployment/restart, tsep-pep-e2p-svc-dev/*, allow
+        groups:
+        - "Team.Support.DPS.NonProd.GRIR"
+        - "Team.Support.EIAP.READ"
+    

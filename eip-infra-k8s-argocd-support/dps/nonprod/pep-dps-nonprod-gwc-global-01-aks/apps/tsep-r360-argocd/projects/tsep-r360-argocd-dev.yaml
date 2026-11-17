@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-r360-argocd
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-r360-argocd  
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-r360-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-dps-r360-dev
+      - name: pep-dps-nonprod-gwc-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: tsep-r360-argocd-admin
+        description: Admin privileges to tsep-r360-argocd
+        policies:
+        - p, proj:tsep-r360-argocd:tsep-r360-argocd-admin, applications, *, tsep-r360-argocd/*, allow
+        - p, proj:tsep-r360-argocd:tsep-r360-argocd-admin, repositories, *, tsep-r360-argocd/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-r360-argocd-user
+        description: Read-only privileges to tsep-r360-argocd
+        policies:
+        - p, proj:tsep-r360-argocd:tsep-r360-argocd-user, applications, get, tsep-r360-argocd/*, allow
+        - p, proj:tsep-r360-argocd:tsep-r360-argocd-user, applications, sync, tsep-r360-argocd/*, allow
+        - p, proj:tsep-r360-argocd:tsep-r360-argocd-user, repositories, get, tsep-r360-argocd/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tsep-r360-argocd-dev:tsep-r360-argocd-dev-user, applications, action/apps/Deployment/restart, tsep-r360-argocd-dev/*, allow
+        groups:
+        - "Team.App.SupportDPS.OnePEP.CAF"
+        - "Team.Support.R360.RG.Contributor"
+        - "Team.Support.EIAP.READ"
+    

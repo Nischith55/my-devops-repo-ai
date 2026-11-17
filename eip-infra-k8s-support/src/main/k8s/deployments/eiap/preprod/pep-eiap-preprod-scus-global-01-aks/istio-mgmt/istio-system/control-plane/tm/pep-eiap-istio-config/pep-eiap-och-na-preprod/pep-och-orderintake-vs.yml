@@ -1,0 +1,39 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-orderintake-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-orderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api/orders
+    - ignoreUriCase: true
+      uri:
+        prefix: /v2/api/orders
+    route:
+    - destination:
+        host: pep-och-orderintake.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.preprod.na.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - x-total-count

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-ai4bisw-qa
+  labels:
+    env-nonprod: "true"
+    project: ai4bisw
+    sector: cgf
+    team: cgf-ai4bisw
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: spendwisereporting
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: e3d5ee5c838eda10a8b3b1ffeeaad31a
+    pep-cmdb-app-service-id: e0e5a29c838eda10a8b3b1ffeeaad317
+    pep-environment: QA
+    

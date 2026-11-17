@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-commons-admin-server
+  name: pepsico-eip-commons-admin-server-vs
+  namespace: pep-eiap-latam-gtm-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-preprod/pep-eiap-latam-gtm-preprod-cv-gw
+  hosts:
+  - pepsico-eip-commons-admin-server.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-commons-admin-server.pep-eiap-latam-gtm-preprod.svc.cluster.local

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: isale-services-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for isale-services-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/EUROPE_iSales_Replatforming/_git/isale-services-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-europe-isalespt-dev
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: isale-services-dev-admin
+        description: Admin privileges to isale-services-dev
+        policies:
+        - p, proj:isale-services-dev:isale-services-dev-admin, applications, *, isale-services-dev/*, allow
+        - p, proj:isale-services-dev:isale-services-dev-admin, repositories, *, isale-services-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: isale-services-dev-user
+        description: Read-only privileges to isale-services-dev
+        policies:
+        - p, proj:isale-services-dev:isale-services-dev-user, applications, get, isale-services-dev/*, allow
+        - p, proj:isale-services-dev:isale-services-dev-user, applications, sync, isale-services-dev/*, allow
+        - p, proj:isale-services-dev:isale-services-dev-user, repositories, get, isale-services-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:isale-services-dev:isale-services-dev-user, applications, action/apps/Deployment/restart, isale-services-dev/*, allow
+        groups:
+        - "Team.support.iSales.AKS"
+        - "Team.Support.EIAP.READ"
+    

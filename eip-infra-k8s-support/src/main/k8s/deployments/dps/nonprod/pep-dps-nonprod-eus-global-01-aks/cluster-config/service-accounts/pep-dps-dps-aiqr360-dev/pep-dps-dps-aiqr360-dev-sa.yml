@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 5ff9833c-1418-41ce-b684-c5a86f09ecd6
+  name: pep-dps-dps-aiqr360-dev-sa
+  namespace: pep-dps-dps-aiqr360-dev

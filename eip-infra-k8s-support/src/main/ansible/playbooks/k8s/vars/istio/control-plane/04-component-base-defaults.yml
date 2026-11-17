@@ -1,0 +1,18 @@
+---
+# Defaults for base components 
+
+__icp_spec_component_base:
+
+  # since we have in-cluster control plane
+  enabled: true
+
+##
+# NOTE: override if needed as we do a combine and default is first always
+##
+__icp_spec_component_base_params: |-
+  {{
+    __icp_spec_component_base
+    |
+    combine((icp_spec_component_base | default({})), recursive=True)
+  }}
+

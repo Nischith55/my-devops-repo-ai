@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-appsupport-rb
+  namespace: pep-eiap-pbna-halo-preprod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-appsupport-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.PBNA.HALO.Developer
+    name: 6456152d-39e8-4d97-bd21-167521b36312
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd

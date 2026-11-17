@@ -1,0 +1,131 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- if and .Values.virtualService.enabled (or .Values.global.deployment.enabled .Values.global.rollout.enabled .Values.global.statefulset.enabled) .Values.global.service.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ include "virtual-service.name" . }}
+  labels:
+    {{- include "platform-chart.labels" . | nindent 4 }}
+  {{- with .Values.global.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  gateways:
+  {{- if .Values.virtualService.gateways }}
+  {{- toYaml .Values.virtualService.gateways | nindent 2 }}
+  {{- else }}
+  - {{ $namespace }}/{{ $namespace }}-cv-gw
+  {{- end }}
+  hosts:
+  {{- toYaml .Values.virtualService.hosts | nindent 2 }} 
+  {{- if .Values.virtualService.tlsTerminationOnPod }}
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+        {{- toYaml .Values.virtualService.hosts | nindent 8 }}
+      {{- range $v := .Values.virtualService.routes }}
+      route:
+      - destination:
+          host: {{ $v.destinationService }}.{{ $namespace }}.svc.cluster.local
+          port:
+            number: {{ $v.port }}
+      {{- end }}
+  {{- else }}
+  {{- if .Values.virtualService.http }}
+  http:
+  {{- toYaml .Values.virtualService.http | nindent 2 }}
+  {{- else }}
+  http:
+  {{- range $v := .Values.virtualService.routes }}
+  {{- if $v.name }} 
+  - name: {{ $v.name }} 
+    match:
+    {{- else }}
+  - match: 
+    {{- end }}
+    {{- if $v.prefixes }}    
+      {{- range $v.prefixes }}
+    - ignoreUriCase: true
+      uri:
+        prefix: {{ . }}
+      {{- end}}
+    {{- end}}
+    {{- if $v.prefix }}
+    - ignoreUriCase: true
+      uri:
+        prefix: {{ $v.prefix }}  
+    {{- end}}
+    {{- if $v.headers }}    
+    {{- with $v.headers }}
+    - headers:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- end }}
+    {{- with $v.rewrite }}
+    rewrite:
+      {{- toYaml . | nindent 6 }}
+    {{- end }} 
+    {{- with $v.retries }}
+    retries:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with $v.fault }}
+    fault: 
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    route:
+    {{- if $v.destinations }}   
+    {{- range $v.destinations }}
+    - destination:
+        host: {{ .destinationService }}.{{ $namespace }}.svc.cluster.local
+        port:
+          number: {{ .port }}
+        {{- if hasKey . "subset" }}
+        subset: {{ .subset }}
+        {{- end }}
+      {{- if hasKey . "weight" }}
+      weight: {{ .weight }}
+      {{- end }}
+    {{- end }}
+    {{- end }}   
+    {{- if $v.destinationService }}   
+    - destination:
+        host: {{ $v.destinationService }}.{{ $namespace }}.svc.cluster.local
+        port:
+          number: {{ $v.port }}
+        {{- if hasKey $v "subset" }}
+        subset: {{ $v.subset }}
+        {{- end }}
+      {{- if hasKey $v "weight" }}
+      weight: {{ $v.weight }}
+      {{- end }}
+    {{- end }}     
+    {{- if $v.timeout }}      
+    timeout: {{ $v.timeout }}
+    {{- end }}
+    {{- if $v.corsPolicy }}
+    corsPolicy:
+      {{- with $v.corsPolicy.allowOrigins }}
+      allowOrigins:
+       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with $v.corsPolicy.allowMethods }}
+      allowMethods:
+       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with $v.corsPolicy.allowHeaders }}
+      allowHeaders:
+       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with $v.corsPolicy.exposeHeaders }}
+      exposeHeaders:
+       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      allowCredentials: {{ $v.corsPolicy.allowCredentials }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}

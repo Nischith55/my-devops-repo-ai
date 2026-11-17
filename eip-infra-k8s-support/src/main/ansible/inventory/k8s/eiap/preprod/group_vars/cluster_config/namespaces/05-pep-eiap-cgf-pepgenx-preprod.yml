@@ -1,0 +1,37 @@
+---
+ns_pep_eiap_cgf_pepgenx_preprod:
+  
+  name: pep-eiap-cgf-pepgenx-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-pepgenx
+    sector: cgf
+    project: pepgenx
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: engineeringexcellencepepgenx
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-pepgenx-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_pepgenx'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-pepgenx-preprod-sa-token
+    namespace: pep-eiap-cgf-pepgenx-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-pepgenx-preprod-sa"

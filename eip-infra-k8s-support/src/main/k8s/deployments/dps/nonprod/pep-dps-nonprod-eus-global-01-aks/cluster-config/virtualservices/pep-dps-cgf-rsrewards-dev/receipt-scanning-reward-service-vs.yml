@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: receipt-scanning-reward-service-vs
+  namespace: pep-dps-cgf-rsrewards-dev
+spec:
+  gateways:
+  - pep-dps-cgf-rsrewards-dev/pep-dps-cgf-rsrewards-dev-cv-gw
+  hosts:
+  - receipt-scanning-reward-service.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-reward-service.pep-dps-cgf-rsrewards-dev.svc.cluster.local
+        port:
+          number: 8085

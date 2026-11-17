@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falcon-prod-pep-pfna-cit-prod-eus-pcaf-01-aks-namespaces
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    # Namespace(s) must exist before the application syncs its workloads into them.
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  # Dedicated project that inherits global-platform (whitelists the cluster-scoped
+  # Namespace resource). The app's own project inherits global-app, which blacklists
+  # Namespace, so it cannot be used to create namespaces.
+  project: falcon-prod-pep-pfna-cit-prod-eus-pcaf-01-aks-namespaces
+  destination:
+    name: pep-pfna-cit-prod-eus-pcaf-01-aks
+    namespace: falcon-system
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+  source:
+    repoURL: https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+    targetRevision: develop
+    # Folder in the ArgoCD config repo that holds the raw Namespace manifest(s),
+    # including any Pod Security Admission / labels the application requires.
+    path: prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/namespaces
+    directory:
+      recurse: false

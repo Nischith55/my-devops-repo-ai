@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmpjuneee-testtemp-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmpjuneee-testtemp-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpjuneee-testtemp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: cmpjuneee-testtemp-dev-admin
+    description: Admin privileges to cmpjuneee-testtemp-dev
+    policies:
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-admin, applications, *, cmpjuneee-testtemp-dev/*, allow
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-admin, repositories, *, cmpjuneee-testtemp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: cmpjuneee-testtemp-dev-user
+    description: Read-only privileges to cmpjuneee-testtemp-dev
+    policies:
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-user, applications, get, cmpjuneee-testtemp-dev/*, allow
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-user, applications, sync, cmpjuneee-testtemp-dev/*, allow
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-user, repositories, get, cmpjuneee-testtemp-dev/*, allow
+    - p, proj:cmpjuneee-testtemp-dev:cmpjuneee-testtemp-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

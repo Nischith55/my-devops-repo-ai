@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-myidm-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-myidm-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iamc-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-iamcentral-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-myidm-prod-admin
+        description: Admin privileges to pep-myidm-prod
+        policies:
+        - p, proj:pep-myidm-prod:pep-myidm-prod-admin, applications, *, pep-myidm-prod/*, allow
+        - p, proj:pep-myidm-prod:pep-myidm-prod-admin, repositories, *, pep-myidm-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-myidm-prod-user
+        description: Read-only privileges to pep-myidm-prod
+        policies:
+        - p, proj:pep-myidm-prod:pep-myidm-prod-user, applications, get, pep-myidm-prod/*, allow
+        - p, proj:pep-myidm-prod:pep-myidm-prod-user, applications, sync, pep-myidm-prod/*, allow
+        - p, proj:pep-myidm-prod:pep-myidm-prod-user, repositories, get, pep-myidm-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.NonProd.iamcen"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,14 @@
+defaultRevision: main
+
+global:
+  istioNamespace: istio-system
+
+revisionValidationWebhook:
+  enabled: true
+
+labels:
+  app: istio-base
+  release: solo-istio
+
+annotations:
+  solo.io/managed-by: helm

@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-order-reprocess-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-order-reprocess.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-order-reprocess.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 80 
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-falloutmanagement.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.dev.na.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin        
+      exposeHeaders:
+      - x-total-count
+      - x-source  

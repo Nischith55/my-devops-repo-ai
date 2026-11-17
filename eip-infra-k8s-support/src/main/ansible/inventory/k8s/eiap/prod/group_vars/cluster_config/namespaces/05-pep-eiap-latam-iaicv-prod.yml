@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_latam_iaicv_prod:
+  
+  name: pep-eiap-latam-iaicv-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-iaicv
+    sector: latam
+    project: iaicv
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-iaicv-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_iaicv'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

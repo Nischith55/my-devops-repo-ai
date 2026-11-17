@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pep-pfna-nginx
+  name: pep-pfna-nginx
+  namespace: pep-pfna-global-infra-prod
+spec:
+  ports:
+  - name: http-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pep-pfna-nginx
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-pfna-nginx
+  name: pep-pfna-nginx
+  namespace: pep-pfna-global-infra-prod
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pep-pfna-nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pep-pfna-nginx
+    spec:
+#      imagePullSecrets:
+#      - name: pep-pfna-global-infra-regcred
+      containers:
+      - command:
+        - sudo
+        - nginx
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-bionic-2021.07.12
+        imagePullPolicy: Always
+        name: pep-pfna-nginx
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - mountPath: /secrets
+          name: all-gw-secrets
+          readOnly: true
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsUser: 1000
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: gw01-tls.crt
+              - key: tls.key
+                path: gw01-tls.key
+              name: pep-pfna-cit-prod-scus-pgt-01-aks-gw01-tls

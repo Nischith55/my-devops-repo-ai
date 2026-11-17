@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    field.cattle.io/projectId: p-knbd9
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-och-edt-qa
+    pep-cmdb-app-service-id: 2e0a923ddb149850ccfa65494b9619c2
+    pep-cmdb-bus-app-id: aa0ad23ddb149850ccfa65494b961944
+    pep-environment: QA
+    project: edt
+    sector: och
+    servicename_aks: och
+    team: och-edt
+  name: pep-eiap-och-edt-qa

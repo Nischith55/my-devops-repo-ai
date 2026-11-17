@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-mmeventsgenerator-api-bcvy-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-mmeventsgenerator-api
+spec:
+  hosts:
+  - pep-pfna-transp-mmeventsgenerator-api-prod-01.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/mmeventsgenerator-api
+    route:
+    - destination:
+        host: pep-pfna-transp-mmeventsgenerator-api.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

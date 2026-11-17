@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ask-ada-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ask-ada-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ask-ada-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-askadaa-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ask-ada-prod-admin
+        description: Admin privileges to ask-ada-prod
+        policies:
+        - p, proj:ask-ada-prod:ask-ada-prod-admin, applications, *, ask-ada-prod/*, allow
+        - p, proj:ask-ada-prod:ask-ada-prod-admin, repositories, *, ask-ada-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: ask-ada-prod-user
+        description: Read-only privileges to ask-ada-prod
+        policies:
+        - p, proj:ask-ada-prod:ask-ada-prod-user, applications, get, ask-ada-prod/*, allow
+        - p, proj:ask-ada-prod:ask-ada-prod-user, applications, sync, ask-ada-prod/*, allow
+        - p, proj:ask-ada-prod:ask-ada-prod-user, repositories, get, ask-ada-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.CGF.NonProd.AskADAA"
+        - "Team.Support.EIAP.READ"
+    

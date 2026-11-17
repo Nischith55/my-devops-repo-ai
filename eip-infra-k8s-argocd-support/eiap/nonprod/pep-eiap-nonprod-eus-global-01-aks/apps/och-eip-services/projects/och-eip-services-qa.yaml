@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: och-eip-services-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for och-eip-services-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-och-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-pbna-halo-qa
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: och-eip-services-qa-admin
+        description: Admin privileges to och-eip-services-qa
+        policies:
+        - p, proj:och-eip-services-qa:och-eip-services-qa-admin, applications, *, och-eip-services-qa/*, allow
+        - p, proj:och-eip-services-qa:och-eip-services-qa-admin, repositories, *, och-eip-services-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: och-eip-services-qa-user
+        description: Read-only privileges to och-eip-services-qa
+        policies:
+        - p, proj:och-eip-services-qa:och-eip-services-qa-user, applications, get, och-eip-services-qa/*, allow
+        - p, proj:och-eip-services-qa:och-eip-services-qa-user, applications, sync, och-eip-services-qa/*, allow
+        - p, proj:och-eip-services-qa:och-eip-services-qa-user, repositories, get, och-eip-services-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:och-eip-services-qa:och-eip-services-qa-user, applications, action/apps/Deployment/restart, och-eip-services-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+        - "Team.Support.EIAP.READ"
+    

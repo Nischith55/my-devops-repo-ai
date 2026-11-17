@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    pep-cmdb-app-service-id: 4d9df29b93b0ae140f44f3ed1dba10d5
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Preprod
+    project: btboms
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalomseuropenon-prod
+    team: europe-btboms
+  name: pep-eiap-europe-btboms-preprod

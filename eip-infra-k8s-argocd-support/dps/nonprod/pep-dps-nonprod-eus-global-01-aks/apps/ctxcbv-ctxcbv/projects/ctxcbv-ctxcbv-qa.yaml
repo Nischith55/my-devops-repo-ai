@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ctxcbv-ctxcbv-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for ctxcbv-ctxcbv-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ctxcbv-ctxcbv-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-snt-ctxcbv-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: ctxcbv-ctxcbv-qa-admin
+    description: Admin privileges to ctxcbv-ctxcbv-qa
+    policies:
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-admin, applications, *, ctxcbv-ctxcbv-qa/*, allow
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-admin, repositories, *, ctxcbv-ctxcbv-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: ctxcbv-ctxcbv-qa-user
+    description: Read-only privileges to ctxcbv-ctxcbv-qa
+    policies:
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-user, applications, get, ctxcbv-ctxcbv-qa/*, allow
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-user, applications, sync, ctxcbv-ctxcbv-qa/*, allow
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-user, repositories, get, ctxcbv-ctxcbv-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:ctxcbv-ctxcbv-qa:ctxcbv-ctxcbv-qa-user, applications, action/apps/Deployment/restart, ctxcbv-ctxcbv-qa/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.CTXPTS"
+    - "Team.Support.EIAP.READ"

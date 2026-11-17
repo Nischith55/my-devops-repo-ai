@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eip-och-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for eip-och-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-och-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-pbna-halo-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eip-och-preprod-admin
+        description: Admin privileges to eip-och-preprod
+        policies:
+        - p, proj:eip-och-preprod:eip-och-preprod-admin, applications, *, eip-och-preprod/*, allow
+        - p, proj:eip-och-preprod:eip-och-preprod-admin, repositories, *, eip-och-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: eip-och-preprod-user
+        description: Read-only privileges to eip-och-preprod
+        policies:
+        - p, proj:eip-och-preprod:eip-och-preprod-user, applications, get, eip-och-preprod/*, allow
+        - p, proj:eip-och-preprod:eip-och-preprod-user, applications, sync, eip-och-preprod/*, allow
+        - p, proj:eip-och-preprod:eip-och-preprod-user, repositories, get, eip-och-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:eip-och-preprod:eip-och-preprod-user, applications, action/apps/Deployment/restart, eip-och-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-dps-istio-config
+  name: pep-dps-istio-config

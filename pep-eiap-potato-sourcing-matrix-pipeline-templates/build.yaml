@@ -1,0 +1,148 @@
+jobs:
+- job: CI_Build
+  steps:
+  - task: Bash@3
+    displayName: 'Build'
+    inputs:
+      targetType: 'inline'
+      script: |
+        pwd
+        ls -alrt
+        python3 --version
+        #export adls=$(adls)
+        export db_dev_psd=$(mssqldevpsd)
+        export db_dev_uid=$(mssqldevuser)
+        export Username=$(Username)
+        export Password=$(Password)
+        pip3 install -r requirements.txt
+        cd pep-potato-sourcing-matrix-automation
+        ls -alrt
+        python3 -m coverage run --source=src/,tests
+        python3 -m coverage xml
+        python3 -m coverage report -i -m 
+        cd ..
+        ls -alrt
+
+  - task: SonarQubePrepare@5
+    displayName: Run Sonar Prepare
+    condition: and(succeeded(),eq('${{parameters.isSonarScanRequired}}', true))
+    inputs:
+      SonarQube: 'SonarQube_SC'
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: $(SONARPROJECTKEY)
+      cliProjectName: $(SONARPROJECTKEY)
+      cliSources: '.'
+      extraProperties: |
+        sonar.qualitygate.wait=true
+        sonar.javascript.lcov.reportPaths= ./coverage/lcov.info
+        sonar.scanner.javaHome=$(java17path)
+
+  - task: SonarQubeAnalyze@5
+    displayName: Run Sonar Scan
+    condition: and(succeeded(),eq('${{parameters.isSonarScanRequired}}', true))
+    env:
+      JAVA_HOME: $(java17path)
+
+  - task: SonarQubePublish@5
+    condition: and(succeeded(),eq('${{parameters.isSonarScanRequired}}', true))
+    displayName: Publish Gate Result
+    inputs:
+      pollingTimeoutSec: '300'
+
+  - task: FortifyScanCentralSAST@7
+    displayName: 'Fortify ScanCentral SAST Assessment 21.1'
+    condition: and(succeeded(),eq('${{parameters.isfortifyscanRequired}}', true))
+    inputs:
+      scanCentralCtrlUrl: 'https://csc.pepasm.net/scancentral-ctrl'
+      scanCentralClientToken: 'scancentral-client-ok'
+      sscUrl: 'https://ssc.pepasm.net/ssc'
+      sscCiToken: '$(CI_Token)'
+      uploadToSSC: true
+      applicationName: $(Appname)
+      applicationVersion: 1.0
+      buildTool: none
+      includeNodeModules: false
+      quiet: false
+    env:
+      JAVA_HOME: $(java11path)
+
+
+  - task: CopyFiles@2
+    condition: always()
+    inputs:
+      SourceFolder: '$(system.defaultWorkingDirectory)/'
+      Contents: '*'
+      TargetFolder: '$(build.ArtifactStagingDirectory)/'
+
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+
+  - task: Bash@3
+    displayName: 'Build image and Push'
+    inputs:
+      targetType: 'inline'
+      script: |
+        git clone -b psma https://azureDevops:$(eiap-s2u-PAT)@pepsicoit.visualstudio.com/EIAP_DevOps/_git/pep-eiap-potato-sourcing-matrix-pipeline-templates
+        cp pep-eiap-potato-sourcing-matrix-pipeline-templates/job_template_kaniko.yaml $(system.defaultWorkingDirectory)
+        pwd
+        WORKDIR=$(PVC_MOUNT)/$(Build.DefinitionName)-$(Build.BuildNumber)
+        IMAGE_DEST='$(npglobalacrurl)/$(acrrepoprefix)/$(acrreponame):$(Build.BuildNumber)'
+        mkdir $WORKDIR
+        echo $WORKDIR
+        cp $(system.defaultWorkingDirectory)/job_template_kaniko.yaml $WORKDIR
+        rm -f -r -d node_modules
+        cp -r * $WORKDIR
+        pwd
+        sed -i.bak "s~Dockerfilepath~Dockerfile~" job_template_kaniko.yaml
+        sed -i.bak "s~context-to-be-updated~$(Build.DefinitionName)-$(Build.BuildNumber)~" job_template_kaniko.yaml
+        sed -i.bak "s~image-to-be-updated~$IMAGE_DEST~" job_template_kaniko.yaml
+
+        cat job_template_kaniko.yaml
+        JOB_NAME=$(kubectl create -f job_template_kaniko.yaml -n $(NAMESPACE) | sed 's| created||')
+        echo $JOB_NAME
+
+        # wait for completion as background process - capture PID
+        kubectl wait --for=condition=complete --timeout=20m $JOB_NAME -n $(NAMESPACE) &
+        completion_pid=$!
+
+        # wait for failure as background process - capture PID
+        kubectl wait --for=condition=failed --timeout=20m $JOB_NAME -n $(NAMESPACE) && exit 1 &
+        failure_pid=$!
+
+        # capture exit code of the first subprocess to exit
+        wait -n $completion_pid $failure_pid
+
+        # store exit code in variable
+        exit_code=$?
+
+        if (( $exit_code == 0 )); then
+          echo "Job completed"
+        else
+          echo "Job failed with exit code ${exit_code}, exiting..."
+        fi
+        kubectl logs $JOB_NAME -n $(NAMESPACE) -f
+
+        # kubectl wait --for=condition=complete --timeout=20m $JOB_NAME -n $(NAMESPACE)
+        echo $(kubectl delete $JOB_NAME -n $(NAMESPACE))
+        # ls -alrt $(system.defaultWorkingDirectory)/
+        rm -r $WORKDIR
+        exit $exit_code
+
+
+  - task: Bash@3
+    displayName: 'Run Snyk Scan'
+    condition: and(succeeded(),eq('${{parameters.isSnykScanRequired}}', true))
+    #continueOnError: false
+    inputs:
+      targetType: 'inline'
+      script: |
+        snyk auth $(SNYK_AUTH_TOKEN)
+        snyk config set org='$(orgid)' --project-name='$(Appname)' 
+        echo snyk container monitor '$(npglobalacrurl)/$(acrrepoprefix)/$(acrreponame):$(Build.BuildNumber)' --username=$(npglobalacrusername) --password=$(npglobalacrpwd)  --app-vulns
+        snyk container monitor '$(npglobalacrurl)/$(acrrepoprefix)/$(acrreponame):$(Build.BuildNumber)' --username=$(npglobalacrusername) --password=$(npglobalacrpwd)  --app-vulns
+        # snyk-to-html -i snyk.json -o snyk-report.html -t /usr/lib/node_modules/snyk-to-html/template/test-cve-report.hbs

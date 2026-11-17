@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eiap-cgf-cle-exception-data-service
+  name: pep-eiap-cgf-cle-exception-data-service-vs
+  namespace: pep-eiap-cgf-cle-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-cle-preprod/pep-eiap-cgf-cle-preprod-cv-gw
+  hosts:
+  - pep-eiap-cgf-cle-exception-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-exception-data-service.pep-eiap-cgf-cle-preprod.svc.cluster.local
+        port:
+          number: 80

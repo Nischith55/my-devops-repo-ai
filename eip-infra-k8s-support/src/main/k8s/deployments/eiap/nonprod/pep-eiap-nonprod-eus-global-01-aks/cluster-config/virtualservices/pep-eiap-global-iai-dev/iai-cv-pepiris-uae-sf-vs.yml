@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: iai-cv-pepiris-uae-sf
+  name: iai-cv-pepiris-uae-sf-vs
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - iai-cv-pepiris-uae-sf.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: iai-cv-pepiris-uae-sf.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000

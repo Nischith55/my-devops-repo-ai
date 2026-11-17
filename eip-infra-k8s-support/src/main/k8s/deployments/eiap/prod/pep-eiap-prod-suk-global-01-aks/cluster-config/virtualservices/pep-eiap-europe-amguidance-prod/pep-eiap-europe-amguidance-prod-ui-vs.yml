@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eiap-europe-amguidance-prod-ui
+  name: pep-eiap-europe-amguidance-prod-ui-vs
+  namespace: pep-eiap-europe-amguidance-prod
+spec:
+  gateways:
+  - pep-eiap-europe-amguidance-prod/pep-eiap-europe-amguidance-prod-cv-gw
+  hosts:
+  - pep-eiap-europe-amguidance-prod-ui.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-europe-amguidance-prod-ui.pep-eiap-europe-amguidance-prod.svc.cluster.local
+        port:
+          number: 80

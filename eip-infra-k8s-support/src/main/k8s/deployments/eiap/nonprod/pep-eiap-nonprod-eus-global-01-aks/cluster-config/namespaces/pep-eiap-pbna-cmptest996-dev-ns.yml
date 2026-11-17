@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: cmptest996
+    sector: pbna
+    servicename_aks: codeonenon-prod
+    team: pbna-cmptest996
+  name: pep-eiap-pbna-cmptest996-dev

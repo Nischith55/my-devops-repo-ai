@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-iam-okta-telephony-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-iam-okta-telephony-prod  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iam-okta-telephony-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-iamservice-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-iam-okta-telephony-prod-admin
+        description: Admin privileges to pep-iam-okta-telephony-prod
+        policies:
+        - p, proj:pep-iam-okta-telephony-prod:pep-iam-okta-telephony-prod-admin, applications, *, pep-iam-okta-telephony-prod/*, allow
+        - p, proj:pep-iam-okta-telephony-prod:pep-iam-okta-telephony-prod-admin, repositories, *, pep-iam-okta-telephony-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-iam-okta-telephony-prod-user
+        description: Read-only privileges to pep-iam-okta-telephony-prod
+        policies:
+        - p, proj:pep-iam-okta-telephony-prod:pep-iam-okta-telephony-prod-user, applications, get, pep-iam-okta-telephony-prod/*, allow
+        - p, proj:pep-iam-okta-telephony-prod:pep-iam-okta-telephony-prod-user, applications, sync, pep-iam-okta-telephony-prod/*, allow
+        - p, proj:pep-iam-okta-telephony-prod:pep-iam-okta-telephony-prod-user, repositories, get, pep-iam-okta-telephony-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.support.AssociateSSO.PROD.Admins"
+        - "Team.Support.EIAP.READ"
+    

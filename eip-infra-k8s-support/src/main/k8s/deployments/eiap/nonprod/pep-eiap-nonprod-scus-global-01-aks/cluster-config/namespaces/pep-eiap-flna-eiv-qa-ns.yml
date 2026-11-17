@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-flna-eiv-qa
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    pep-cmdb-app-service: ENTERPRISE-INVENTORY-VISIBILITY
+    pep-cmdb-app-service-id: 94a13256dba90510438cde06f49619d3
+    pep-cmdb-bus-app-id: 50a13256dba90510438cde06f49619d0
+    pep-environment: QA
+    project: eiv
+    sector: flna
+    servicename_aks: eiv
+    team: flna-eiv
+  name: pep-eiap-flna-eiv-qa

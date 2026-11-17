@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: och-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for och-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace:  pep-pbna-pbna-savvy-preprod
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace: pep-pbna-ops-admin
+      roles:
+      - name: och-preprod-admin
+        description: Admin privileges to och-preprod
+        policies:
+        - p, proj:och-preprod:och-preprod-admin, applications, *, och-preprod/*, allow
+        - p, proj:och-preprod:och-preprod-admin, repositories, *, och-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: och-preprod-user
+        description: Read-only privileges to och-preprod
+        policies:
+        - p, proj:och-preprod:och-preprod-user, applications, get, och-preprod/*, allow
+        - p, proj:och-preprod:och-preprod-user, applications, sync, och-preprod/*, allow
+        - p, proj:och-preprod:och-preprod-user, repositories, get, och-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:och-preprod:och-preprod-user, applications, action/apps/Deployment/restart, och-preprod/*, allow
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.OCH.NA.DigitalSales.Developer"
+        - "Team.Support.EIAP.READ"
+    

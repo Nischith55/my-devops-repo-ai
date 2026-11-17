@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-pricingai-dev
+    project: dps-pricingai
+    sector: cgf
+    servicename_aks: netrevenuemanagement-promoai
+    team: cgf-pricingai
+  name: pep-eiap-cgf-pricingai-dev

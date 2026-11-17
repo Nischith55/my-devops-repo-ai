@@ -1,0 +1,32 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace IACOE GAIA
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_iacoe_gaia_dev:
+
+  name: pep-eiap-iacoe-gaia-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: iacoe-gaia
+    sector: iacoe
+    project: gaia
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['iacoe_gaia'] }}"
+        - "{{ k8s_sup_subjects['iacoe_gaia_sp'] }}"

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 48a42757-7962-469d-b935-2d8b91f11f45
+  name: pep-eiap-latam-pepsre-prod-sa
+  namespace: pep-eiap-latam-pepsre-prod

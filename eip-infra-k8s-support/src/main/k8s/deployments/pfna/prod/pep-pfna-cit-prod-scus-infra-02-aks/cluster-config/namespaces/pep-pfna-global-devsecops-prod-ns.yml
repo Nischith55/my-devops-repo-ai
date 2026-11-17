@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Prasad_Shakirat_2022_08_05
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-pfna-global-devsecops-prod
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    project: devsecops
+    sector: global
+    servicename_aks: och-hhnext
+    team: global-devsecops
+  name: pep-pfna-global-devsecops-prod

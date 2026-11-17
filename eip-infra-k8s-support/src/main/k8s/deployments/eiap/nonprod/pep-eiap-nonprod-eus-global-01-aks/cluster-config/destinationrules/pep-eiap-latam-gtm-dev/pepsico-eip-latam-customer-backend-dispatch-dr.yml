@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pepsico-eip-latam-customer-backend-dispatch-dr
+  namespace: pep-eiap-latam-gtm-dev
+spec:
+  host: pepsico-eip-latam-customer-backend-dispatch.pep-eiap-latam-gtm-dev.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN

@@ -1,0 +1,62 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sDisallowedTags",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-dps-prod-sea-global-01-aks-production:constraints.gatekeeper.sh/K8sDisallowedTags:default/container-image-must-not-have-latest-tag"
+    },
+    "name": "container-image-must-not-have-latest-tag"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "snyk-monitor",
+        "policy-system",
+        "internal-services",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {},
+      "scope": "*"
+    },
+    "parameters": {
+      "exemptImages": [
+        "openpolicyagent/opa-exp:latest",
+        "openpolicyagent/opa-exp2:latest",
+        "appdynamics/dl-proxy:latest",
+        "docker.io/appdynamics/java-agent:latest",
+        "nvcr.io/nim/meta/llama-3.1-70b-instruct:latest",
+        "busybox:latest"
+      ],
+      "tags": [
+        "latest"
+      ]
+    }
+  }
+}

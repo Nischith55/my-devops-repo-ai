@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-eiap-pbna-cets-prod
+    pep-cmdb-app-service-id: 4ad47cb9dbb6089014cb6bba4b9619c9
+    pep-cmdb-bus-app-id: bdae00f9db3e8c10c2b5f381399619c2
+    pep-environment: Production
+    project: cets
+    sector: pbna
+    servicename_aks: cetsnexgenprod
+    team: pbna-cets
+  name: pep-eiap-pbna-cets-prod

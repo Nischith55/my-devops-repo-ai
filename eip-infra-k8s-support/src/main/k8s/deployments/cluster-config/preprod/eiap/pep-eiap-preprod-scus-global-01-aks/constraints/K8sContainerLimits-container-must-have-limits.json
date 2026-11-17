@@ -1,0 +1,112 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sContainerLimits",
+  "metadata": {
+    "name": "container-must-have-limits"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "falcon-kac",
+        "falcon-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlockpp",
+        "tigera-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-preprod",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "policy-system",
+        "gitops-connector-system",
+        "pep-eiap-gremlin",
+        "argocd",
+        "falcon-kac",
+        "falcon-system",
+        "pep-eiap-global-cmp-preprod",
+        "pep-eiap-cgf-pepiris-preprod",
+        "pep-eiap-cgf-llamaparse-preprod",
+        "pep-eiap-latam-cep-preprod",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "cpu": "4",
+      "exemptImages": [
+        "cyberark/secrets-provider-for-k8s*",
+        "docker.io/istio/*",
+        "docker.elastic.co/observability/*",
+        "appdynamics/*",
+        "docker.io/appdynamics/*",
+        "pepeiapprodcommonacr.azurecr.io/omnichannelecommercehub_docker_local/pep/och/essa/edt/pep-och-amazon-flna-mop*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-generic-customerorder-data-service*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-ack*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-sap-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-sfdc-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-translator*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-customerorder-och-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-consolidated-orders-sap-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-consolidated-orders-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-consolidated-orders-translator*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-data-service*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-dc1-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-dcflex-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-sfdc-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-order-translator*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-route-execution-data-service*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-route-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-route-sap-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-route-sfdc-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-route-translator*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-vanload-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-vanload-processor*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-vansalesorder-dataservice*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-vansalesorder-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-vansalesorder-sap-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-vansalesorder-sfdc-dispat*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-route-dataservice*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-route-ingest*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-route-sap-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/latam/gtm/pepsico-eip-latam-br-route-sfdc-dispatch*",
+        "pepeiapprodcommonacr.azurecr.io/pep/eiap/iai-cv-pepiris-inference-ray-service*"
+      ],
+      "memory": "8Gi"
+    }
+  }
+}

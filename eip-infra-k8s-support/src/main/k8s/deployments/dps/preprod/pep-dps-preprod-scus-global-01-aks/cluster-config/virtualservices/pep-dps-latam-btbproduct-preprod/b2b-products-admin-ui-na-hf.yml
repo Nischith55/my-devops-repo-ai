@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-products-admin-ui-na-hf-preprod:networking.istio.io/VirtualService:pep-dps-latam-btbproduct-preprod/b2b-products-admin-ui-na-hf
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-products-admin-ui-na-hf-preprod:networking.istio.io/VirtualService:pep-dps-latam-btbproduct-preprod/b2b-products-admin-ui-na-hf"},"labels":{"app":"b2b-products-admin-ui-na-hf","app.kubernetes.io/instance":"b2b-products-admin-ui-na-hf","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-products-admin-ui-na-hf","namespace":"pep-dps-latam-btbproduct-preprod"},"spec":{"gateways":["pep-dps-latam-btbproduct-preprod/pep-dps-latam-btbproduct-preprod-cv-gw"],"hosts":["b2b-product-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-products-admin-ui-na-hf.pep-dps-latam-btbproduct-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-products-admin-ui-na-hf
+        app.kubernetes.io/instance: b2b-products-admin-ui-na-hf
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-products-admin-ui-na-hf
+    namespace: pep-dps-latam-btbproduct-preprod
+spec:
+    gateways:
+    - pep-dps-latam-btbproduct-preprod/pep-dps-latam-btbproduct-preprod-cv-gw
+    hosts:
+    - b2b-product-admin-ui-na-hf.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - products-b2b-na-hf.preprod.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-products-admin-ui-na-hf.pep-dps-latam-btbproduct-preprod.svc.cluster.local
+                port:
+                    number: 8080

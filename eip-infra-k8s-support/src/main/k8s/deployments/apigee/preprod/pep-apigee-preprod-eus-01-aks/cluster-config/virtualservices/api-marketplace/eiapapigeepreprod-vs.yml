@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"eiapapigeepreprod-vs","namespace":"pep-apigee-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepxchange.apigee.gw01.aks01.eus.preprod.azure.intra.pepsico.com","developer.preprod.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"eiapapigeepreprod.api-marketplace.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: eiapapigeepreprod
+  name: eiapapigeepreprod-vs
+  namespace: api-marketplace
+spec:
+  gateways:
+  - api-marketplace/api-marketplace-cv-gw
+  hosts:
+  - pepxchange.apigee.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  - developer.preprod.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: eiapapigeepreprod.api-marketplace.svc.cluster.local
+        port:
+          number: 80

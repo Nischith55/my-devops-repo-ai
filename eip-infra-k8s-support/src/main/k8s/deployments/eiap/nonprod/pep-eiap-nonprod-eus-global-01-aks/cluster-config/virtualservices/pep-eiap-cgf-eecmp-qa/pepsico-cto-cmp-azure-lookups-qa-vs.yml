@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:27:37Z"
+  generation: 1
+  name: pepsico-cto-cmp-azure-lookups-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638228968"
+  uid: 59ad7827-e24f-4e74-8264-4a2e0a41b5ed
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-azure-lookups-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/azure/lookups
+    route:
+    - destination:
+        host: pepsico-cto-cmp-azure-lookups.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

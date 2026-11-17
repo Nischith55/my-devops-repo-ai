@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-hhnext-sap-ingest-vs
+  namespace: pep-eiap-flna-hhnext-dev
+spec:
+  gateways:
+  - pep-eiap-flna-hhnext-dev/pep-eiap-flna-hhnext-dev-cv-gw
+  hosts:
+  - pep-eiap-hhnext-sap-ingest-dev.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/sapstatusfile
+    route:
+    - destination:
+        host: sap-ingest-service.pep-eiap-flna-hhnext-dev.svc.cluster.local

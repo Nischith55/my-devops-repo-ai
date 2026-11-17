@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gpg-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gpg-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SNT_Global_Payment_Gateway/_git/gpg-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-gpg-prod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gpg-prod-admin
+    description: Admin privileges to gpg-prod
+    policies:
+    - p, proj:gpg-prod:gpg-prod-admin, applications, *, gpg-prod/*, allow
+    - p, proj:gpg-prod:gpg-prod-admin, applications, get, argocd/*, allow
+    - p, proj:gpg-prod:gpg-prod-admin, repositories, *, gpg-prod/*, allow
+    groups:
+    - "Team.App.DPS.GPG.Prod"
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gpg-prod-user
+    description: Read-only privileges to gpg-prod
+    policies:
+    - p, proj:gpg-prod:gpg-prod-user, applications, get, gpg-prod/*, allow
+    - p, proj:gpg-prod:gpg-prod-user, applications, sync, gpg-prod/*, allow
+    - p, proj:gpg-prod:gpg-prod-user, repositories, get, gpg-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.DPS.GPG.Prod"
+    - "Team.Support.EIAP.READ"

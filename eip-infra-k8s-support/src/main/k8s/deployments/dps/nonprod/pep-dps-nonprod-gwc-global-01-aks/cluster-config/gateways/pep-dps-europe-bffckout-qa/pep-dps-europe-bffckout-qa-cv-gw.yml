@@ -1,0 +1,94 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-bffckout-qa-cv-gw
+  namespace: pep-dps-europe-bffckout-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-bffckout-qa.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-bffckout-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-bffckout-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-bffckout-qa-443.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-auto-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-eu-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-am-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-bffckout-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-bffckout-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-gwc-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-bffckout-qa-80.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-qa2.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-auto-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-eu-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-am-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-am-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-uat.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-pl-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-admin-bff-in-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    name: pep-dps-europe-bffckout-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-bffckout-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

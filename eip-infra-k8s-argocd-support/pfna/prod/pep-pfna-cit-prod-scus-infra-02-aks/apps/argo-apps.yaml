@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  syncPolicy:    
+    # automated:
+    #   prune: false
+    #   selfHeal: true
+    #   allowEmpty: false
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+    targetRevision: main
+    path: pfna/prod/pep-pfna-cit-prod-scus-infra-02-aks/apps
+    directory:
+      recurse: true
+      jsonnet: {}

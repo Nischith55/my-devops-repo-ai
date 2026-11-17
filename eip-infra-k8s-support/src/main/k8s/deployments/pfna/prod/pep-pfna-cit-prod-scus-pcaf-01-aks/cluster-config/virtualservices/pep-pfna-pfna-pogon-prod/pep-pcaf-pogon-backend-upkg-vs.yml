@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-pogon-backend-upkg-vs
+  namespace: pep-pfna-pfna-pogon-prod
+  labels:
+      app: pep-pcaf-pogon-backend
+spec:
+  hosts:
+  - pep-pcaf-pogon-backend-prod.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pogon-prod/pep-pfna-pfna-pogon-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-pogon-backend.pep-pfna-pfna-pogon-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pp1.pfnaweb.mypepsico.com
+      - exact: https://q2.pfnaweb.mypepsico.com
+      - exact: https://d2.pfnaweb.mypepsico.com
+      - exact: https://shop.pfna.mypepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers      
+       
+  

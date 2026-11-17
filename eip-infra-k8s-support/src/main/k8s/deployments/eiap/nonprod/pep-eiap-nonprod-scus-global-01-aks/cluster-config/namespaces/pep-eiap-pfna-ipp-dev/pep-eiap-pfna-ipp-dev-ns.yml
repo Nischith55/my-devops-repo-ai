@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+# Ansible managed: modified on 2021-12-09 12:56:24
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pfna-ipp-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio.io/rev: nonprod-stable
+    project: ipp
+    sector: pfna
+    team: pfna-ipp

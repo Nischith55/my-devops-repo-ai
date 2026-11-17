@@ -1,0 +1,143 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- if and (.Values.pv.enabled) (not .Values.awsPV.enabled) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.global.fullnameOverride }}-{{ mustLast (regexSplit "-" $namespace -1) }}-pv
+  {{- with .Values.global.labels }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- include "platform-chart.labels" . | nindent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.global.pvc.storageRequest }}
+  accessModes:
+  {{- toYaml .Values.global.pvc.accessModes | nindent 4 }}
+  mountOptions:
+  {{- toYaml .Values.pv.mountOptions | nindent 4 }}
+{{- if .Values.pv.nfs }}
+  nfs:    
+    path: {{ .Values.pv.nfs.path }}
+    server: {{ .Values.pv.nfs.server }}
+{{- end }} 
+{{- if .Values.storageClass.enabled }}
+  storageClassName: {{ .Values.storageClass.name }}
+  csi:
+{{- if .Values.pv.isDisk }}
+    driver: disk.csi.azure.com
+    readOnly: false
+    volumeHandle: {{ .Values.pv.volumeHandle }}   
+    volumeAttributes:  
+      fsType: ext4    
+{{- end }}
+{{- if .Values.pv.isFileShare }}
+    driver: file.csi.azure.com
+    readOnly: false
+    volumeHandle: {{ .Values.storageClass.resourceGroup }}#{{ .Values.storageClass.storageAccount }}#{{ .Values.pv.fileShare }}
+    volumeAttributes:    
+      shareName:  {{ .Values.pv.fileShare }}
+      resourceGroup: {{ .Values.storageClass.resourceGroup }}
+      storageAccount: {{ .Values.storageClass.storageAccount }}
+    nodeStageSecretRef:
+      name: {{ .Values.pv.accessSecret }}
+      namespace: {{ .Values.global.namespace }}
+    {{- if .Values.pv.volumeAttributes }}
+    {{- toYaml .Values.pv.volumeAttributes | nindent 6 }}   
+    {{- end }}     
+{{- end }}
+{{- end }}
+{{- if and (not .Values.storageClass.enabled) .Values.pv.storageClass }}
+  storageClassName: {{ .Values.pv.storageClass | quote}}
+{{- end }}
+{{- if and (not .Values.storageClass.enabled) (not .Values.pv.storageClass) }}
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain
+  {{- if .Values.pv.isFileShare }}
+  mountOptions:
+  {{- toYaml .Values.pv.mountOptions | nindent 4 }} 
+  {{- end }}
+{{- end }}   
+{{- if and (not .Values.storageClass.enabled) .Values.pv.isDisk }}
+  csi:
+    driver: disk.csi.azure.com
+    readOnly: false
+    volumeHandle: {{ .Values.pv.volumeHandle }}   
+    volumeAttributes:  
+      fsType: ext4    
+{{- end }}
+{{- if and (not .Values.storageClass.enabled) .Values.pv.isFileShare }}
+  csi:
+    driver: file.csi.azure.com
+    readOnly: false
+    volumeHandle: {{ .Values.pv.resourceGroup }}#{{ .Values.pv.storageAccount }}#{{ .Values.pv.fileShare }}
+    volumeAttributes:    
+      shareName:  {{ .Values.pv.fileShare }}
+      resourceGroup: {{ .Values.pv.resourceGroup }}
+      storageAccount: {{ .Values.pv.storageAccount }}
+    nodeStageSecretRef:
+      name: {{ .Values.pv.accessSecret }}
+      namespace: {{ .Values.global.namespace }}
+    {{- if .Values.pv.volumeAttributes }}
+    {{- toYaml .Values.pv.volumeAttributes | nindent 6 }}   
+    {{- end }}     
+{{- end }}
+{{- end }}
+
+---
+
+{{- if and (.Values.awsPV.enabled) (not .Values.pv.enabled) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.global.fullnameOverride }}-{{ mustLast (regexSplit "-" $namespace -1) }}-pv
+  {{- with .Values.global.labels }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- include "platform-chart.labels" . | nindent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.global.pvc.storageRequest }}
+  accessModes:
+  {{- toYaml .Values.global.pvc.accessModes | nindent 4 }}
+  {{- with .Values.awsPV.mountOptions }}
+  mountOptions:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- if .Values.awsStorageClass.enabled }}
+  storageClassName: {{ .Values.awsStorageClass.name | quote}}
+{{- else }}
+  storageClassName: {{ .Values.awsPV.storageClass | quote}}
+{{- end }}
+{{- if .Values.awsPV.isEBS }}
+  csi:
+    driver: ebs.csi.aws.com
+    fsType: ext4
+    volumeHandle: {{ .Values.awsPV.volumeHandle }}
+  nodeAffinity:
+  {{- with .Values.awsPV.nodeAffinity  }}
+  {{- toYaml . | nindent 4 }}
+  {{- end}}
+{{- end }}
+{{- if .Values.awsPV.isEFS }}
+  volumeMode: Filesystem
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .Values.awsPV.volumeHandle }}    
+{{- end }}
+{{- if .Values.awsPV.isS3 }}
+  volumeMode: Filesystem
+  csi:
+    driver: s3.csi.aws.com
+    volumeHandle: {{ .Values.awsPV.volumeHandle }}
+    volumeAttributes:
+      bucketName: {{ .Values.awsPV.bucketName }}
+      authenticationSource: {{ .Values.awsPV.authenticationSource }}
+      region: {{ .Values.awsPV.region }}
+      prefix: {{ .Values.awsPV.prefix }}
+{{- end }}
+{{- with .Values.awsPV.additioanlSpec }}
+    {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

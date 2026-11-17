@@ -1,0 +1,46 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace CGF VANTAGEX
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_vantagex_dev:
+
+  name: pep-eiap-cgf-vantagex-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: cgf-vantagex
+    sector: cgf
+    project: vantagex
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_vantagex'] }}"
+        - "{{ k8s_sup_subjects['cgf_vantagex_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _cgf_vantagex_spn_name }}"
+      registries: 
+        - pepeiapnonprodcgfvantagexacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _cgf_vantagex_spn_name }}"
+      # Any contents apart from what is in secret        
+

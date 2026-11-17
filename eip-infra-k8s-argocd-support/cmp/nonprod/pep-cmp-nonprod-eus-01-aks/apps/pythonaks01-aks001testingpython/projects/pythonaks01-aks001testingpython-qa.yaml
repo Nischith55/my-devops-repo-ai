@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pythonaks01-aks001testingpython-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pythonaks01-aks001testingpython-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythonaks01-aks001testingpython-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/pep/cmp/gt-test-1-devx-python/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: pythonaks01-aks001testingpython-qa-admin
+    description: Admin privileges to pythonaks01-aks001testingpython-qa
+    policies:
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-admin, applications, *, pythonaks01-aks001testingpython-qa/*, allow
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-admin, repositories, *, pythonaks01-aks001testingpython-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: pythonaks01-aks001testingpython-qa-user
+    description: Read-only privileges to pythonaks01-aks001testingpython-qa
+    policies:
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-user, applications, get, pythonaks01-aks001testingpython-qa/*, allow
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-user, applications, sync, pythonaks01-aks001testingpython-qa/*, allow
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-user, repositories, get, pythonaks01-aks001testingpython-qa/*, allow
+    - p, proj:pythonaks01-aks001testingpython-qa:pythonaks01-aks001testingpython-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

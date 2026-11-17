@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-pbna-savvy-pog
+  name: pep-eip-pbna-savvy-pog-vs
+  namespace: pep-eiap-pbna-halo-prod
+spec:
+  gateways:
+  - pep-eiap-pbna-halo-prod/pep-eiap-pbna-halo-prod-cv-gw
+  hosts:
+  - pep-eip-pbna-savvy-pog.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-pbna-savvy-pog.pep-eiap-pbna-halo-prod.svc.cluster.local

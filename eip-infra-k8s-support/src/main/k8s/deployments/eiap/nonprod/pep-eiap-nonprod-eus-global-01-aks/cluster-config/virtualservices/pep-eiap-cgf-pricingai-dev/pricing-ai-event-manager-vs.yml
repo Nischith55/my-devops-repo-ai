@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pricing-ai-event-manager
+  name: pricing-ai-event-manager-vs
+  namespace: pep-eiap-cgf-pricingai-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pricingai-dev/pep-eiap-cgf-pricingai-dev-cv-gw
+  hosts:
+  - pricing-ai-event-manager.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /simulation/pricing/scenario
+    route:
+    - destination:
+        host: pricing-ai-event-manager.pep-eiap-cgf-pricingai-dev.svc.cluster.local
+        port:
+          number: 81

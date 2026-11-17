@@ -1,0 +1,70 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-global-eipone-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepsico-global-eipone.global.gw01.aks01.eus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/backend"}}],"route":[{"destination":{"host":"pep-eiap-global-eip.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/billing-service"}}],"route":[{"destination":{"host":"pep-eiap-global-eip-billing.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/api-management"}}],"route":[{"destination":{"host":"pep-eiap-global-eip-api.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/access-management"}}],"route":[{"destination":{"host":"pep-eiap-global-eip-access.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/mdp/admin"}}],"route":[{"destination":{"host":"pep-eiap-global-mdp.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/eipone/frontend"}}],"route":[{"destination":{"host":"pep-eiap-global-eipui.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eiap-global-eipui
+  name: pepsico-global-eipone-vs
+  namespace: pep-eiap-global-eipone-prod
+spec:
+  gateways:
+  - pep-eiap-global-eipone-prod/pep-eiap-global-eipone-prod-cv-gw
+  hosts:
+  - pepsico-global-eipone.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/backend
+    route:
+    - destination:
+        host: pep-eiap-global-eip.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/billing-service
+    route:
+    - destination:
+        host: pep-eiap-global-eip-billing.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/api-management
+    route:
+    - destination:
+        host: pep-eiap-global-eip-api.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/access-management
+    route:
+    - destination:
+        host: pep-eiap-global-eip-access.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /mdp/admin
+    route:
+    - destination:
+        host: pep-eiap-global-mdp.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /eipone/frontend
+    route:
+    - destination:
+        host: pep-eiap-global-eipui.pep-eiap-global-eipone-prod.svc.cluster.local
+        port:
+          number: 80

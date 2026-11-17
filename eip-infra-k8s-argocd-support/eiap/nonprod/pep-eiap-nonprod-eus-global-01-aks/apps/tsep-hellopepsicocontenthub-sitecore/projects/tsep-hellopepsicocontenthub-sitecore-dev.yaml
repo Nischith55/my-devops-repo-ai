@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-hellopepsicocontenthub-sitecore-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-hellopepsicocontenthub-sitecore-dev  
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-hellopepsicocontenthub-sitecore-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-wsp-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: tsep-hellopepsicocontenthub-sitecore-dev-admin
+        description: Admin privileges to tsep-hellopepsicocontenthub-sitecore-dev
+        policies:
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-admin, applications, *, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-admin, repositories, *, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-hellopepsicocontenthub-sitecore-dev-user
+        description: Read-only privileges to tsep-hellopepsicocontenthub-sitecore-dev
+        policies:
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-user, applications, get, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-user, applications, sync, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-user, repositories, get, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tsep-hellopepsicocontenthub-sitecore-dev:tsep-hellopepsicocontenthub-sitecore-dev-user, applications, action/apps/Deployment/restart, tsep-hellopepsicocontenthub-sitecore-dev/*, allow
+        groups:
+        - "Team.Support.MyPepsiCo.AKS.NonProd.Admins"
+        - "Team.Support.EIAP.READ"
+    

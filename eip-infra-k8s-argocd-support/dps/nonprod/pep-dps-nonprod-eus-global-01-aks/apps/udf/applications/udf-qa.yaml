@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: udf-qa-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/udf-argocd-configs
+    targetRevision: develop
+  - repoURL: pepdpsnonprodacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: udf-qa
+      valueFiles:
+      - $values/qa/pep-dps-nonprod-eus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: qa
+          helm:  
+            enabled: false       
+            repo: pepdpsnonprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-dps-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'udf-qa' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/udf-argocd-configs
+              repoName: udf-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

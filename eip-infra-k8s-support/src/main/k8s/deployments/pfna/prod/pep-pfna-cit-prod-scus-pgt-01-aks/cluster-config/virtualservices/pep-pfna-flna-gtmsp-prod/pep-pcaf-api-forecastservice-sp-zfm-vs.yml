@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pcaf-api-forecastservice-sp-zfm
+  name: pep-pcaf-api-forecastservice-sp-zfm-vs
+  namespace: pep-pfna-flna-gtmsp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-gtmsp-prod/pep-pfna-flna-gtmsp-prod-cv-gw
+  hosts:
+  - pep-pcaf-api-forecastservice-sp-zfm.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/forecast
+    route:
+    - destination:
+        host: pep-pcaf-api-forecastservice-sp-zfm.pep-pfna-flna-gtmsp-prod.svc.cluster.local
+        port:
+          number: 80

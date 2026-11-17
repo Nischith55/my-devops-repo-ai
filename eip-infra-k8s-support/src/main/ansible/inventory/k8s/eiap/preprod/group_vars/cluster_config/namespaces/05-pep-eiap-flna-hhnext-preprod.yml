@@ -1,0 +1,38 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace HHNEXT-E2E
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa, prod or preprod etc}
+
+ns_pep_eiap_flna_hhnext_preprod:
+
+  name: pep-eiap-flna-hhnext-preprod
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: flna-hhnext
+    sector: flna
+    project: hhnext
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_hhnext'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-eiap-flna-hhnext-preprod-sa
+      # should really have 1 role but we give it a list

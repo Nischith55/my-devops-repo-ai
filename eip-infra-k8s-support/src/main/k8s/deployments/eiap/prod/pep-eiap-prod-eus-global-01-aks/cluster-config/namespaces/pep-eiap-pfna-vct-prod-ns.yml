@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-pfna-vct-prod
+    pep-cmdb-app-service-id: 69eadf8887f8dd10188121f9cebb3584
+    pep-cmdb-bus-app-id: 13de0d1587814d104c6e0e97cebb35d4
+    pep-environment: Production
+    project: vct
+    sector: pfna
+    servicename_aks: vct
+    team: pfna-vct
+  name: pep-eiap-pfna-vct-prod

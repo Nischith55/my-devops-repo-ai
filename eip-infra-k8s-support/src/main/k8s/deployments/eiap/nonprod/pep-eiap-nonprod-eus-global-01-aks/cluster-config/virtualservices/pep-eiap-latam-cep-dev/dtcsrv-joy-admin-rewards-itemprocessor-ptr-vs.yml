@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-admin-rewards-itemprocessor-ptr
+  name: dtcsrv-joy-admin-rewards-itemprocessor-ptr-vs
+  namespace: pep-eiap-latam-cep-dev
+spec:
+  gateways:
+  - pep-eiap-latam-cep-dev/pep-eiap-latam-cep-dev-cv-gw
+  hosts:
+<<<<<<< HEAD:src/main/k8s/deployments/eiap/nonprod/pep-eiap-nonprod-eus-global-01-aks/cluster-config/virtualservices/pep-eiap-latam-cep-dev/dtcsrv-joy-admin-reward-item-processor-ptr-vs.yml
+  - pep-joy-rewardsitemprocessorptr-cep-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+=======
+  - pep-joy-rewardsitemprocessorptr-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+>>>>>>> ca391186c18bc5dc7605085c3e95ab9e370cd51f:src/main/k8s/deployments/eiap/nonprod/pep-eiap-nonprod-eus-global-01-aks/cluster-config/virtualservices/pep-eiap-latam-cep-dev/dtcsrv-joy-admin-rewards-itemprocessor-ptr-vs.yml
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-admin-rewards-itemprocessor-ptr.pep-eiap-latam-cep-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,51 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-april30c-dev-cv-webdeploy2010-vs
+  namespace: pep-cmp-cmp-april30c-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pep-cmp-cmp-april30c-dev-cv-webdeploy2010-dev
+  - pep-cmp-cmp-april30c-dev-cv-webdeploy2011-dev
+  - pep-cmp-cmp-april30c-dev-cv-webdeploy2012-dev
+  gateways:
+  - pep-cmp-cmp-april30c-dev/pep-cmp-cmp-april30c-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-april30c-dev-cv-webdeploy200.pep-cmp-cmp-april30c-dev.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:
+      allowOrigins:
+      - exact: https://test2.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Accept-Ranges
+      - Access-Control-Allow-Headers
+  
+  
+  
+  
+  
+  
+  
+      exposeHeaders:
+      - Access-Control-Allow-Headers
+      - Accept-Charset
+  
+       
+  

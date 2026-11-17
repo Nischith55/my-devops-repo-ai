@@ -1,0 +1,29 @@
+---
+ns_pep_pfna_flna_gtmgro_qa:
+  
+  name: pep-pfna-flna-gtmgro-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-gtmgro
+    sector: flna
+    project: gtmgro
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-gtmgro-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_gtmgro'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

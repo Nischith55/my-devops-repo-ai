@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pepsico-cto-cmp-order-itom-discovery-pdb
+  namespace: pep-eiap-global-cmp-dev
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pepsico-cto-cmp-order-itom-discovery

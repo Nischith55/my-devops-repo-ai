@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demoms-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - demo-test-ms.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - headers:
+        purpose:
+          exact: demo
+      ignoreUriCase: true
+      uri:
+        prefix: /ms/2/api/v1
+    name: demoms-route
+    route:
+    - destination:
+        host: demo-ms2.pep-eiap-test-demo-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,30 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-07-15 10:02:38
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-apigee-cluster-admin-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.K8S.Admin
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.Admins
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-apigee-ops-admin
+    name: pep-apigee-admin-sa
+  
+

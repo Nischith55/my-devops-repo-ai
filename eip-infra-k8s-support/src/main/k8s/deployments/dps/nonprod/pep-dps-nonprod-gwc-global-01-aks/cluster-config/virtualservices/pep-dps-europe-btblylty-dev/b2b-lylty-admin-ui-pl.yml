@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-lylty-admin-ui-poland-dev:networking.istio.io/VirtualService:pep-dps-europe-btblylty-dev/b2b-lylty-admin-ui-pl
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-lylty-admin-ui-poland-dev:networking.istio.io/VirtualService:pep-dps-europe-btblylty-dev/b2b-lylty-admin-ui-pl"},"labels":{"app":"b2b-lylty-admin-ui-pl","app.kubernetes.io/instance":"b2b-lylty-admin-ui-poland","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-lylty-admin-ui-pl","namespace":"pep-dps-europe-btblylty-dev"},"spec":{"gateways":["pep-dps-europe-btblylty-dev/pep-dps-europe-btblylty-dev-cv-gw"],"hosts":["b2b-lylty-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-lylty-admin-ui-pl.pep-dps-europe-btblylty-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-lylty-admin-ui-pl
+        app.kubernetes.io/instance: b2b-lylty-admin-ui-poland
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-lylty-admin-ui-pl
+    namespace: pep-dps-europe-btblylty-dev
+spec:
+    gateways:
+    - pep-dps-europe-btblylty-dev/pep-dps-europe-btblylty-dev-cv-gw
+    hosts:
+    - b2b-lylty-admin-ui-pl-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-pl.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-lylty-admin-ui-pl.pep-dps-europe-btblylty-dev.svc.cluster.local
+                port:
+                    number: 8080

@@ -1,0 +1,64 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-meslite-prod-cv-gw
+  namespace: pep-pfna-flna-meslite-prod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-meslite-prod.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-meslite-prod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-meslite-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-pfna-flna-meslite-prod.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-meslite-serviceconnector.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-meslite-serviceconnector-consumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-meslite-prod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-meslite-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-prod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-pfna-flna-meslite-prod-80.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-meslite-serviceconnector.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-meslite-serviceconnector-consumer.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-meslite-prod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-meslite-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

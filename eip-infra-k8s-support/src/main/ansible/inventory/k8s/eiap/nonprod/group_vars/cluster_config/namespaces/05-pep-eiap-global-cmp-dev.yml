@@ -1,0 +1,46 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace Global EIOTP
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_global_cmp_dev:
+  
+  name: pep-eiap-global-cmp-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-cmp
+    sector: global
+    project: cmp
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_cmp'] }}"
+        - "{{ k8s_sup_subjects['global_cmp_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _global_cmp_spn_name }}"
+      registries: 
+        - pepeiapnonprodglobalcmpacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _global_cmp_spn_name }}"
+      # Any contents apart from what is in secret        
+

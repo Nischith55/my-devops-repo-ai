@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: svt-robotics3-syxj-vs
+  namespace: pep-eiap-pbna-whseauto-dev
+  labels:
+      app: svt-robotics3
+spec:
+  hosts:
+  - pep-pbna-nonprod-svt-robotics3.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-whseauto-dev/pep-eiap-pbna-whseauto-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: svt-robotics3.pep-eiap-pbna-whseauto-dev.svc.cluster.local
+        port:
+          number: 80
+  

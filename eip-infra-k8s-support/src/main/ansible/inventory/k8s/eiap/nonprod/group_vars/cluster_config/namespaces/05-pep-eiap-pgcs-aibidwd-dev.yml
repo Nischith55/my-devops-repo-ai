@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_pgcs_aibidwd_dev:
+  
+  name: pep-eiap-pgcs-aibidwd-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pgcs-aibidwd
+    sector: pgcs
+    project: aibidwd
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: engineeringexcellencepepgenx
+    pep-cmdb-app-service-id: "167ca5de831bf1d07a58f9447daad331"
+    pep-cmdb-bus-app-id: "327967b31be36010b050c992604bcbc8"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-pgcs-aibidwd-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pgcs_aibidwd'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-pgcs-aibidwd-dev-sa-token
+    namespace: pep-eiap-pgcs-aibidwd-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-pgcs-aibidwd-dev-sa"

@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-pogon-backend-thxa-vs
+  namespace: pep-pfna-pfna-pogon-preprod
+  labels:
+      app: pep-pcaf-pogon-backend
+spec:
+  hosts:
+  - pep-pcaf-pogon-backend-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pogon-preprod/pep-pfna-pfna-pogon-preprod-cv-gw
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Link
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://q2.pfnaweb.mypepsico.com
+      - exact: https://d2.pfnaweb.mypepsico.com
+      - exact: https://pp1.pfnaweb.mypepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-pogon-backend.pep-pfna-pfna-pogon-preprod.svc.cluster.local
+        port:
+          number: 80
+  

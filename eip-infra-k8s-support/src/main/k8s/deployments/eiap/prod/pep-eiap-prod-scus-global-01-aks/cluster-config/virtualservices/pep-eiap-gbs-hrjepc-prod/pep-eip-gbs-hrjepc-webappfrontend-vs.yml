@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-gbs-hrjepc-webappfrontend-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-gbs-hrjepc-webappfrontend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","hrjepc.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-gbs-hrjepc-webappfrontend.pep-eiap-gbs-hrjepc-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eip-gbs-hrjepc-webappfrontend
+  name: pep-eip-gbs-hrjepc-webappfrontend-vs
+  namespace: pep-eiap-gbs-hrjepc-prod
+spec:
+  gateways:
+  - pep-eiap-gbs-hrjepc-prod/pep-eiap-gbs-hrjepc-prod-cv-gw
+  hosts:
+  - pep-eip-gbs-hrjepc-webappfrontend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - hrjepc.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-gbs-hrjepc-webappfrontend.pep-eiap-gbs-hrjepc-prod.svc.cluster.local
+        port:
+          number: 80

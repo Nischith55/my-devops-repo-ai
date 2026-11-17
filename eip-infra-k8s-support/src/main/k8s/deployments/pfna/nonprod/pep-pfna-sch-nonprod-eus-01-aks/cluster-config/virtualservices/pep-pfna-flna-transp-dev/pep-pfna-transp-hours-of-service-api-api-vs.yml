@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-pfna-transp-hours-of-service-api-api-vs
+  namespace: pep-pfna-flna-transp-dev
+spec:
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  hosts:
+  - pep-pfna-transp-hours-of-service-api-api.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/hos-api
+    route:
+    - destination:
+        host: pep-pfna-transp-hours-of-service-api-api.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 80

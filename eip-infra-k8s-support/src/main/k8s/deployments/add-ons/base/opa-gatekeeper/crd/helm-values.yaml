@@ -1,0 +1,23 @@
+preInstall:
+  crdRepository:
+    image:
+      repository: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/openpolicyagent/gatekeeper-crds
+      tag: v3.20.0
+
+postInstall:
+  labelNamespace:
+    image:
+      repository: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/openpolicyagent/gatekeeper-crds
+      tag: v3.20.0
+
+postUpgrade:
+  labelNamespace:
+    image:
+      repository: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/openpolicyagent/gatekeeper-crds
+      tag: v3.20.0
+
+preUninstall:
+  deleteWebhookConfigurations:
+    image:
+      repository: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/openpolicyagent/gatekeeper-crds
+      tag: v3.20.0

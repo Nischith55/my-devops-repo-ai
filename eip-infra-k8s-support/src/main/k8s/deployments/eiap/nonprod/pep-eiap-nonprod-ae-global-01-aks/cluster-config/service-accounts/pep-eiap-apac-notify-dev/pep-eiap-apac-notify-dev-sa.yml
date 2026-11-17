@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c995ef10-0f6c-4fdd-b157-9508117742d1
+  name: pep-eiap-apac-notify-dev-sa
+  namespace: pep-eiap-apac-notify-dev

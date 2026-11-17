@@ -1,0 +1,39 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-config-manager-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-config-manager.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-config-manager.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pep-och-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.na.pepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - x-source
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count

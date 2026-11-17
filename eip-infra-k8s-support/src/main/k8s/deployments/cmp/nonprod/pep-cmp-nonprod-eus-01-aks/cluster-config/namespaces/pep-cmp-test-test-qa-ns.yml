@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-cmp-test-test-qa
+    project: test
+    sector: test
+    servicename_aks: cmp
+    team: test-test
+  name: pep-cmp-test-test-qa

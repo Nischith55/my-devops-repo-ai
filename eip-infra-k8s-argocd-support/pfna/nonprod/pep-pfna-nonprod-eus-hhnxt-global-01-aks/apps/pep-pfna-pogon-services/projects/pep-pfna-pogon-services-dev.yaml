@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pfna-pogon-services-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pfna-pogon-services-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pogon-services-argocd-configs
+      - peppfnanonprodhhnextacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-pfna-pogon-dev
+      - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pfna-pogon-services-dev-admin
+        description: Admin privileges to pep-pfna-pogon-services-dev
+        policies:
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-admin, applications, *, pep-pfna-pogon-services-dev/*, allow
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-admin, repositories, *, pep-pfna-pogon-services-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pfna-pogon-services-dev-user
+        description: Read-only privileges to pep-pfna-pogon-services-dev
+        policies:
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-user, applications, get, pep-pfna-pogon-services-dev/*, allow
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-user, applications, sync, pep-pfna-pogon-services-dev/*, allow
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-user, repositories, get, pep-pfna-pogon-services-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-pfna-pogon-services-dev:pep-pfna-pogon-services-dev-user, applications, action/apps/Deployment/restart, pep-pfna-pogon-services-dev/*, allow
+        groups:
+        - "Team.Support.HHnextDev.Contributor"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.BEDEV"
+    

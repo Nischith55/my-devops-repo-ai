@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-askadcms-dev
+  labels:
+    env-nonprod: "true"
+    project: askadcms
+    sector: cgf
+    team: cgf-askadcms
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: adasodastreamnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 0cf655f5c3ec02102dd7773ed4013188
+    pep-cmdb-app-service-id: 861b410e83d50ed0f576d8426daad3a7
+    pep-environment: Development
+    

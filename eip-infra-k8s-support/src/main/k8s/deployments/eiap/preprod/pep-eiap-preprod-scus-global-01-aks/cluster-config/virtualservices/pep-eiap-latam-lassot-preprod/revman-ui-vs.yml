@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: revman-ui
+  name: revman-ui-vs
+  namespace: pep-eiap-latam-lassot-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-lassot-preprod/pep-eiap-latam-lassot-preprod-cv-gw
+  hosts:
+  - revman-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: revman-ui.pep-eiap-latam-lassot-preprod.svc.cluster.local
+        port:
+          number: 80

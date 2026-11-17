@@ -1,0 +1,164 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-latam-dtcjoy-qa-cv-gw
+  namespace: pep-eiap-latam-dtcjoy-qa
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-latam-dtcjoy-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-dtcjoy-qa-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-latam-dtcjoy-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-joy-adminbffptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcadmincampaignptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminconfigurationapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admincontentptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsitemprocessorptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsmanagerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsadminfilemanagerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminuiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeactivityptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentapirptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofileptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-consumerrewardsrptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsexpirybatchptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerhistoryptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeeventptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsdeploymentptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimesweepstakesptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentconsumerserviceptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentextractapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilemessageconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilehistoryconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimerewardsitemsprocessorptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerreceiptptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeprofileeventconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardspointsserviceptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminnotesapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcadminprofileadminprofileptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeenginecodeptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminsurveyapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimesurveyapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admincodeapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimecontentapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminhistorylogapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerprofilepackageapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeloyaltyengineleaderboards-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminrewardscipapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admindatamigrationjobs-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardsinventory-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardspricingptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimenotificationapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-3pptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dssrewardscatalogptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-dtcjoy-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-latam-dtcjoy-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-joy-adminbffptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcadmincampaignptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminconfigurationapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admincontentptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsitemprocessorptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsmanagerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsadminfilemanagerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminuiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeactivityptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentapirptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofileptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-consumerrewardsrptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsexpirybatchptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerhistoryptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeeventptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-rewardsdeploymentptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimesweepstakesptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentconsumerserviceptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentextractapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilemessageconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilehistoryconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimerewardsitemsprocessorptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerreceiptptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeprofileeventconsumerptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - admin.d2c.cep.ptr.qa.pepsico.com
+    - pep-joy-rewardspointsserviceptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminnotesapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcadminprofileadminprofileptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeenginecodeptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminsurveyapi-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimesurveyapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admincodeapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimecontentapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminhistorylogapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerprofilepackageapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeloyaltyengineleaderboards-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-adminrewardscipapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-admindatamigrationjobs-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardsinventory-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardspricingptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-runtimenotificationapiptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-3pptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-joy-dssrewardscatalogptr-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-dtcjoy-qa-cv-gw-http-80
+    port:
+      name: http-pep-eiap-latam-dtcjoy-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - admin.d2c.cep.ptr.qa.pepsico.com
+    name: pep-eiap-latam-dtcjoy-qa-cv-ptr-2-https-443
+    port:
+      name: https-pep-eiap-latam-dtcjoy-qa-ptr-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-admin-ui-ptr-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

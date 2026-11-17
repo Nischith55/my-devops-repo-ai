@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pcaf-shp-tmc-notification-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pcaf-shp-tmc-notification.pfnapcaf.gw01.aks01.eus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pcaf-shp-tmc-notification.pep-pfna-flna-pcaf-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pcaf-shp-tmc-notification
+  name: pcaf-shp-tmc-notification-vs
+  namespace: pep-pfna-flna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-flna-pcaf-prod/pep-pfna-flna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-shp-tmc-notification.pfnapcaf.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-tmc-notification.pep-pfna-flna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

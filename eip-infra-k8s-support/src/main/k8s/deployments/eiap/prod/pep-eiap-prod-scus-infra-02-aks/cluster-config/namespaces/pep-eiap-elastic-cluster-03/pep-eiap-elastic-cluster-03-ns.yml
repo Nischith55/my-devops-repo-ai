@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-elastic-cluster-03
+  labels:
+    app.kubernetes.io/created-by: Haritha_Prasad_2021-08-25_09-51-07
+    app.kubernetes.io/managed-by: manual
+    istio-injection: enabled
+    eck-managed: 'true'

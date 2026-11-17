@@ -1,0 +1,190 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  creationTimestamp: null
+  name: virtualservicedenyduplicate
+spec:
+  crd:
+    spec:
+      names:
+        kind: VirtualserviceDenyDuplicate
+  targets:
+  - libs:
+    - |-
+      package lib.common
+
+      default is_gatekeeper = false
+
+      common_labels := [
+        {"key": "app.kubernetes.io/name", "allowedRegex": "*"},
+        {"key": "app.kubernetes.io/instance", "allowedRegex": "*"},
+        {"key": "app.kubernetes.io/version", "allowedRegex": "*"},
+        {"key": "app.kubernetes.io/component", "allowedRegex": "*"},
+        {"key": "app.kubernetes.io/part-of", "allowedRegex": "*"},
+        {"key": "app.kubernetes.io/managed-by", "allowedRegex": "*"},
+        {"key": "objectset.rio.cattle.io/hash", "allowedRegex": "*"},
+        {"key": "kubernetes.io/metadata.name", "allowedRegex": "*"},
+      ]
+
+      has_field(obj, field) {
+        not object.get(obj, field, "N_DEFINED") == "N_DEFINED"
+      }
+
+      missing_field(obj, field) {
+        obj[field] == ""
+      }
+
+      missing_field(obj, field) {
+        not has_field(obj, field)
+      }
+
+      is_gatekeeper {
+        has_field(input, "review")
+        has_field(input.review, "object")
+      }
+
+      is_combined {
+        has_field(input[_], "contents")
+      }
+
+      resource = input.review.object {
+        is_gatekeeper
+      }
+
+      resource = input {
+        not is_gatekeeper
+        not is_combined
+      }
+
+      resource = input[0].contents {
+        not is_gatekeeper
+        is_combined
+      }
+
+      parameters = input[1].contents.parameters {
+        not is_gatekeeper
+        is_combined
+      }
+
+      parameters = input.parameters {
+        is_gatekeeper
+      }
+
+      inventory = input[1].contents.inventory {
+        not is_gatekeeper
+        is_combined
+      }
+
+      inventory = data.inventory {
+        is_gatekeeper
+      }
+
+      input_containers[c] {
+        c := resource.spec.containers[_]
+      }
+
+      input_containers[c] {
+        c := resource.spec.initContainers[_]
+      }
+
+      input_containers[c] {
+        c := resource.spec.template.spec.containers[_]
+      }
+
+      input_containers[c] {
+        c := resource.spec.template.spec.initContainers[_]
+      }
+
+      input_volumes[v] {
+        v := resource.spec.volumes[_]
+      }
+
+      input_volumes[v] {
+        v := resource.spec.template.spec.volumes[_]
+      }
+
+      contains_label(allowedLabels, key, value) {
+        allowedLabels[_].key == key
+
+        # do not match if any allowedRegex is not defined, or is an empty string
+        allowedLabels[_].allowedRegex != ""
+        re_match(allowedLabels[_].allowedRegex, value)
+      } else = false {
+        true
+      }
+
+      not_contains_label(labels, key, value) {
+        not contains_label(labels, key, value)
+      }
+
+      is_common_label(key, value) {
+        # as of now it is just equality but in future it can be regex
+        common_labels[_].key == key
+      } else = false {
+        true
+      }
+
+      not_common_label(key, value) {
+        not is_common_label(key, value)
+      }
+
+      has_key(obj, key) {
+        _ = obj[key]
+      }
+
+      not_has_key(obj, key) {
+        not has_key(obj, key)
+      }
+
+      contains_prefix(allowedPrefixes, value) {
+        # do not match if any allowedRegex is not defined, or is an empty string
+        allowedPrefixes[_] != ""
+        startswith(value, allowedPrefixes[_])
+      } else = false {
+        true
+      }
+
+      not_contains_prefix(allowedPrefixes, value) {
+        not contains_prefix(allowedPrefixes, value)
+      }
+
+      contains_array_elem(array, elem) = true {
+        array[_] == elem
+      } else = false { true }
+
+      not_contains_array_elem(array, elem) {
+        not contains_array_elem(array, elem)
+      }
+    rego: |-
+      package virtualservice_deny_duplicate
+
+      import data.lib.common as common_lib
+      vf_host_name_exists := null
+
+      identical(obj1, obj2) {
+        obj1.metadata.namespace == obj2.metadata.namespace
+        obj1.metadata.name == obj2.metadata.name
+      }
+
+      violation[{"msg": msg, "details": {}}] {
+        common_lib.resource.kind == "VirtualService"
+        re_match("^networking.istio.io/.+$", common_lib.resource.apiVersion)
+
+
+          other_virtualservices := common_lib.inventory.namespace[_]["networking.istio.io/v1beta1"]["VirtualService"][name]
+
+
+          some i
+        # first check if this is the same vs object
+          not identical(common_lib.resource,other_virtualservices)
+        # check that the host is not not defined in any of the vc defined in the cluster
+        common_lib.contains_array_elem(other_virtualservices.spec.hosts, common_lib.resource.spec.hosts[i])
+
+
+
+        msg := sprintf("VirtualService host <%v> conflicts with an existing VirtualService name:<%v/%v>", [common_lib.resource.spec.hosts[i],other_virtualservices.metadata.namespace,other_virtualservices.metadata.name])
+
+
+      }
+    target: admission.k8s.gatekeeper.sh
+status: {}

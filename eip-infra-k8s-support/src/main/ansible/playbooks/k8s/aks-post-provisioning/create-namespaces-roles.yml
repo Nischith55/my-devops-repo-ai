@@ -1,0 +1,23 @@
+---
+- name: create_namespaces 
+  hosts: localhost
+  gather_facts: false
+  # collections:
+  #   - lvrfrc87.git_acp
+  vars_files:
+    - /azp/agent/_work/1/s/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml
+  tasks:
+    - name: Include namespace data from variables file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/namespace.yml"
+        name: namespaces
+
+    - name: Include vars from variables file
+      include_vars:
+        file: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars/variable.yml"
+        name: var
+        
+    - name: import namespace creation role
+      import_role:
+        name: create_namespace
+    

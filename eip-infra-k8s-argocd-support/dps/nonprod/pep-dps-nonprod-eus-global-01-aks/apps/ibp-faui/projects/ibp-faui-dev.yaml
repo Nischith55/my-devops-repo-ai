@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ibp-faui-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for ibp-faui-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ibp-faui-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-ibpfaui-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: ibp-faui-dev-admin
+    description: Admin privileges to ibp-faui-dev
+    policies:
+    - p, proj:ibp-faui-dev:ibp-faui-dev-admin, applications, *, ibp-faui-dev/*, allow
+    - p, proj:ibp-faui-dev:ibp-faui-dev-admin, applications, get, argocd/*, allow
+    - p, proj:ibp-faui-dev:ibp-faui-dev-admin, repositories, *, ibp-faui-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: ibp-faui-dev-user
+    description: Read-only privileges to ibp-faui-dev
+    policies:
+    - p, proj:ibp-faui-dev:ibp-faui-dev-user, applications, get, ibp-faui-dev/*, allow
+    - p, proj:ibp-faui-dev:ibp-faui-dev-user, applications, sync, ibp-faui-dev/*, allow
+    - p, proj:ibp-faui-dev:ibp-faui-dev-user, repositories, get, ibp-faui-dev/*, allow
+    - p, proj:ibp-faui-dev:ibp-faui-dev-user, applications, action/apps/Deployment/restart, ibp-faui-dev/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.ibpfaui"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

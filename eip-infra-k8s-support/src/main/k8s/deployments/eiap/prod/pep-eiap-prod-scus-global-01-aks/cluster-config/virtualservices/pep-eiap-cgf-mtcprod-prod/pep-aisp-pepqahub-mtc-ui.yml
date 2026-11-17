@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pep-aisp-pepqahub-mtc-ui","app.kubernetes.io/instance":"pep-aisp-pepqahub-mtc-ui-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"pep-aisp-pepqahub-mtc-ui","namespace":"pep-eiap-cgf-mtcprod-prod"},"spec":{"gateways":["pep-eiap-cgf-mtcprod-prod/pep-eiap-cgf-mtcprod-prod-cv-gw"],"hosts":["pep-aisp-pepqahub-mtc-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-aisp-pepqahub-mtc-ui.pep-eiap-cgf-mtcprod-prod.svc.cluster.local","port":{"number":8000}}}]}]}}
+
+'
+    labels:
+        app: pep-aisp-pepqahub-mtc-ui
+        app.kubernetes.io/instance: pep-aisp-pepqahub-mtc-ui-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: pep-aisp-pepqahub-mtc-ui
+    namespace: pep-eiap-cgf-mtcprod-prod
+spec:
+    gateways:
+    - pep-eiap-cgf-mtcprod-prod/pep-eiap-cgf-mtcprod-prod-cv-gw
+    hosts:
+    - pep-aisp-pepqahub-mtc-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-aisp-pepqahub-mtc-ui.pep-eiap-cgf-mtcprod-prod.svc.cluster.local
+                port:
+                    number: 8000

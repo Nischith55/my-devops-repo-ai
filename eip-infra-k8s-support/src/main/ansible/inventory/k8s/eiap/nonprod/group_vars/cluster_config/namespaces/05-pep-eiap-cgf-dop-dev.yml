@@ -1,0 +1,46 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace CGF DOP
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_dop_dev:
+  
+  name: pep-eiap-cgf-dop-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-dop
+    sector: cgf
+    project: dop
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_dop'] }}"
+        - "{{ k8s_sup_subjects['cgf_dop_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _cgf_dop_spn_name }}"
+      registries: 
+        - pepeiapnonprodcgfdopacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _cgf_dop_spn_name }}"
+      # Any contents apart from what is in secret        
+

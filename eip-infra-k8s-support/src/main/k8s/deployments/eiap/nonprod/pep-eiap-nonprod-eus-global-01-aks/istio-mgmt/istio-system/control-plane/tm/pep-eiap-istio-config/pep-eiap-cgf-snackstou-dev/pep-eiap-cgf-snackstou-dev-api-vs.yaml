@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-snackstou-dev-api-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pep-eiap-cgf-snackstou-dev-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 8000
+        host: pep-eiap-cgf-snackstou-dev-api.pep-eiap-cgf-snackstou-dev.svc.cluster.local

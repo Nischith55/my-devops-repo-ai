@@ -1,0 +1,34 @@
+---
+# Generated -- please do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-premium
+
+# a) need for dynamic provision
+provisioner: file.csi.azure.com
+
+reclaimPolicy: Retain
+
+volumeBindingMode: WaitForFirstConsumer
+
+allowVolumeExpansion: True
+
+mountOptions:
+  - vers=3.0
+  - dir_mode=0777
+  - file_mode=0644
+  - mfsymlinks
+  - nobrl
+  - cache=strict
+  - actimeo=30
+  - uid=1000
+  - gid=1000
+
+# c) need for dynamic provision
+parameters:
+  resourceGroup: pep-pfna-cit-prod-scus-k8s-pcaf-01-rg
+  skuName: Premium_LRS
+  storageAccount: pp3001pcaf01aksfp02sa
+

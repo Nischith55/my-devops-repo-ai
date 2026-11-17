@@ -1,0 +1,29 @@
+---
+# ##
+# Please CHANGE
+# - K8S_CLUSTER_NAME
+# - ELASTICSEARCH_HOST_01
+# - ELASTICSEARCH_PORT_01
+# ##
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beats-shared-env-config
+  namespace: pep-eiap-elastic-client-01
+data:
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Common Environment Variables that's exported
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  K8S_CLUSTER_NAME: pep-eiap-nonprod-scus-global-01-aks
+  
+  # metricbeat stuff
+  METRICBEAT_TEMPLATE_NAME: metricbeat-aks-cluster
+  METRICBEAT_INDEX_PATTERN_PREFIX: mb-aks
+
+  # filebeat stuff
+  FILEBEAT_TEMPLATE_NAME: filebeat-aks-cluster
+  FILEBEAT_INDEX_PATTERN_PREFIX: fb-aks
+
+  # ES Connectivity
+  ELASTICSEARCH_HOST_01: https://pep-eiap-ingest-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+  ELASTICSEARCH_PORT_01: "443"

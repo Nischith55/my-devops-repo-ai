@@ -1,0 +1,128 @@
+---
+# ############################################################
+# This is mainly used to lookup variable names from inventory
+# IMPORTANT:
+#   global_defaults: 'name' key not allowed!
+# ############################################################
+
+global_defaults:
+  namespace: pep-eiap-ops-admin
+
+  # merge with instance kustomize_conf
+  kustomize_conf:
+    # common resources across all instances
+    resources:
+      # all common generated resources
+      generated:
+        # use the kctl generator
+        kctl_generator:
+        - name: pep-eiap-aks-init-secret
+          # must be a valid kubectl create sub-command
+          cmd: secret
+          cmd_type: generic
+          cmd_args:
+            long_opts:
+              append-hash: false
+              from-file:
+              - key: ssh_private_key_0
+                file: "{{ aks_init_ssh_private_key_file | default(ssh_private_key_0_file) }}"
+              - key: ssh_public_key_0
+                file: "{{ aks_init_ssh_public_key_file | default(ssh_public_key_0_file) }}"
+            #short_opts:
+              #v: 2
+
+    # all config maps shared across all instances
+    config_map_items:
+    - name: pep-ca-certs-config
+      # create|replace|merge
+      behavior: create
+      files:
+      - file: certs_root:pep-ca/pep-root-ca.pem
+        # override key instead of the default which is file name
+        key: PepsiCoRootCA.crt
+      - file: certs_root:pep-ca/pep-ca-01.pem
+        # override key instead of the default which is file name
+        key: PepsiCoCA01.crt
+      options:
+        disableNameSuffixHash: true
+
+
+# IMPORTANT: Order is important, last ones override and list items replaced.
+override_vars:
+# This should be in inventory/default
+- pep_eiap_aks_init_params
+# This should be in inventory/<environment>
+- pep_eiap_aks_init_env_params
+# This should be in inventory/<environment>/host_vars/<cluster_name>
+- pep_eiap_aks_init_host_params
+
+# --
+# Begin list  of instances of this application
+# --
+instances:
+
+- name: &inst_01_vers '2.0.0'
+  version: *inst_01_vers
+  # ##
+  # kustomize configuration
+  #   static: type(list)
+  #   external_commands: type(list)
+  # ##
+  kustomize_conf:
+
+    # ~~~
+    # All resources
+    # ~~~
+    resources:
+      # NOTE: only path resources accepted for static
+      static:
+      # base kustomize directory
+      - 2.0.x
+    # ~~~
+    # Image list
+    # ~~~
+    image_items:
+    - name: pep/eiap/infra/utils/admin-utils/eiap-nginx
+      # either new name or add registry to existing name
+      registry: "{{ eiap_env_common_acr }}"
+      newTag: ubuntu-bionic-2021.07.12
+
+    # Global options for all generators (e.g. configmaps or secrets)
+    generator_options:
+      labels:
+        app.kubernetes.io/name: "{{ app_name }}"
+
+
+    # ~~~
+    # All patches
+    # ~~~
+    patch_items:
+    - inline:
+        target:
+          kind: DaemonSet
+        patch:
+          apiVersion: apps/v1
+          kind: DaemonSet
+          metadata:
+            # IMPORTANT: required not used
+            name: not-used
+            labels:
+              app.kubernetes.io/version: *inst_01_vers
+          spec:
+            selector:
+              matchLabels:
+                app.kubernetes.io/version: *inst_01_vers
+            template:
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"
+                labels:
+                  app.kubernetes.io/version: *inst_01_vers
+                  app: "{{ app_name }}"
+                  version: *inst_01_vers
+              spec:
+                nodeSelector:
+                  kubernetes.io/os: linux
+                tolerations:
+                # tolerate every taint
+                - operator: Exists

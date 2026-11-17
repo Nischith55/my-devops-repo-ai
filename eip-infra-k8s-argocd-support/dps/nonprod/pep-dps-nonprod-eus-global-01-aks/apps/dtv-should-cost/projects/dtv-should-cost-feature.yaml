@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dtv-should-cost-feature
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for dtv-should-cost-feature   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dtv-should-cost-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-dtvscm-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dtv-should-cost-feature-admin
+    description: Admin privileges to dtv-should-cost-feature
+    policies:
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-admin, applications, *, dtv-should-cost-feature/*, allow
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-admin, applications, get, argocd/*, allow
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-admin, repositories, *, dtv-should-cost-feature/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dtv-should-cost-feature-user
+    description: Read-only privileges to dtv-should-cost-feature
+    policies:
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-user, applications, get, dtv-should-cost-feature/*, allow
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-user, applications, sync, dtv-should-cost-feature/*, allow
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-user, repositories, get, dtv-should-cost-feature/*, allow
+    - p, proj:dtv-should-cost-feature:dtv-should-cost-feature-user, applications, action/apps/Deployment/restart, dtv-should-cost-feature/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.CGF.NonProd.dtvscm"
+    - "Team.Support.EIAP.READ"

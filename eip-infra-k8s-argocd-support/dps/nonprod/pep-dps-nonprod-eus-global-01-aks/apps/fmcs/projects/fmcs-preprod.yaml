@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fmcs-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for fmcs-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fmcs-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-fmcsuat-qa
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: fmcs-preprod-admin
+    description: Admin privileges to fmcs-preprod
+    policies:
+    - p, proj:fmcs-preprod:fmcs-preprod-admin, applications, *, fmcs-preprod/*, allow
+    - p, proj:fmcs-preprod:fmcs-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:fmcs-preprod:fmcs-preprod-admin, repositories, *, fmcs-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: fmcs-preprod-user
+    description: Read-only privileges to fmcs-dev
+    policies:
+    - p, proj:fmcs-preprod:fmcs-preprod-user, applications, get, fmcs-preprod/*, allow
+    - p, proj:fmcs-preprod:fmcs-preprod-user, applications, sync, fmcs-preprod/*, allow
+    - p, proj:fmcs-preprod:fmcs-preprod-user, repositories, get, fmcs-preprod/*, allow
+    - p, proj:fmcs-preprod:fmcs-preprod-user, applications, action/apps/Deployment/restart, fmcs-preprod/*, allow
+    groups:
+    - "Team.Support.FirstMile.AppSupport"
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

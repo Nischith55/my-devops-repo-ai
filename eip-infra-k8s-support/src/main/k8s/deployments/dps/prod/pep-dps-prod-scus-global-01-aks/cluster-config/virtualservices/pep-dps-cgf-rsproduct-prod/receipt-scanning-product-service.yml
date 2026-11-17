@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"receipt-scanning-product-service-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"receipt-scanning-product-service","namespace":"pep-dps-cgf-rsproduct-prod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["receipt-scanning-product-service.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"receipt-scanning-product-service.pep-dps-cgf-rsproduct-prod.svc.cluster.local","port":{"number":8083}}}]}]}}
+  labels:
+    app: receipt-scanning-product-service
+    app.kubernetes.io/instance: receipt-scanning-product-service-prod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: receipt-scanning-product-service
+  namespace: pep-dps-cgf-rsproduct-prod
+spec:
+  gateways:
+  - pep-dps-cgf-rsproduct-prod/pep-dps-cgf-rsproduct-prod-cv-gw
+  hosts:
+  - receipt-scanning-product-service.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-product-service.pep-dps-cgf-rsproduct-prod.svc.cluster.local
+        port:
+          number: 8083

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-gtmgro-services-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-gtmgro-services-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-gtmgro-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-flna-gtmgro-qa
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-gtmgro-services-qa-admin
+    description: Admin privileges to pep-pfna-gtmgro-services-qa
+    policies:
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-admin, applications, *, pep-pfna-gtmgro-services-qa/*, allow
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-admin, repositories, *, pep-pfna-gtmgro-services-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-gtmgro-services-qa-user
+    description: Read-only privileges to pep-pfna-gtmgro-services-qa
+    policies:
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-user, applications, get, pep-pfna-gtmgro-services-qa/*, allow
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-user, applications, sync, pep-pfna-gtmgro-services-qa/*, allow
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-user, repositories, get, pep-pfna-gtmgro-services-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-pfna-gtmgro-services-qa:pep-pfna-gtmgro-services-qa-user, applications, action/apps/Deployment/restart, pep-pfna-gtmgro-services-qa/*, allow
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"

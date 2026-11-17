@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 4b5bb266-22c2-45aa-9012-eb17dfd82f02
+  name: pep-eiap-latam-dwdui-dev-sa
+  namespace: pep-eiap-latam-dwdui-dev

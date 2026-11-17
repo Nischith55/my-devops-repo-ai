@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-global-gdm-app-service-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eip-global-gdm-app-service-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","datamarketplace.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-global-gdm-app-service.pep-eiap-cgf-pdm-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eip-global-gdm-app
+  name: pep-eip-global-gdm-app-service-vs
+  namespace: pep-eiap-cgf-pdm-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pdm-prod/pep-eiap-cgf-pdm-prod-cv-gw
+  hosts:
+  - pep-eip-global-gdm-app-service-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - datamarketplace.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-global-gdm-app-service.pep-eiap-cgf-pdm-prod.svc.cluster.local
+        port:
+          number: 80

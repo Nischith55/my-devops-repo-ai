@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-iam-okta-telephony-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-iam-okta-telephony-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iam-okta-telephony-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-iamservice-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-iam-okta-telephony-dev-admin
+        description: Admin privileges to pep-iam-okta-telephony-dev
+        policies:
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-admin, applications, *, pep-iam-okta-telephony-dev/*, allow
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-admin, repositories, *, pep-iam-okta-telephony-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-iam-okta-telephony-dev-user
+        description: Read-only privileges to pep-iam-okta-telephony-dev
+        policies:
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-user, applications, get, pep-iam-okta-telephony-dev/*, allow
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-user, applications, sync, pep-iam-okta-telephony-dev/*, allow
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-user, repositories, get, pep-iam-okta-telephony-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-iam-okta-telephony-dev:pep-iam-okta-telephony-dev-user, applications, action/apps/Deployment/restart, pep-iam-okta-telephony-dev/*, allow
+        groups:
+        - "Team.support.AssociateSSO.PROD.Admins"
+        - "Team.Support.EIAP.READ"
+    

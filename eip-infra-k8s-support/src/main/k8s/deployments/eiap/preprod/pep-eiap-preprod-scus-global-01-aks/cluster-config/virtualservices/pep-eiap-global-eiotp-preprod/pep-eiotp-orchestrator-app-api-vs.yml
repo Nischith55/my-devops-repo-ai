@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: orchestrator-app-api
+  name: pep-eiotp-orchestrator-app-api-vs
+  namespace: pep-eiap-global-eiotp-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eiotp-preprod/pep-eiap-global-eiotp-preprod-cv-gw
+  hosts:
+  - eiotpapi-app-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: orchestrator-app-api.pep-eiap-global-eiotp-preprod.svc.cluster.local
+        port:
+          number: 8080

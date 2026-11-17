@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-global-eipui
+  name: pep-eiap-global-eipui-vs
+  namespace: pep-eiap-global-mdp-dev
+spec:
+  gateways:
+  - pep-eiap-global-mdp-dev/pep-eiap-global-mdp-dev-cv-gw
+  hosts:
+  - pep-eiap-global-eipui.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-global-eipui.pep-eiap-global-mdp-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-cmp-cgf-dcfvgn-dev-sa
+  namespace: pep-cmp-cgf-dcfvgn-dev

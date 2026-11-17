@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-apigee-nginx-vs","namespace":"pep-apigee-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-apigee-nginx-curl.apigee.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-apigee-nginx.pep-apigee-global-infra-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: pep-apigee-nginx
+  name: pep-apigee-nginx-vs
+  namespace: pep-apigee-global-infra-dev
+spec:
+  gateways:
+  - pep-apigee-global-infra-dev/pep-apigee-global-infra-dev-cv-gw
+  hosts:
+  - pep-apigee-nginx-curl.apigee.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-apigee-nginx.pep-apigee-global-infra-dev.svc.cluster.local
+        port:
+          number: 8080

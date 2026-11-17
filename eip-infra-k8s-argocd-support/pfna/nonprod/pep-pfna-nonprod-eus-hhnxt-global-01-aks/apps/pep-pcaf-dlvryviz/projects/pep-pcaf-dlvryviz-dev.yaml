@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pcaf-dlvryviz-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pep-pcaf-dlvryviz-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-pcaf-dlvryviz-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pgt-dev
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pcaf-dlvryviz-dev-admin
+    description: Admin privileges to pep-pcaf-dlvryviz-dev
+    policies:
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-admin, applications, *, pep-pcaf-dlvryviz-dev/*, allow
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-admin, repositories, *, pep-pcaf-dlvryviz-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pcaf-dlvryviz-dev-user
+    description: Read-only privileges to pep-pcaf-dlvryviz-dev
+    policies:
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-user, applications, get, pep-pcaf-dlvryviz-dev/*, allow
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-user, applications, sync, pep-pcaf-dlvryviz-dev/*, allow
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-user, repositories, get, pep-pcaf-dlvryviz-dev/*, allow
+    - p, proj:pep-pcaf-dlvryviz-dev:pep-pcaf-dlvryviz-dev-user, applications, action/apps/Deployment/restart, pep-pcaf-dlvryviz-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,50 @@
+global:
+  spec:
+    destination:
+      clusterName: pep-pepgenx-nonprod-eus-global-01-aks
+
+argoCDApplications:
+  arc-secret-provider-pep-pepgenx-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-pepgenx-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pepgenx/pep-pepgenx-nonprod-eus-global-01-aks/pep-pepgenx-arc/secret-provider
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-controller-pep-pepgenx-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set-controller
+    revision: 0.14.2
+    namespace: pep-pepgenx-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pepgenx/pep-pepgenx-nonprod-eus-global-01-aks/pep-pepgenx-arc/controller
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
+  arc-runner-set-pep-pepgenx-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set
+    revision: 0.14.2
+    namespace: pep-pepgenx-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pepgenx/pep-pepgenx-nonprod-eus-global-01-aks/pep-pepgenx-arc/runner-set
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-image-prepull-pep-pepgenx-nonprod-eus-global-01-aks:
+    enabled: true
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-pepgenx-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/pepgenx/pep-pepgenx-nonprod-eus-global-01-aks/pep-pepgenx-arc/prepull
+    syncOptions:
+      - CreateNamespace=true

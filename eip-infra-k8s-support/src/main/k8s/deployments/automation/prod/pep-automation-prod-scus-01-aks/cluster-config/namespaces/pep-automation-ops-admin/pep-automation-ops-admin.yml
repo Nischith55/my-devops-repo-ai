@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-automation-ops-admin
+  labels:
+    cluster-name: pep-automation-prod-scus-01-aks
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    team: eiap-admins
+    istio-injection: disabled
+    crosscharge_aks: direct
+    servicename_aks: sharedaks-platform

@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-digitalfactory-hrseverance-ui
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eip-digitalfactory-hrseverance-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-digitalfactory-hrseverance-ui.pep-eiap-global-hrsev-dev.svc.cluster.local
+        port:
+          number: 80
+    # corsPolicy:
+    #   allowOrigins:    
+    #   - exact: https://pep-eip-digitalfactory-hrseverance.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    #   allowMethods:
+    #   - POST
+    #   - GET
+    #   - PUT
+    #   - DELETE
+    #   - OPTIONS
+    #   allowCredentials: true
+    #   allowHeaders:
+    #   - Authorization
+    #   - Link
+    #   - Content-Type
+    #   - Access-Control-Allow-Origin
+    #   - Access-Control-Allow-Headers
+    #   - Accept
+    #   exposeHeaders:
+    #   - x-total-count        

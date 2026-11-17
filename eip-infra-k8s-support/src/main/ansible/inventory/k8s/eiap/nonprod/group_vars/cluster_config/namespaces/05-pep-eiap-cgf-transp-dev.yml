@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_transp_dev:
+  
+  name: pep-eiap-cgf-transp-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-transp
+    sector: cgf
+    project: transp
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: flirlatitudeprod
+    pep-cmdb-app-service-id: "a01f934bdbabdf008a0e138b4b9619d7"
+    pep-cmdb-bus-app-id: "8cbe08f9db3e8c10c2b5f3813996194d"
+    pep-environment: "Dev"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-transp-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_transp'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-transp-dev-sa-token
+    namespace: pep-eiap-cgf-transp-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-transp-dev-sa"

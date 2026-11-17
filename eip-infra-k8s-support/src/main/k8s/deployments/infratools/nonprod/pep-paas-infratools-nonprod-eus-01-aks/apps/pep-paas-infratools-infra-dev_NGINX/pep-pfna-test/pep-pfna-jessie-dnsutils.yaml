@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-pfna-jessie-dnsutils
+  name: pep-pfna-jessie-dnsutils
+  namespace: pep-pfna-global-infra-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pep-pfna-jessie-dnsutils
+  strategy:
+  template:
+    metadata:
+      labels:
+        app: pep-pfna-jessie-dnsutils
+    spec:
+      containers:
+      - command:
+        - sleep
+        - "3600"
+        image: k8s.gcr.io/e2e-test-images/jessie-dnsutils:1.3
+        name: dnsutils
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1337
+        runAsGroup: 1337
+        runAsUser: 1337

@@ -1,0 +1,48 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+images:
+- name: pep/eiap/infra/utils/admin-utils/eiap-nginx
+  newName: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx
+  newTag: ubuntu-bionic-2021.07.12
+kind: Kustomization
+namespace: pep-eiap-ops-admin
+patches:
+- patch: |-
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      # NOTE: if used in patches, then name is not required but element must be
+      # present
+      name: not-used
+      labels:
+        app.kubernetes.io/name: pep-eiap-aks-init
+        app.kubernetes.io/version: 2.0.0
+    spec:
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: pep-eiap-aks-init
+          app.kubernetes.io/version: 2.0.0
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: 'false'
+          labels:
+            app: pep-eiap-aks-init
+            app.kubernetes.io/name: pep-eiap-aks-init
+            app.kubernetes.io/version: 2.0.0
+            version: 2.0.0
+        spec:
+          nodeSelector:
+            kubernetes.io/os: linux
+          tolerations:
+            - operator: Exists
+            - effect: NoSchedule
+              operator: Exists
+            - effect: NoExecute
+              operator: Exists
+        # end: template/spec
+      # end: template
+  target:
+    kind: DaemonSet
+resources:
+- ../../../../../../../../../apps/pep-eiap-aks-init/kustomize/2.0.x

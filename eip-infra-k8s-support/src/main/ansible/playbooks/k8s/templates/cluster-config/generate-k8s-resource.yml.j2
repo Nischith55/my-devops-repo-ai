@@ -1,0 +1,32 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Generate arbitrary k8s resources VERY Generic
+  INPUTS:
+    - params_tmpl:
+        name:
+        apiVersion: [required]
+        metadata: [optional]
+          labels:
+        spec: [required]
+#}
+{% set _p = params_tmpl %}
+{# key metadata  #}
+{% set _pm = _p['metadata'] | default({}) %}
+{% set _pm_l = _pm['labels'] | default({}) %}
+{% set _ps = _p['spec'] | default({}) %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+apiVersion: {{ _p['apiVersion'] }}
+kind: {{ _p['kind'] }}
+metadata:
+  name: {{ _p['name'] }}
+  {% if _p['namespace'] is defined %}
+  namespace: {{ _p['namespace'] }}
+  {% endif %}
+  {% if (_pm_l | length) > 0 %}
+  labels:
+    {{ _pm_l | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endif %}
+spec:
+  {{ _ps | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}

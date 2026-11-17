@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pep-fpa-cockpit-genai-rstrct-query-ui-dev:networking.istio.io/VirtualService:pep-eiap-cgf-ckptgpt-dev/pep-cgpt-cgf-rstrct-query-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pep-fpa-cockpit-genai-rstrct-query-ui-dev:networking.istio.io/VirtualService:pep-eiap-cgf-ckptgpt-dev/pep-cgpt-cgf-rstrct-query-ui"},"labels":{"app":"pep-cgpt-cgf-rstrct-query-ui","app.kubernetes.io/instance":"pep-fpa-cockpit-genai-rstrct-query-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","environment":"dev","helm.sh/chart":"platform-chart-1.2.9"},"name":"pep-cgpt-cgf-rstrct-query-ui","namespace":"pep-eiap-cgf-ckptgpt-dev"},"spec":{"gateways":["pep-eiap-cgf-ckptgpt-dev/pep-eiap-cgf-ckptgpt-dev-cv-gw"],"hosts":["pep-cgpt-cgf-rstrct-query-ui.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","cockpitgpt2.dev.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"pep-cgpt-cgf-rstrct-query-ui.pep-eiap-cgf-ckptgpt-dev.svc.cluster.local","port":{"number":3000},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: pep-cgpt-cgf-rstrct-query-ui
+        app.kubernetes.io/instance: pep-fpa-cockpit-genai-rstrct-query-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        environment: dev
+        helm.sh/chart: platform-chart-1.2.9
+    name: pep-cgpt-cgf-rstrct-query-ui
+    namespace: pep-eiap-cgf-ckptgpt-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-ckptgpt-dev/pep-eiap-cgf-ckptgpt-dev-cv-gw
+    hosts:
+    - pep-cgpt-cgf-rstrct-query-ui.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cockpitgpt2.dev.azure.intra.pepsico.com
+    - cockpitai.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-cgpt-cgf-rstrct-query-ui.pep-eiap-cgf-ckptgpt-dev.svc.cluster.local
+                port:
+                    number: 3000

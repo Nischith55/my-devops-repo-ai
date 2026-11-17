@@ -1,0 +1,104 @@
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: gateway-1-17-2
+  namespace: istio-system
+spec:
+  profile: empty
+  tag: "1.17.2"
+  revision: "1-17-2"
+
+  components:
+    ingressGateways:
+      # Disable built-in-gateway
+      - name: istio-ingressgateway
+        enabled: false
+
+      - name: &gw01 pep-cmp-ingress-gw01
+        enabled: true
+        k8s:
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 6
+          serviceAnnotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+            service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+          overlays:
+          - kind: HorizontalPodAutoscaler
+            name: *gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.scaleTargetRef.name
+              value: *gw01
+          - kind: Deployment
+            name: pep-cmp-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.app
+              value: *gw01
+            - path: spec.selector.matchLabels.istio
+              value: *gw01
+            - path: spec.template.metadata.labels.app
+              value: *gw01
+            - path: spec.template.metadata.labels.istio
+              value: *gw01
+            # zoned pools
+            - path: spec.template.spec.topologySpreadConstraints
+              value:
+              - labelSelector:
+                  matchLabels:
+                    app: *gw01
+                maxSkew: 1
+                topologyKey: topology.kubernetes.io/zone
+                whenUnsatisfiable: DoNotSchedule
+          - apiVersion: v1
+            kind: Service
+            name: pep-cmp-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.app
+              value: *gw01
+            - path: spec.selector.istio
+              value: *gw01
+            - path: spec.loadBalancerIP
+              value: 192.168.16.253
+            # remove uneccessary ports
+            - path: spec.ports.[port:15021]
+              value: ~
+            # Need to enable port 80 for https redirection
+            # - path: spec.ports.[port:80]
+            #   value: ~
+          - kind: ServiceAccount
+            name: pep-cmp-ingress-gw01-service-account
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+          - kind: PodDisruptionBudget
+            name: *gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.app
+              value: *gw01

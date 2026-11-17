@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-pfna-flna-schkgn-prod-sa
+  namespace: pep-pfna-flna-schkgn-prod

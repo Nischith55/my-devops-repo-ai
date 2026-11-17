@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: r360-caf-kroger-hfd-dev-vs
+  namespace: pep-dps-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - r360-caf-kroger-hfd-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: r360-caf-kroger.pep-dps-cgf-retailhfd-dev.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,22 @@
+####### BEGIN Added recently --pep-dps-preprod-suk-global-01-aks ######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_europe_pepconnind_preprod
+  - ns_pep_dps_europe_btbpromo_preprod
+  - ns_pep_dps_europe_bffckout_preprod
+  - ns_pep_dps_europe_bfflylty_preprod
+  - ns_pep_dps_europe_btbcarts_preprod
+  - ns_pep_dps_europe_btbcep_preprod
+  - ns_pep_dps_europe_psd_preprod
+  - ns_pep_dps_europe_bff_preprod
+  - ns_pep_dps_cgf_cct_preprod
+  - ns_pep_dps_cgf_pepconntur_preprod
+  - ns_pep_dps_cgf_pepconnrus_preprod
+  - ns_pep_dps_cgf_pepconnrou_preprod
+  - ns_pep_dps_cgf_pepconnesp_preprod
+  - ns_pep_dps_cgf_pepconnpol_preprod
+  - ns_pep_dps_cgf_pepconnprt_preprod
+  - ns_pep_dps_test_test_preprod
+####### END Added recently --pep-dps-preprod-suk-global-01-aks ######

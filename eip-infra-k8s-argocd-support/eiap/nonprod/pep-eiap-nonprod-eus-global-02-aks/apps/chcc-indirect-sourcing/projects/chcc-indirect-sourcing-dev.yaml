@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: chcc-indirect-sourcing-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for chcc-indirect-sourcing-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/chcc-indirect-sourcing-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-indrisk-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: chcc-indirect-sourcing-dev-admin
+    description: Admin privileges to chcc-indirect-sourcing-dev
+    policies:
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-admin, applications, *, chcc-indirect-sourcing-dev/*, allow
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-admin, repositories, *, chcc-indirect-sourcing-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: chcc-indirect-sourcing-dev-user
+    description: Read-only privileges to chcc-indirect-sourcing-dev
+    policies:
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-user, applications, get, chcc-indirect-sourcing-dev/*, allow
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-user, applications, sync, chcc-indirect-sourcing-dev/*, allow
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-user, repositories, get, chcc-indirect-sourcing-dev/*, allow
+    - p, proj:chcc-indirect-sourcing-dev:chcc-indirect-sourcing-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.AZURE.APAC.NONPROD.CNINRISK"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"r360-lite-frontend","app.kubernetes.io/instance":"r360-lite-frontend-us-qa","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"r360-lite-frontend","namespace":"pep-dps-dps-aiqr360-qa"},"spec":{"gateways":["pep-dps-dps-aiqr360-qa/pep-dps-dps-aiqr360-qa-cv-gw"],"hosts":["gusr360-lite-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"r360-lite-frontend.pep-dps-dps-aiqr360-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: r360-lite-frontend
+        app.kubernetes.io/instance: r360-lite-frontend-us-qa
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: r360-lite-frontend
+    namespace: pep-dps-dps-aiqr360-qa
+spec:
+    gateways:
+    - pep-dps-dps-aiqr360-qa/pep-dps-dps-aiqr360-qa-cv-gw
+    hosts:
+    - gusr360-lite-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - usaiq.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: r360-lite-frontend.pep-dps-dps-aiqr360-qa.svc.cluster.local
+                port:
+                    number: 8080

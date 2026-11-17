@@ -1,0 +1,81 @@
+---
+# ##
+# This is the yaml file for elastic operator config map
+# ##
+
+# this whole thing goes as a string with
+eck_operator_eck_yaml_value_config_map:
+  # ##
+  # eck.yml
+  # - Ref: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-operator-config.html
+  # ##
+  # ca-cert expiry h => hours, 5years 5*365*24
+  ca-cert-validity: 350400h
+  ca-cert-rotate-before: 24h
+  # cert expiry h => hours, 5years 5*365*24
+  cert-validity: 43800h
+  cert-rotate-before: 24h
+  # config: ""
+  # Container registry to use for pulling Elastic Stack container images.
+  container-registry: docker.elastic.co
+  # Watch the configuration file for changes and restart to apply them. 
+  # Only effective when the --config flag is used to set the configuration
+  # file.
+  disable-config-watch: "{{ eck_operator_cm['disable-config-watch'] | default('false') | bool }}"
+  # Disable periodically updating ECK telemetry data for Kibana to consume.
+  disable-telemetry: "{{ eck_operator_cm['disable-telemetry'] | default('false') | bool }}"
+  # default 180s
+  elasticsearch-client-timeout: "{{ eck_operator_cm['elasticsearch-client-timeout'] | default('5m') }}"
+  # Enable leader election. Must be set to true if using multiple 
+  # replicas of the operator
+  enable-leader-election: "{{ eck_operator_cm['enable-leader-election'] | default('true') | bool }}"
+  # Enable APM tracing in the operator process. Use environment variables 
+  # to configure APM server URL, credentials, and so on. See Apm Go Agent 
+  # reference for details.
+  # default: false
+  enable-tracing: false
+  # Enables a validating webhook server in the operator process.
+  # default: false
+  enable-webhook: "{{ eck_operator_cm['enable-webhook'] | default('true') | bool }}"
+  # default: "" => auto-detect, IPv6|IPv4|""
+  ip-family: IPv4
+  # Set the request timeout for Kubernetes API calls made by the operator.
+  kube-client-timeout: 60s
+  # Verbosity level of logs. -2=Error, -1=Warn, 0=Info, 0 and above=Debug
+  log-verbosity: "{{ eck_operator_cm['log-verbosity'] | default(2) | int }}"
+  # Enables automatic webhook certificate management.
+  manage-webhook-certs: true
+  # Maximum number of concurrent reconciles per controller (Elasticsearch,
+  # Kibana, APM Server). Affects the ability of the operator to process
+  # changes concurrently. (default:3)
+  max-concurrent-reconciles: "{{ eck_operator_cm['max-concurrent-reconciles'] | default(3) | int }}"
+  # Prometheus metrics port. Set to 0 to disable the metrics endpoint.
+  metrics-port: 9090
+  # Namespaces in which this operator should manage resources. 
+  # Accepts multiple comma-separated values. Defaults to all namespaces 
+  # if empty or unspecified.
+  namespaces: "{{ eck_operator_cm['namespaces'] }}"
+  # Namespace the operator runs in. Required.
+  operator-namespace: "{{ eck_operator_cm['operator-namespace'] | default(_eck_op_namespace_) }}"
+  #REMOVED from 1.4.0# set-default-security-context: true
+  # --
+  # Use only UBI container images to deploy Elastic Stack applications. 
+  # UBI images are only available from 7.10.0 onward.
+  # ubi-only: false
+  # Specifies whether the operator should retrieve storage classes to verify
+  # volume expansion support. Can be disabled if cluster-wide storage class 
+  # RBAC access is not available.
+  validate-storage-class: true
+  webhook-name: elastic-webhook.k8s.elastic.co
+  # --
+  # Path to the directory that contains the webhook server key and 
+  # certificate.
+  # webhook-cert-dir: "{TempDir}/k8s-webhook-server/serving-certs"
+  # --
+  # Name of the Kubernetes ValidatingWebhookConfiguration resource. 
+  # Only used when enable-webhook is true.
+  # webhook-name: elastic-webhook.k8s.elastic.co
+  # --
+  # K8s secret mounted into the path designated by webhook-cert-dir to be
+  # used for webhook certificates.
+  # webhook-secret: ""

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pbna-supply-chain-km-backend-vs
+  namespace: pep-eiap-pbna-sckm2-dev
+  labels:
+    app: pbna-supply-chain-km-backend-v2
+spec:
+  hosts:
+    - pbna-supply-chain-km-backend-v2-test.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-sckm2-dev/pep-eiap-pbna-sckm2-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pbna-supply-chain-km-backend-v2.pep-eiap-pbna-sckm2-dev.svc.cluster.local
+        port:
+          number: 8080

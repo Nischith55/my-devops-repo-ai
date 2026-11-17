@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nabdomain-cluster-nab-cluster-vs
+  namespace: pep-weblogic-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - nabdomain-cluster-nab-cluster.weblogic.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /SampleWebApp
+    - ignoreUriCase: true
+      uri:
+        prefix: /testJbossConfig
+    route:
+    - destination:
+        host: nabdomain-cluster-nab-cluster.pep-weblogic-apache-dev.svc.cluster.local
+        port: 
+          number: 8001 

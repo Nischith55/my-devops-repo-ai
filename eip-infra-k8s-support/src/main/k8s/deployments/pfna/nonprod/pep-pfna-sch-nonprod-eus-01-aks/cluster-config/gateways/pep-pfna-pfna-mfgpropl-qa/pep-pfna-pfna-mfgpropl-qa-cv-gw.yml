@@ -1,0 +1,90 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-pfna-mfgpropl-qa-cv-gw
+  namespace: pep-pfna-pfna-mfgpropl-qa
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-pfna-mfgpropl-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-qa-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pfna-pfna-mfgpropl-qa-cv.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-pfna-mfgpropl-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sc-mfg-ddd-analytics-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sc-mfg-reporting-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-qa-cv-gw-https-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pfna-pfna-mfgpropl-qa-cv.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - mfgproplus.qa.pepsico.com
+    - pep-pfna-pfna-mfgpropl-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-mfgproplus-customer-support-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sc-mfg-ddd-analytics-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-sc-mfg-reporting-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-qa-cv-gw-http-80
+    port:
+      name: http-pep-pfna-pfna-mfgpropl-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - mfgproplus.qa.pepsico.com
+    name: pep-pfna-pfna-mfgpropl-qa-cv-gw-1-https-443
+    port:
+      name: https-pep-pfna-pfna-mfgpropl-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-pfna-mfgpropl-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

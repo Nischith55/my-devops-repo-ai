@@ -1,0 +1,79 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredResources
+metadata:
+  name: container-must-have-limits-and-requests
+spec:
+  enforcementAction: deny
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - istio-operator
+    - istio-system
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - twistlocknp
+    - tigera-operator
+    - pep-eiap-ops-admin
+    - pep-eiap-global-cep-qa
+    - pep-eiap-global-infra-dev
+    - pep-eiap-istio-config
+    - pep-eiap-elastic-client-01
+    - pep-eiap-elastic-client-02
+    - pep-eiap-elastic-cluster-01
+    - pep-eiap-elastic-cluster-02
+    - pep-eiap-elastic-monitor-01
+    - pep-eiap-global-devsecops-dev
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - policy-system
+    - gitops-connector-system
+    # CMP OPA Exception Request 
+    - pep-eiap-global-cmp-dev
+    - pep-eiap-global-cmp-qa
+    - pep-eiap-global-infra-dev
+    - default
+    - pep-eiap-cgf-swaggerhub-dev
+    - pep-eiap-cgf-cvopa-dev
+    - argocd
+    # OPA exception praseed approval 
+    - pep-eiap-cgf-launchp-dev
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+    scope: '*'
+  parameters:
+    exemptImages:
+    - cyberark/secrets-provider-for-k8s*
+    - docker.io/istio/*
+    - docker.elastic.co/observability/*
+    - appdynamics/*
+    - docker.io/appdynamics/*
+    - mcr.microsoft.com/
+    - mcr.microsoft.com/aks/fundamental/base-ubuntu*
+    # OPA Exception RITM4296288 SVT-Robotics
+    # - 31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/svt-softbot-platform*
+    #Cross-Team Sync Required to Resolve Production Data Ingestion Failure
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-multiprocessing*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-logtoarize*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/dlops-model-mgmt-backend*
+    - pepeiapnonprodglobalcommonacr.azurecr.io/dlops/model-observability-framework*
+    limits:
+    - cpu
+    - memory
+    requests:
+    - cpu
+    - memory

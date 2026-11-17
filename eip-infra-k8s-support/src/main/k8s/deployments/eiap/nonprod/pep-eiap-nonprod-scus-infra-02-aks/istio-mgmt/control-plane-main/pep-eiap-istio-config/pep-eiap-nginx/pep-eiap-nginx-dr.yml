@@ -1,0 +1,11 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-eiap-nginx-dr
+  namespace: pep-eiap-istio-config
+spec:
+  host: pep-eiap-nginx.pep-eiap-global-infra-dev.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

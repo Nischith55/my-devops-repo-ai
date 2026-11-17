@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: afh-menupro-recoengine
+    app.kubernetes.io/instance: afh-menupro-recoengine-qa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: afh-menupro-recoengine
+  namespace: pep-dps-dps-afhmenu-qa
+spec:
+  gateways:
+  - pep-dps-dps-afhmenu-qa/pep-dps-dps-afhmenu-qa-cv-gw
+  hosts:
+  - afh-menupro-recoengine-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-recoengine.pep-dps-dps-afhmenu-qa.svc.cluster.local
+        port:
+          number: 8080

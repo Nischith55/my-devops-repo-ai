@@ -1,0 +1,30 @@
+---
+# ##
+# Playbook for cluster configuration (post provisioning tasks)
+# ##
+
+# ##
+# GENERIC K8S CLUSTER SETUP LIFECYCLE
+# ##
+- name: K8S_CLUSTER_SETUP_LIFECYCLE
+  # MUST cluster name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  tasks:
+  - name: RUN_TASK_BLOCK
+    block:
+
+    - name: RUN_TASK ({{ run_task }})
+      k8s_tasks:
+        task_str: "{{ run_task }}"
+      register: task_result
+
+    - name: PRINT_TASK_RESULT
+      debug:
+        msg: |
+          {{ task_result }}
+
+    when: (run_task is defined)
+

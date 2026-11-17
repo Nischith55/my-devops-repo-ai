@@ -1,0 +1,272 @@
+
+trigger: none
+
+parameters:
+  - name: Functional_Area
+    displayName: Functional_Area
+    type: string
+    values:
+      - eiap
+      - edap
+      - pfna
+      - snt
+      - cmp
+      - infratools
+      - infosectools
+      - pbna
+      - dps
+      - cmptest
+      - automation
+      - cgf	  
+      - pepgenx
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+      - na
+      - essa
+      - apac
+
+  - name: ResourceName
+    displayName: Resource Name
+    type: string
+
+  - name: ResourceType
+    displayName: Resource Type
+    type: string
+    values:
+      - managed-identity
+      - storage-account
+      - azure-kubernetes-services
+      - key-vault
+      - key-vault-certificate
+      - acr
+      - evh
+      - evh-cgrp
+      - evhns
+      - evhns-authz
+      - pvtep
+
+######################
+#DECLARE VARIABLES:-
+######################
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+
+  - name: nonprod_eus_agents
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  - name: preprod_eus_agents
+    value: pep-eiap-preprod-eus-infra-02-aks-agents
+
+  - name: prod_eus_agents
+    value: pep-eiap-prod-eus-infra-02-aks-agents
+    
+  - name: nonprod_backend_resource_group
+    value: pep-eiap-nonprod-eus-infra-01-rg
+
+  - name: preprod_backend_resource_group
+    value: pep-eiap-preprod-eus-infra-01-rg
+    
+  - name: prod_backend_resource_group
+    value: pep-eiap-prod-eus-infra-01-rg
+
+  - name: nonprod_backend_storage_account
+    value: pe1003auto01tf01sa
+
+  - name: preprod_backend_storage_account
+    value: pe2003auto01tf01sa
+    
+  - name: prod_backend_storage_account
+    value: pe3003auto01tf01sa
+
+  - name: eiap_backend_storage_container
+    value: eiap-storage-container
+
+  - name: edap_backend_storage_container
+    value: edap-storage-container
+    
+  - name: pfna_backend_storage_container
+    value: pfna-storage-container
+
+  - name: snt_backend_storage_container
+    value: snt-storage-container
+    
+  - name: cmp_backend_storage_container
+    value: cmp-storage-container
+
+  - name: infratools_backend_storage_container
+    value: infratools-storage-container
+
+  - name: infosectools_backend_storage_container
+    value: infosectools-storage-container
+
+  - name: pbna_backend_storage_container
+    value: pbna-storage-container  
+
+  - name: dps_backend_storage_container
+    value: dps-storage-container
+  
+  - name: cgf_backend_storage_container
+    value: cgf-storage-container
+
+  - name: pepgenx_backend_storage_container
+    value: pepgenx-storage-container
+
+  - name: cmptest_backend_storage_container
+    value: cmptest-storage-container
+  - name: automation_backend_storage_container
+    value: automation-storage-container
+
+  - name: approval_ITEIAPAZUREPlatformServices 
+    value: ITEIAPAZUREPlatformServices@pepsico.com
+  - name: approval_ITEIAPCICDSupportServices
+    value: ITEIAPCICDSupportServices@pepsico.com
+  - name: approval_AzureAutomation
+    value: DL-AzureAutomation@pepsico.com
+      
+  - name: agent_pool
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_eus_agents)    
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+     value: $(preprod_eus_agents)    
+    ${{ elseif eq(parameters.env, 'prod') }}:
+      value: $(prod_eus_agents)  
+    ${{ else }}:
+      value: $(nonprod_eus_agents)
+
+  - name: resource_group_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_resource_group)
+
+  - name: storage_account_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_storage_account)
+ 
+  - name: container_name_for_backend  
+    ${{ if eq(parameters.Functional_Area, 'eiap') }}:
+      value: $(eiap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'edap') }}:
+      value: $(edap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pfna') }}:
+      value: $(pfna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'snt') }}:
+      value: $(snt_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cmp') }}:
+      value: $(cmp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infratools') }}:
+      value: $(infratools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infosectools') }}:
+      value: $(infosectools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pbna') }}:
+      value: $(pbna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'dps') }}:
+      value: $(dps_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cgf') }}:
+      value: $(cgf_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pepgenx') }}:
+      value: $(pepgenx_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cmptest') }}:
+      value: $(cmptest_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'automation') }}:
+      value: $(automation_backend_storage_container)  
+  
+  - name: state_file_name
+    value: "${{parameters.ResourceType}}/${{parameters.Region}}/${{parameters.ResourceName}}.tfstate"   
+
+  - name: backend_spn
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: "NONPROD_NETWORK_SPN"
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: "PREPROD_NETWORK_SPN"  
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: "PROD_NETWORK_SPN"
+
+###################
+# Declare Stages:-
+###################
+
+stages:
+  - stage: display
+    displayName: display-selected-inputs-by-user
+    pool: 
+      name: $(agent_pool)
+    jobs: 
+      - job: display_backend_values
+        continueOnError: false
+        steps:
+        - script: |
+           echo "Checked out branch: $(Build.SourceBranch)"
+           echo "Selected Environment : ${{Parameters.env}}"
+           echo "Selected Resource Type : ${{Parameters.ResourceType}}"
+           echo "Selected Region : ${{Parameters.Region}}"
+           echo "Agent Pool to be used for all stages : ${{variables.agent_pool}}"
+           echo "Backend resource group name : ${{variables.resource_group_name_for_backend}}"
+           echo "Backend storage account : ${{variables.storage_account_name_for_backend}}"
+           echo "Backend container name : ${{variables.container_name_for_backend}}"
+           echo "State File Name : ${{variables.state_file_name}}"
+           echo "Name of the targeted resource : ${{Parameters.ResourceName}}"  
+
+  
+  - stage: checkforapproval
+    displayName: check-for-approval
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - deployment: approval
+      pool: server
+      timeoutInMinutes: 4320 # job times out in 3 days
+      environment: break-lease-approval
+      strategy:
+       runOnce:
+         deploy:           
+           steps:
+           - task: ManualValidation@0
+             timeoutInMinutes: 1440 # task times out in 1 day
+             inputs:
+               notifyUsers: |
+                  $(approval_AzureAutomation)
+                  $(approval_ITEIAPAZUREPlatformServices)
+                  $(approval_ITEIAPCICDSupportServices)
+               instructions: 'Approval required for Terraform Execution'
+            
+  
+  - stage: BREAK_TF_LEASE
+    displayName: state-file-break-lease
+    dependsOn: checkforapproval
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - template: templates/break_lease.yml
+      parameters:
+        service_principal: ${{variables.backend_spn}}
+        resource_group_name_for_backend: ${{variables.resource_group_name_for_backend}}
+        storage_account_name_for_backend: ${{variables.storage_account_name_for_backend}}
+        container_name_for_backend: ${{variables.container_name_for_backend}}
+        state_file_name: ${{variables.state_file_name}}
+        Region: ${{parameters.Region }}
+        ResourceType: ${{parameters.ResourceType}} 

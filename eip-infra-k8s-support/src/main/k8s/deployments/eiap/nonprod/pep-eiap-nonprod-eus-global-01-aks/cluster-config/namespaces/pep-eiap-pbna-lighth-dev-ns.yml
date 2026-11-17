@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pbna-lighth-dev
+  labels:
+    env-nonprod: "true"
+    project: lighth
+    sector: pbna
+    team: pbna-lighth
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: pbnawarehouselighthousescorecards
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 584403d197ad19182db4f9f11153afdd
+    pep-cmdb-app-service-id: 3524bcac475ac21c531cc5df016d43a7
+    pep-environment: Development
+    

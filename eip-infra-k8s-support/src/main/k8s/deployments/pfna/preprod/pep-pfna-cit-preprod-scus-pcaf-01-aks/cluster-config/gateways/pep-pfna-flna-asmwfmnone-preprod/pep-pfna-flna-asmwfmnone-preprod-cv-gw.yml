@@ -1,0 +1,104 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-asmwfmnone-preprod-cv-gw
+  namespace: pep-pfna-flna-asmwfmnone-preprod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-asmwfmnone-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-asmwfmnone-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-asmwfmnone-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-pfna-flna-asmwfmnone-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ec-producer-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-api-people-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ec-consumer-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-location-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-customer-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ds-fofu-consumer-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ds-fofu-scheduler-n1-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-md-cust-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-changelog-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-slsunithrcy-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-people-ec-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-mdextnsn-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-wfm-replay-facade-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-storvist-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-wrkfrcplnr-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-wrkfrc-jobgeo-ovrrd-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-eqpmtctlg-api-py-preprodn1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-plandeqpmt-api-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-repomerch-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-repor360-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-chneqpmt-api-py-preprodn1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-custasset-api-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-asmwfmnone-preprod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-asmwfmnone-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-cit-preprod-scus-pcaf-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-pfna-flna-asmwfmnone-preprod-80.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ec-producer-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-api-people-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ec-consumer-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-location-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-customer-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ds-fofu-consumer-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ds-fofu-scheduler-n1-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-md-cust-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-changelog-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-slsunithrcy-py-v4-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-people-ec-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-mdextnsn-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-wfm-replay-facade-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-storvist-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-pcaf-wfm-wrkfrcplnr-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-wrkfrc-jobgeo-ovrrd-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-eqpmtctlg-api-py-preprodn1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-plandeqpmt-api-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-repomerch-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-repor360-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-chneqpmt-api-py-preprodn1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pcaf-ast-custasset-api-py-n1.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-pfna-flna-asmwfmnone-preprod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-asmwfmnone-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

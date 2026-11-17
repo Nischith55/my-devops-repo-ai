@@ -1,0 +1,14 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  This generates a JsonPatches6902 data that is referenced from path.
+  INPUTS:
+    - params_tmpl:
+        params:
+          json6902:
+#}
+{% set _p = params_tmpl %}
+---
+# generated file please do not edit
+# {{ ansible_managed }}
+{# no indent filter as we are the first #}
+{{ _p['json6902'] | to_nice_yaml(indent=2, width=1337) | trim }}

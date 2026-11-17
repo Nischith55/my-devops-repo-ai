@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-transp-client-audit-logs-tracker-api
+  name: pep-pfna-transp-client-audit-logs-tracker-api-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-client-audit-logs-tracker-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/client-audit-api
+    route:
+    - destination:
+        host: pep-pfna-transp-client-audit-logs-tracker-api.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

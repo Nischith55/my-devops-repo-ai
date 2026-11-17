@@ -1,0 +1,178 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+# trigger: 
+# - none
+# pr: 
+# - none 
+
+parameters:
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+
+  - name: cluster_name
+    displayName: 'Cluster Name'
+    type: string
+
+  - name: department
+    displayName: 'department'
+    type: string
+    values:
+      - eiap
+      - edap
+      - pfna
+      - snt
+      - cmp
+      - infratools
+      - infosectools
+      - pbna
+      - dps
+      - globalit
+      - cmptest
+      - automation 
+
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+
+  - name: namespace
+    displayName: Namespace
+    type: string
+  
+  - name: configmap_input
+    displayName: ConfigMap to bootstrap
+    type: string
+    default: ' '
+
+
+stages: 
+- stage: Generate_Helm_Values
+  displayName: Generate Helm Values
+  variables:
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-nonprod-eus-hhnxt-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-preprod-scus-pcaf-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'), eq(parameters.Region, 'scus')) }}:
+      value: pep-pfna-cit-prod-scus-pcaf-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'), eq(parameters.Region, 'eus')) }}:
+      value: pep-pfna-cit-prod-scus-pcaf-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-preprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  pool: 
+      name: $(agent_pool)
+  jobs:
+  - job: Generate_Helm_Values
+    displayName: Generate Helm Values
+    timeoutInMinutes: 0
+    # variables:
+    # - group: preprod_nonprod_ansible_azure_secrets
+    # - group: prod_ansible_azure_secrets
+    steps:
+    - task: Bash@3
+      displayName: 'kubectl'
+      inputs:
+        targetType: 'inline'
+        script: |
+          git clone --branch develop https://svceipazdevops:$(repo_token)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-infra-k8s-support
+          cp eip-infra-k8s-support/src/main/azure_devops/scripts/get_azure_kv_secrets.py $(system.defaultWorkingDirectory)/
+          cp eip-infra-k8s-support/src/main/azure_devops/scripts/set_azure_creds.py $(system.defaultWorkingDirectory)/
+          cp eip-infra-k8s-support/src/main/azure_devops/pipelines/templates/config_helm_values $(system.defaultWorkingDirectory)/
+          cp eip-infra-k8s-support/src/main/ansible/playbooks/k8s/generate-helm-values.yml $(system.defaultWorkingDirectory)/
+          mkdir -p $(system.defaultWorkingDirectory)/k8s_support/ && cp -r eip-infra-k8s-support/src/main/ansible/roles/k8s_support/generate-helm-values $(system.defaultWorkingDirectory)/k8s_support/
+          ls -lart $(system.defaultWorkingDirectory)/k8s_support/generate-helm-values/
+
+    - template: templates/set_config_ingress.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: ${{ variables.env_convert }}
+    
+    - task: CmdLine@2
+      inputs:
+        script: |
+          # pip3 install ruamel.yaml
+          # ansible-playbook --version
+          # pip install ansible[Azure]
+          # pip install futures
+          # python3 --version
+          # pip show pyyaml
+          # pip3 install openshift
+          set -e
+          pip3 install ruamel.yaml
+          ansible --version
+          pip3 install --upgrade ansible
+          ansible --version
+          pip3 install openshift==0.11.0
+          pip3 install kubernetes==28.1.0
+          pip3 install pyyaml
+          pip3 show pyyaml
+          pip3 show openshift
+          pip3 show kubernetes
+          pip3 install pyOpenSSL
+          ansible --version
+    
+    - task: Bash@3
+      displayName: 'Generate Helm Values'
+      inputs:
+        targetType: 'inline'
+        script: |
+          ansible-galaxy collection install community.kubernetes -p ~/.ansible/collections/
+          ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+          ansible-playbook -e '{"cluster_name": "${{ parameters.cluster_name }}", "namespace": "${{ parameters.namespace }}", "configmap_input": "${{ parameters.configmap_input }}"}'  '$(system.defaultWorkingDirectory)/generate-helm-values.yml' -v
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: False
+        ANSIBLE_LOCALHOST_WARNING: False
+        script_dir: $(Build.ArtifactStagingDirectory)
+
+    # - task: Ansible@0
+    #   displayName: 'Generate Helm Values'
+    #   name: Generate_Helm_Values
+    #   inputs:
+    #     ansibleInterface: 'agentMachine'
+    #     playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/generate-helm-values.yml'
+    #     args: '-e ''{ "cluster_name": "${{ parameters.cluster_name }}", "namespace": "${{ parameters.namespace }}", "configmap_input": "${{ parameters.configmap_input }}" }'' -vv'
+    #   env:
+    #     ANSIBLE_HOST_KEY_CHECKING: False
+    #     ANSIBLE_LOCALHOST_WARNING: False
+    #     script_dir: $(Build.ArtifactStagingDirectory)
+        # AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+        # AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/'
+        ArtifactName: 'Helm'
+        publishLocation: 'Container'

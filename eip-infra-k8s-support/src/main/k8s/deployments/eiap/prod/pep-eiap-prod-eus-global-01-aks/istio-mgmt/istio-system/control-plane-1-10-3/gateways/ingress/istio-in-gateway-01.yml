@@ -1,0 +1,133 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - "*.global.gw01.aks01.eus.prod.azure.intra.pepsico.com"
+    # - hcmui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eiap-nginx.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-workorders-ingest.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pepsico-global-eipone.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-customer-metrics.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - cntwui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - vctservices.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - nginx.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-selective-https-443
+    port:
+      name: https-sltv-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - controltower.mypepsico.com
+    # - hcmui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    - hcm.mypepsico.com
+    # - pep-eiap-nginx.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-workorders-ingest.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pepsico-global-eipone.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-inbound.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-customer-metrics.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - cntwui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - vctservices.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    # - nginx.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    - "*.global.gw01.aks01.eus.prod.azure.intra.pepsico.com"
+    name: istio-in-gateway-01-selective-http-80
+    port:
+      name: https-sltv-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - controltower.mypepsico.com
+    name: istio-in-gateway-01-controltower-https-443
+    port:
+      name: https-controltower-prod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-eus-global-controltower-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+# SSL offloading block for hcm      
+  - hosts:
+    - hcm.mypepsico.com
+    name: istio-in-gateway-01-hcm-https-443
+    port:
+      name: https-hcm-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-eus-global-hcm-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-eiap-cgf-cle-legacy-ui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com 
+    - cle.mypepsico.com
+    - cle-eus.mypepsico.com
+    - df-fileupload-ui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+    - nextgencle.mypepsico.com
+    - pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.eus.prod.azure.intra.pepsico.com  
+    name: istio-in-gateway-01-passthrough-https-443
+    port:
+      name: https-passthrough-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH

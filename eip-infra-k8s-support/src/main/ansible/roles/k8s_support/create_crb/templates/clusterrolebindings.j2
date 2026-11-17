@@ -1,0 +1,106 @@
+{% if "-elastic-client-01-filebeat" in clusterrolebinding[item] or "-elastic-client-01-heartbeat" in clusterrolebinding[item] or "-elastic-client-01-metricbeat" in clusterrolebinding[item] %}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+{% if "-elastic-client-01-filebeat" in clusterrolebinding[item] %}
+  name: filebeat
+{% elif "-elastic-client-01-heartbeat" in clusterrolebinding[item] %}
+  name: heartbeat
+{% elif "-elastic-client-01-metricbeat" in clusterrolebinding[item] %}
+  name: metricbeat
+{% else %}
+{% endif %}
+{% if "-elastic-client-01-filebeat" in clusterrolebinding[item] or "-elastic-client-01-heartbeat" in clusterrolebinding[item] or "-elastic-client-01-metricbeat" in clusterrolebinding[item] %}
+  namespace: {{ namespaces['elasticclient'] }}
+{% endif %}
+{% endif %}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ clusterrolebinding[item] }}
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+{% if '-cluster-admin-crb' in clusterrolebinding[item] %}
+  name: {{ var['cluster_Cr'] }}
+{% elif "-cmponboard-cd-crb" in clusterrolebinding[item] %}
+  name: {{ cr['cmpcr'] }}
+{% elif "-devsecops-cd-crb" in clusterrolebinding[item] %}
+  name: {{ cr['devsecopscd'] }}
+{% elif "-elastic-client-01-filebeat" in clusterrolebinding[item] %}
+  name: {{ cr['filebeat'] }}
+{% elif "-elastic-client-01-heartbeat" in clusterrolebinding[item] %}
+  name: {{ cr['heartbeat'] }}
+{% elif "-elastic-client-01-metricbeat" in clusterrolebinding[item] %}
+  name: {{ cr['metricbeat'] }}
+{% elif "-k8sautomation-crb" in clusterrolebinding[item] %}
+  name: {{ cr['automationcr'] }}
+{% elif "-servicenow-crb" in clusterrolebinding[item] %}
+  name: {{ cr['servicenow'] }}
+{% elif "-cluster-engineer-crb" in clusterrolebinding[item] %}
+  name: {{ var['cluster_Cr'] }}
+{% else %}
+{% endif %}
+subjects:
+{% if "-elastic-client-01-filebeat" in clusterrolebinding[item] %}
+  - kind: ServiceAccount
+    name: filebeat
+    namespace: {{ namespaces['elasticclient'] }}
+{% elif "-elastic-client-01-heartbeat" in clusterrolebinding[item] %}
+  - kind: ServiceAccount
+    name: heartbeat
+    namespace: {{ namespaces['elasticclient'] }}
+{% elif "-elastic-client-01-metricbeat" in clusterrolebinding[item] %}
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: {{ namespaces['elasticclient'] }}
+{% endif %}
+{% if '-cluster-admin-crb' in clusterrolebinding[item] %}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: {{ var['eiap_k8s_admin'] }}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: {{ var['eiap_admins'] }}
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: {{ var['prefix'] }}-ops-admin
+    name: {{ var['prefix'] }}-admin-sa
+{% elif "-devsecops-cd-crb" in clusterrolebinding[item] %}
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: {{ var['prefix'] }}-ops-admin
+    name: {{ var['prefix'] }}-devsecops-cd-sa
+{% elif "-servicenow-crb" in clusterrolebinding[item] %}
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: {{ var['prefix'] }}-ops-admin
+    name: {{ var['prefix'] }}-servicenow-sa
+{% else %}
+{% endif %}
+{% if "-cmponboard-cd-crb" in clusterrolebinding[item] %}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: {{ var['cmp'] }}
+{% elif "-devsecops-cd-crb" in clusterrolebinding[item] %}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: {{ var['devsecops_cd'] }}
+{% elif "-k8sautomation-crb" in clusterrolebinding[item] %}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: {{ var['k8s_sp'] }}
+{% elif "-cluster-engineer-crb" in clusterrolebinding[item] %}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: 514a4d17-aa0c-4f3b-9c04-41af18d51817
+{% else %}
+{% endif %}
+{% if "-devsecops-cd-crb" in clusterrolebinding[item] %}
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: {{ var['prefix'] }}-ops-admin
+    name: gw-update-sa
+{% endif %}

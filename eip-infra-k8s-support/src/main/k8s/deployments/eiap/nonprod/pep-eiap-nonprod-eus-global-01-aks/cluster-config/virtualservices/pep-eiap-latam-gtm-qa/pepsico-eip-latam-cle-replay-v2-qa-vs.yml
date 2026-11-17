@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pepsico-eip-latam-cle-replay-v2-qa-vs
+  namespace: pep-eiap-latam-gtm-qa
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-qa/pep-eiap-latam-gtm-qa-cv-gw
+  hosts:
+  - clerply.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/cle/replay
+    route:
+    - destination:
+        host: pepsico-eip-latam-cle-replay-v2.pep-eiap-latam-gtm-qa.svc.cluster.local

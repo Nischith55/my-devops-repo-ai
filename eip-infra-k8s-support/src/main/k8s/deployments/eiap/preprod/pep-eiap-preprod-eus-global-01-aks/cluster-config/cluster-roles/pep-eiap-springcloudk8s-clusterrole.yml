@@ -1,0 +1,65 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-springcloudk8s-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - pods
+    - jobs
+    - cronjobs
+    - endpoints
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - events
+    - persistentvolumeclaims
+    - pods
+    - pods/log
+    - pods/portforward
+    - pods/status
+    - endpoints
+    - services
+    - secrets
+    verbs:
+    - list
+    - get
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - podtemplates
+    - pods
+    - pods/attach
+    - pods/binding
+    - pods/eviction
+    - pods/exec
+    - pods/log
+    - pods/portforward
+    - pods/proxy
+    - pods/status
+    verbs:
+    - list
+    - get
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch

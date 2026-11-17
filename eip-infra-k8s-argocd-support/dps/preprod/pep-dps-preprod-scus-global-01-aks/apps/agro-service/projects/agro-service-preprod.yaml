@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-service-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-service-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Grower_Relationship_Application/_git/agro-service-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-gra-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: agro-service-preprod-admin
+    description: Admin privileges to agro-service-preprod
+    policies:
+    - p, proj:agro-service-preprod:agro-service-preprod-admin, applications, *, agro-service-preprod/*, allow
+    - p, proj:agro-service-preprod:agro-service-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:agro-service-preprod:agro-service-preprod-admin, repositories, *, agro-service-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-service-preprod-user
+    description: Read-only privileges to agro-service-preprod
+    policies:
+    - p, proj:agro-service-preprod:agro-service-preprod-user, applications, get, agro-service-preprod/*, allow
+    - p, proj:agro-service-preprod:agro-service-preprod-user, applications, sync, agro-service-preprod/*, allow
+    - p, proj:agro-service-preprod:agro-service-preprod-user, repositories, get, agro-service-preprod/*, allow
+    - p, proj:agro-service-preprod:agro-service-preprod-user, applications, action/apps/Deployment/restart, agro-service-preprod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GRA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed-vs","namespace":"pep-pfna-sch-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed.pep-pfna-flna-transp-prod.svc.cluster.local","port":{"number":80}}}]}]}}'
+  labels:
+    app: pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed
+  name: pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed
+    route:
+    - destination:
+        host: pep-pfna-transp-plntrp-bronze-to-xrefmstr-gold-cosmos-chgfeed.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

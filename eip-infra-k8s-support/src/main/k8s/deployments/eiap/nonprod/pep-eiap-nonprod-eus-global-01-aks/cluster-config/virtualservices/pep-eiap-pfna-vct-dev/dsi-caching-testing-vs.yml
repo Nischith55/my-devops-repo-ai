@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dsi-caching-testing
+  name: dsi-caching-testing-vs
+  namespace: pep-eiap-pfna-vct-dev
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-dev/pep-eiap-pfna-vct-dev-cv-gw
+  hosts:
+  - dsi-caching-testing.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dsi-caching-testing.pep-eiap-pfna-vct-dev.svc.cluster.local
+        port:
+          number: 8091
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pools/default/nodeServices
+    route:
+    - destination:
+        host: dsi-caching-testing.pep-eiap-pfna-vct-dev.svc.cluster.local
+        port:
+          number: 18091

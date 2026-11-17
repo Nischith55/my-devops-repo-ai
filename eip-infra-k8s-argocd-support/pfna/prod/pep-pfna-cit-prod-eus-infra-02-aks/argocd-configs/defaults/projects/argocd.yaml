@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for SCH   
+  sourceRepos:
+  - pepeiapprodcommonacr.azurecr.io/helm  
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/pep-pfna-mfgpro-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Transportation/_git/pep-pfna-transp-argocd-config
+  - https://dev.azure.com/PepsiCoIT/Hand_Held_Next/_git/pep-pfna-shp-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/eCommerce_D2C_PFNA/_git/pep-pcaf-och-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pcaf-webapps-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-sr-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-pfna-cit-prod-eus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  roles:  
+  - name: argocd-user
+    description: Read-only privileges to argocd
+    policies:
+    - p, proj:argocd:argocd-user, applications, get, argocd/*, allow
+    - p, proj:argocd:argocd-user, applications, sync, argocd/*, allow
+    - p, proj:argocd:argocd-user, repositories, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"

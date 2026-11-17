@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api-marketplace
+  labels:
+    environment: nonprod
+    cluster-name: pep-apigee-nonprod-ae-01-aks
+    pep-cmdb-app-service: APIGEE-API-GATEWAY-AE-NONPROD
+    namespace: api-marketplace
+    region: eus
+    costcenter: PR00002831
+    hcode: H009288
+    program: API-Marketplace
+    business-group: CTO

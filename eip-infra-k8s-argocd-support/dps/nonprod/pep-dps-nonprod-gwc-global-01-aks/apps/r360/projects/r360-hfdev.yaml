@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: r360-hfdev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for r360-hfdev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-r360hf-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: r360-hfdev-admin
+    description: Admin privileges to r360-hfdev
+    policies:
+    - p, proj:r360-hfdev:r360-hfdev-admin, applications, *, r360-hfdev/*, allow
+    - p, proj:r360-hfdev:r360-hfdev-admin, applications, get, argocd/*, allow
+    - p, proj:r360-hfdev:r360-hfdev-admin, repositories, *, r360-hfdev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: r360-hfdev-user
+    description: Read-only privileges to r360-hfdev
+    policies:
+    - p, proj:r360-hfdev:r360-hfdev-user, applications, get, r360-hfdev/*, allow
+    - p, proj:r360-hfdev:r360-hfdev-user, applications, sync, r360-hfdev/*, allow
+    - p, proj:r360-hfdev:r360-hfdev-user, repositories, get, r360-hfdev/*, allow
+    - p, proj:r360-hfdev:r360-hfdev-user, applications, action/apps/Deployment/restart, r360-hfdev/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

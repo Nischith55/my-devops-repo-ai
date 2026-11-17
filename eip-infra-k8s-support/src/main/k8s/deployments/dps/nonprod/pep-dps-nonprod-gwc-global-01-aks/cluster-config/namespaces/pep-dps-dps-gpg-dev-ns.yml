@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-gpg-dev
+  labels:
+    env-nonprod: "true"
+    project: gpg
+    sector: dps
+    team: dps-gpg
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: globalpaymentgatewayprod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: d353b3cd83690610f132cfefeeaad351
+    pep-cmdb-app-service-id: a353b3cd83690610f132cfefeeaad392
+    pep-environment: Development
+    

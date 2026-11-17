@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rgm-rgm-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for rgm-rgm-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Commercial_AI/_git/rgm-rgm-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-combrain-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: rgm-rgm-dev-admin
+    description: Admin privileges to rgm-rgm-dev
+    policies:
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-admin, applications, *, rgm-rgm-dev/*, allow
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-admin, repositories, *, rgm-rgm-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: rgm-rgm-dev-user
+    description: Read-only privileges to rgm-rgm-dev
+    policies:
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-user, applications, get, rgm-rgm-dev/*, allow
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-user, applications, sync, rgm-rgm-dev/*, allow
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-user, repositories, get, rgm-rgm-dev/*, allow
+    - p, proj:rgm-rgm-dev:rgm-rgm-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.combrain"
+    - "Team.Support.EIAP.READ"

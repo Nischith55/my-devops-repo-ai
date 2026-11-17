@@ -1,0 +1,130 @@
+parameters:
+- name: isUI
+  displayName: 'isUI'
+  type: boolean
+  default: true
+- name: ImageTag
+  displayName: 'ImageTag'
+  type: string
+  default: $(Build.BuildNumber)
+- name: isfortifyScanRequired
+  displayName: 'isfortifyScanRequired'
+  type: boolean
+  default: false
+- name: isSonarScanRequired
+  displayName: 'isSonarScanRequired'
+  type: boolean
+  default: false
+- name: isSnykScanRequired
+  displayName: 'isSnykScanRequired'
+  type: boolean
+  default: false
+- name: isPython
+  displayName: 'isPython'
+  type: boolean
+  default: false
+- name: cr_number
+  displayName: 'cr_number'
+  type: string
+  default: 'null'
+- name: Manual_Approval_Prod
+  displayName: 'Manual_Approval_Prod'
+  type: boolean
+  default: false
+- name: restartOnly
+  displayName: 'restartOnly'
+  type: boolean
+  default: false
+- name: deployOnly
+  displayName: 'deployOnly'
+  type: boolean
+  default: false
+- name: JavaVers
+  displayName: 'java version 8 or 11 or 17'
+  type: string
+  default: 'JDKVersion'
+  
+stages:
+- stage: CI_Build
+  pool:
+    name: $(eus-shared-pool)
+  condition: and(eq(variables['deployOnly'], 'false'),eq(variables['restartOnly'], 'false'))
+    #name: pep-eiap-nonprod-eus-sbox-03-aks-agents
+  jobs:
+  - ${{ if and(eq(parameters.isPython, true), eq(parameters.isUI, false)) }}:
+    - template: build.yaml
+      parameters:
+        isfortifyScanRequired: ${{ parameters.isfortifyScanRequired }}
+        isSonarScanRequired: ${{ parameters.isSonarScanRequired }}
+        isSnykScanRequired: ${{ parameters.isSnykScanRequired }}
+        ImageTag: ${{ parameters.ImageTag }}
+
+- stage: dev
+  dependsOn: CI_Build
+  # condition:  or(eq(variables['deployOnly'], 'true'), and(eq(variables.isDevBranch, true),succeeded('CI_Build')))
+  condition: or(and(eq(variables['deployOnly'], 'true'),eq(variables.isDeveBranch, true)), and(eq(variables.isDevBranch, true),succeeded('CI_Build')), and(eq(variables['restartOnly'], 'true'),eq(variables['isDevBranch'], true)))
+  pool:
+    name: $(eus-shared-pool)
+    #name: pep-eiap-nonprod-eus-sbox-03-aks-agents
+  variables:
+    deploymentfile: helm-values.yaml
+    #deploymentfile: deployment-dev.yaml
+    env: dev
+    namespace: $(aksnamespace-dev)
+  jobs:
+  - template: deploy-aks-env.yaml
+    parameters:
+      endpoint: '$(aks-nonprod-eus)'
+
+- stage: qa
+  dependsOn: CI_Build
+  # condition:  or(eq(variables['deployOnly'], 'true'), and(eq(variables.isQaBranch, true),succeeded('CI_Build')), and(eq(variables.isReleaseBranch, true),succeeded('CI_Build')))
+  condition: or(and(eq(variables['deployOnly'], 'true'),eq(variables.isQaBranch, true)), and(eq(variables.isQaBranch, true),succeeded('CI_Build')), and(eq(variables['restartOnly'], 'true'),eq(variables['isQaBranch'], true)))
+  pool:
+    name: $(eus-shared-pool)
+  variables:
+    deploymentfile: helm-values.yaml
+    env: qa
+    namespace: $(aksnamespace-qa)
+  jobs:
+  - template: deploy-aks-env.yaml
+    parameters:
+      endpoint: '$(aks-nonprod-eus)'
+
+- stage: prod_approval
+  dependsOn: CI_Build
+  condition: or(and(eq(variables['deployOnly'], 'true'),ne(variables['cr_number'], 'null'),eq(variables.isReleaseBranch, true),eq(variables['restartOnly'], 'false')), and(eq(variables.isReleaseBranch, true), ne(variables['cr_number'], 'null'),eq(variables['restartOnly'], 'false'),succeeded('CI_Build')))
+  pool:
+    name: $(scus-prod-pool)
+  jobs:
+  - template: pipelineapproval.yaml
+    parameters:
+      cr_number: ${{ parameters.cr_number }}
+
+- stage: prod_auto
+  dependsOn: prod_approval
+  condition: or(and(eq(variables['deployOnly'], 'true'), succeeded('prod_approval')), and(eq(dependencies.prod_approval.outputs['Pipeline_Approval.validation.is_auto'], 'true'),succeeded('prod_approval')))
+  pool:
+    name: $(scus-prod-pool)
+  variables:
+    deploymentfile: helm-values.yaml
+    env: prod
+    namespace: $(aksnamespace-prod)
+  jobs:
+  - template: deploy-aks-env.yaml
+    parameters:
+      endpoint: '$(aks-prod-scus)'
+
+# - stage: prod_manual
+#   dependsOn: prod_approval
+#   condition: or(and(eq(variables['deployOnly'], 'true'), succeeded('prod_approval'), eq(dependencies.prod_approval.outputs['Pipeline_Approval.validation.is_auto'], 'false')), eq(variables['Manual_Approval_Prod'], 'true'),and(eq(variables['restartOnly'], 'true'),ne(variables['cr_number'], 'null'),eq(variables['isReleaseBranch'], 'true')))
+#   pool:
+#     name: $(scus-prod-pool)
+#   variables:
+#     deploymentfile: pep-potato-sourcing-matrix-automation/infra/Kubernetes/deployment-prod.yaml
+#     env: prod
+#     namespace: $(aksnamespace-prod)
+#   jobs:
+#   - template: deploy-aks-env.yaml
+#     parameters:
+#       endpoint: '$(aks-prod-scus)'

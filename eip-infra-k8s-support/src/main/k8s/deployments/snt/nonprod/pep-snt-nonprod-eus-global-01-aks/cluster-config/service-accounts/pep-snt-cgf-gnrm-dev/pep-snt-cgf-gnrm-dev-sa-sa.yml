@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-snt-cgf-gnrm-dev-sa
+  namespace: pep-snt-cgf-gnrm-dev

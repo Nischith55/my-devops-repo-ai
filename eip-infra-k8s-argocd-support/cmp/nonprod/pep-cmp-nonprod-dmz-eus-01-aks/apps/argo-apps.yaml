@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+      allowEmpty: false
+  destination:
+    namespace: argocd
+    name: pep-cmp-nonprod-dmz-eus-01-aks
+  source:
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+    targetRevision: main
+    path: cmp/nonprod/pep-cmp-nonprod-dmz-eus-01-aks/apps
+    directory:
+      recurse: true
+      jsonnet: {}

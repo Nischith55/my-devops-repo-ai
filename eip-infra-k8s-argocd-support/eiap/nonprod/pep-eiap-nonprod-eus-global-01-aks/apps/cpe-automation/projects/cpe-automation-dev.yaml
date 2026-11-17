@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cpe-automation-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cpe-automation-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Cloud_Platform_Enablement/_git/cpe-automation-argocd-config
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-cpefinops-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cpe-automation-dev-admin
+        description: Admin privileges to cpe-automation-dev
+        policies:
+        - p, proj:cpe-automation-dev:cpe-automation-dev-admin, applications, *, cpe-automation-dev/*, allow
+        - p, proj:cpe-automation-dev:cpe-automation-dev-admin, repositories, *, cpe-automation-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cpe-automation-dev-user
+        description: Read-only privileges to cpe-automation-dev
+        policies:
+        - p, proj:cpe-automation-dev:cpe-automation-dev-user, applications, get, cpe-automation-dev/*, allow
+        - p, proj:cpe-automation-dev:cpe-automation-dev-user, applications, sync, cpe-automation-dev/*, allow
+        - p, proj:cpe-automation-dev:cpe-automation-dev-user, repositories, get, cpe-automation-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cpe-automation-dev:cpe-automation-dev-user, applications, action/apps/Deployment/restart, cpe-automation-dev/*, allow
+        groups:
+        - "Team.Support.Azure.Platform.Enablement"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-transp-middlemile-web-services
+  name: pep-pfna-transp-middlemile-web-services-vs
+  namespace: pep-pfna-flna-transp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  hosts:
+  - pep-pfna-transp-middlemile-web-services.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/api/v1/middlemile-webservice
+    route:
+    - destination:
+        host: pep-pfna-transp-middlemile-web-services.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80

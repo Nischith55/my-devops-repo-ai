@@ -1,0 +1,59 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: argocd-cv-gw
+  namespace: argocd
+spec:
+  selector:
+    istio: pep-cmp-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-argocd.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: argocd-cv-gw-tls-443
+    port:
+      name: https-argocd-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - argocd.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: argocd-cv-gw-https-443-argocd
+    port:
+      name: https-argocd-cv-gw-443-argocd
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - argocd.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: argocd-cv-gw-http-80
+    port:
+      name: http-argocd-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true

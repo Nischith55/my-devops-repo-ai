@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 98c7b052-7fb3-430a-a061-4212e4749b88
+  name: pep-dps-dps-ibpfau-preprod-sa
+  namespace: pep-dps-dps-ibpfau-preprod

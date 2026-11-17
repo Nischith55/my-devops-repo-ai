@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: control-message-services
+  name: control-message-services-qa-vs
+  namespace: pep-eiap-pfna-vct-qa
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-qa/pep-eiap-pfna-vct-qa-cv-gw
+  hosts:
+  - control-message-services-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: control-message-services.pep-eiap-pfna-vct-qa.svc.cluster.local
+        port:
+          number: 80

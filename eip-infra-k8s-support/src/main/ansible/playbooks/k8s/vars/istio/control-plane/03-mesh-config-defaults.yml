@@ -1,0 +1,17 @@
+---
+# Defaults for mesh config
+
+__icp_spec_mesh_config:
+
+  enableAutoMtls: false
+
+##
+# NOTE: override if needed as we do a combine and default is first always
+##
+
+__icp_spec_mesh_config_params: |-
+  {{
+    __icp_spec_mesh_config
+    |
+    combine((icp_spec_mesh_config | default({})), recursive=True)
+  }}

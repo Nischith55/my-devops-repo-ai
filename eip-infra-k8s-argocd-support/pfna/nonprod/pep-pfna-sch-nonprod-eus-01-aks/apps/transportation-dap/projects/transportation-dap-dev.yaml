@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: transportation-dap-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for transportation-dap-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/transportation/_git/pep-pfna-dap-argocd-config
+  - peppfnaschnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-transp-dev
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: transportation-dap-dev-admin
+    description: Admin privileges to transportation-dap-dev
+    policies:
+    - p, proj:transportation-dap-dev:transportation-dap-dev-admin, applications, *, transportation-dap-dev/*, allow
+    - p, proj:transportation-dap-dev:transportation-dap-dev-admin, repositories, *, transportation-dap-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: transportation-dap-dev-user
+    description: Read-only privileges to transportation-dap-dev
+    policies:
+    - p, proj:transportation-dap-dev:transportation-dap-dev-user, applications, get, transportation-dap-dev/*, allow
+    - p, proj:transportation-dap-dev:transportation-dap-dev-user, applications, sync, transportation-dap-dev/*, allow
+    - p, proj:transportation-dap-dev:transportation-dap-dev-user, repositories, get, transportation-dap-dev/*, allow
+    - p, proj:transportation-dap-dev:transportation-dap-dev-user, applications, action/apps/Deployment/restart, transportation-dap-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.Fleet.Developer"
+    - "Team.Support.EIAP.READ"

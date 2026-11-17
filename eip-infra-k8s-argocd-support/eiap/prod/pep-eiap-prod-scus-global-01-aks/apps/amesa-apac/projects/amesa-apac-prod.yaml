@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: amesa-apac-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for amesa-apac-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/AMESA_APAC_Data_Digital/_git/amesa-apac-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-amesa-ksaeinvc-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: amesa-apac-prod-admin
+        description: Admin privileges to amesa-apac-prod
+        policies:
+        - p, proj:amesa-apac-prod:amesa-apac-prod-admin, applications, *, amesa-apac-prod/*, allow
+        - p, proj:amesa-apac-prod:amesa-apac-prod-admin, repositories, *, amesa-apac-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: amesa-apac-prod-user
+        description: Read-only privileges to amesa-apac-prod
+        policies:
+        - p, proj:amesa-apac-prod:amesa-apac-prod-user, applications, get, amesa-apac-prod/*, allow
+        - p, proj:amesa-apac-prod:amesa-apac-prod-user, applications, sync, amesa-apac-prod/*, allow
+        - p, proj:amesa-apac-prod:amesa-apac-prod-user, repositories, get, amesa-apac-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.Azure.ANZ.Developers"
+        - "Team.Support.EIAP.READ"
+    

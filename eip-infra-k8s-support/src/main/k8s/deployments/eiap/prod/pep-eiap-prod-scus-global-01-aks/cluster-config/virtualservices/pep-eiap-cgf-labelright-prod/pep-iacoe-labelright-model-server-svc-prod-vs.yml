@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"creationTimestamp":"2023-12-11T13:18:39Z","generation":1,"name":"pep-iacoe-labelright-model-server-svc-prod-vs","namespace":"pep-eiap-istio-config","resourceVersion":"873160102","uid":"28c14b22-1a83-48ed-959b-e127df1ddbbc"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-iacoe-labelright-model-server-svc-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/model"}}],"route":[{"destination":{"host":"pep-iacoe-labelright-model-server-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local","port":{"number":8000}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-iacoe-labelright-model-server-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local","port":{"number":8265}}}]}]}}
+  labels:
+    app: pep-iacoe-labelright-model-server-head-prod
+  name: pep-iacoe-labelright-model-server-svc-prod-vs
+  namespace: pep-eiap-cgf-labelright-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-labelright-prod/pep-eiap-cgf-labelright-prod-cv-gw
+  hosts:
+  - pep-iacoe-labelright-model-server-svc-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model
+    route:
+    - destination:
+        host: pep-iacoe-labelright-model-server-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local
+        port:
+          number: 8000
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-labelright-model-server-svc-prod.pep-eiap-cgf-labelright-prod.svc.cluster.local
+        port:
+          number: 8265

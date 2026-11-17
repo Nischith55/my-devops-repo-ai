@@ -1,0 +1,78 @@
+---
+- name: create_directories
+  hosts: localhost
+  gather_facts: false
+  # collections:
+  #   - lvrfrc87.git_acp
+  tasks:
+    - name: set fact prefix
+      set_fact:
+        resource_name: "{{ resourcename }}"
+        suffix_file_name: "{{ resourcename.split('-') }}"
+        suffix_length: "{{ resourcename.split('-') | length }}"
+        istio_version_var: "{{ istioversion.split('up') }}"
+        istio_version_len: "{{ istioversion.split('up') | length }}"
+        wildcardss: "{{ wildcard }}"
+        
+
+
+    - name: set fact for istio rancher version
+      set_fact:
+        istio_version: "{{ istio_version_var[istio_version_len | int - 1] }}"
+        istioversion: "{{ istioversion }}"
+
+    - name: set fact for sbox wildcard
+      set_fact:
+        wildcardforip: "{{ wildcardss.split('.pfx')[0] }}"
+
+
+    - name: set fact for sbox wildcard
+      set_fact:
+        wildcardforhosts: "{{ wildcardss.split('_')[1].split('.pfx')[0] }}"
+
+
+    - name: set fact conditional prefix length 6
+      set_fact:
+        prefix: "{{ suffix_file_name[suffix_length | int - 6] }}-{{ suffix_file_name[suffix_length | int - 5] }}"
+      when: suffix_length | int == 6
+
+    - name: set fact conditional prefix length 7
+      set_fact:
+        prefix: "{{ suffix_file_name[suffix_length | int - 7] }}-{{ suffix_file_name[suffix_length | int - 6] }}"
+      when: suffix_length | int == 7
+    
+    - name: set fact conditional prefix length 8
+      set_fact:
+        prefix: "{{ suffix_file_name[suffix_length | int - 8] }}-{{ suffix_file_name[suffix_length | int - 7] }}-{{ suffix_file_name[suffix_length | int - 6] }}"
+      when: suffix_length | int == 8
+
+    - name: set fact conditional suffix length 7
+      set_fact:
+        suffix: "{{ suffix_file_name[suffix_length | int - 5] }}-{{ suffix_file_name[suffix_length | int - 4] }}-{{ suffix_file_name[suffix_length | int - 3] }}-{{ suffix_file_name[suffix_length | int - 2] }}-{{ suffix_file_name[suffix_length | int - 1] }}"
+      when: suffix_length | int == 7
+    
+    - name: set fact conditional suffix length 8
+      set_fact:
+        suffix: "{{ suffix_file_name[suffix_length | int - 5] }}-{{ suffix_file_name[suffix_length | int - 4] }}-{{ suffix_file_name[suffix_length | int - 3] }}-{{ suffix_file_name[suffix_length | int - 2] }}-{{ suffix_file_name[suffix_length | int - 1] }}"
+      when: suffix_length | int == 8
+    
+    - name: set fact conditional suffix length 6
+      set_fact:
+        suffix: "{{ suffix_file_name[suffix_length | int - 4] }}-{{ suffix_file_name[suffix_length | int - 3] }}-{{ suffix_file_name[suffix_length | int - 2] }}-{{ suffix_file_name[suffix_length | int - 1] }}"
+      when: suffix_length | int == 6
+    - template:
+        src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/templates/{{ item }}.j2" # The Jinja2 template file
+        dest: "{{ source_directory }}/{{ item }}.yml" #variable from pipeline
+      with_items:
+      - namespace
+      - variable
+      - genericstorageclasses
+      - genericstorageclass
+      - builtinstorageclass
+      - clusterroles
+      - clusterrolebinding
+
+    - name: Creating a file with content
+      copy:
+        dest: "{{ source_directory }}/readme.txt"
+        content: 'readme: This file is pushed to generate the directory structure, as empty dir cannot be commited.'

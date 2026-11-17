@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"b2b-profile-admin-ui","app.kubernetes.io/instance":"b2b-profile-admin-ui-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-profile-admin-ui","namespace":"pep-dps-latam-btblylty-prod"},"spec":{"gateways":["pep-dps-latam-btblylty-prod/pep-dps-latam-btblylty-prod-cv-gw"],"hosts":["b2b-profile-admin-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com","profile-b2b.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-profile-admin-ui.pep-dps-latam-btblylty-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-profile-admin-ui
+        app.kubernetes.io/instance: b2b-profile-admin-ui-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-profile-admin-ui
+    namespace: pep-dps-latam-btblylty-prod
+spec:
+    gateways:
+    - pep-dps-latam-btblylty-prod/pep-dps-latam-btblylty-prod-cv-gw
+    hosts:
+    - b2b-profile-admin-ui.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - profile-b2b.mypepsico.com
+    - profile-b2b.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-profile-admin-ui.pep-dps-latam-btblylty-prod.svc.cluster.local
+                port:
+                    number: 8080

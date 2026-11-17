@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-opsconsole-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-opsconsole-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-opsconsole-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pcaf-dev
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-opsconsole-dev-admin
+    description: Admin privileges to pep-pfna-opsconsole-dev
+    policies:
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-admin, applications, *, pep-pfna-opsconsole-dev/*, allow
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-admin, repositories, *, pep-pfna-opsconsole-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-opsconsole-dev-user
+    description: Read-only privileges to pep-pfna-opsconsole-dev
+    policies:
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-user, applications, get, pep-pfna-opsconsole-dev/*, allow
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-user, applications, sync, pep-pfna-opsconsole-dev/*, allow
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-user, repositories, get, pep-pfna-opsconsole-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-pfna-opsconsole-dev:pep-pfna-opsconsole-dev-user, applications, action/apps/Deployment/restart, pep-pfna-opsconsole-dev/*, allow
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

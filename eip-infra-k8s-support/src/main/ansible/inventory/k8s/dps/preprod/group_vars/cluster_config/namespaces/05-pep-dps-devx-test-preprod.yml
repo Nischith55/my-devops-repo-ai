@@ -1,0 +1,40 @@
+---
+ns_pep_dps_devx_test_preprod:
+  
+  name: pep-dps-devx-test-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: devx-test
+    sector: devx
+    project: test
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dsx_adapter_preprod
+    pep-cmdb-app-service-id: "f4814adf97487e50bec13ae8c253afdb"
+    pep-cmdb-bus-app-id: "f0624479c3cc7e107e0cfbdf050131fd"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-dps-devx-test-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['devx_test'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-devx-test-preprod-sa-token
+    namespace: pep-dps-devx-test-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-devx-test-preprod-sa"

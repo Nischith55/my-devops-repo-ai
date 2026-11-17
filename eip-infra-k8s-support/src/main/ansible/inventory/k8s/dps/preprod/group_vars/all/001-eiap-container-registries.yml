@@ -1,0 +1,7 @@
+######### Added recently preprod--dps #########
+
+---
+# EIAP Container Registries
+# The following would need to set for each environment.          
+eiap_env_common_acr: "{{ eiap_preprod_common_acr}}"          
+######### Added recently preprod--dps #########

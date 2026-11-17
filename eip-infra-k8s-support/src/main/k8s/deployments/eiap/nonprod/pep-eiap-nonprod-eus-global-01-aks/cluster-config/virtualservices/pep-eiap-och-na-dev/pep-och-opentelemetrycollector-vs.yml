@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-och-opentelemetrycollector
+  name: pep-och-opentelemetrycollector-vs
+  namespace: pep-eiap-och-na-dev
+spec:
+  gateways:
+  - pep-eiap-och-na-dev/pep-eiap-och-na-dev-cv-gw
+  hosts:
+  - pep-och-opentelemetrycollector.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /health
+    route:
+    - destination:
+        host: pep-och-opentelemetrycollector.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 13133
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /metrics
+    route:
+    - destination:
+        host: pep-och-opentelemetrycollector.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 8888
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-opentelemetrycollector.pep-eiap-och-na-dev.svc.cluster.local
+        port:
+          number: 55681

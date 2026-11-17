@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pfna-sch-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pfna-sch-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+      - pepcgfschprodsukacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-prod-suk-01-aks
+        namespace: pep-cgf-cgf-schservice-prod
+      - name: pep-cgf-sch-prod-suk-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: pfna-sch-prod-admin
+        description: Admin privileges to pfna-sch-prod
+        policies:
+        - p, proj:pfna-sch-prod:pfna-sch-prod-admin, applications, *, pfna-sch-prod/*, allow
+        - p, proj:pfna-sch-prod:pfna-sch-prod-admin, repositories, *, pfna-sch-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pfna-sch-prod-user
+        description: Read-only privileges to pfna-sch-prod
+        policies:
+        - p, proj:pfna-sch-prod:pfna-sch-prod-user, applications, get, pfna-sch-prod/*, allow
+        - p, proj:pfna-sch-prod:pfna-sch-prod-user, applications, sync, pfna-sch-prod/*, allow
+        - p, proj:pfna-sch-prod:pfna-sch-prod-user, repositories, get, pfna-sch-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.PFNA.SCH.Contributor"
+        - "Team.Support.CGF.Prod.dsxdevop"
+    

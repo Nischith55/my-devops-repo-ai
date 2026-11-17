@@ -1,0 +1,10 @@
+---
+# ##
+# patch prometheus server deployment.
+# ##
+
+prom_server_deployment_json_patch:
+  # patch command line argument (not supported ones)
+  - op: remove
+    # remove --storage.local.retention=720h not supported
+    path: /spec/template/spec/containers/0/args/6

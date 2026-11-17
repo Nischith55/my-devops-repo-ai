@@ -1,0 +1,153 @@
+---
+- name: create temp directory kcost
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost"
+    state: directory
+
+- name: create temp directory productkey
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/productkey"
+    state: directory
+#_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________Genereating_manifests_using_j2
+- template:
+    src: kubecost-azure-secondary.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/values-azure-secondary-{{ functionalarea }}-{{ region }}-{{ env }}.yaml"
+
+
+- template:
+    src: kubecost-federated-store.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/federated-store.yaml"
+
+- template:
+    src: kubecost-productkey.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/productkey/productkey.yml"
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kubecost/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/"
+    force: true
+  register: cfss
+#___________________________________________________________________________________________________________________________________________________________________________________________________________________________Copying_the_pdbs
+- name: create temp directory kubecost for pdbs
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost"
+    state: directory
+
+- name: Copy cost-analyzer-pdb
+  copy:
+    src: "{{ source_directory }}/src/main/k8s/deployments/pbna/nonprod/pep-pbna-nonprod-eus-global-01-aks/cluster-config/namespaces/kubecost/pdbs/kubecost-cost-analyzer-pdb.yaml"
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost"
+    remote_src : yes
+  register: CostAnalyzerPdb
+
+
+- name: Copy KubestateMetricsPdb
+  copy:
+    src: "{{ source_directory }}/src/main/k8s/deployments/pbna/nonprod/pep-pbna-nonprod-eus-global-01-aks/cluster-config/namespaces/kubecost/pdbs/kubecost-kube-state-metrics-pdb.yaml"
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost"
+    remote_src : yes
+  register: KubestateMetricsPdb
+
+
+- name: Copy PrometheusServerPdb
+  copy:
+    src: "{{ source_directory }}/src/main/k8s/deployments/pbna/nonprod/pep-pbna-nonprod-eus-global-01-aks/cluster-config/namespaces/kubecost/pdbs/kubecost-prometheus-server-pdb.yaml"
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost"
+    remote_src : yes
+  register: PrometheusServerPdb
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kubecost/pdbs"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost/"
+    force: true
+  register: CopyPdb2
+
+#______________________________________________________________________________________________________________________________________________________________________________________________________Applying_all_the_manifests
+- name: Create productkey 
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/productkey/productkey.yml"
+  register: km1
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Create federated-store secret
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/federated-store.yaml"
+  register: km2
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: prevent federated-store.yaml file from pushing to repo
+  ansible.builtin.file:
+    state: absent 
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/federated-store.yaml"
+
+
+- name: Add kubecost chart repo
+  kubernetes.core.helm_repository:
+    name: kubecost
+    repo_url: "https://kubecost.github.io/cost-analyzer/"
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Deploy Kubecost
+  kubernetes.core.helm:
+    name: kubecost
+    chart_ref: kubecost/cost-analyzer
+    chart_version: 2.3.5
+    release_namespace: kubecost
+    values_files:
+      # - "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/values-thanos.yaml"
+      - "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kcost/values-azure-secondary-{{ functionalarea }}-{{ region }}-{{ env }}.yaml"
+    state: present
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+
+- name: pdb_cost_analyzer
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost/kubecost-cost-analyzer-pdb.yaml"
+  register: init2
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: pdb_kubestate_metrics
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost/kubecost-kube-state-metrics-pdb.yaml"
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: pdb_kubestate_metrics
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/kubecost/kubecost-prometheus-server-pdb.yaml"
+  register: init4
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+#__________________________________________________________________________________________________________________________________________________________________________________________________
+
+- name: Rollout restart for the deployment
+  shell: /bin/bash -c "kubectl rollout restart deployment -n kubecost"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"

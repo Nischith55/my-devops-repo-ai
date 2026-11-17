@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    control-plane: 'true'
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-9q8w5
+    kubernetes.azure.com/managedby: aks
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/metadata.name: kube-system
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    servicename_aks: sharedaks-platform
+  name: kube-system

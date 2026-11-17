@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-eip-preprod
+    project: eip
+    sector: global
+    servicename_aks: sharedaks
+    team: global-eip
+  name: pep-eiap-global-eip-preprod

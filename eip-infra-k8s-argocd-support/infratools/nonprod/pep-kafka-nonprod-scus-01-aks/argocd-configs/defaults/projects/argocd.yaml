@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Default project for infratools   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/Kafka_Infrastructure/_git/pep-eiap-kafka-argocd-configs
+  - pepkafkanonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-kafka-nonprod-scus-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

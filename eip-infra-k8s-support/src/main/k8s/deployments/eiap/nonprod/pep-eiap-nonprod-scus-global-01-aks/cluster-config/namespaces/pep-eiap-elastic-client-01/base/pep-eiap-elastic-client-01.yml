@@ -1,0 +1,9 @@
+---
+# WARNING: manually generated.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-elastic-client-01
+  labels:
+    eck-managed: 'true'
+    istio-injection: enabled

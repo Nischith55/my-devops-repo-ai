@@ -1,0 +1,21 @@
+---
+# ##
+# jaeger all-in-one patch NOT for production!
+# ##
+
+# IMPORTANT: This is used as default -- SO MUST be enabled per cluster
+_jt_jb_merge_spec_in_mem_patch:
+
+  spec:
+    # In Mem Storage only all-in-one
+    strategy: allInOne
+
+    # storage in-mem
+    storage: "{{ __jt_jb_in_mem_storage }}"
+
+#: ## 
+#: Final variable 
+#: ##
+jt_jb_prod_in_mem_storage_spec: |-
+  {{ __jt_jb_spec_options 
+    | combine(_jt_jb_merge_spec_in_mem_patch, recursive=True) }}

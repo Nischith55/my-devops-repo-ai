@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-infratools-prod-scus-01-aks
+    crosscharge_aks: crosscharge
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-infratools-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    servicename_aks: infratools
+    team: eiap-admins
+  name: pep-infratools-ops-admin

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: pep-eiap-global-infra-dev-rq
+  namespace: pep-eiap-global-infra-dev
+spec:
+  hard:
+    limits.cpu: "2"

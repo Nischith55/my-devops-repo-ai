@@ -1,0 +1,185 @@
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: appdynamics-cluster-agent
+#   namespace: appdynamics
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: appdynamics-cluster-agent
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - pods
+#   - pods/log
+#   - endpoints
+#   - persistentvolumeclaims
+#   - resourcequotas
+#   - nodes
+#   - events
+#   - namespaces
+#   - services
+#   - configmaps
+#   - secrets
+#   verbs:
+#   - get
+#   - watch
+#   - list
+# - apiGroups:
+#   - apps
+#   resources:
+#   - daemonsets
+#   - statefulsets
+#   - deployments
+#   - replicasets
+#   verbs:
+#   - get
+#   - watch
+#   - list
+# - apiGroups:
+#   - batch
+#   - extensions
+#   resources:
+#   - jobs
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - metrics.k8s.io
+#   resources:
+#   - pods
+#   - nodes
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - appdynamics.com
+#   resources:
+#   - '*'
+#   - clusteragents
+#   - clustercollectors
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: appdynamics-cluster-agent-instrumentation
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - pods
+#   - pods/exec
+#   - secrets
+#   - configmaps
+#   verbs:
+#   - create
+#   - update
+#   - delete
+# - apiGroups:
+#   - apps
+#   resources:
+#   - daemonsets
+#   - statefulsets
+#   - deployments
+#   - replicasets
+#   verbs:
+#   - update
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: appdynamics-cluster-agent
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: appdynamics-cluster-agent
+# subjects:
+# - kind: ServiceAccount
+#   name: appdynamics-cluster-agent
+#   namespace: appdynamics
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: appdynamics-cluster-agent-instrumentation
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: appdynamics-cluster-agent-instrumentation
+# subjects:
+# - kind: ServiceAccount
+#   name: appdynamics-cluster-agent
+#   namespace: appdynamics
+---
+apiVersion: appdynamics.com/v1alpha1
+kind: Clusteragent
+metadata:
+  name: appd-pepsi-test-cluster-agent
+  namespace: appdynamics
+spec:
+  account: pepsi-prod
+  appName: pep-eiap-prod-eus-global-01-aks
+  controllerUrl: https://pepsi-prod.saas.appdynamics.com:443
+  image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/vendor/appdynamics/cluster-agent:ubuntu-18.04-21.7.0.1013-unofficial
+#  image: docker.io/appdynamics/cluster-agent:21.7.0
+# Not effecting the java agent version injected in the pod.
+  imageInfo:
+    java:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/java-agent:21.11.4
+      imagePullPolicy: IfNotPresent
+  instrumentationMethod: ENV
+  logFileBackups: 3
+  logFileSizeMb: 5
+  logLevel: DEBUG
+  maxPodLogsTailLinesCount: 500
+  nodeSelector:
+    beta.kubernetes.io/os: linux
+    kubernetes.azure.com/mode: system
+  nsToInstrumentRegex: pep-eiap-ops-admin|pep-eiap-pbna-halo-prod
+  nsToMonitor:
+  - pep-eiap-ops-admin
+  - pep-eiap-pbna-halo-prod
+  numberOfTaskWorkers: 2
+  resourcesToInstrument:
+  - Deployment
+  - StatefulSet
+  serviceAccountName: appdynamics-cluster-agent
+  stdoutLogging: "true"
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+  instrumentationRules:
+  - namespaceRegex: pep-eiap-pbna-halo-prod
+    language: java
+    appName: EIP_PBNA_BREADCRUMBS_INBOUND_AKS
+    tierName: pep-eip-pbna-breadcrumbs-inbound
+    matchString: ^pep-eip-pbna-breadcrumbs-inbound$
+  - namespaceRegex: pep-eiap-pbna-halo-prod
+    language: java
+    appName: EIP_PBNA_CUSTOMER_METRICS_AKS
+    tierName: pep-eip-pbna-customer-metrics
+    matchString: ^pep-eip-pbna-customer-metrics$
+  - namespaceRegex: pep-eiap-pbna-halo-prod
+    language: java
+    appName: EIP_PBNA_BREADCRUMBS_INGEST_AKS
+    tierName: pep-eip-pbna-breadcrumbs-ingest
+    matchString: ^pep-eip-pbna-breadcrumbs-ingest$
+  - namespaceRegex: pep-eiap-pbna-halo-prod
+    language: java
+    appName: EIP_PBNA_WORKORDERS_INGEST_AKS
+    tierName: pep-eip-pbna-workorders-ingest
+    matchString: ^pep-eip-pbna-workorders-ingest$
+  - namespaceRegex: pep-eiap-pbna-halo-prod
+    language: java
+    appName: EIP_PBNA_BREADCRUMBS_OUTBOUND_CLOUD_AKS
+    tierName: pep-eip-pbna-breadcrumbs-ingest-cloud
+    matchString: ^pep-eip-pbna-breadcrumbs-ingest-cloud$

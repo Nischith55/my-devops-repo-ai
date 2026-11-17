@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    labels:
+        app: dtcsrv-joy-admin-ui-kaz
+    name: dtcsrv-joy-admin-ui-kaz-gyma-vs
+    namespace: pep-dps-cgf-dtcjoykz-prod
+spec:
+    gateways:
+    - pep-dps-cgf-dtcjoykz-prod/pep-dps-cgf-dtcjoykz-prod-cv-gw
+    hosts:
+    - pep-joy-adminuikaz.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - admin-pepl-eu.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: dtcsrv-joy-admin-ui-kaz.pep-dps-cgf-dtcjoykz-prod.svc.cluster.local
+                port:
+                    number: 80

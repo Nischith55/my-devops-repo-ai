@@ -1,0 +1,28 @@
+---
+# ##
+# IMPORTANT:
+#   - do NOT add service accounts to the 'subjects' list
+#   - it is automatically handled -- see the 20-cluster-role-bindings.yml
+# ##
+
+pep_eiap_cluster_admin_crb_cfg:
+  name: pep-eiap-cluster-admin-crb
+  kind: ClusterRoleBinding
+  role: cluster-admin
+  role_kind: ClusterRole
+  
+  subjects:
+    - "{{ k8s_sup_subjects['k8s_admin'] }}"
+    - "{{ k8s_sup_subjects['eiap_admins'] }}"
+    - "{{ k8s_sup_subjects['global_services'] }}"
+# Default K8S Admin access for below users, on all  NON-PROD/PRE-PROD/PROD cluster
+    - "{{ k8s_sup_subjects['amele123'] }}"
+    - "{{ k8s_sup_subjects['psaxena12'] }}"
+    - "{{ k8s_sup_subjects['pnaduvat'] }}"
+    - "{{ k8s_sup_subjects['sowola01'] }}"
+    - "{{ k8s_sup_subjects['hgurram5'] }}"
+    - "{{ k8s_sup_subjects['ssulluru'] }}"
+    - "{{ k8s_sup_subjects['upareta5'] }}"
+
+# K8S Admin Access for all Infra NON-PROD/PRE-PROD/PROD Cluster
+#    - "{{ k8s_sup_subjects['cgolla01'] }}"

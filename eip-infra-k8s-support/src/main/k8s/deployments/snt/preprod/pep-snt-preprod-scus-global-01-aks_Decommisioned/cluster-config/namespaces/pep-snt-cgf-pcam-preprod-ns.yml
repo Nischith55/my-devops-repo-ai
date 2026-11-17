@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-snt-cgf-pcam-preprod
+    pep-cmdb-app-service-id: d0ec416887e619944751326e0ebb354d
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Preprod
+    project: dps-pepsiconnectadopt
+    sector: cgf
+    servicename_aks: retail360-aksclusterprod
+    team: cgf-pcam
+  name: pep-snt-cgf-pcam-preprod

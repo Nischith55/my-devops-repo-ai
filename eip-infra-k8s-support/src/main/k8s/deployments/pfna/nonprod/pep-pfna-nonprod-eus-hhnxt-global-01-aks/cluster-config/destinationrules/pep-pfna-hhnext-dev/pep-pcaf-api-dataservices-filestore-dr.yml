@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pep-pcaf-api-dataservices-filestore-dr
+  namespace: pep-pfna-hhnext-dev
+spec:
+  host: pep-pcaf-api-dataservices-filestore.pep-pfna-hhnext-dev.svc.cluster.local
+  subsets:
+  - labels:
+      version: v1
+    name: v1
+  - labels:
+      version: v2
+    name: v2

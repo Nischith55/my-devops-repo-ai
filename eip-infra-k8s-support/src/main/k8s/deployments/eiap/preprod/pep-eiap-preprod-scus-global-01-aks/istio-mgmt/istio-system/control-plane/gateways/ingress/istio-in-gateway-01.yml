@@ -1,0 +1,613 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - "*.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"
+    # - pep-eiap-global-eip-billing.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-workorders-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-global-eipone.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - brstlmnt.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - bnkdpst.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - customer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - invntry.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - invoice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - srvyintk.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - qreturns.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pdctlist.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-hhnext-filestore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-flna-hhnext.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - clereply.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-bank-deposit-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-br-settlement-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-customer-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-inventory-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-invoice-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-product-listing-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-qreturns-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-survey-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-cto-cmp-order-ess-provisioning.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-cto-cmp-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-order-error-handler.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-order-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-sales-error-handler.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-sales-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-customerorder-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-order-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-route-fas-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-route-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-settlement-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-vanload-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-visit-list-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - btbstg.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-active-material-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-processor.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-odata-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-consumer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-utility.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-btb-cgf-backend.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-clereplay.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-orderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-orderstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordersearch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-validationservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-auditstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordertransformationservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonbatchservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonbatchorderintakeservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonfreshcamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - iotui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - eiotpapi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-catalogservice-api.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-catalogservice-etl.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-global-eip-mdp.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-developerportal-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-cleansing-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-downconfirm-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-falloutmanagement.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ops-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonflnamop-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-developerportal.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-dp-centralrepository.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazondownconfirmcamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazon-flna-mop.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-retailorderscamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordercleanse.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ediorderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-qtgordertransformation.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-qtgcamundaorderservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-pimeqipment.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-customer-metrics.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - cntwui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-pfna-vct-preprod-vctservices.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-route-metrics.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-drp-inventory-plan-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-drp-inventory-plan-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-ics-inventory-refreshness-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-ics-inventory-refreshness-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-sap-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-sap-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-pei-api-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-pei-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-wildcard-https-443
+    port:
+      name: https-wc-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepcom.preprod.mypepsico.com
+    - pepsico-cto-cmp-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcom.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - cle.preprod.mypepsico.com
+    - cle.ite.mypepsico.com
+    - cle-scus.ite.mypepsico.com
+    - cle.preprod.scus.mypepsico.com
+    - df-fileupload-ui.preprod.mypepsico.com
+    - cle.beta.ite.mypepsico.com
+    - nextgencle.ite.mypepsico.com
+    - pep-eiap-cgf-nextgen-cle-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - df-fileupload-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com 
+    - pep-eiap-cgf-cle-react.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-eiap-cgf-cle-legacy-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-passthrough-https-443
+    port:
+      name: https-passthrough-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - "*.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"  
+    # - pep-eiap-global-eip-billing.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-workorders-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-global-eipone.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - brstlmnt.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - bnkdpst.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - customer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - invntry.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - invoice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - srvyintk.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - qreturns.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pdctlist.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcom.preprod.mypepsico.com
+    # - pepsico-cto-cmp-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepcom.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-hhnext-filestore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-flna-hhnext.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - clereply.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-bank-deposit-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-br-settlement-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-customer-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-inventory-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-invoice-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-product-listing-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-qreturns-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-survey-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-cto-cmp-order-ess-provisioning.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-cto-cmp-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-order-error-handler.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-order-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-sales-error-handler.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-cim-sales-intake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-customerorder-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-order-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-route-fas-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-route-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-settlement-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-vanload-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-eip-latam-visit-list-ingest.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - btbstg.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-pbna-breadcrumbs-inbound.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - sodastreamprofessional.preprod.pepsico.com
+    # - flna-eiv-active-material-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-processor.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-odata-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-consumer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-order-utility.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - flna-eiv-bin-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-btb-cgf-backend.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-clereplay.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-orderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-orderstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordersearch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-validationservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-auditstore.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordertransformationservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonbatchservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonbatchorderintakeservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonackmanager.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonfreshcamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - iotui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - eiotpapi.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-catalogservice-api.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-catalogservice-etl.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-global-eip-mdp.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-developerportal-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-cleansing-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-downconfirm-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-falloutmanagement.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ops-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazonflnamop-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-developerportal.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-dp-centralrepository.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazondownconfirmcamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-amazon-flna-mop.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-retailorderscamundaservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ordercleanse.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-ediorderintake.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-qtgordertransformation.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-qtgcamundaorderservice.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-och-pimeqipment.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-customer-metrics.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - cntwui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eiap-pfna-vct-preprod-vctservices.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pep-eip-pbna-route-metrics.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - controltower.preprod.mypepsico.com
+    # - pep-eip-pbna-breadcrumbs-ingest-cloud.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-drp-inventory-plan-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-drp-inventory-plan-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-ics-inventory-refreshness-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-ics-inventory-refreshness-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-sap-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-sap-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-pei-api-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    # - pepsico-flna-eiv-pei-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - cle-rest-api.preprod.intra.pepsico.com
+    - cle-rest-api.scus.preprod.intra.pepsico.com
+    - hcm.preprod.mypepsico.com
+    - pepcommerce-ordermanagement.preprod.na.pepsico.com 
+    - uat.compass.pepsico.com
+    - mycompass.uat.mypepsico.com
+    - gpacompass.uat.mypepsico.com
+    - dsi.preprod.mypepsico.com
+    - cmp.preprod.mypepsico.com
+    - admin.cep.co.preprod.pepsico.com
+    - admin.cep.do.preprod.pepsico.com
+    - admin.cep.br.preprod.pepsico.com
+    - admin.cep.mx.preprod.pepsico.com
+    name: istio-in-gateway-01-wildcard-http-80
+    port:
+      name: http-wc-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - sodastreamprofessional.preprod.pepsico.com
+    name: istio-in-gateway-01-sodastreampro-https-443
+    port:
+      name: https-sodastreampro-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-sodastreampro-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - controltower.preprod.mypepsico.com
+    name: istio-in-gateway-01-controltower-https-443
+    port:
+      name: https-controltower-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-controltower-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - hcm.preprod.mypepsico.com 
+    name: istio-in-gateway-01-hcm-https-443
+    port:
+      name: https-hcm-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-hcm-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE      
+  - hosts:
+    - cle-rest-api.preprod.intra.pepsico.com
+    name: istio-in-gateway-01-cle-rest-api-https-443
+    port:
+      name: https-cle-rest-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-global-cle-rest-api-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cle-rest-api.scus.preprod.intra.pepsico.com
+    name: istio-in-gateway-01-cle-rest-api-https-443
+    port:
+      name: https-cle-rest-scus-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-global-cle-rest-api-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepcommerce-ordermanagement.preprod.na.pepsico.com
+    name: istio-in-gateway-01-pepcommerce-ordermgmt-https-443
+    port:
+      name: https-pepcommerce-ordermgmt-scus-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-ordermgmt-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  # - hosts:
+  #    - uat.compass.pepsico.com
+  #    - gpacompass.uat.mypepsico.com
+  #   name: uat.compass-https-443
+  #   port:
+  #     name: https-uat.compass-scus-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     credentialName: pep-eiap-preprod-scus-global-uatcomp-gw01-tls
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2
+  #     mode: SIMPLE      
+  - hosts:
+     - gpacompass.uat.mypepsico.com
+    name: gpacompass-https-443
+    port:
+      name: https-gpacomp-scus-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-gpacompass-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+     - dsi.preprod.mypepsico.com
+    name: dsi-https-443
+    port:
+      name: https-dsi-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-global-dsi-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+     - mycompass.uat.mypepsico.com
+    name: mycompass-https-443
+    port:
+      name: https-mycompass-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-mycompass-global-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+     - cmp.preprod.mypepsico.com
+    name: cmp.preprod-https-443
+    port:
+      name: cmp.preprod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-cmp-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts: 
+     - admin.cep.br.preprod.pepsico.com
+    name: admin-cep.br.preprod.mypepsico.com
+    port:
+      name: admin-cep.br.preprod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-br-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+     - admin.cep.co.preprod.pepsico.com
+    name: admin-cep-co.preprod-https-443
+    port:
+      name: admin-cep-co.preprod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-co-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE            
+  - hosts:
+     - admin.cep.do.preprod.pepsico.com
+    name: admin-cep-do-https-443
+    port:
+      name: admin-cep-do.preprod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-do-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+     - admin.cep.mx.preprod.pepsico.com
+    name: admin-cep-mx.preprod-https-443
+    port:
+      name: admin-cep-mx.preprod-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-mx-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE

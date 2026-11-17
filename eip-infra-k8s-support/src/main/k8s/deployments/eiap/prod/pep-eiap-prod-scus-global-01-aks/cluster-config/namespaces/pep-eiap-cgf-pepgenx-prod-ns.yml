@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    project: pepgenx
+    sector: cgf
+    team: cgf-pepgenx
+  name: pep-eiap-cgf-pepgenx-prod

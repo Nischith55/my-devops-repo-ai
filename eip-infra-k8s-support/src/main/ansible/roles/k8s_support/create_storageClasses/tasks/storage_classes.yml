@@ -1,0 +1,72 @@
+---
+- name: create temp directory
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass"
+    state: directory
+
+- template:
+    src: storageclasses.j2 # Se Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass/{{ builtinvariables_file[item] }}.yml"
+  with_items: "{{ builtinvariables_file }}"
+
+- template:
+    src: generic_classes.j2 # Se Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass/{{ genclassvariables_file[item] }}.yml"
+  with_items: "{{ genclassvariables_file }}"
+
+- template:
+    src: generic_classes1.j2 # Se Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass/{{ genclassesvariables_file[item] }}.yml"
+  with_items: "{{ genclassesvariables_file }}"
+
+- name: check if storage classes exists 
+  command: kubectl get storageclasses
+  register: getstorageclasses 
+  ignore_errors: true
+
+- name: delete existing storage classes if exists
+  command: kubectl delete storageclasses --all
+  when: getstorageclasses.failed == false
+  register: delstorageclasses
+
+- name: Define desired storage classes
+  set_fact:
+    desired_classes:
+      - azurefile-csi-premium
+      - azurefile-csi
+      - azurefile-premium
+      - azurefile-stdssd
+      - azurefile
+      - default
+      - managed
+      - managed-csi
+      - managed-csi-premium
+      - managed-premium
+      - managed-premium-zoned
+      - managed-stdssd
+      - managed-stdssd-zoned
+      - managed-ultra
+
+
+
+
+- name: Create storage_Classes by reading the definition from a local file
+  command: kubectl create -f {{ item }}.yml
+  args: 
+    chdir: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass"
+  register: classes_created
+  with_items: "{{ desired_classes }}"
+  ignore_errors: true
+
+
+
+- name: check storage classes after apply 
+  command: kubectl get storageclasses
+  register: getstorageclassess 
+  ignore_errors: true
+
+- name: Copy files folders
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ var['clustername'] }}/storage-classes"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/storagebuiltinclass/"
+    force: true

@@ -1,0 +1,44 @@
+---
+# ##
+# Copy files or generate from templates.
+#
+# INPUT:
+#   params_gen:
+#     template_src:
+#     template_dest:
+#     template_params:
+#
+# ##
+
+- name: COPY_OR_GENERATE_FILE_BLOCK
+  block:
+
+    - name: GENERATE_FROM_TEMPLATE_BLOCK
+      block:
+
+        - name: ENSURE_DEST_DIR {{ __dest }}
+          include_tasks:
+            file: tasks/core/mkdirs.yml
+          vars:
+            params_mkdirs:
+              path: "{{ __dest }}"
+
+        - name: GENERATE_FROM_TEMPLATE {{ __src }}
+          template:
+            src: "{{ __src }}"
+            dest: "{{ __dest }}"
+            mode: "u=rw,g=r,o=r"
+          vars:
+            params_tmpl: "{{ __p['template_params'] }}"
+      vars:
+        __src: "{{ __p['template_src'] }}"
+        __dest: "{{ __p['template_dest'] }}"
+      when: >
+        (__p['template_src'] is defined)
+        and
+        (__p['template_dest'] is defined)
+
+  # just in case
+  delegate_to: localhost
+  vars:
+    __p: "{{ params_gen }}"

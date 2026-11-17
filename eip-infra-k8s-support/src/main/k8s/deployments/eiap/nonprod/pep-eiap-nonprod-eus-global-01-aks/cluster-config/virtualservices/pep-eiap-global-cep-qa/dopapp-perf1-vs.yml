@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dopapp-perf1
+  name: dopapp-perf1-vs
+  namespace: pep-eiap-global-cep-qa
+spec:
+  gateways:
+  - pep-eiap-global-cep-qa/pep-eiap-global-cep-qa-cv-gw
+  hosts:
+  - pepcepb21.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - web-1.cep.stage.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopapp-perf1.pep-eiap-global-cep-qa.svc.cluster.local
+        port:
+          number: 80

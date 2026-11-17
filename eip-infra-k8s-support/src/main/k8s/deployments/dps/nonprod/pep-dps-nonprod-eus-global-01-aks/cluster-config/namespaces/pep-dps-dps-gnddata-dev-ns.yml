@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-gnddata-dev
+  labels:
+    env-nonprod: "true"
+    project: gnddata
+    sector: dps
+    team: dps-gnddata
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: networkdesign
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 017f8aec47129298087f6542736d4388
+    pep-cmdb-app-service-id: e97f0eec47129298087f6542736d434a
+    pep-environment: Development
+    

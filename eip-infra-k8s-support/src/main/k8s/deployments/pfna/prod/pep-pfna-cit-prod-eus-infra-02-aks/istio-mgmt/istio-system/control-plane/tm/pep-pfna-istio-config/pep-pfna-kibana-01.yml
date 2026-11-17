@@ -1,0 +1,21 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-kibana-01
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-kibana-01.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - pep-pfna-kibana-01.pfnainfra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+      route:
+        - destination:
+            host: cluster-01-prod-eus-kb-http.pep-pfna-elastic-cluster-01.svc.cluster.local
+            port:
+              number: 5601

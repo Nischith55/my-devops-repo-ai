@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dps-dss-collab-components-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dps-dss-collab-components-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dps-dss-collab-components-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-collabc-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dps-dss-collab-components-dev-admin
+    description: Admin privileges to dps-dss-collab-components-dev
+    policies:
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-admin, applications, *, dps-dss-collab-components-dev/*, allow
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-admin, repositories, *, dps-dss-collab-components-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dps-dss-collab-components-dev-user
+    description: Read-only privileges to dps-dss-collab-components-dev
+    policies:
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-user, applications, get, dps-dss-collab-components-dev/*, allow
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-user, applications, sync, dps-dss-collab-components-dev/*, allow
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-user, repositories, get, dps-dss-collab-components-dev/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:dps-dss-collab-components-dev:dps-dss-collab-components-dev-user, applications, action/apps/Deployment/restart, dps-dss-collab-components-dev/*, allow
+
+    groups:
+    - "Team.App.DPS.CollabComponents.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

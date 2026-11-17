@@ -1,0 +1,202 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-europe-btbproduct-prod-cv-gw
+  namespace: pep-dps-europe-btbproduct-prod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-europe-btbproduct-prod.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-europe-btbproduct-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-europe-btbproduct-prod-443.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-europe.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-merchandising-admin-bff-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-eu-global.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-products-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-merchandising-admin-bff-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-https-443
+    port:
+      name: https-pep-dps-europe-btbproduct-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-prod-suk-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-europe-btbproduct-prod-80.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - products-b2b-eu.mypepsico.com
+    - b2b-domainsync.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-europe.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-merchandising-admin-bff-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-eu-global.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-products-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-merchandising-admin-bff-in.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - product-b2b-in.pepsico.com
+    - products-b2b-eu.pepsico.com
+    - b2b-elastic-eu.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-elastic-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-product-admin-ui-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - b2b-domainsync-am.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+    - product-b2b-pl.pepsico.com
+    - product-b2b-am.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-http-80
+    port:
+      name: http-pep-dps-europe-btbproduct-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - products-b2b-eu.mypepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-3-https-443
+    port:
+      name: pep-dps-europe-btbproduct-prod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-eu-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - product-b2b-in.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-4-https-443
+    port:
+      name: pep-dps-europe-btbproduct-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-in-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - products-b2b-eu.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-5-https-443
+    port:
+      name: pep-dps-europe-btbproduct-prod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: products-b2b-eu-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - product-b2b-pl.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-6-https-443
+    port:
+      name: pep-dps-europe-btbproduct-prod-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: product-b2b-pl-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - product-b2b-am.pepsico.com
+    name: pep-dps-europe-btbproduct-prod-cv-gw-7-https-443
+    port:
+      name: pep-dps-europe-btbproduct-prod-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: product-b2b-am-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

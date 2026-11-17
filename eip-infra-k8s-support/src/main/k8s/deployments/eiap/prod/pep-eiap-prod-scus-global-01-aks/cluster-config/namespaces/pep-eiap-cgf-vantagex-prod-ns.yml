@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-vantagex-prod
+    project: vantagex
+    sector: cgf
+    team: cgf-vantagex
+  name: pep-eiap-cgf-vantagex-prod

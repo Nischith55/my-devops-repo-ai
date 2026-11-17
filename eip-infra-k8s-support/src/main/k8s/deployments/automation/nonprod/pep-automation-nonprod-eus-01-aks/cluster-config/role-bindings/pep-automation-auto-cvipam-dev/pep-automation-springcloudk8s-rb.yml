@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-automation-springcloudk8s-rb
+  namespace: pep-automation-auto-cvipam-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-automation-springcloudk8s-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-automation-auto-cvipam-dev
+    name: pep-automation-auto-cvipam-dev-sa

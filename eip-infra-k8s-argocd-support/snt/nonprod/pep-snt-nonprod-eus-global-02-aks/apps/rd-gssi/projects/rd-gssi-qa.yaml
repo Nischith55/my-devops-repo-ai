@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-gssi-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for rd-gssi-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/rd-gssi-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-cgf-gssilabs-qa
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: rd-gssi-qa-admin
+    description: Admin privileges to rd-gssi-qa
+    policies:
+    - p, proj:rd-gssi-qa:rd-gssi-qa-admin, applications, *, rd-gssi-qa/*, allow
+    - p, proj:rd-gssi-qa:rd-gssi-qa-admin, repositories, *, rd-gssi-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-gssi-qa-user
+    description: Read-only privileges to rd-gssi-qa
+    policies:
+    - p, proj:rd-gssi-qa:rd-gssi-qa-user, applications, get, rd-gssi-qa/*, allow
+    - p, proj:rd-gssi-qa:rd-gssi-qa-user, applications, sync, rd-gssi-qa/*, allow
+    - p, proj:rd-gssi-qa:rd-gssi-qa-user, repositories, get, rd-gssi-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.GSSILABS"
+    - "Team.Support.EIAP.READ"

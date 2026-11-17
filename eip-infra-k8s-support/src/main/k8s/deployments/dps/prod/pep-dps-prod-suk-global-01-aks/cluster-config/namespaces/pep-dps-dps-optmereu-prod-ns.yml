@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-optmereu-prod
+  labels:
+    env-prod: "true"
+    project: optmereu
+    sector: dps
+    team: dps-optmereu
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsiconnect-b2b-portal-dps
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: 591860c5-d173-4f79-964c-f37ce950326d
+    pep-environment: Production
+    

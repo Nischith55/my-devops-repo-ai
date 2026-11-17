@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pep-feature-toggle-vs","app.kubernetes.io/instance":"dss-feature-toggle-vs-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pep-feature-toggle-ui-vs","namespace":"pep-dps-sntdps-toggle-prod"},"spec":{"gateways":["pep-dps-sntdps-toggle-prod/pep-dps-sntdps-toggle-prod-cv-gw"],"hosts":["pep-feature-toggle.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-feature-toggle.pep-dps-sntdps-toggle-prod.svc.cluster.local","port":{"number":3000}}}]}]}}
+
+'
+    labels:
+        app: pep-feature-toggle-vs
+        app.kubernetes.io/instance: dss-feature-toggle-vs-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pep-feature-toggle-ui-vs
+    namespace: pep-dps-sntdps-toggle-prod
+spec:
+    gateways:
+    - pep-dps-sntdps-toggle-prod/pep-dps-sntdps-toggle-prod-cv-gw
+    hosts:
+    - pep-feature-toggle.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-feature-toggle.pep-dps-sntdps-toggle-prod.svc.cluster.local
+                port:
+                    number: 3000

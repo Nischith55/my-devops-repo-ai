@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-cmp-nonprod-eus-01-aks
+    crosscharge_aks: direct
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-cmp-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    servicename_aks: cmp
+    team: eiap-admins
+  name: pep-cmp-ops-admin

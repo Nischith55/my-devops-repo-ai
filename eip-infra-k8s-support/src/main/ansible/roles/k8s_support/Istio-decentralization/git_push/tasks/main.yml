@@ -1,0 +1,119 @@
+# - name: Set Initial Status to cover unknown errors
+#   ansible.builtin.set_stats:
+#     data:
+#       git_push_status_code: "500"
+#       git_push_status_txt: "INTERNAL ERROR"
+#       git_push_status_detail: "An unexpected error occurred"
+#     aggregate: false
+
+- name: git push
+  block:
+# Creating directory for git clone  
+  # - name: Creating directory for git clone
+  #   file:
+  #     path: /tmp/git_repo_clone
+  #     state: directory
+
+#   - name: Set destination repo URL from uri and pat
+#     set_fact:
+#       destination_repo_url: "https://{{ svcuser }}:{{ svcPersonalAccessToken }}@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support"
+#       branch_name: "develop"
+# # Clone GIT Repository     
+#   - name: Clone GIT Repository
+#     git:
+#       repo: "{{ destination_repo_url }}"
+#       dest: /tmp/git_repo_clone
+#       clone: yes
+#       update: yes
+#       version: "{{ branch_name }}"
+
+### setting git config for further commands
+#   - name: set git_config user.name 
+#     command: "git config --global user.name svceipazdevops" 
+#   - name: set git_config user.email 
+#     command: "git config --global user.email svceipazdevops@pepsico.com" 
+    
+# # Creating directory for uploading files
+#   - name: Creating directory for uploading files into git repo
+#     file:
+#       path: "{{ path }}"
+#       state: directory
+  
+  # - name: removing patch in file name if any 
+  #   set_fact:
+  #     temp_file: "{{ src_file| basename }}"
+  # - set_fact:
+  #     filename: "{{ temp_file.replace('-patch','') }}"
+
+# copy folders using the Ansible copy module
+  # - name: Copy folders
+  #   copy:
+  #     dest: "{{ path }}/{{ filename }}"
+  #     src: "{{ src_file }}"
+  #     force: true
+
+  - name: PULL the repo to ensure we have any commits from concurrent jobs
+    register: git_pull_result
+    command: "git pull --no-rebase"
+    args:
+      chdir: "/tmp/git_repo_clone"
+
+  - name: ADD manifest files
+    register: git_add_result
+    command: "git add ."
+    args:
+      chdir: "/tmp/git_repo_clone"
+
+  - name: COMMIT the manifest files
+    register: git_commit_result
+    command: "git commit -a -m 'Add manifest'"
+    args:
+      chdir: "/tmp/git_repo_clone"
+
+  - name: PULL the repo to ensure we have any commits from concurrent jobs
+    register: git_pull_result
+    command: "git pull --no-rebase"
+    args:
+      chdir: "/tmp/git_repo_clone"
+
+  - name: PUSH the manifest files
+    register: git_push_result
+    command: "git push"
+    args:
+      chdir: "/tmp/git_repo_clone"
+
+  rescue:
+    - name: Set commit status
+      set_stats:
+        data:
+          git_push_status_code: "501"
+          git_push_status_txt: "Files already exists and No Changes to them"
+          git_push_status_detail: "No update in the files"
+        aggregate: false
+      when: git_commit_result.stdout.find('nothing to commit, working tree clean') != -1
+  
+    - name: Catch and Retry Pull/Push if PUSH failed
+      block:
+        - name: Catch and Retry Pull/Push if PUSH failed
+          shell: "git pull --no-rebase; git push"
+          args:
+            chdir: "/tmp/git_repo_clone"
+          register: git_push_retry
+          until: git_push_retry is succeeded
+          retries: 5
+          delay: 5
+          when: git_push_result.stderr | default('') | length > 0
+      rescue:
+        - name: Set stats 509
+          set_stats:
+            data:
+              git_push_status_code: "509"
+              git_push_status_txt: "Git pull push Error"
+              git_push_status_detail: "{{ ansible_failed_result }}"
+            aggregate: false
+          when: git_push_retry != 0
+
+        - name: Fail Error 509
+          fail:
+            msg: "Git pull push Error. Please see git_push_status_detail for more information"
+          when: git_push_retry != 0

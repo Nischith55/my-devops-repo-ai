@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-global-appruntimeapi
+  name: pep-global-appruntimeapi-vs
+  namespace: pep-dps-cgf-appruntime-prod
+spec:
+  gateways:
+  - pep-dps-cgf-appruntime-prod/pep-dps-cgf-appruntime-prod-cv-gw
+  hosts:
+  - pep-global-appruntimeapi.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprt-api
+    route:
+    - destination:
+        host: pep-global-appruntimeapi.pep-dps-cgf-appruntime-prod.svc.cluster.local
+        port:
+          number: 80

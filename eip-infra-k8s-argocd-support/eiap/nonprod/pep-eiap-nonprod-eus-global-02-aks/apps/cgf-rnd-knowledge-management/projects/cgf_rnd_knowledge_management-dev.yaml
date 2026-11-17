@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cgf-rnd-knowledge-management-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cgf-rnd-knowledge-management-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_RnD_Knowledge_Management_RAG/_git/pep-cgf-rnd-knowledge-management-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-rndkmfw-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cgf-rnd-knowledge-management-dev-admin
+        description: Admin privileges to cgf-rnd-knowledge-management-dev
+        policies:
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-admin, applications, *, cgf-rnd-knowledge-management-dev/*, allow
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-admin, repositories, *, cgf-rnd-knowledge-management-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cgf-rnd-knowledge-management-dev-user
+        description: Read-only privileges to cgf-rnd-knowledge-management-dev
+        policies:
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-user, applications, get, cgf-rnd-knowledge-management-dev/*, allow
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-user, applications, sync, cgf-rnd-knowledge-management-dev/*, allow
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-user, repositories, get, cgf-rnd-knowledge-management-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cgf-rnd-knowledge-management-dev:cgf-rnd-knowledge-management-dev-user, applications, action/apps/Deployment/restart, cgf-rnd-knowledge-management-dev/*, allow
+        groups:
+        - "chahat.qureshi.contractor@pepsico.com"
+        - "Team.Support.EIAP.READ"
+        - "Team.App.CGFRnD.OilChemistry"
+    

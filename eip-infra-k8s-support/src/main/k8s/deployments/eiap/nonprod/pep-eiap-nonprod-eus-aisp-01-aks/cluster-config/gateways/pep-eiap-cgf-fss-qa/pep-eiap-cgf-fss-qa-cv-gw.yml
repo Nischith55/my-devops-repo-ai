@@ -1,0 +1,75 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-fss-qa-cv-gw
+  namespace: pep-eiap-cgf-fss-qa
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-cgf-fss-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-qa-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-fss-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-eiap-cgf-fss-qa-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-fss-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-fss-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-aisp-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-eiap-cgf-fss-qa-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-fss-qa.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-qa-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-fss-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - pep-fss-qa-dbrext-dbr.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-qa-cv-gw-tcp-1491
+    port:
+      name: grpc-pep-eiap-cgf-fss-qa-cv-gw-1491
+      number: 2491
+      protocol: TCP
+  - hosts:
+    - pep-fss-qa-csext-dcs-pg.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-qa-cv-gw-tcp-2591
+    port:
+      name: grpc-pep-eiap-cgf-fss-qa-cv-gw-2591
+      number: 2591
+      protocol: TCP

@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pep-gafs-api-service","app.kubernetes.io/instance":"pep-gafs-api-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"pep-gafs-api-service","namespace":"pep-eiap-cgf-pepgafs-prod"},"spec":{"gateways":["pep-eiap-cgf-pepgafs-prod/pep-eiap-cgf-pepgafs-prod-cv-gw"],"hosts":["pep-gafs-api-service-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-gafs-api-service.pep-eiap-cgf-pepgafs-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pep-gafs-api-service
+        app.kubernetes.io/instance: pep-gafs-api-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: pep-gafs-api-service
+    namespace: pep-eiap-cgf-pepgafs-prod
+spec:
+    gateways:
+    - pep-eiap-cgf-pepgafs-prod/pep-eiap-cgf-pepgafs-prod-cv-gw
+    hosts:
+    - pep-gafs-api-service-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - api-pepgafs.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-gafs-api-service.pep-eiap-cgf-pepgafs-prod.svc.cluster.local
+                port:
+                    number: 8080

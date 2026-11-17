@@ -1,0 +1,310 @@
+---
+# ##
+# Playbook for cluster configuration (post provisioning tasks)
+# ##
+
+- name: PLAY_INITIALIZE_GLOBALS
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    _tasks: "{{ (run_task | default('')).split() }}"
+
+  tasks:
+
+    - name: ASSERT_ONLY_SINGLE_OR_NO_TASK
+      assert:
+        that:
+          - (_tasks | length) <= 1
+        fail_msg: "_tasks: Only empty or single task allowed {{ _tasks }}"
+
+    - name: SET_GLOBALS
+      set_fact:
+        cluster_name: &cname001 "{{ inventory_hostname }}"
+        kube_context_name: *cname001
+        task: ""
+
+    - name: SET_TASK
+      set_fact:
+        task: "{{ _tasks | first }}"
+      when: (_tasks | length) == 1
+
+- name: PLAY_CLUSTER_INITIALIZE_LIFECYCLE
+  # Cluster name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+
+    _secrets_deploy_dir: &sd001 "{{ cluster_config_secrets_deploy_base_dir }}"
+    _config_deploy_dir: &cd001 "{{ cluster_config_deploy_base_dir }}"
+
+    # IMPORTANT: get this configured here.
+    _list_task_map:
+      # list of namespaces
+      namespaces_create: &ns_cfg001
+        deploy_dir: *cd001
+        varname: namespaces
+        tmpl_src: cluster-config/namespace.yml.j2
+      cluster_roles_create: &cr_cfg001
+        deploy_dir: *cd001
+        varname: cluster_roles
+        tmpl_src: cluster-config/role.yml.j2
+      pv_all_create: &pv_cfg001
+        deploy_dir: *cd001
+        varname: all_persistent_volumes
+        tmpl_src: cluster-config/generate-k8s-resource.yml.j2
+      storage_classes_create: &sc_cfg001
+        deploy_dir: *cd001
+        varname: all_storage_classes
+        tmpl_src: cluster-config/storage/storage-class.yml.j2
+      service_accounts_create: &sa_cfg001
+        deploy_dir: *cd001
+        varname: service_accounts
+        tmpl_src: cluster-config/service-account.yml.j2
+      cluster_role_bindings_create: &crb_cfg001
+        deploy_dir: *cd001
+        varname: cluster_role_bindings
+        tmpl_src: cluster-config/role-binding.yml.j2
+      role_bindings_create: &rb_cfg001
+        deploy_dir: *cd001
+        varname: role_bindings
+        tmpl_src: cluster-config/role-binding.yml.j2
+      registry_secrets_create: &reg_sec_cfg001
+        deploy_dir: *sd001
+        varname: registry_secrets
+        tmpl_src: cluster-config/secrets/dockerconfigjson.yml.j2
+      generic_secrets_create: &gen_sec_cfg001
+        deploy_dir: *sd001
+        varname: generic_secrets
+        tmpl_src: cluster-config/secrets/generic.yml.j2
+      tls_secrets_create: &tls_sec_cfg001
+        deploy_dir: *sd001
+        varname: tls_secrets
+        tmpl_src: cluster-config/secrets/tls.yml.j2
+
+  tasks:
+
+    - name: DO_LIST_TASKS
+      block:
+
+        - name: PRINT_PLAY_PARAMETERS
+          debug:
+            msg: |
+              {{ task }}:
+                template: {{ _tmpl_src }}
+                value:
+                  {{ _value
+                    | to_nice_yaml(indent=2) | trim | indent(4) }}
+          when: (print_play_params | default('false') | bool)
+
+        - name: CLUSTER_CONFIG_ASSERTIONS
+          assert:
+            that:
+              - (instance_namespace_vars | length) > 0
+              - (_value | length) == 1
+            fail_msg: |
+              One of following required options missing:
+              - [instance_namespace_vars] is empty, are you sure, no additional namespaces defined?
+              - multiple matches for [{{ _varname }}], should be defined only once for target.
+
+        - name: CREATE_LIST_RESOURCE [{{ task }}]
+          include_tasks:
+            file: tasks/create-config-from-template-and-apply-list.yml
+          vars:
+            params_cfg_obj_list:
+              output_base_dir: "{{ _deploy_dir }}"
+              cfg_obj_list: "{{ _value | first }}"
+              kube_context: "{{ kube_context_name }}"
+              template_src: "{{ _tmpl_src }}"
+      vars:
+        _varname: "{{ _list_task_map[task]['varname'] }}"
+        # Lock down the exact pattern
+        _value: "{{ q('vars', *q('varnames', '^' + _varname + '$')) }}"
+        _tmpl_src: "{{ _list_task_map[task]['tmpl_src'] }}"
+        _deploy_dir: "{{ _list_task_map[task]['deploy_dir'] }}"
+      when: (task in _list_task_map)
+
+
+# ##
+#  Begin Play for individual operations
+# ##
+- name: PLAY_CLUSTER_SINGLE_OPERATION_LIFECYCLE
+  # Cluster name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    # task_list: "{{ (run_task | default('')).split() }}"
+    # cluster_name: "{{ inventory_hostname }}"
+    # kube_context_name: "{{ cluster_name }}"
+
+    # ##
+    # IMPORTANT: we re-use via yaml anchors from _list_task_map
+    # ##
+    _task_map:
+      ns_create:
+        <<: *ns_cfg001
+        ns_required: false
+      cr_create:
+        <<: *cr_cfg001
+        ns_required: false
+      sc_create:
+        <<: *sc_cfg001
+        ns_required: false
+      pv_create:
+        <<: *pv_cfg001
+        ns_required: false
+      crb_create:
+        <<: *crb_cfg001
+        ns_required: false
+      # All resources that required Namespace
+      sa_create:
+        <<: *sa_cfg001
+        ns_required: true
+      rb_create:
+        <<: *rb_cfg001
+        ns_required: true
+      gen_sec_create:
+        <<: *gen_sec_cfg001
+        ns_required: true
+      reg_sec_create:
+        <<: *reg_sec_cfg001
+        ns_required: true
+      tls_sec_create:
+        <<: *tls_sec_cfg001
+        ns_required: true
+
+  tasks:
+
+    - name: CREATE_SINGLE_RESOURCE_BLOCK
+      block:
+ 
+        - name: CLUSTER_CONFIG_ASSERTIONS
+          assert:
+            that:
+              - (instance_namespace_vars | length) > 0
+              - (_value | length) == 1
+              - resc_name is defined
+            fail_msg: |
+              Required preconditions not met.
+              params:
+                instance_namespace_vars:
+                  {{ instance_namespace_vars | to_nice_yaml(indent=2, width=1338) | trim | indent(4) }}
+                task: {{ task }}
+                varname: {{ _varname }}
+                ns_required: {{ _ns_required }}
+
+        - name: CLUSTER_CONFIG_NAMESPACE_ASSERTION
+          assert:
+            that:
+              - resc_namespace is defined
+            fail_msg: "[resc_namespace] is required for [{{ task }}]"
+          when: (_ns_required)
+
+        - name: PRINT_PLAY_PARAMETERS
+          debug:
+            msg: |
+              {{ task }}:
+                template: {{ _tmpl_src }}
+                value:
+                  {{ _value
+                    | to_nice_yaml(indent=2) | trim | indent(4) }}
+          when: (print_play_params | default('false') | bool)
+
+        - name: SET_RESC_OBJ {{ resc_name }}
+          set_fact:
+            _resc_obj: |-
+              {{ (_value | first) | search_list(key='name', value=resc_name) }}
+          when: (not _ns_required)
+
+        - name: SET_RESC_OBJ_NAMESPACE_SCOPED {{ resc_name }}
+          set_fact:
+            _resc_obj: |-
+              {{ (_value | first)
+                | search_list(key='name', value=resc_name,
+                      key1='namespace', value1=resc_namespace) }}
+          when: (_ns_required)
+
+        - name: CREATE_RESOURCE [{{ resc_name }}]
+          include_tasks:
+            file: tasks/cluster-config/create-config-from-template-and-apply.yml
+          vars:
+            params_create_cfg:
+              kube_context: "{{ kube_context_name }}"
+              template_src: "{{ _tmpl_src }}"
+              output_base_dir: "{{ _deploy_dir }}"
+              params_cfg: "{{ _resc_obj }}"
+              task: "{{ task }}"
+      vars:
+        _varname: "{{ _task_map[task]['varname'] }}"
+        _ns_required: "{{ _task_map[task]['ns_required'] }}"
+        # Lock down the exact pattern
+        _value: "{{ q('vars', *q('varnames', '^' + _varname + '$')) }}"
+        _tmpl_src: "{{ _task_map[task]['tmpl_src'] }}"
+        _deploy_dir: "{{ _task_map[task]['deploy_dir'] }}"
+      # only run if in our map
+      when: (task in _task_map)
+
+
+# ##
+#  Begin Play Modifying Default AKS Storage Classes
+# ##
+- name: PLAY_CLUSTER_SINGLE_OPERATION_LIFECYCLE
+  # Cluster name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    #CLI# resc_name
+    sc_create:
+      <<: *sc_cfg001
+      ns_required: false
+
+  tasks:
+
+    ## IMPORTANT - this support single or all storage classes
+    - name: AKS_BUILT_IN_STORAGE_CLASSES_PATCH_BLOCK
+      block:
+
+        - name: SET_LOOP_VAR_IF_RESC_NAME_GIVEN
+          set_fact:
+            resc_list: |-
+              {{ [all_aks_storage_class
+                  | search_list(key='name', value=resc_name)] }}
+          when: (resc_name is defined)
+
+        - name: PRINT_PLAY_PARAMS
+          debug:
+            msg: |
+              default SC:
+                {{ resc_list | to_nice_yaml(indent=2, width=1337)
+                    | trim | indent(2) }}
+          when: (print_play_params | default('false') | bool)
+
+        - name: PATCH_AKS_BUILT_IN_STORAGE_CLASS
+          include_tasks:
+            file: "tasks/cluster-config/delete-generate-apply-resource.yml"
+          vars:
+            params_del_apply:
+              kube_context: "{{ kube_context_name }}"
+              # For delete
+              resource: "storageclass"
+              template_src: "{{ _tmpl_src }}"
+              deploy_dir: "{{ _deploy_dir }}"
+              resc_obj: "{{ _resc_ }}"
+          loop: "{{ resc_list }}"
+          loop_control:
+            loop_var: _resc_
+            label: "{{ _resc_['name'] }}"
+
+      vars:
+        resc_list: "{{ all_aks_storage_class }}"
+        _tmpl_src: "{{ sc_create['tmpl_src'] }}"
+        _deploy_dir: "{{ sc_create['deploy_dir'] }}"
+      # only run if in our map
+      when: (task == 'aks_sc_create')

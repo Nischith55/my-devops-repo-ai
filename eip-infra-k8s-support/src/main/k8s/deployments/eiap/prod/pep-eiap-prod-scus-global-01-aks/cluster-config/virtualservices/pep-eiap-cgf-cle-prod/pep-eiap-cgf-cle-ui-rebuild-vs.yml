@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-cgf-cle-ui-rebuild-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","clebeta.mypepsico.com"],"tls":[{"match":[{"port":443,"sniHosts":["pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","clebeta.mypepsico.com"]}],"route":[{"destination":{"host":"pep-eiap-cgf-cle-ui-rebuild.pep-eiap-cgf-cle-prod.svc.cluster.local","port":{"number":443}}}]}]}}
+  labels:
+    app: pep-eiap-cgf-cle-ui-rebuild
+  name: pep-eiap-cgf-cle-ui-rebuild-vs
+  namespace: pep-eiap-cgf-cle-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-cle-prod/pep-eiap-cgf-cle-prod-cv-gw
+  hosts:
+  - pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - clebeta.mypepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - clebeta.mypepsico.com
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-ui-rebuild.pep-eiap-cgf-cle-prod.svc.cluster.local
+        port:
+          number: 443

@@ -1,0 +1,22 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pepconnect-b2bweb-russia-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pepconnect-b2bweb-russia.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  - dogovorilis24.preprod.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-russia.pep-eiap-cgf-pepconnrus-preprod.svc.cluster.local
+        port:
+          number: 80

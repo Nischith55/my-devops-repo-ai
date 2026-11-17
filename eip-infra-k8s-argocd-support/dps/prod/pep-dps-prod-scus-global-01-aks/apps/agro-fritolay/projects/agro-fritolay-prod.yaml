@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-fritolay-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-fritolay-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fritolay-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-flag-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: agro-fritolay-prod-admin
+    description: Admin privileges to agro-fritolay-prod
+    policies:
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-admin, applications, *, agro-fritolay-prod/*, allow
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-admin, applications, get, argocd/*, allow
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-admin, repositories, *, agro-fritolay-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-fritolay-prod-user
+    description: Read-only privileges to agro-fritolay-prod
+    policies:
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-user, applications, get, agro-fritolay-prod/*, allow
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-user, applications, sync, agro-fritolay-prod/*, allow
+    - p, proj:agro-fritolay-prod:agro-fritolay-prod-user, repositories, get, agro-fritolay-prod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.flag"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,308 @@
+---
+# ##
+# Playbook for openssl configuration (mainly for AquaSec or other non public
+# software.
+# ##
+# TODOS:
+# - some of the repeated values can be rolled up.
+# ##
+# IMPORTANT:
+# - we are using ansible collection crypto (NOT built-in)
+# - To install: ansible-galaxy collection install community.crypto
+# - When using collections ALWAYS use FQCN
+# ##
+
+- name: PLAY_INITIALIZE_GLOBALS
+  # target:: always CA name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  pre_tasks:
+
+    - name: SETUP_TASKS
+      set_fact:
+        tasks: |-
+          {{ (run_tasks | default('_no_task_')).split() }}
+      # it will be set for all hosts
+      run_once: true
+
+    - name: SET_GLOBALS
+      set_fact:
+        def_email_address: ITPivotalCloudFoundryOperationsTeam@pepsico.com
+        # credential file ini section name for ca
+        ini_ca_section_name: "{{ env + '-' + target + '-' + 'ca' }}"
+        certs_dir: "{{ _certs_dir_ }}"
+        ca_dir: "{{ _ca_dir_ }}"
+        # all certs for this CA
+        ca_signed_certs_dir: "{{ (_certs_dir_, 'signed-certs') | path_join }}"
+        ca_key_file: "{{ (_ca_dir_, target + '-ca-key.pem') | path_join }}"
+        ca_cert_file: "{{ (_ca_dir_, target + '-ca-crt.pem') | path_join }}"
+        ca_cert_b4_file: "{{ (_ca_dir_, target + '-ca-crt.b64') | path_join }}"
+        common_subject: &cmn_subj001
+          C: US
+          ST: Texas
+          L: Plano
+          O: Pepsico, Inc
+          OU: EIAP
+      vars:
+        _certs_dir_:  "{{ (certs_root_dir, env, target) | path_join }}"
+        _ca_dir_: "{{ (_certs_dir_, 'ca') | path_join }}"
+      run_once: true
+
+# ##
+# PLAY to generate key and sign certificate with the given ca
+# ##
+- name: GENERATE_SVC_KEY_OR_CERTIFICATE
+  # target:: always CA name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    # #: CN is required (CLI)
+    # common_name
+    # #: we also require cluster in case the name is the same
+    # cluster_name
+    cluster_certs_dir: |-
+      {{ (ca_signed_certs_dir, cluster_name) | path_join }}
+    cn_key_file: "{{ (cluster_certs_dir, common_name + '.key') | path_join }}"
+    cn_csr_file: "{{ (cluster_certs_dir, common_name + '.csr') | path_join }}"
+    cn_cert_file: "{{ (cluster_certs_dir, common_name + '.crt') | path_join }}"
+    # NOTE: we default to 2048 instead of 4096. since it is still secure
+    # till end of decade and performance penalty is low.
+    _key_size: "{{ key_size | default('2048') | int }}"
+
+  tasks:
+
+    - name: ENSURE_DEST_DIR
+      include_tasks:
+        file: tasks/core/mkdirs.yml
+      vars:
+        params_mkdirs:
+          #NOTE: we give the key file name
+          path: "{{ cn_key_file }}"
+          mode: 0700
+      when: (tasks | run_if(['create_all_svc', 'create_key_svc', 'create_csr_svc', 'create_cert_svc']))
+
+    - name: GENERATE_PRIVATE_KEY_BLOCK
+      block:
+
+        - name: GENERATE_SVC_KEY ({{ cn_key_file }})
+          community.crypto.openssl_privatekey:
+            # All paths first
+            path: "{{ cn_key_file }}"
+            mode: 0400 
+            # sort lexicographically
+            backup: "{{ backup_key | default('true') | bool }}"
+            size: "{{ _key_size }}"
+            select_crypto_backend: cryptography
+            type: "{{ key_type | default('RSA') }}"
+          # no_log should always be true for key
+          no_log: "not (enable_log | default('false') | bool)"
+          when: (tasks | run_if(['create_all_svc', 'create_key_svc', 'create_csr_svc']))
+
+    - name: CREATE_SVC_CSR_BLOCK
+      block:
+
+        - name: CREATE_SVC_CSR ({{ cn_csr_file }})
+          community.crypto.openssl_csr:
+            # All paths first
+            path: "{{ cn_csr_file }}"
+            privatekey_path: "{{ cn_key_file }}"
+            mode: 0644 
+            # sort lexicographically
+            backup: "{{ backup_csr | default('false') | bool }}"
+            basic_constraints:
+              - CA:FALSE
+            basic_constraints_critical: yes
+            create_subject_key_identifier: yes
+            digest: sha256
+            extended_key_usage_critical: |-
+              {{ extended_key_usage_critical | default('false') | bool }}
+            extended_key_usage:
+              - clientAuth
+              - serverAuth
+            force: "{{ regenerate_csr | default('false') | bool }}"
+            key_usage_critical: yes
+            key_usage:
+              - digitalSignature
+              - keyEncipherment
+              - dataEncipherment
+            # TODO: major assumption of dots, needs to be in a filter
+            subject_alt_name: 
+              - "{{ 'DNS:' + common_name }}"
+              - "{{ 'DNS:' + common_name.rpartition('.')[0] }}"
+              - "{{ 'DNS:' + common_name + '.cluster.local' }}"
+            subject:
+              <<: *cmn_subj001
+              CN: "{{ common_name }}"
+            # add common name for SAN
+            use_common_name_for_san: |-
+              {{ use_common_name_for_san | default('true') | bool }}
+            select_crypto_backend: cryptography
+          when: (tasks | run_if(['create_all_svc', 'create_csr_svc', 'create_cert_svc']))
+
+        - name: SIGN_SVC_CRT_BLOCK
+          block:
+
+            - name: SVC_SIGN_CSR ({{ cn_cert_file }})
+              community.crypto.x509_certificate:
+                path: "{{ cn_cert_file }}"
+                csr_path: "{{ cn_csr_file }}"
+                privatekey_path: "{{ cn_key_file }}"
+                # must be own ca
+                provider: ownca
+                ownca_path: "{{ ca_cert_file }}"
+                # NOTE: we never use local file lest gets accidentally checked
+                # in.
+                #ownca_privatekey_path: "{{ ca_key_file }}"
+                ownca_privatekey_content: "{{ _ca_key_content }}"
+                # 10 years
+                ownca_not_after : "+3650d"
+                ownca_create_authority_key_identifier: yes
+                ownca_create_subject_key_identifier: always_create
+                select_crypto_backend: cryptography
+                mode: 0644
+                return_content: yes
+              register: _svc_cert_out
+              vars:
+                # always lookup the ca_key
+                _ca_key_lookup_ini: |-
+                  {{ lookup('ini', 'ca_key section=' + ini_ca_section_name + ' file=' + secrets_ini_file) }}
+                _ca_key_content: "{{ _ca_key_lookup_ini | b64decode }}"
+
+          when: (tasks | run_if(['create_all_svc', 'create_cert_svc']))
+
+        - name: PRINT_SVC_CERT_BLOCK
+          block:
+
+            - name: CERT_INFO {{ cn_cert_file }}
+              community.crypto.x509_certificate_info:
+                path: "{{ cn_cert_file }}"
+              register: _svc_cert_info
+
+            - name: PRINT_CERT_INFO
+              debug:
+                msg: |
+                  Certificate:
+                    {{ _svc_cert_info | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+
+          when: (tasks | run_if(['print_cert_svc', 'create_all_svc', 'create_cert_svc']))
+
+# ##
+# Generate our own Certificate Authority
+# ##
+- name: GENERATE_CERTIFICATE_AUTHORITY
+  # target:: always CA name
+  hosts: "{{ target }}"
+  gather_facts: false
+  serial: 1
+
+  vars:
+    ca_cn: "{{ target.capitalize() + '-CA' }}"
+    ca_csr_file: "{{ (ca_dir, target + '-ca.csr') | path_join }}"
+
+  tasks:
+
+    - name: GENERATE_CA_KEY_CERT_BLOCK
+      block:
+
+        - name: ENSURE_DEST_DIR
+          include_tasks:
+            file: tasks/core/mkdirs.yml
+          vars:
+            params_mkdirs:
+              #NOTE: we give the key file name
+              path: "{{ ca_key_file }}"
+              mode: 0700
+          when: (tasks | run_if(['create_all_ca', 'create_key_ca', 'create_csr_ca', 'create_cert_ca']))
+
+        - name: GENERATE_CA_KEY
+          community.crypto.openssl_privatekey:
+            # All path stuff first
+            path: "{{ ca_key_file }}"
+            mode: 0400
+            # sort lexicographically
+            # always backup key
+            backup: "{{ backup_key | default('true') | bool }}"
+            select_crypto_backend: cryptography
+            # we will make the CA key size 4096
+            size: "{{ key_size | default('4096') | int }}"
+            type: "{{ key_type | default('RSA') }}"
+          # no_log should always be true for key
+          no_log: "not (enable_log | default('false') | bool)"
+          when: (tasks | run_if(['create_all_ca', 'create_key_ca', 'create_csr_ca']))
+
+        - name: CREATE_CA_CSR
+          community.crypto.openssl_csr:
+            path: "{{ ca_csr_file }}"
+            basic_constraints:
+              - CA:TRUE
+              # we cannot have any other CA certs downstream
+              - pathlen:0
+            basic_constraints_critical: yes
+            # for our own CA
+            create_subject_key_identifier: yes
+            digest: sha256
+            force: "{{ regenerate_csr | default('false') | bool }}"
+            privatekey_path: "{{ ca_key_file }}"
+            subject:
+              <<: *cmn_subj001
+              CN: "{{ ca_cn }}"
+            subject_alt_name: 
+              - "{{ 'email:' + def_email_address }}"
+            backup: "{{ backup_csr | default('false') | bool }}"
+            key_usage:
+              - keyCertSign
+              - digitalSignature
+              - cRLSign
+            key_usage_critical: yes
+            mode: 0644 
+            select_crypto_backend: cryptography
+          when: (tasks | run_if(['create_all_ca', 'create_csr_ca']))
+
+        - name: SIGN_CA_CRT_BLOCK
+          block:
+
+            - name: SELF_SIGN_CA_CRT
+              community.crypto.x509_certificate:
+                path: "{{ ca_cert_file }}"
+                csr_path: "{{ ca_csr_file }}"
+                privatekey_path: "{{ ca_key_file }}"
+                provider: selfsigned
+                # default 50 years
+                selfsigned_not_after: |-
+                  {{ selfsigned_not_after | default('+18250d') }}
+                selfsigned_create_subject_key_identifier: always_create
+                select_crypto_backend: cryptography
+                mode: 0644
+                return_content: yes
+          when: (tasks | run_if(['create_all_ca', 'create_cert_ca', 'create_csr_ca']))
+
+        - name: PRINT_SVC_CERT_BLOCK
+          block:
+
+            - name: CERT_INFO {{ ca_cert_file }}
+              community.crypto.x509_certificate_info:
+                path: "{{ ca_cert_file }}"
+              register: _ca_cert_info
+
+            - name: PRINT_CERT_INFO
+              debug:
+                msg: |
+                  Certificate:
+                    {{ _ca_cert_info | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+
+          when: (tasks | run_if(['print_cert_ca', 'create_all_ca', 'create_cert_ca']))
+
+        - name: CREATE_CA_BUNDLE {{ ca_cert_b4_file }}
+          copy: 
+            dest: "{{ ca_cert_b4_file }}"
+            content: "{{ _ca_cert_contents | string | b64encode }}"
+            mode: 0644
+            force: yes
+          delegate_to: localhost
+          vars:
+            _ca_cert_contents: "{{ lookup('file', ca_cert_file) }}"
+          when: (tasks | run_if(['create_bundle_ca']))

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+    name: dbrext-test-gw-temp
+    namespace: pep-eiap-cgf-fss-dev
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dbrext-dbr-test-vs.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-dev-cv-gw-tls-443
+    port:
+      name: dbrext-test-gw-temp
+      number: 1491
+      protocol: TCP
+  - hosts:
+    - pep-fss-dev-csext-dcs-pg-tcp.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-fss-dev-cv-gw-tls-dbr
+    port:
+      name: csext-gw-temp
+      number: 81
+      protocol: TCP

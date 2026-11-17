@@ -1,0 +1,10 @@
+apiVersion: v1
+imagePullSecrets:
+- name: pepeiapprodcommonacr-pep-eiap-latam-gtm-preprod-sa-msi-acrpull-secret
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 114030a1-8413-418f-86a7-99bfb1f2a6d1
+  name: pep-eiap-latam-gtm-preprod-sa
+  namespace: pep-eiap-latam-gtm-preprod
+

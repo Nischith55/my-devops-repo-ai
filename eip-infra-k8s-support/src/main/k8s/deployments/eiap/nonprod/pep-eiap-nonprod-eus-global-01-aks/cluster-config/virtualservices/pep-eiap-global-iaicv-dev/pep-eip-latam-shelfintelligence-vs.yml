@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-latam-shelfintelligence
+  name: pep-eip-latam-shelfintelligence-vs
+  namespace: pep-eiap-global-iaicv-dev
+spec:
+  gateways:
+  - pep-eiap-global-iaicv-dev/pep-eiap-global-iaicv-dev-cv-gw
+  hosts:
+  - pep-eip-latam-shelfintelligence.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-shelfintelligence.pep-eiap-global-iaicv-dev.svc.cluster.local
+        port:
+          number: 8080

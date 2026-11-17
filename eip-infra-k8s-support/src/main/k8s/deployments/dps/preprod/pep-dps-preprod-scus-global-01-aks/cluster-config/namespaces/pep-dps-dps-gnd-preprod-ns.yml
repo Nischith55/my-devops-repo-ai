@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-gnd-preprod
+  labels:
+    env-preprod: "true"
+    project: gnd
+    sector: dps
+    team: dps-gnd
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: networkdesign
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 017f8aec47129298087f6542736d4388
+    pep-cmdb-app-service-id: e97f0eec47129298087f6542736d434a
+    pep-environment: Pre-Production
+    

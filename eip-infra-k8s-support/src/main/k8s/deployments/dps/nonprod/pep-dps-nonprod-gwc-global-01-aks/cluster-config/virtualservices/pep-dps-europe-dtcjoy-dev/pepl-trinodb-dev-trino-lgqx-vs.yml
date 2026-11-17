@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepl-trinodb-dev-trino-lgqx-vs
+  namespace: pep-dps-europe-dtcjoy-dev
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - pepl-trinodb-dev.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-europe-dtcjoy-dev/pep-dps-europe-dtcjoy-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepl-trinodb-dev-trino.pep-dps-europe-dtcjoy-dev.svc.cluster.local
+        port:
+          number: 8080
+  

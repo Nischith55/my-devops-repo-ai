@@ -1,0 +1,292 @@
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: control-plane
+  namespace: istio-system
+spec:
+  profile: minimal
+  tag: "1.10.3"
+
+  # If namespace is set here then make sure:
+  # - You must also set values.global.istioNamespace
+  # Otherwise:
+  # - it will use the namespace of the CR
+  # namespace: istio-system
+
+  # revision (IMPORTANT: change in validatingWebHookConfiguration)
+  revision: "1-10-3"
+
+  meshConfig:
+    proxyListenPort: 15001
+    connectTimeout: 10s
+    protocolDetectionTimeout: 5s
+
+    ingressService: pep-eiap-ingress-gw01
+    ingressSelector: pep-eiap-ingress-gw01
+
+    accessLogFile: /dev/stdout
+
+    # # Format for the proxy access log Empty value results in proxy’s
+    # # default access log format
+    # accessLogFormat:
+    accessLogEncoding: TEXT
+
+    enableAutoMtls: true
+
+    defaultServiceExportTo:
+      - "*"
+    defaultVirtualServiceExportTo:
+      - "*"
+    defaultDestinationRuleExportTo:
+      - "*"
+    rootNamespace: pep-eiap-istio-config
+
+    h2UpgradePolicy: DO_NOT_UPGRADE
+
+    enablePrometheusMerge: true
+
+    defaultConfig:
+
+      statusPort: 15020
+
+      drainDuration: 45s
+
+      parentShutdownDuration: 60s
+
+      terminationDrainDuration: 5s
+
+      proxyAdminPort: 15000
+
+      controlPlaneAuthPolicy: MUTUAL_TLS
+
+  # ##
+  # Components to enable or disable
+  # ##
+  components:
+
+    #: Base Component (type:  BaseComponentSpec)
+    # Configuration for base component.
+    base:
+      enabled: true
+      k8s:
+        overlays:
+        - kind: ValidatingWebhookConfiguration
+          name: istiod-istio-system
+          patches:
+          - path: webhooks.[name:validation\.istio\.io].clientConfig.service.name
+            value: istiod-1-10-3
+
+    cni:
+      enabled: false
+
+    #: Pilot Component
+    # type: ComponentSpec
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 6
+        nodeSelector:
+          kubernetes.azure.com/mode: system
+          kubernetes.io/os: linux
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        overlays:
+
+        - kind: Deployment
+          name: istiod-1-10-3
+          patches:
+          - path: spec.template.spec.topologySpreadConstraints
+            value:
+            - labelSelector:
+                matchLabels:
+                  operator.istio.io/component: Pilot
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+
+    ingressGateways:
+
+      # Disable built-in-gateway
+      - name: istio-ingressgateway
+        enabled: false
+
+      - name: &gw01 pep-eiap-ingress-gw01
+        enabled: true
+        k8s:
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 6
+          serviceAnnotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+            service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+          overlays:
+          - kind: HorizontalPodAutoscaler
+            name: *gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.scaleTargetRef.name
+              value: *gw01
+          - kind: Deployment
+            name: pep-eiap-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.app
+              value: *gw01
+            - path: spec.selector.matchLabels.istio
+              value: *gw01
+            - path: spec.template.metadata.labels.app
+              value: *gw01
+            - path: spec.template.metadata.labels.istio
+              value: *gw01
+            # zoned pools
+            - path: spec.template.spec.topologySpreadConstraints
+              value:
+              - labelSelector:
+                  matchLabels:
+                    app: *gw01
+                maxSkew: 1
+                topologyKey: topology.kubernetes.io/zone
+                whenUnsatisfiable: DoNotSchedule
+          - apiVersion: v1
+            kind: Service
+            name: pep-eiap-ingress-gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.app
+              value: *gw01
+            - path: spec.selector.istio
+              value: *gw01
+            - path: spec.loadBalancerIP
+              value: 172.24.180.254
+            # remove uneccessary ports
+            - path: spec.ports.[port:15021]
+              value: ~
+            - path: spec.ports.[port:80]
+              value: ~
+          - kind: ServiceAccount
+            name: pep-eiap-ingress-gw01-service-account
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+          - kind: PodDisruptionBudget
+            name: *gw01
+            patches:
+            - path: metadata.labels.app
+              value: *gw01
+            - path: metadata.labels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.istio
+              value: *gw01
+            - path: spec.selector.matchLabels.app
+              value: *gw01
+      # ##
+      # GW02
+      # ##
+      - name: &gw02 pep-eiap-ingress-gw02
+        enabled: false
+        k8s:
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+          hpaSpec:
+            minReplicas: 3
+            maxReplicas: 6
+          serviceAnnotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+            service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+          overlays:
+          - kind: HorizontalPodAutoscaler
+            name: *gw02
+            patches:
+            - path: metadata.labels.app
+              value: *gw02
+            - path: metadata.labels.istio
+              value: *gw02
+            - path: spec.scaleTargetRef.name
+              value: *gw02
+          - kind: Deployment
+            name: *gw02
+            patches:
+            - path: metadata.labels.app
+              value: *gw02
+            - path: metadata.labels.istio
+              value: *gw02
+            - path: spec.selector.matchLabels.app
+              value: *gw02
+            - path: spec.selector.matchLabels.istio
+              value: *gw02
+            - path: spec.template.metadata.labels.app
+              value: *gw02
+            - path: spec.template.metadata.labels.istio
+              value: *gw02
+            # zoned pools
+            - path: spec.template.spec.topologySpreadConstraints
+              value:
+              - labelSelector:
+                  matchLabels:
+                    app: *gw02
+                maxSkew: 1
+                topologyKey: topology.kubernetes.io/zone
+                whenUnsatisfiable: DoNotSchedule
+          - apiVersion: v1
+            kind: Service
+            name: *gw02
+            patches:
+            - path: metadata.labels.app
+              value: *gw02
+            - path: metadata.labels.istio
+              value: *gw02
+            - path: spec.selector.app
+              value: *gw02
+            - path: spec.selector.istio
+              value: *gw02
+            - path: spec.loadBalancerIP
+              value: 172.24.180.253
+            # remove uneccessary ports
+            - path: spec.ports.[port:15021]
+              value: ~
+            - path: spec.ports.[port:80]
+              value: ~
+          - kind: ServiceAccount
+            name: pep-eiap-ingress-gw02-service-account
+            patches:
+            - path: metadata.labels.app
+              value: *gw02
+            - path: metadata.labels.istio
+              value: *gw02
+          - kind: PodDisruptionBudget
+            name: *gw02
+            patches:
+            - path: metadata.labels.app
+              value: *gw02
+            - path: metadata.labels.istio
+              value: *gw02
+            - path: spec.selector.matchLabels.istio
+              value: *gw02
+            - path: spec.selector.matchLabels.app
+              value: *gw02
+

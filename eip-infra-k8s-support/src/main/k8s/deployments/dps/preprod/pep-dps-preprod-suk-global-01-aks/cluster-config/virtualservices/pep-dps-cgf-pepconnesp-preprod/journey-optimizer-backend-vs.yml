@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"journey-optimizer-backend-vs","namespace":"pep-dps-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["journey-optimizer-backend.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"journey-optimizer-backend.pep-dps-cgf-pepconnesp-preprod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: undefined
+  name: journey-optimizer-backend-vs
+  namespace: pep-dps-cgf-pepconnesp-preprod
+spec:
+  gateways:
+  - pep-dps-cgf-pepconnesp-preprod/pep-dps-cgf-pepconnesp-preprod-cv-gw
+  hosts:
+  - journey-optimizer-backend.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: journey-optimizer-backend.pep-dps-cgf-pepconnesp-preprod.svc.cluster.local
+        port:
+          number: 8080

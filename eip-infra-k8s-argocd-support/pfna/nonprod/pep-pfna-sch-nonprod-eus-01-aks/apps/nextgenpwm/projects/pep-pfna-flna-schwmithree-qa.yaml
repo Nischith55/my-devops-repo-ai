@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nextgenpwm-qa3
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-pfna-schwmi3-qa
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: nextgenpwm-admin-qa3
+    description: Admin privileges to nextgenpwm-qa3
+    policies:
+    - p, proj:nextgenpwm-qa3:nextgenpwm-admin-qa3, applications, *, nextgenpwm-qa3/*, allow
+    - p, proj:nextgenpwm-qa3:nextgenpwm-admin-qa3, repositories, *, nextgenpwm-qa3/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: nextgenpwm-user-qa3
+    description: Read-only privileges to nextgenpwm-qa3
+    policies:
+    - p, proj:nextgenpwm-qa3:nextgenpwm-user-qa3, applications, get, nextgenpwm-qa3/*, allow
+    - p, proj:nextgenpwm-qa3:nextgenpwm-user-qa3, applications, sync, nextgenpwm-qa3/*, allow
+    - p, proj:nextgenpwm-qa3:nextgenpwm-user-qa3, repositories, get, nextgenpwm-qa3/*, allow
+    - p, proj:nextgenpwm-qa3:nextgenpwm-user-qa3, applications, action/apps/Deployment/restart, nextgenpwm-qa3/*, allow
+    groups:
+    - "Team.Support.NGPWM.Admins"
+    - "Team.Support.NGPWM.Dev"

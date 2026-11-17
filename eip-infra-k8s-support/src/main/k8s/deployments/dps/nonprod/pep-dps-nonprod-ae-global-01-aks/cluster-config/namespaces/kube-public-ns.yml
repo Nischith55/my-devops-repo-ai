@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-pg4t2
+    kubernetes.io/metadata.name: kube-public
+  name: kube-public

@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_cvgtst_dev:
+  
+  name: pep-eiap-cgf-cvgtst-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cvgtst
+    sector: cgf
+    project: cvgtst
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: cloudmarketplace-cmp-prod
+    pep-cmdb-app-service-id: "3b16ea101b6cb410fa1cb99f034bcb47"
+    pep-cmdb-bus-app-id: "7b16ee101b6cb410fa1cb99f034bcb87"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-cvgtst-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cvgtst'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-cvgtst-dev-sa-token
+    namespace: pep-eiap-cgf-cvgtst-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-cvgtst-dev-sa"

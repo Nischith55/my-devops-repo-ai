@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-smartcan-prod
+  labels:
+    env-prod: "true"
+    project: smartcan
+    sector: dps
+    team: dps-smartcan
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: smart-can-dps
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 83e91e7383c746d0af0c30226daad34a
+    pep-cmdb-app-service-id: e665330f-eef5-4910-9837-5609edab80e4
+    pep-environment: Production
+    

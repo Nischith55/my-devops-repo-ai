@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aiforbi-amesamt-uae-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aiforbi-amesamt-uae-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/aiforbi-amesamt-uae-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-ae-global-01-aks
+        namespace: pep-eiap-amesa-uaeai4bi-dev
+      - name: pep-eiap-nonprod-ae-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aiforbi-amesamt-uae-dev-admin
+        description: Admin privileges to aiforbi-amesamt-uae-dev
+        policies:
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-admin, applications, *, aiforbi-amesamt-uae-dev/*, allow
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-admin, repositories, *, aiforbi-amesamt-uae-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aiforbi-amesamt-uae-dev-user
+        description: Read-only privileges to aiforbi-amesamt-uae-dev
+        policies:
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-user, applications, get, aiforbi-amesamt-uae-dev/*, allow
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-user, applications, sync, aiforbi-amesamt-uae-dev/*, allow
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-user, repositories, get, aiforbi-amesamt-uae-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:aiforbi-amesamt-uae-dev:aiforbi-amesamt-uae-dev-user, applications, action/apps/Deployment/restart, aiforbi-amesamt-uae-dev/*, allow
+        groups:
+        - "Team.Support.AMESA.NonProd.UAEAI4BI"
+        - "Team.Support.EIAP.READ"
+    

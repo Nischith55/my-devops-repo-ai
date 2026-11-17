@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cgf-cgf-pepln-qa-cv-web-vs
+  namespace: pep-cgf-cgf-pepln-qa
+  labels:
+    app: pep-cgf-cgf-pepln-qa-cv-web
+spec:
+  hosts:
+    - shopfloorpro.qa.mypepsico.com
+    - pep-cgf-cgf-pepln-qa-cv.cgfsch.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cgf-cgf-pepln-qa/pep-cgf-cgf-pepln-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cgf-cgf-pepln-qa-cv-web.pep-cgf-cgf-pepln-qa.svc.cluster.local
+        port:
+          number: 80

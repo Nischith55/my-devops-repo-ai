@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 72cb968e-c993-498d-9275-a84ae75e36ef
+  name: pep-eiap-amesa-tctamesa-dev-sa
+  namespace: pep-eiap-amesa-tctamesa-dev

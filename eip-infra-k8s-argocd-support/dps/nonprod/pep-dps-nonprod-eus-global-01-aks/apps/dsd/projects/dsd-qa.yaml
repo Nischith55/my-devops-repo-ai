@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsd-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsd-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsd-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-dsd-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsd-qa-admin
+    description: Admin privileges to dsd-qa
+    policies:
+    - p, proj:dsd-qa:dsd-qa-admin, applications, *, dsd-qa/*, allow
+    - p, proj:dsd-qa:dsd-qa-admin, applications, get, argocd/*, allow
+    - p, proj:dsd-qa:dsd-qa-admin, repositories, *, dsd-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsd-qa-user
+    description: Read-only privileges to dsd-qa
+    policies:
+    - p, proj:dsd-qa:dsd-qa-user, applications, get, dsd-qa/*, allow
+    - p, proj:dsd-qa:dsd-qa-user, applications, sync, dsd-qa/*, allow
+    - p, proj:dsd-qa:dsd-qa-user, repositories, get, dsd-qa/*, allow
+    - p, proj:dsd-qa:dsd-qa-user, applications, action/apps/Deployment/restart, dsd-qa/*, allow
+    groups:
+    - "Team.App.DPS.DSD.nonprod.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

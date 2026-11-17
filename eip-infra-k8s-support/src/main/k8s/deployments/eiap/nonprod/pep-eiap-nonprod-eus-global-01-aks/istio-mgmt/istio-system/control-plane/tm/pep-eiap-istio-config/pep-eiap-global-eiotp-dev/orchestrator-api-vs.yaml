@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: orchestrator-api-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - eiotpapi-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: orchestrator-api.pep-eiap-global-eiotp-dev.svc.cluster.local
+        port:
+          number: 8080
+    retries:
+      attempts: 2
+      perTryTimeout: 5s
+      retryOn: 5xx

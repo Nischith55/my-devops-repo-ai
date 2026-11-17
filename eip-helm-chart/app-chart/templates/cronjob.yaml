@@ -1,0 +1,217 @@
+{{- $saname := printf "%s-%s" .Values.global.namespace "sa" -}}
+{{- $pvc := .Values.global.pvc -}}
+{{- range $index, $cronjob := .Values.cronjobs }}
+{{- if $cronjob.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "platform-chart.fullname" $ }}-{{ $cronjob.name }}
+  namespace: {{ $.Values.global.namespace }}
+  labels:
+    {{- if $cronjob.labels }}
+    {{- toYaml $cronjob.labels | nindent 4 }}
+    {{- else }}
+    {{- include "app-chart.labels" $ | nindent 4 }}
+    {{- end }}
+    cronjob-name: {{ $cronjob.name }}
+spec:
+  schedule: {{ $cronjob.schedule | quote }}
+  {{- with $cronjob.timeZone }}
+  timeZone: {{ . | quote }}
+  {{- end }}
+  concurrencyPolicy: {{ $cronjob.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ $cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $cronjob.failedJobsHistoryLimit }}
+  startingDeadlineSeconds: {{ $cronjob.startingDeadlineSeconds }}
+  suspend: {{ $cronjob.suspend }}
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ $cronjob.activeDeadlineSeconds }}
+      backoffLimit: {{ $cronjob.backoffLimit }}
+      {{- if $cronjob.parallelism.enabled }}
+      parallelism: {{ $cronjob.parallelism.maxParallel }}
+      completionMode: {{ $cronjob.parallelism.completionMode }}
+      completions: {{ $cronjob.parallelism.completions }}
+      {{- end }}
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+          labels:
+            {{- if $cronjob.labels }}
+            {{- toYaml $cronjob.labels | nindent 12 }}
+            {{- else }}
+            {{- include "app-chart.labels" $ | nindent 12 }}
+            {{- end }}
+        spec:
+          serviceAccountName: {{ $.Values.serviceAccount.name | default $saname }}
+          automountServiceAccountToken: true 
+          {{- with $cronjob.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          securityContext:
+          {{- toYaml $cronjob.podSecurityContext | nindent 12 }}
+          restartPolicy: {{ $cronjob.restartPolicy }}
+          containers:
+          - name: {{ include "platform-chart.fullname" $ }}-{{ $cronjob.name }}
+            image: "{{ $cronjob.image.repository }}:{{ $cronjob.image.tag | default $.Chart.AppVersion }}"
+            imagePullPolicy: {{ $cronjob.image.pullPolicy }}
+            securityContext:
+            {{- toYaml $cronjob.securityContext | nindent 14 }} 
+            resources:
+              {{- toYaml $cronjob.resources | nindent 14 }} 
+            env:
+            {{- if $cronjob.env }}
+            {{- range $cronjob.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+            {{- end }} 
+            {{- if $cronjob.envFromSecrets }}
+            {{- range $cronjob.envFromSecrets }}
+            - name: {{ .name }}
+              valueFrom: 
+                secretKeyRef: 
+                  name: {{ .secret.name }}
+                  key: {{ .secret.key }}
+            {{- end }}
+            {{- end }}
+            {{- if $.Values.appD.enabled }}
+            {{- toYaml $.Values.appD.env | nindent 12 }}
+            {{- end }}
+            {{- if $.Values.apm.enabled }}
+            {{- toYaml $.Values.apm.env | nindent 12 }}
+            {{- end }}
+            envFrom:
+            {{- if and ($.Values.appD.enabled) ($.Values.appD.envFrom) }}
+            {{- toYaml $.Values.appD.envFrom | nindent 12 }}
+            {{- end }}
+            {{- if $cronjob.envFromSecretRef }}
+            {{- toYaml $cronjob.envFromSecretRef | nindent 12 }}
+            {{- end }}
+            {{- if $cronjob.envFromConfigMapRef }}
+            {{- toYaml $cronjob.envFromConfigMapRef | nindent 12 }}
+            {{- end }}
+            {{- if $cronjob.probes.enabled }}
+            readinessProbe:
+            {{- if and ($cronjob.probes.readiness.path) (not $cronjob.probes.readiness.command) }}
+              httpGet:
+                path: {{ $cronjob.probes.readiness.path }}
+                port: {{ $cronjob.probes.readiness.port }}
+            {{- else }}
+              exec:
+                command: 
+                {{- toYaml $cronjob.probes.readiness.command | nindent 16 }}
+              initialDelaySeconds: {{ $cronjob.probes.readiness.initialDelaySeconds }}
+              periodSeconds: {{ $cronjob.probes.readiness.periodSeconds }}
+              timeoutSeconds: {{ $cronjob.probes.readiness.timeoutSeconds }}
+              successThreshold: {{ $cronjob.probes.readiness.successThreshold }}
+              failureThreshold: {{ $cronjob.probes.readiness.failureThreshold }} 
+            {{- end }}   
+            livenessProbe:
+            {{- if and ($cronjob.probes.liveness.path) (not $cronjob.probes.liveness.command) }}
+              httpGet:
+                path: {{ $cronjob.probes.liveness.path }}
+                port: {{ $cronjob.probes.liveness.port }}
+            {{- else }}
+              exec:
+                command: 
+                {{- toYaml $cronjob.probes.liveness.command | nindent 16 }}
+            {{- end }}
+              initialDelaySeconds: {{ $cronjob.probes.liveness.initialDelaySeconds }}
+              periodSeconds: {{ $cronjob.probes.liveness.periodSeconds }}
+              timeoutSeconds: {{ $cronjob.probes.liveness.timeoutSeconds }}
+              successThreshold: {{ $cronjob.probes.liveness.successThreshold }}
+              failureThreshold: {{ $cronjob.probes.liveness.failureThreshold }} 
+            {{- if $cronjob.probes.startup }}
+            startupProbe:
+            {{- if and ($cronjob.probes.startup.path) (not $cronjob.probes.startup.command) }}
+              httpGet:
+                path: {{ $cronjob.probes.startup.path }}
+                port: {{ $cronjob.probes.startup.port }}
+            {{- else }}
+              exec:
+                command: 
+                {{- toYaml $cronjob.probes.startup.command | nindent 16 }}
+            {{- end }}
+              initialDelaySeconds: {{ $cronjob.probes.startup.initialDelaySeconds }}
+              periodSeconds: {{ $cronjob.probes.startup.periodSeconds }}
+              timeoutSeconds: {{ $cronjob.probes.startup.timeoutSeconds }}
+              successThreshold: {{ $cronjob.probes.startup.successThreshold }}
+              failureThreshold: {{ $cronjob.probes.startup.failureThreshold }} 
+            {{- end }}
+            {{- end }}
+            {{- with $cronjob.command }}
+            command:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with $cronjob.args }}
+            args: 
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            resources:
+              {{- toYaml $cronjob.resources | nindent 14 }}
+            volumeMounts:
+            {{- if $cronjob.volumes }}
+            {{- range $cronjob.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- end }}
+            {{- if $.Values.appD.enabled -}}
+            {{- include "app-chart.appDVolumeMounts" $ | nindent 12 }}
+            {{- end }}
+            {{- if $.Values.apm.enabled -}}
+            {{- include "app-chart.apmVolumeMounts" $ | nindent 12 }}
+            {{- end }}
+            {{- if $.Values.additionalVolumes}}
+            {{- range $.Values.additionalVolumes }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- end }}
+          {{- with $.Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}      
+          initContainers:
+          {{- if $.Values.apm.enabled }}
+          {{- include "app-chart.apmInitContainer" $ | nindent 10 }}
+          {{- end }}
+          {{- if $.Values.appD.enabled }}
+          {{- include "app-chart.appDInitContainer" $ | nindent 10 }}
+          {{- end }}
+          {{- with $.Values.initContainers -}}
+          {{- toYaml . | nindent 10 }}
+          {{- end }} 
+          volumes:  
+          {{- if $cronjob.volumes }}
+          {{- range $cronjob.volumes }}
+          - name: {{ .name }}
+          {{- with .type }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if $.Values.apm.enabled -}}
+          {{ include "app-chart.apmVolumes" $ | nindent 10 }}
+          {{- end }}
+          {{- if $.Values.appD.enabled -}}
+          {{ include "app-chart.appDVolumes" $ | nindent 10 }}
+          {{- end }}
+          {{- if $.Values.additionalVolumes }}
+          {{- range $.Values.additionalVolumes }}
+          - name: {{ .name }}
+          {{- with .type }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+{{- end }}
+{{- end }}          

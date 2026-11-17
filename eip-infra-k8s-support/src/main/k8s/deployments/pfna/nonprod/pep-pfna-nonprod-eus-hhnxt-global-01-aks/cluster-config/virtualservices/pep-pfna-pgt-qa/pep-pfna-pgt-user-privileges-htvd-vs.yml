@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-pgt-user-privileges-htvd-vs
+  namespace: pep-pfna-pgt-qa
+  labels:
+      app: pep-pfna-pgt-user-privileges
+spec:
+  hosts:
+  - pep-pfna-pgt-user-privileges-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pgt-qa/pep-pfna-pgt-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-pgt-user-privileges.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://q2.pfnaweb.mypepsico.com
+      - exact: https://d1.pfnaweb.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - Authorization
+      - Link
+       
+  

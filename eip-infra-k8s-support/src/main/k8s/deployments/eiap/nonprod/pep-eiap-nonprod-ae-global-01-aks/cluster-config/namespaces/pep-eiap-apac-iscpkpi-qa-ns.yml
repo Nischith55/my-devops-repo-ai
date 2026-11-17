@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-apac-iscpkpi-qa
+  labels:
+    env-nonprod: "true"
+    project: iscpkpi
+    sector: apac
+    team: apac-iscpkpi
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: iscpkpireportingamesaapacnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 9eedc9b31ba96010b182fc87dc4bcbf9
+    pep-cmdb-app-service-id: e9ce5d7c4766151052293238436d432d
+    pep-environment: QA
+    

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 1d0ce38d-b284-4fa5-85b3-34b28b5b94d7
+  name: pep-cmp-cmp-tyrey-dev-sa
+  namespace: pep-cmp-cmp-tyrey-dev

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 1ff21e0a-a988-4684-a9bc-3c61caa4c61d
+  name: pep-cmp-cmp-pkafka-dev-sa
+  namespace: pep-cmp-cmp-pkafka-dev

@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: falcon-pep-pbna-preprod-scus-global-01-aks
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Project for CrowdStrike Falcon (sensor + KAC) on pep-pbna-preprod-scus-global-01-aks
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pbna-preprod-scus-global-01-aks
+    namespace: falcon-system
+    server: https://kubernetes.default.svc
+  - name: pep-pbna-preprod-scus-global-01-aks
+    namespace: falcon-kac
+    server: https://kubernetes.default.svc
+  roles:
+  - name: falcon-pep-pbna-preprod-scus-global-01-aks-admin
+    description: Admin privileges to falcon-pep-pbna-preprod-scus-global-01-aks (EIAP DevSecOps)
+    policies:
+    - p, proj:falcon-pep-pbna-preprod-scus-global-01-aks:falcon-pep-pbna-preprod-scus-global-01-aks-admin, applications, *, falcon-pep-pbna-preprod-scus-global-01-aks/*, allow
+    - p, proj:falcon-pep-pbna-preprod-scus-global-01-aks:falcon-pep-pbna-preprod-scus-global-01-aks-admin, repositories, *, falcon-pep-pbna-preprod-scus-global-01-aks/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: falcon-pep-pbna-preprod-scus-global-01-aks-user
+    description: Read-only privileges to falcon-pep-pbna-preprod-scus-global-01-aks (Falcon team)
+    policies:
+    - p, proj:falcon-pep-pbna-preprod-scus-global-01-aks:falcon-pep-pbna-preprod-scus-global-01-aks-user, applications, get, falcon-pep-pbna-preprod-scus-global-01-aks/*, allow
+    - p, proj:falcon-pep-pbna-preprod-scus-global-01-aks:falcon-pep-pbna-preprod-scus-global-01-aks-user, applications, sync, falcon-pep-pbna-preprod-scus-global-01-aks/*, allow
+    - p, proj:falcon-pep-pbna-preprod-scus-global-01-aks:falcon-pep-pbna-preprod-scus-global-01-aks-user, repositories, get, falcon-pep-pbna-preprod-scus-global-01-aks/*, allow
+    groups:
+    - "Team.App.AZURE.FalconADO.GSE.corppvt"

@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-gtmdsld-dev
+  labels:
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: gtmdsld
+    sector: flna
+    team: flna-gtmdsld

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 61cb784f-79de-4870-8a44-b9adcd83fc71
+  name: pep-dps-devx-test-qa-sa
+  namespace: pep-dps-devx-test-qa

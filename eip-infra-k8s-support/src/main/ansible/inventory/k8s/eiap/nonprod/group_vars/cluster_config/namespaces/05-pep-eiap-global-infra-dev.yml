@@ -1,0 +1,64 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+# Namespace Global/infra
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_global_infra_dev:
+
+  name: pep-eiap-global-infra-dev
+
+  labels:
+    team: global-eiap
+    sector: global
+    project: infra
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  # NOTE: istio is enabled so it will send the traces!!
+  # annotations:
+  #   # NOTE: it can be an jaeger instance
+  #   sidecar.jaegertracing.io/inject: "true"
+
+  service_accounts:
+    - name: default
+      role_bindings:
+        - name: pep-eiap-developer-rb
+
+  role_bindings:
+
+    # name of the rolebiding 
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['eiap_infra_sp'] }}"
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['sowola01'] }}"
+        - "{{ k8s_sup_subjects['hgurram5'] }}"
+        - "{{ k8s_sup_subjects['amele123'] }}"
+        - "{{ k8s_sup_subjects['pnaduvat'] }}"
+        - "{{ k8s_sup_subjects['psaxena12'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _eiap_infra_spn_name }}"
+      registries: 
+        - pepeiapnonprodcommonacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _eiap_infra_spn_name }}"
+      # Any contents apart from what is in secret
+
+  tls_secrets: |-
+    {{ global_infra_dev_tls_secrets | default([]) }}

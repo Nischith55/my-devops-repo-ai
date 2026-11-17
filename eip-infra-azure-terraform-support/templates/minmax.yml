@@ -1,0 +1,137 @@
+steps:
+- task: PythonScript@0
+  displayName: "Extract Azure KV secrets"
+  name: "GetAzureCreds1"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+    arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+  env:
+    PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+    NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+    PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+    NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+    PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+    PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+    PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+    NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+    PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+
+- task: PythonScript@0
+  displayName: "Set Azure credentials"
+  name: "SetAzureCreds1"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+    arguments: "${{ parameters.service_principal_backend }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: PythonScript@0
+  displayName: "Set Service Principal"
+  name: "SetServicePrincipal1"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_config_spn.py'
+    arguments: "${{ parameters.service_principal }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      export TF_VAR_subscription=$SUBSCRIPTION
+      export TF_VAR_tenantid=$TENANTID
+      export TF_VAR_clientid=$CLIENTID
+      export TF_VAR_clientsecret=$CLIENTSECRET
+      #echo ${{ parameters.subscription }} #old logic
+      echo $(SUBSCRIPTION)
+      cd $(system.defaultWorkingDirectory)
+      if [ "${{ parameters.mode }}" != "System" ] && [ "${{ parameters.user_pool }}" != "all" ]; then
+          IFS=',' read -r -a old_user_pool_array <<< "${{ parameters.old_user_pool }}"
+          IFS=',' read -r -a user_pool_array <<< "${{ parameters.user_pool }}"
+          echo "${old_user_pool_array[@]}"
+      fi
+      if [ "${{ parameters.mode }}" == "System" ]; then
+          IFS=',' read -r -a old_system_pool_array <<< "${{ parameters.old_system_pool }}"
+          IFS=',' read -r -a system_pool_array <<< "${{ parameters.system_pool }}"
+      fi
+      az login --service-principal -u $(CLIENTID) -p $(CLIENTSECRET) --tenant $(TENANTID)
+      # az account set --subscription $(apigee_nonprod_subscription_id) 
+      #echo "az account set --subscription ${{ parameters.subscription }}" #old logic
+      #az account set --subscription ${{ parameters.subscription }} #old logic
+      
+      if [[ "${{parameters.Functional_Area}}" == "pfna" ]] || [[ "${{parameters.Functional_Area}}" == "snt" ]] || [[ "${{parameters.Functional_Area}}" == "infratools" ]] || [[ "${{parameters.Functional_Area}}" == "infosectools" ]] || [[ "${{parameters.Functional_Area}}" == "cmp" ]] || [[ "${{parameters.Functional_Area}}" == "pbna" ]] || [[ "${{parameters.Functional_Area}}" == "dps" ]] || [[ "${{parameters.Functional_Area}}" == "cmptest" ]] || [[ "${{parameters.Functional_Area}}" == "cgf" ]] || [[ "${{parameters.Functional_Area}}" == "automation" ]] || [[ "${{parameters.Functional_Area}}" == "aisp" ]] || [[ "${{parameters.Functional_Area}}" == "pepgenx" ]]; then
+          echo "az account set --subscription $(subscription_id_others)"
+          az account set --subscription $(subscription_id_others)
+      elif ([[ "${{parameters.Region}}" == "suk" ]] || [[ "${{parameters.Region}}" == "ae" ]] || [[ "${{parameters.Region}}" == "gwc" ]]) && ([[ "${{parameters.env}}" == "nonprod" ]] || [[ "${{parameters.env}}" == "preprod" ]]); then
+          echo "az account set --subscription $(subscription_id_other_regions)"
+          az account set --subscription $(subscription_id_other_regions)   
+      else
+          echo "az account set --subscription $(SUBSCRIPTION)"
+          az account set --subscription $(SUBSCRIPTION)
+      fi
+
+      az account list
+      az account show
+      # my_array=( $(az aks nodepool list --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --query "[?mode=='${{ parameters.mode }}'].name" --output tsv) )
+      minCount_array=()
+      maxCount_array=()
+      availableCount_array=()
+      if [ "${#old_user_pool_array[@]}" != 0 ] && [ "${{ parameters.mode }}" == "User" ]; then
+        for old_user_pool_array in "${old_user_pool_array[@]}"; do
+          minCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_user_pool_array --query 'minCount' -o tsv)
+          maxCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_user_pool_array --query 'maxCount' -o tsv)
+          availableCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_user_pool_array --query 'count' -o tsv)
+          minCount_array+=("$minCount")      
+          maxCount_array+=("$maxCount")
+          availableCount_array+=("$availableCount")
+          echo " nodepool: $old_user_pool_array"
+          echo "minC: $minCount"
+          echo "maxc: $maxCount"
+          echo "availableCount: $availableCount"
+        done
+      elif [ "${#old_system_pool_array[@]}" != 0 ] && [ "${{ parameters.mode }}" == "System" ]; then
+        for old_system_pool_array in "${old_system_pool_array[@]}"; do
+          minCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_system_pool_array --query 'minCount' -o tsv)
+          maxCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_system_pool_array --query 'maxCount' -o tsv)
+          availableCount=$(az aks nodepool show --cluster-name ${{ parameters.cluster }} --resource-group ${{ parameters.target }} --name $old_system_pool_array --query 'count' -o tsv)
+          minCount_array+=("$minCount")      
+          maxCount_array+=("$maxCount")
+          availableCount_array+=("$availableCount")
+          echo " nodepool: $old_system_pool_array"
+          echo "minC: $minCount"
+          echo "maxc: $maxCount"
+          echo "availableCount: $availableCount"
+        done
+      fi
+      maxi=$(IFS=,; echo "${maxCount_array[*]}")
+      mini=$(IFS=,; echo "${minCount_array[*]}")
+      av=$(IFS=,; echo "${availableCount_array[*]}")
+      max_availableCount=$(printf "%s\n" "${availableCount_array[@]}" | sort -nr | head -n 1)
+      echo "maxi: ${maxi[@]}"
+      echo "mini: ${mini[@]}"
+      echo "av: ${av[@]}"
+      echo "minCount_array: ${minCount_array[@]}"
+      echo "maxCount_array: ${maxCount_array[@]}"
+      echo "availableCount_array: ${availableCount_array[@]}"
+      echo "max of av: $max_availableCount"
+      echo "##vso[task.setvariable variable=max_availableCount;isoutput=true]$max_availableCount"
+      # echo "##vso[task.setvariable variable=maxCount_array;isoutput=true]${maxCount_array[@]}" 
+      echo "##vso[task.setvariable variable=maxCount_array;isoutput=true]${maxi[@]}"     
+      echo "##vso[task.setvariable variable=mini;isoutput=true]${mini[@]}"     
+      echo "##vso[task.setvariable variable=minC;isoutput=true]${minCount_array[@]}" 
+      echo "##vso[task.setvariable variable=availableCount;isoutput=true]${availableCount_array[@]}"
+      echo "##vso[task.setvariable variable=avC;isoutput=true]${av[@]}"
+
+
+
+
+  name: MinMaxValue
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(SECRET)
+

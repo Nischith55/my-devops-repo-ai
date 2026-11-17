@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: b2b-bff
+    app.kubernetes.io/instance: b2b-bff-dev
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: b2b-bff
+  namespace: pep-dps-latam-bff-dev
+spec:
+  gateways:
+  - pep-dps-latam-bff-dev/pep-dps-latam-bff-dev-cv-gw
+  hosts:
+  - b2b-bff.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-bff.pep-dps-latam-bff-dev.svc.cluster.local
+        port:
+          number: 8080

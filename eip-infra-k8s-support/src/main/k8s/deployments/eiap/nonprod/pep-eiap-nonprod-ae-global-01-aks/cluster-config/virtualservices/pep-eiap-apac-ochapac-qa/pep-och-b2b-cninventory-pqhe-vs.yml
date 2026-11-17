@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-b2b-cninventory-pqhe-vs
+  namespace: pep-eiap-apac-ochapac-qa
+  labels:
+      app: pep-och-b2b-cninventory
+spec:
+  hosts:
+  - pep-och-b2b-cninventory-qa.global.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-apac-ochapac-qa/pep-eiap-apac-ochapac-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-b2b-cninventory.pep-eiap-apac-ochapac-qa.svc.cluster.local
+        port:
+          number: 80
+  

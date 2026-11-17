@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-pepconnrus-qa
+    pep-cmdb-app-service-id: d0ec416887e619944751326e0ebb354d
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: QA
+    project: pepconnrus
+    sector: cgf
+    servicename_aks: retail360-aksclusterprod
+    team: cgf-pepconnrus
+  name: pep-eiap-cgf-pepconnrus-qa

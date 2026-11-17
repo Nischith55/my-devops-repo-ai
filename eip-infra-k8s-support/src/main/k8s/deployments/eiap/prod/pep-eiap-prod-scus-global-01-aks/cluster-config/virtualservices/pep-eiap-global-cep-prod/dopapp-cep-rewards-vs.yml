@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"dopapp-cep-rewards-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepcepa07.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"dopapp-cep-rewards.pep-eiap-global-cep-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: dopapp-cep-rewards
+  name: dopapp-cep-rewards-vs
+  namespace: pep-eiap-global-cep-prod
+spec:
+  gateways:
+  - pep-eiap-global-cep-prod/pep-eiap-global-cep-prod-cv-gw
+  hosts:
+  - pepcepa07.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopapp-cep-rewards.pep-eiap-global-cep-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-global-b2b-dev
+  labels:
+    env-nonprod: "true"
+    environment: nonprod
+    project: b2b
+    sector: global
+    team: global-b2b
+    istio-injection: enabled

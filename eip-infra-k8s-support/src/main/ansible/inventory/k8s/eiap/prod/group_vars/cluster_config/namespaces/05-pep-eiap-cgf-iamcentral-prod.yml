@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_iamcentral_prod:
+  
+  name: pep-eiap-cgf-iamcentral-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-iamcentral
+    sector: cgf
+    project: iamcentral
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: myidmprod
+    pep-cmdb-app-service-id: "3bb2a06e1bb9c5d03b070ed8cc4bcbf7"
+    pep-cmdb-bus-app-id: "79cec07ddb3e8c10c2b5f38139961954"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-iamcentral-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_iamcentral'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-iamcentral-prod-sa-token
+    namespace: pep-eiap-cgf-iamcentral-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-iamcentral-prod-sa"

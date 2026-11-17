@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxdevopsai-dsxdevops-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsxdevopsai-dsxdevops-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxdevopsai-dsxdevops-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-dxotaprod-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxdevopsai-dsxdevops-prod-admin
+    description: Admin privileges to dsxdevopsai-dsxdevops-prod
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-prod:dsxdevopsai-dsxdevops-prod-admin, applications, *, dsxdevopsai-dsxdevops-prod/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-prod:dsxdevopsai-dsxdevops-prod-admin, repositories, *, dsxdevopsai-dsxdevops-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsxdevopsai-dsxdevops-prod-user
+    description: Read-only privileges to dsxdevopsai-dsxdevops-prod
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-prod:dsxdevopsai-dsxdevops-prod-user, applications, get, dsxdevopsai-dsxdevops-prod/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-prod:dsxdevopsai-dsxdevops-prod-user, applications, sync, dsxdevopsai-dsxdevops-prod/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-prod:dsxdevopsai-dsxdevops-prod-user, repositories, get, dsxdevopsai-dsxdevops-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.App.CGF.Prod.dsxsuppo"
+    - "Team.Support.EIAP.READ"

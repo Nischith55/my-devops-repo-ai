@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-eiv-omnisap-lspc-vs
+  namespace: pep-pfna-pcaf-dev
+  labels:
+      app: pcaf-eiv-omnisap
+spec:
+  hosts:
+  - pep-pfna-pcaf-dev-pcaf-eiv-omnisap.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-eiv-omnisap.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 80
+  

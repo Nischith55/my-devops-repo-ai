@@ -1,0 +1,19 @@
+---
+
+# 
+- name: "K8S_SUPPORT_FROM_TEMPLATE_BLCOK"
+  block:
+
+    # Save the role path so we can call from another role
+    - name: K8S_SUP_CLUSTER_SET_ROLE_PATH
+      set_fact:
+        k8s_sup_cluster_role_path: "{{ role_path }}"
+
+    - name: "K8S_SUPPORT_FROM_TEMPLATE {{ kctl_execute_action }}"
+      include_role: 
+        name: k8s_support/kubectl
+      vars:
+        mode: execute-template
+        kctl_action: "{{ kctl_execute_action }}"
+        kctl_exec_template_src: |-
+          {{ k8s_sup_cluster_role_path }}/templates/{{ k8s_sup_template_name }}.yml.j2

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: journey-optimizer-frontend-vs
+  namespace: pep-dps-cgf-cct-prod
+spec:
+  gateways:
+  - pep-dps-cgf-cct-prod/pep-dps-cgf-cct-prod-cv-gw
+  hosts:
+  - journey-optimizer-frontend.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - cct-eu.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: journey-optimizer-frontend.pep-dps-cgf-cct-prod.svc.cluster.local
+        port:
+          number: 3000

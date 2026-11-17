@@ -1,0 +1,108 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-flna-eiv-preprod-cv-gw
+  namespace: pep-eiap-flna-eiv-preprod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-flna-eiv-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-eiv-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-flna-eiv-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - flna-eiv-active-material-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-bin-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-bin-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-drp-inventory-plan-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-drp-inventory-plan-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-ics-inventory-refreshness-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-ics-inventory-refreshness-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-odata-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-consumer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-utility.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-pei-api-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-pei-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-sap-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-sap-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-eiv-preprod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-flna-eiv-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - flna-eiv-active-material-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-bin-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-bin-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-cle-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-drp-inventory-plan-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-drp-inventory-plan-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-ics-inventory-refreshness-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-ics-inventory-refreshness-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-odata-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-consumer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - flna-eiv-order-utility.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-pei-api-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-pei-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-sap-order-batch.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsico-flna-eiv-sap-order-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-data-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-inventory-processor.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-eiv-preprod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-flna-eiv-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

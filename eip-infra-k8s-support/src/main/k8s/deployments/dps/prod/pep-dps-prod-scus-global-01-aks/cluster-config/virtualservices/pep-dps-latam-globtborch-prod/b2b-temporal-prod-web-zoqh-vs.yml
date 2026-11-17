@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: b2b-temporal-prod-web-zoqh-vs
+  namespace: pep-dps-latam-globtborch-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - b2b-temporal-prod-web-global.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-latam-globtborch-prod/pep-dps-latam-globtborch-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-temporal-prod-web.pep-dps-latam-globtborch-prod.svc.cluster.local
+        port:
+          number: 80
+  

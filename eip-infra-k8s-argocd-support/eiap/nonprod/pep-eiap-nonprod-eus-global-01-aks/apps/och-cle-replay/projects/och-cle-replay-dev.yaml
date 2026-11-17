@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: och-cle-replay-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for och-cle-replay-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-och-na-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: och-cle-replay-dev-admin
+    description: Admin privileges to och-cle-replay-dev
+    policies:
+    - p, proj:och-cle-replay-dev:och-cle-replay-dev-admin, applications, *, och-cle-replay-dev/*, allow
+    - p, proj:och-cle-replay-dev:och-cle-replay-dev-admin, repositories, *, och-cle-replay-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: och-cle-replay-dev-user
+    description: Read-only privileges to och-cle-replay-dev
+    policies:
+    - p, proj:och-cle-replay-dev:och-cle-replay-dev-user, applications, get, och-cle-replay-dev/*, allow
+    - p, proj:och-cle-replay-dev:och-cle-replay-dev-user, applications, sync, och-cle-replay-dev/*, allow
+    - p, proj:och-cle-replay-dev:och-cle-replay-dev-user, repositories, get, och-cle-replay-dev/*, allow
+    groups:
+    - "Team.Support.OCH.NA.DigitalSales.Developer"
+    - "Team.Support.EIAP.READ"

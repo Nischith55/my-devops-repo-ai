@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pbna-supply-chain-km-frontend-v2","app.kubernetes.io/instance":"pbna-supply-chain-km-frontend-v2-prod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pbna-supply-chain-km-frontend-v2","namespace":"pep-eiap-pbna-sckm2-prod"},"spec":{"gateways":["pep-eiap-pbna-sckm2-prod/pep-eiap-pbna-sckm2-prod-cv-gw"],"hosts":["pbna-supply-chain-km-frontend-v2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pbna-supply-chain-km-frontend-v2.pep-eiap-pbna-sckm2-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pbna-supply-chain-km-frontend-v2
+        app.kubernetes.io/instance: pbna-supply-chain-km-frontend-v2-prod
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pbna-supply-chain-km-frontend-v2
+    namespace: pep-eiap-pbna-sckm2-prod
+spec:
+    gateways:
+    - pep-eiap-pbna-sckm2-prod/pep-eiap-pbna-sckm2-prod-cv-gw
+    hosts:
+    - pbna-supply-chain-km-frontend-v2.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pbna-supply-chain-km-frontend-v2.pep-eiap-pbna-sckm2-prod.svc.cluster.local
+                port:
+                    number: 8080

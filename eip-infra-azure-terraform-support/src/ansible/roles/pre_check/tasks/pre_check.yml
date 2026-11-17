@@ -1,0 +1,251 @@
+##################################
+- name: cronjob
+  shell: |
+      kubectl get cronjobs -A --output=custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name'
+  register: cronjob
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ cronjob.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/cronjobs-{{ opt }}-upgrade.txt"
+
+#####################################
+- name: nodestatus
+  shell: |
+      kubectl get node -o custom-columns='NODE_NAME:.metadata.name,STATUS:.status.conditions[?(@.type=="Ready")].type'
+  register: nodestatus
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ nodestatus.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/nodestatus-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: statefulsets
+  shell: |
+      kubectl get statefulsets -A --output=custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,READY REPLICAS:.spec.replicas,AVAILABLE REPLICAS:.status.availableReplicas'
+  register: statefulsets
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+  #ignore_errors: true
+
+- name: artifact
+  copy:
+    content: "{{ statefulsets.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/statefulset-{{ opt }}-upgrade.txt"
+  #ignore_errors: true
+
+#############################################
+- name: usernodes
+  shell: |
+      kubectl get nodes --selector=kubernetes.azure.com/mode=user -o custom-columns=NODE:.metadata.name,TAINTS_EFFECT:.spec.taints[*].effect,TAINTS_KEY:.spec.taints[*].key,TAINTS_VALUE:.spec.taints[*].value 
+  register: usernodes
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ usernodes.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/usernodes-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: systemnodes
+  shell: |
+      kubectl get nodes --selector=kubernetes.azure.com/mode=system -o custom-columns=NODE:.metadata.name,TAINTS_EFFECT:.spec.taints[*].effect,TAINTS_KEY:.spec.taints[*].key,TAINTS_VALUE:.spec.taints[*].value
+  register: systemnodes
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ systemnodes.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/systemnodes-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: deploystatus
+  shell: |
+      kubectl get deploy -A --output=custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,READY_REPLICAS:'{.status.readyReplicas}',AVAILABLE_REPLICAS:'{.status.availableReplicas}''
+  register: deploystatus
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ deploystatus.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/deploystatus-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: services
+  shell: |
+      kubectl get services -A --output=custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name'
+  register: services
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ services.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/services-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: storageclasses
+  shell: |
+      kubectl get storageclasses -A --output=custom-columns='NAME:.metadata.name,RECLAIMPOLICY:.reclaimPolicy,PROVISIONER:.provisioner,VOLUMEBINDINGMODE:.volumeBindingMode'
+  register: storageclasses
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ storageclasses.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/storageclasses-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: pv
+  shell: |
+      kubectl get pv --sort-by=.spec.capacity.storage -o custom-columns='NAME:.metadata.name,CAPACITY:.spec.capacity.storage,ACCESS MODES:.spec.accessModes,STATUS:.status.phase,CLAIM:.spec.claimRef.name,STORAGECLASS:.spec.storageClassName'
+  register: pv
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ pv.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/pv-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: podstatus
+  shell: |
+      kubectl get pods -A --selector='status.phase!=Failed,status.phase!=Unknown' --output=custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name,STATUS:.status.phase' | grep -v "CrashLoopBackOff"
+  register: podstatus
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ podstatus.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/podstatus-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: hpa
+  shell: |
+      kubectl get hpa -A -o yaml
+  register: hpa
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: hpa
+  copy:
+    content: "{{ hpa.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/hpa-{{ opt }}-upgrade.yml"
+
+#################################################
+# #-------------------------------------------------
+- name: daemon set
+  k8s_info:
+    kind: DaemonSet
+  no_log: true  
+  register: daemonset_list
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: filter daemonset_list
+  set_fact:
+    filtered_list: "{{ daemonset_list.resources | json_query(query) }}"
+  vars:
+    query: "[].{Namespace: metadata.namespace, Name: metadata.name, Current: status.currentNumberScheduled, Desired: status.desiredNumberScheduled, Available: status.numberAvailable, Ready: status.numberReady, NodeSelector: spec.template.spec.nodeSelector }"
+  register: filtered_daemonset_list
+
+- name: artifact
+  copy:
+    content: "{{ filtered_daemonset_list | to_yaml }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/daemonset-status-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: npu_nodes_status
+  shell: |
+      kubectl get nodes | grep -i npu
+  register: npunodes
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+- name: artifact
+  copy:
+    content: "{{ npunodes.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/npunodes-status-{{ opt }}-upgrade.txt"
+
+#############################################
+- name: revert_cgroups
+  shell: |
+      kubectl get pod -o wide -n kube-system | grep -i revert-cgroups 
+  register: revert_cgroups
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: artifact
+  copy:
+    content: "{{ revert_cgroups.stdout }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/revert_cgroups-{{ opt }}-upgrade.txt"
+############################################    
+- name: virtual_services
+  k8s_info:
+    kind: VirtualService
+    api_version: networking.istio.io/v1beta1
+  no_log: true  
+  register: virtual_services_list
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Extract hosts ending with pepsico.com
+  set_fact:
+    filtered_list: "{{ virtual_services_list.resources | json_query(query) | flatten }}"
+  vars:
+    query: "[].spec.hosts[0]"
+  register: virtual_service_hosts_list
+
+- name: artifact
+  copy:
+    content: "{{ virtual_service_hosts_list | to_yaml }}"
+    dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/virtualserviceslist-{{ opt }}-upgrade.txt"
+
+# - name: execute curl command
+#   command: "curl -kis https://{{ item }}"
+#   register: curlloop
+#   # ignore_errors: true
+#   async: 1
+#   poll: 1
+#   no_log: true
+#   vars:
+#     query: "[].{Endpoint: item.item, Status: item.stdout_lines[0]}"
+#   loop: "{{ virtual_service_hosts_list.ansible_facts.filtered_list | default([]) }}"
+#   when: execute_curl_command | default({{ curl_pfna }})
+
+# - name: Combine stdout_lines and cmd for each item
+#   set_fact:
+#     combined_output: "{{ curlloop.results | json_query('[].{stdout: stdout_lines[0], cmd: cmd[2]}') }}"
+#   when: execute_curl_command | default({{ curl_pfna }})
+
+# - name: artifact
+#   copy:
+#     content: "{{ combined_output | to_yaml }}"
+#     dest: "{{ working_dir }}/k8s_backups/{{ resourcename }}/{{ opt }}/virtualservices-{{ opt }}-upgrade.txt"
+#   when: execute_curl_command | default({{ curl_pfna }})
+

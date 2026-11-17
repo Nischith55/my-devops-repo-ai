@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: pep-myidm-appui
+        meta.helm.sh/release-namespace: pep-eiap-cgf-iamcentral-prod
+    labels:
+        app: pep-myidm-appui
+        app.kubernetes.io/instance: pep-myidm-appui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250530.4'
+        environment: prod
+        helm.sh/chart: platform-chart-1.0.2
+    name: pep-myidm-appui
+    namespace: pep-eiap-cgf-iamcentral-prod
+spec:
+    gateways:
+    - pep-eiap-cgf-iamcentral-prod/pep-eiap-cgf-iamcentral-prod-cv-gw
+    hosts:
+    - pep-myidm-appui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - iamcentral.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-myidm-appui.pep-eiap-cgf-iamcentral-prod.svc.cluster.local
+                port:
+                    number: 8080

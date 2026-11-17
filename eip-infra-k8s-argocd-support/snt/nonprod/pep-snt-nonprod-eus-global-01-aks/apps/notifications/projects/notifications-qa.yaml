@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: notifications-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for notifications-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-snt-cgf-notifyfram-qa
+  - server: https://kubernetes.default.svc
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: notifications-qa-admin
+    description: Admin privileges to notifications-qa
+    policies:
+    - p, proj:notifications-qa:notifications-qa-admin, applications, *, notifications-qa/*, allow
+    - p, proj:notifications-qa:notifications-qa-admin, repositories, *, notifications-qa/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: notifications-qa-user
+    description: Read-only privileges to notifications-qa
+    policies:
+    - p, proj:notifications-qa:notifications-qa-user, applications, get, notifications-qa/*, allow
+    - p, proj:notifications-qa:notifications-qa-user, applications, sync, notifications-qa/*, allow
+    - p, proj:notifications-qa:notifications-qa-user, repositories, get, notifications-qa/*, allow
+    - p, proj:notifications-qa:notifications-qa-user, applications, action/apps/Deployment/restart, notifications-qa/*, allow
+    groups:
+    - "Team.App.DPS.DSSRS.admin"
+    - "Team.Support.EIAP.READ"

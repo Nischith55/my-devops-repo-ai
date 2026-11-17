@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsx-adaptor-kafka-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsx-adaptor-kafka-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsx-adaptor-kafka-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-cgf-dsxadaptor-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsx-adaptor-kafka-preprod-admin
+    description: Admin privileges to dsx-adaptor-kafka-preprod
+    policies:
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-admin, applications, *, dsx-adaptor-kafka-preprod/*, allow
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-admin, repositories, *, dsx-adaptor-kafka-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsx-adaptor-kafka-preprod-user
+    description: Read-only privileges to dsx-adaptor-kafka-preprod
+    policies:
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-user, applications, get, dsx-adaptor-kafka-preprod/*, allow
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-user, applications, sync, dsx-adaptor-kafka-preprod/*, allow
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-user, repositories, get, dsx-adaptor-kafka-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:dsx-adaptor-kafka-preprod:dsx-adaptor-kafka-preprod-user, applications, action/apps/Deployment/restart, dsx-adaptor-kafka-preprod/*, allow
+
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"

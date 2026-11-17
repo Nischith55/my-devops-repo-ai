@@ -1,0 +1,73 @@
+---
+- name: Set Agent Pool
+  hosts: localhost 
+  vars:
+    script_dir: "{{ lookup('env', 'script_dir') }}"
+  tasks: 
+    - name: set variable
+      set_fact:
+        cluster_name: "{{ vars['cluster_name'] }}"
+        env: "{{ vars['env'] }}"
+        type: "{{ vars['type'] }}"
+        region: "{{ vars['region'] }}"
+        delimiter: "-"
+        key: "prod-"
+    
+    # - name: set type 
+    #   set_fact: 
+    #     type: "{{ cluster_name.split(delimiter)[1] }}"
+    # - debug: 
+    #     var: type
+    - name: Create directory for artifacts
+      file:
+        path: "{{ script_dir }}/artifacts"
+        state: directory
+
+    # - name: set region
+    #   set_fact:
+    #     region: "{{ (cluster_name | regex_replace('.*' + key + '\\s*', '')).split(delimiter)[0] }}"
+    # - debug: 
+    #     var: region
+    
+    - name: Set Agent Pool 1
+      copy:
+        content: "pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( env == "NONPROD" ) and ( type == "pfna" )
+      register: condition1
+    
+    - name: Set Agent Pool 2
+      copy:
+        content: "pep-pfna-cit-preprod-{{ region }}-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( env == "PREPROD" ) and ( type == "pfna" ) and ( not condition1.changed )
+      register: condition2
+    
+    - name: Set Agent Pool 3
+      copy:
+        content: "pep-pfna-cit-prod-{{ region }}-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( env == "PROD" ) and ( type == "pfna" ) and ( not condition2.changed )
+      register: condition3
+    
+    - name: Set Agent Pool 4
+      copy:
+        content: "pep-eiap-nonprod-{{ region }}-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( env == "NONPROD" ) and ( not condition3.changed )
+      register: condition4
+    
+    - name: Set Agent Pool 5
+      copy:
+        content: "pep-eiap-preprod-{{ region }}-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( env == "PREPROD" ) and ( not condition4.changed )
+      register: condition5
+    
+    - name: Set Agent Pool 6
+      copy:
+        content: "pep-eiap-prod-{{ region }}-infra-02-aks-agents"
+        dest: "{{ script_dir }}/artifacts/agentpool.txt"
+      when: ( not condition5.changed ) and ( not condition4.changed ) and ( not condition3.changed ) and ( not condition2.changed ) and ( not condition1.changed )
+      register: condition6
+

@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"pepsico-buyerconsole-frontend","app.kubernetes.io/instance":"pepsico-buyerconsole-frontend-qa","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pepsico-buyerconsole-frontend","namespace":"pep-dps-dps-buycon-qa"},"spec":{"gateways":["pep-dps-dps-buycon-qa/pep-dps-dps-buycon-qa-cv-gw"],"hosts":["pepsico-buyerconsole-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","buyerconsole.qa.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-buyerconsole-frontend.pep-dps-dps-buycon-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pepsico-buyerconsole-frontend
+        app.kubernetes.io/instance: pepsico-buyerconsole-frontend-qa
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pepsico-buyerconsole-frontend
+    namespace: pep-dps-dps-buycon-qa
+spec:
+    gateways:
+    - pep-dps-dps-buycon-qa/pep-dps-dps-buycon-qa-cv-gw
+    hosts:
+    - pepsico-buyerconsole-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - buyerconsole.qa.pepsico.com
+    - procurementhub.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-buyerconsole-frontend.pep-dps-dps-buycon-qa.svc.cluster.local
+                port:
+                    number: 8080

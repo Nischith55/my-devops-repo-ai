@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxdevopsai-dsxdevops-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsxdevopsai-dsxdevops-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxdevopsai-dsxdevops-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-dsxbtbota-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxdevopsai-dsxdevops-qa-admin
+    description: Admin privileges to dsxdevopsai-dsxdevops-qa
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-admin, applications, *, dsxdevopsai-dsxdevops-qa/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-admin, repositories, *, dsxdevopsai-dsxdevops-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsxdevopsai-dsxdevops-qa-user
+    description: Read-only privileges to dsxdevopsai-dsxdevops-qa
+    policies:
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-user, applications, get, dsxdevopsai-dsxdevops-qa/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-user, applications, sync, dsxdevopsai-dsxdevops-qa/*, allow
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-user, repositories, get, dsxdevopsai-dsxdevops-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:dsxdevopsai-dsxdevops-qa:dsxdevopsai-dsxdevops-qa-user, applications, action/apps/Deployment/restart, dsxdevopsai-dsxdevops-qa/*, allow
+
+    groups:
+    - "Team.App.CGF.Prod.dsxsuppo"
+    - "Team.Support.EIAP.READ"

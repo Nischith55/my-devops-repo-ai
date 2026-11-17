@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: pep-pfna-sch-opsconsole-ui
+        meta.helm.sh/release-namespace: pep-pfna-flna-schservice-prod
+    labels:
+        app: pep-pfna-sch-opsconsole-ui
+        app.kubernetes.io/instance: pep-pfna-sch-opsconsole-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20251212.5'
+        helm.sh/chart: platform-chart-1.2.0
+    name: pep-pfna-sch-opsconsole-ui-vs
+    namespace: pep-pfna-flna-schservice-prod
+spec:
+    gateways:
+    - pep-pfna-flna-schservice-prod/pep-pfna-flna-schservice-prod-cv-gw
+    hosts:
+    - pep-pfna-sch-opsconsole-ui.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - schops.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-pfna-sch-opsconsole-ui.pep-pfna-flna-schservice-prod.svc.cluster.local
+                port:
+                    number: 8080

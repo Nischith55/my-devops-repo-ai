@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: revman-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for revman-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/LATAM_RevMan/_git/revman-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-latam-lassot-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: revman-dev-admin
+        description: Admin privileges to revman-dev
+        policies:
+        - p, proj:revman-dev:revman-dev-admin, applications, *, revman-dev/*, allow
+        - p, proj:revman-dev:revman-dev-admin, repositories, *, revman-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: revman-dev-user
+        description: Read-only privileges to revman-dev
+        policies:
+        - p, proj:revman-dev:revman-dev-user, applications, get, revman-dev/*, allow
+        - p, proj:revman-dev:revman-dev-user, applications, sync, revman-dev/*, allow
+        - p, proj:revman-dev:revman-dev-user, repositories, get, revman-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:revman-dev:revman-dev-user, applications, action/apps/Deployment/restart, revman-dev/*, allow
+        groups:
+        - "Team.App.DERevMan.PrivilegedTeam"
+        - "Team.Support.EIAP.READ"
+    

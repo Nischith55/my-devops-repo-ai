@@ -1,0 +1,37 @@
+---
+# ##
+# Note: This is a TEMPLATE to generate the appropriate storage class based
+# on a lookup plugin.
+# ##
+
+__azure_storage_class_template__:
+
+  name: "{{ __tmpl_params__['name'] }}"
+
+  metadata:
+    labels:
+      kubernetes.io/cluster-service: "true"
+
+  # required: 
+  provisioner: "{{ __tmpl_params__['provisioner'] }}"
+
+  # default Delete for std disk
+  reclaimPolicy: "{{ __tmpl_params__['reclaim_policy'] | default('Retain') }}"
+
+  allowVolumeExpansion: |-
+    {{ __tmpl_params__['allow_vol_expansion'] | default('true') | bool }}
+  
+  # Always have this for aks (change)
+  volumeBindingMode: |-
+    {{ __tmpl_params__['vol_binding_mode'] | default('WaitForFirstConsumer') }}
+
+  # ##
+  # File SMB CIFS -- mount options
+  # ##
+  mountOptions: |-
+    {{ __tmpl_params__['mount_options'] | default({}) }}
+
+  # MUST be specified
+  parameters: |-
+    {{ __tmpl_params__['parameters'] }}
+

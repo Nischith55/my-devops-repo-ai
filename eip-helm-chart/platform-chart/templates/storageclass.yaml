@@ -1,0 +1,104 @@
+{{- if and (.Values.storageClass.enabled) (not .Values.awsStorageClass.enabled ) }}
+{{- if .Values.storageClass.isFileShare }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  labels:
+    {{- include "platform-chart.labels" . | nindent 4 }}
+provisioner: file.csi.azure.com
+allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+mountOptions:
+{{- toYaml .Values.storageClass.mountOptions | nindent 2 }} 
+parameters:  
+  resourceGroup: {{ .Values.storageClass.resourceGroup }}
+  skuName: {{ .Values.storageClass.sku }}
+  storageAccount: {{ .Values.storageClass.storageAccount }}
+{{- end }}
+
+---
+
+{{- if .Values.storageClass.isDisk }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  labels:
+    {{- include "platform-chart.labels" . | nindent 4 }}
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: {{ .Values.storageClass.sku }}
+  kind: Managed
+  resourceGroup: {{ .Values.storageClass.resourceGroup }}
+  storageaccounttype: {{ .Values.storageClass.storageAccountType }}
+  zoned: "true"
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+{{- end }}
+{{- end }}
+
+---
+
+{{- if and (.Values.awsStorageClass.enabled) (not .Values.storageClass.enabled) }}
+{{- if .Values.awsStorageClass.isEBS }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.awsStorageClass.name }}
+  labels:
+    {{- include "platform-chart.labels" . | nindent 4 }}
+  {{- with .Values.awsStorageClass.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+{{- with .Values.awsStorageClass.allowedTopologies }}
+allowedTopologies:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+provisioner: ebs.csi.aws.com
+allowVolumeExpansion: {{ .Values.awsStorageClass.allowVolumeExpansion }}
+reclaimPolicy: {{ .Values.awsStorageClass.reclaimPolicy }}
+volumeBindingMode: {{ .Values.awsStorageClass.volumeBindingMode }}
+{{- if .Values.awsStorageClass.parameters }}
+parameters:
+  csi.storage.k8s.io/fstype: {{ .Values.awsStorageClass.parameters.fstype | default "ext4" }}
+  type: {{ .Values.awsStorageClass.parameters.type | default "gp3" }}
+  iopsPerGB: {{ .Values.awsStorageClass.parameters.iopsPerGB | quote}}
+  encrypted: {{ .Values.awsStorageClass.parameters.encrypted | default true | quote }}
+{{- with .Values.awsStorageClass.additionalParameters }}
+  {{- toYaml . | nindent 2 }}
+{{- end}}
+{{- end }}
+{{- end }}
+
+---
+
+{{- if .Values.awsStorageClass.isEFS }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.awsStorageClass.name }}
+  labels:
+    {{- include "platform-chart.labels" . | nindent 4 }}
+provisioner: efs.csi.aws.com
+{{- with .Values.awsStorageClass.allowedTopologies }}
+allowedTopologies:
+{{- toYaml . | nindent 2 }}
+{{- end }}
+reclaimPolicy: {{ .Values.awsStorageClass.reclaimPolicy }}
+allowVolumeExpansion: {{ .Values.awsStorageClass.allowVolumeExpansion }}
+volumeBindingMode: {{ .Values.awsStorageClass.volumeBindingMode }}
+{{- if .Values.awsStorageClass.parameters }}
+parameters:
+  fileSystemId: {{ .Values.awsStorageClass.parameters.fileSystemId }}
+  directoryPerms: {{ .Values.awsStorageClass.parameters.directoryPerms | quote }}
+  provisioningMode: {{ .Values.awsStorageClass.parameters.provisioningMode }}
+{{- with .Values.awsStorageClass.additionalParameters }}
+  {{- toYaml . | nindent 2 }}
+{{- end}}
+{{- end }}
+{{- end }}
+{{- end }}

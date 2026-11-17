@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-pbna-eiv-inventory-reporting-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/pbna/eiv/v1"}}],"route":[{"destination":{"host":"pepsico-pbna-eiv-inventory-reporting.pep-eiap-flna-eiv-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pepsico-pbna-eiv-inventory-reporting
+  name: pepsico-pbna-eiv-inventory-reporting-vs
+  namespace: pep-eiap-flna-eiv-preprod
+spec:
+  gateways:
+  - pep-eiap-flna-eiv-preprod/pep-eiap-flna-eiv-preprod-cv-gw
+  hosts:
+  - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pbna/eiv/v1
+    route:
+    - destination:
+        host: pepsico-pbna-eiv-inventory-reporting.pep-eiap-flna-eiv-preprod.svc.cluster.local
+        port:
+          number: 80

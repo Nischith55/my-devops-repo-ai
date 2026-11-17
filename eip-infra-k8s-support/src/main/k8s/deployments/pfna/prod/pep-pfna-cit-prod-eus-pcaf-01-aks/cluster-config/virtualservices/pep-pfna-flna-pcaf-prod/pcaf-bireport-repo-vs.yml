@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-bireport-repo
+  name: pcaf-bireport-repo-vs
+  namespace: pep-pfna-flna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-flna-pcaf-prod/pep-pfna-flna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-bireport-repo.pfnapcaf.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /services/pcafbireportauth
+    route:
+    - destination:
+        host: pcaf-bireport-repo.pep-pfna-flna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,33 @@
+---
+# PEP
+# - Change gateway
+# - Change Cluster Name
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aqua-kube-enforcer-cm
+  namespace: aquasec-client
+  labels:
+    app.kubernetes.io/created-by: haritha_shakirat_2021-09-20
+    app.kubernetes.io/managed-by: manual  
+data:
+  # Specify whether to enable/disable the cache by using "yes", "true", "no", "false" values.
+  # Default value is "yes".
+  AQUA_ENABLE_CACHE: "yes"
+  # Specify cache expiration period in seconds.
+  # Default value is 60
+  AQUA_CACHE_EXPIRATION_PERIOD: "60"
+  TLS_SERVER_CERT_FILEPATH: "/certs/aqua_ke.crt"
+  TLS_SERVER_KEY_FILEPATH: "/certs/aqua_ke.key"
+  ## Based on your ingress config update the name here ##
+  AQUA_GATEWAY_SECURE_ADDRESS: "aqua-gateway.aqua.gw02.aks04.scus.nonprod.azure.intra.pepsico.com:443"
+  # AQUA_TLS_PORT: "8443"
+  # Cluster display name in aqua enterprise (INFRASTRUCTURE TAB)
+  CLUSTER_NAME: "pep-eiap-nonprod-eus-global-01-aks"
+  AQUA_LOGICAL_NAME: "pep-eiap-nonprod-eus-global-01-aks"
+  # Enable the below Env for mTLS between kube-enforcer and gateway
+  # AQUA_PUBLIC_KEY: "/opt/aquasec/ssl/aqua_kube-enforcer.crt"
+  # AQUA_PRIVATE_KEY: "/opt/aquasec/ssl/aqua_kube-enforcer.key"
+  # AQUA_ROOT_CA: "/opt/aquasec/ssl/rootCA.crt"
+  # SCALOCK_LOG_LEVEL: Acceptable values are DEBUG, INFO, WARN, and ERROR.
+  # FOr more environment variables refer https://docs.aquasec.com/docs/kubeenforcer-variables

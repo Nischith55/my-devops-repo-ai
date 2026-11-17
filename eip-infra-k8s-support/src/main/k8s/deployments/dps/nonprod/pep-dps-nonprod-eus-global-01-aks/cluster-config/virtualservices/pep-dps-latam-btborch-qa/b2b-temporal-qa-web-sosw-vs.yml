@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: b2b-temporal-qa-web-sosw-vs
+  namespace: pep-dps-latam-btborch-qa
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - b2b-temporal-qa-web.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-latam-btborch-qa/pep-dps-latam-btborch-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-temporal-qa-web.pep-dps-latam-btborch-qa.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: react-srikala-nonprod2-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for react-srikala-nonprod2-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CMP_CMP_Test_Oct_08/_git/react-srikala-nonprod2-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-eiap-test-srikalari3qa-qa
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: react-srikala-nonprod2-qa-admin
+    description: Admin privileges to react-srikala-nonprod2-qa
+    policies:
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-admin, applications, *, appruntime-dev/*, allow
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-admin, repositories, *, appruntime-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: react-srikala-nonprod2-qa-user
+    description: Read-only privileges to react-srikala-nonprod2-qa
+    policies:
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-user, applications, get, appruntime-dev/*, allow
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-user, applications, sync, appruntime-dev/*, allow
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-user, repositories, get, appruntime-dev/*, allow
+    - p, proj:react-srikala-nonprod2-qa:react-srikala-nonprod2-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"

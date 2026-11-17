@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: distributiontestingtool-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for distributiontestingtool-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/distributiontestingtool-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-dcs-dev
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: distributiontestingtool-preprod-admin
+    description: Admin privileges to distributiontestingtool-preprod
+    policies:
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-admin, applications, *, distributiontestingtool-preprod/*, allow
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-admin, repositories, *, distributiontestingtool-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: distributiontestingtool-preprod-user
+    description: Read-only privileges to distributiontestingtool-preprod
+    policies:
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-user, applications, get, appruntime-dev/*, allow
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-user, applications, sync, appruntime-dev/*, allow
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-user, repositories, get, appruntime-dev/*, allow
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-user, *, delete, *, deny
+    - p, proj:distributiontestingtool-preprod:distributiontestingtool-preprod-user, applications, action/apps/Deployment/restart, distributiontestingtool-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.DCS" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

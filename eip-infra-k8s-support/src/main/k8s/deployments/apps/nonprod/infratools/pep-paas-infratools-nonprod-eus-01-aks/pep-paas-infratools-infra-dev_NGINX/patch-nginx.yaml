@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-paas-infratools-nginx
+  namespace: pep-paas-infratools-infra-dev
+spec:
+  template:
+    spec:
+      containers:
+        - image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+          name: pep-paas-infratools-nginx
+          env:
+            - name: FAIL_LINK
+              value: https://google.com
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: cert
+                path: gw01-tls.crt
+              - key: key
+                path: gw01-tls.key
+              name: pep-paas-infratools-nonprod-eus-01-aks-gw01-tls

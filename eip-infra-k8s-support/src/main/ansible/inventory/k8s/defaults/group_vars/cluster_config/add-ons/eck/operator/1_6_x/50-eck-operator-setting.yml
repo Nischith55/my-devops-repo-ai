@@ -1,0 +1,210 @@
+---
+# ##
+# ECK - Operator Version Specific
+# ##
+
+# component name : also should match exactly the directory name in
+# add-ons/<app_name/<this name>
+# TODO: Move
+eck_op_1_6_x_name: operator_1_6_x
+
+# image tag override or change
+_eck_op_1_6_x_tag: "{{ eck_op_1_6_x_image_tag | default('1.6.0') }}"
+
+# support base versions
+_eck_op_1_6_x_base_dir_name: "1.6.x"
+
+# Namespace in original manifest (TODO: move)
+_eck_op_1_6_x_src_namespace: elastic-system
+
+# ##
+# component meta information
+# ##
+eck_op_1_6_x_meta:
+
+  # component_name
+  name: "{{ eck_op_1_6_x_name }}"
+
+  # namespace where this component will be targeted
+  namespace: "{{ _eck_op_namespace_ }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+
+# TODO: parameterize (operator)
+_eck_op_1_6_x_kustomize_resource_base_dir: |-
+  {{ (eck_source_app_root_dir, 'kustomize', 'operator', _eck_op_1_6_x_base_dir_name) | path_join }}
+# -- Custom jinja2 templates directory if NOT using the common templates
+# TODO: parameterize (operator)
+_eck_op_1_6_x_templates_base_dir: |-
+  {{ (eck_source_app_root_dir, 'common-templates', 'operator') 
+    | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_eck_op_1_6_x_dest_root_dir: |-
+  {{ (eck_deploy_app_root_dir, eck_op_1_6_x_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_eck_op_1_6_x_overlays_dest_dir: |-
+  {{ (_eck_op_1_6_x_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_eck_op_1_6_x_manifests_dest_dir: |-
+  {{ (_eck_op_1_6_x_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_eck_op_1_6_x_manifest_path: |-
+  {{ 
+    (_eck_op_1_6_x_manifests_dest_dir,  'eck-' + eck_op_1_6_x_name + '.yml') | path_join 
+  }}
+
+# re-usable patch target
+__eck_op_1_6_x_target:
+  group: apps
+  version: v1
+  kind: StatefulSet
+  # IMPORTANT: name should match whats in base --
+  name: elastic-operator
+  # IMPORTANT: should be src namespace in base resource
+  namespace: "{{ _eck_op_1_6_x_src_namespace }}"
+
+# build params
+_eck_op_1_6_x_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _eck_op_1_6_x_overlays_dest_dir }}"
+    output_path: "{{ _eck_op_1_6_x_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_eck_op_1_6_x_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _eck_op_1_6_x_kustomize_resource_base_dir 
+          | relpath(_eck_op_1_6_x_manifests_dest_dir) }}
+
+    images:
+      - name: &op_name docker.elastic.co/eck/eck-operator
+        newName: *op_name
+        newTag: "{{ _eck_op_1_6_x_tag }}"
+
+  patches:
+
+    # patch configmap: elastic-operator
+    - name: patch-elastic-operator-cm
+      template_merge_src: "{{ kct_config_map_merge_yaml_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_eck_op_1_6_x_overlays_dest_dir, 'patch-elastic-operator-cm.yml')
+          | path_join
+        }}
+      target:
+        group: ""
+        version: v1
+        kind: ConfigMap
+        name: elastic-operator
+        namespace: "{{ _eck_op_1_6_x_src_namespace }}"
+      merge:
+        # replace eck.yaml
+        - key: eck.yaml
+          value: "{{ eck_operator_eck_yaml_value_config_map }}"
+
+    - name: patch-pod-template
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_eck_op_1_6_x_overlays_dest_dir, 'patch-merge-pod-template.yml')
+          | path_join
+        }}
+      target: "{{ __eck_op_1_6_x_target }}"
+      merge:
+        spec:
+          replicas: "{{ eck_operator_replicas | default(1) | int }}"
+          template:
+            metadata:
+              annotations:
+                # Istio enabled we need to disable the VWH port, note:
+                # the inlcude '*' must be specified.
+                # 
+                traffic.sidecar.istio.io/excludeInboundPorts: "9443"
+                traffic.sidecar.istio.io/includeInboundPorts: '*'
+            # We will deploy in System Node Pool the operator
+            spec:
+
+              nodeSelector: "{{ system_np_node_selector }}"
+              tolerations: "{{ system_np_tolerations }}"
+
+    - name: patch-json-validating-webhook-patch
+      target:
+        group: admissionregistration.k8s.io
+        version: v1beta1
+        kind: ValidatingWebhookConfiguration
+        # IMPORTANT: name should match whats in base --
+        name: elastic-webhook.k8s.elastic.co
+
+      # we use our custom templates for patching this target
+      template_json_src: "{{ _eck_op_1_6_x_templates_base_dir }}/patch-json-validating-webhook-patch.yml.j2"
+      template_json_dest: |-
+        {{ (_eck_op_1_6_x_overlays_dest_dir,
+             'patch-json-validating-webhook-patch.yml') | path_join }}
+      enable_patch: |-
+        {{ eck_operator_webhook_patch['enabled'] 
+            | default('true') | bool }}
+      json6902:
+        # we are using custom template to generate the patch
+        webhook_patch:
+          start_idx: "{{ eck_operator_webhook_patch['start_idx'] | default('0') | int }}"
+          # note: +1 is added by template
+          end_idx: "{{ eck_operator_webhook_patch['end_idx'] | default('8') | int }}"
+          # the patched value
+          failure_policy: "{{ eck_operator_webhook_patch['failure_policy'] | default('Fail') }}"
+          side_effects: "{{ eck_operator_webhook_patch['side_effects'] | default('None') }}"
+          # must be between 0 and 30, after timeout failurePolicy will trigger
+          timeout_secs: "{{ eck_operator_webhook_patch['timeout_secs'] | default(30) | int }}"
+
+    # ##
+    # IMPORTANT: This patch must be Last since we patch the apiVersion
+    # itself
+    # ##
+    - name: patch-json-webhook-api-version
+      target:
+        group: admissionregistration.k8s.io
+        version: v1beta1
+        #kind: ValidatingWebhookConfiguration
+        # IMPORTANT: name should match whats in base --
+        #name: elastic-webhook.k8s.elastic.co
+        labelSelector: control-plane=elastic-operator
+      # we use our custom templates for patching this target
+      template_json_src: "{{ _eck_op_1_6_x_templates_base_dir }}/patch-json-validating-webhook-api-version.yml.j2"
+      template_json_dest: |-
+        {{ (_eck_op_1_6_x_overlays_dest_dir,
+             'patch-json-validating-webhook-api-version.yml') | path_join }}
+      # TODO: Disabling Patch for now
+      enable_patch: |-
+        {{ eck_operator_webhook_api_version_patch['enabled']
+            | default('false') | bool }}
+      json6902:
+        # we are using custom template to generate the patch
+        api_version:
+          start_idx: "{{ eck_operator_webhook_api_version_patch['start_idx'] | default('0') | int }}"
+          # note: +1 is added by template
+          end_idx:  "{{ eck_operator_webhook_api_version_patch['end_idx'] | default('8') | int }}"
+          admission_review_versions: "{{ eck_operator_webhook_api_version_patch['admission_review_versions'] | default([ 'v1', 'v1beta1']) }}"
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+eck_op_1_6_x_component_setting: |-
+  {{
+    eck_op_1_6_x_meta
+    |
+    combine(_eck_op_1_6_x_build_params, recursive=True)
+  }}
+

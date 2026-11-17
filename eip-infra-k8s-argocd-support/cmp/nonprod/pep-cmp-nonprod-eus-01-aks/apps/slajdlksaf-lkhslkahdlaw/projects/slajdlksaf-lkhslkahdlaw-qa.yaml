@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: slajdlksaf-lkhslkahdlaw-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for slajdlksaf-lkhslkahdlaw-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/slajdlksaf-lkhslkahdlaw-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: slajdlksaf-lkhslkahdlaw-qa-admin
+    description: Admin privileges to slajdlksaf-lkhslkahdlaw-qa
+    policies:
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-admin, applications, *, slajdlksaf-lkhslkahdlaw-qa/*, allow
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-admin, repositories, *, slajdlksaf-lkhslkahdlaw-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: slajdlksaf-lkhslkahdlaw-qa-user
+    description: Read-only privileges to slajdlksaf-lkhslkahdlaw-qa
+    policies:
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-user, applications, get, slajdlksaf-lkhslkahdlaw-qa/*, allow
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-user, applications, sync, slajdlksaf-lkhslkahdlaw-qa/*, allow
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-user, repositories, get, slajdlksaf-lkhslkahdlaw-qa/*, allow
+    - p, proj:slajdlksaf-lkhslkahdlaw-qa:slajdlksaf-lkhslkahdlaw-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

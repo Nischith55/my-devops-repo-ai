@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pythonaks01-aks001testingpython-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythonaks01-aks001testingpython-argocd-configs
+    targetRevision: develop 
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/pep/cmp/gt-test-1-devx-python/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: pythonaks01-aks001testingpython-dev
+      valueFiles:
+      - $values/dev/pep-cmp-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepeiapnonprodcommonacr.azurecr.io/pep/cmp/gt-test-1-devx-python/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-cmp-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: pythonaks01-aks001testingpython-dev 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythonaks01-aks001testingpython-argocd-configs 
+              repoName: pythonaks01-aks001testingpython-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: Dl@pepsico.com

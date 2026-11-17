@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-askadaa-prod-cv-web-vs
+  namespace: pep-eiap-cgf-askadaa-prod
+  labels:
+    app: pep-eiap-cgf-askadaa-prod-cv-web
+spec:
+  hosts:
+    - askada.mypepsico.com
+    - pep-eiap-cgf-askadaa-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-askadaa-prod/pep-eiap-cgf-askadaa-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-askadaa-prod-cv-web.pep-eiap-cgf-askadaa-prod.svc.cluster.local
+        port:
+          number: 80

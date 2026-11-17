@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: dtcloyalty-pepl-documentation-dev:networking.istio.io/VirtualService:pep-dps-europe-dtcjoy-dev/dtcsrv-joy-pepl-documentation-europe-vs
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"dtcloyalty-pepl-documentation-dev:networking.istio.io/VirtualService:pep-dps-europe-dtcjoy-dev/dtcsrv-joy-pepl-documentation-europe-vs"},"labels":{"app":"dtcsrv-joy-pepl-documentation-europe","app.kubernetes.io/instance":"dtcloyalty-pepl-documentation","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"dtcsrv-joy-pepl-documentation-europe-vs","namespace":"pep-dps-europe-dtcjoy-dev"},"spec":{"gateways":["pep-dps-europe-dtcjoy-dev/pep-dps-europe-dtcjoy-dev-cv-gw"],"hosts":["dtcsrv-joy-pepl-documentation-europe.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"dtcsrv-joy-pepl-documentation-europe.pep-dps-europe-dtcjoy-dev.svc.cluster.local","port":{"number":80}}}]}]}}
+
+'
+    labels:
+        app: dtcsrv-joy-pepl-documentation-europe
+        app.kubernetes.io/instance: dtcloyalty-pepl-documentation
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: dtcsrv-joy-pepl-documentation-europe-vs
+    namespace: pep-dps-europe-dtcjoy-dev
+spec:
+    gateways:
+    - pep-dps-europe-dtcjoy-dev/pep-dps-europe-dtcjoy-dev-cv-gw
+    hosts:
+    - dtcsrv-joy-pepl-documentation-europe.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - pepldoc.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: dtcsrv-joy-pepl-documentation-europe.pep-dps-europe-dtcjoy-dev.svc.cluster.local
+                port:
+                    number: 80

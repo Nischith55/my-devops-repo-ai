@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eip-amesa-prod-agro-api-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["api-pep-eip-amesa-prod-agro.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eip-amesa-prod-agro-api.pep-eiap-amesa-ksaeinvc-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eip-amesa-prod-agro-api
+  name: pep-eip-amesa-prod-agro-api-vs
+  namespace: pep-eiap-amesa-ksaeinvc-prod
+spec:
+  gateways:
+  - pep-eiap-amesa-ksaeinvc-prod/pep-eiap-amesa-ksaeinvc-prod-cv-gw
+  hosts:
+  - api-pep-eip-amesa-prod-agro.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-prod-agro-api.pep-eiap-amesa-ksaeinvc-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-b2bcustomerservice-zbum-vs
+  namespace: pep-eiap-och-na-qa
+  labels:
+      app: pep-pfna-b2bcustomerservice
+spec:
+  hosts:
+  - pep-pfna-b2bcustomerservice-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-na-qa/pep-eiap-och-na-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-b2bcustomerservice.pep-eiap-och-na-qa.svc.cluster.local
+        port:
+          number: 8080
+  

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eip-latam-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for eip-latam-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIP/_git/eip-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-latam-gtm-qa
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eip-latam-qa-admin
+        description: Admin privileges to eip-latam-qa
+        policies:
+        - p, proj:eip-latam-qa:eip-latam-qa-admin, applications, *, eip-latam-qa/*, allow
+        - p, proj:eip-latam-qa:eip-latam-qa-admin, repositories, *, eip-latam-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: eip-latam-qa-user
+        description: Read-only privileges to eip-latam-qa
+        policies:
+        - p, proj:eip-latam-qa:eip-latam-qa-user, applications, get, eip-latam-qa/*, allow
+        - p, proj:eip-latam-qa:eip-latam-qa-user, applications, sync, eip-latam-qa/*, allow
+        - p, proj:eip-latam-qa:eip-latam-qa-user, repositories, get, eip-latam-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:eip-latam-qa:eip-latam-qa-user, applications, action/apps/Deployment/restart, eip-latam-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.LATAM.GTM.Developer"
+        - "Team.Support.EIAP.READ"
+    

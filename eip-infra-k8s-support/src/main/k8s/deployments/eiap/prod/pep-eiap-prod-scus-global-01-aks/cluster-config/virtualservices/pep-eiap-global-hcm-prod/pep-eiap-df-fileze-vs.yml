@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: df-fileze
+  name: pep-eiap-df-fileze-vs
+  namespace: pep-eiap-global-hcm-prod
+spec:
+  gateways:
+  - pep-eiap-global-hcm-prod/pep-eiap-global-hcm-prod-cv-gw
+  hosts:
+  - df-fileze.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: df-fileze.pep-eiap-global-hcm-prod.svc.cluster.local
+        port:
+          number: 80

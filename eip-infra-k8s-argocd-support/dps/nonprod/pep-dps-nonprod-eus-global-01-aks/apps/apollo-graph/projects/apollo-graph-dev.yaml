@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apollo-graph-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for apollo-graph-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/apollo-graph-argocd-config
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-retaildev-dev
+  roles:
+  - name: apollo-graph-dev-admin
+    description: Admin privileges to apollo-graph-dev
+    policies:
+    - p, proj:apollo-graph-dev:apollo-graph-dev-admin, applications, *, apollo-graph-dev/*, allow
+    - p, proj:apollo-graph-dev:apollo-graph-dev-admin, applications, get, argocd/*, allow
+    - p, proj:apollo-graph-dev:apollo-graph-dev-admin, repositories, *, apollo-graph-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: apollo-graph-dev-user
+    description: Read-only privileges to apollo-graph-dev
+    policies:
+    - p, proj:apollo-graph-dev:apollo-graph-dev-user, applications, get, apollo-graph-dev/*, allow
+    - p, proj:apollo-graph-dev:apollo-graph-dev-user, applications, sync, apollo-graph-dev/*, allow
+    - p, proj:apollo-graph-dev:apollo-graph-dev-user, repositories, get, apollo-graph-dev/*, allow
+    - p, proj:apollo-graph-dev:apollo-graph-dev-user, applications, action/apps/Deployment/restart, apollo-graph-dev/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

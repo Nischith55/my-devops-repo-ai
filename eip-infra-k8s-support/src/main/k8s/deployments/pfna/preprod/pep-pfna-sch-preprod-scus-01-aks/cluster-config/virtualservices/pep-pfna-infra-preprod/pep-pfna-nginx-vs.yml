@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-nginx
+  name: pep-pfna-nginx-vs
+  namespace: pep-pfna-infra-preprod
+spec:
+  gateways:
+  - pep-pfna-infra-preprod/pep-pfna-infra-preprod-cv-gw
+  hosts:
+  - pep-pfna-nginx.pfna.sch.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-nginx.pep-pfna-infra-preprod.svc.cluster.local
+        port:
+          number: 8080

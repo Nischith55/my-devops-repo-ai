@@ -1,0 +1,2 @@
+---
+kubectl_cmd: "{{ kubectl_cmd_ovrd | default('kubectl') }}"

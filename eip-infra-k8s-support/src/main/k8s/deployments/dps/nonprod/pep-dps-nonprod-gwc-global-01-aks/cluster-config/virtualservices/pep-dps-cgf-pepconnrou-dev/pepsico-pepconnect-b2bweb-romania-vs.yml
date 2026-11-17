@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-pepconnect-b2bweb-romania
+  name: pepsico-pepconnect-b2bweb-romania-vs
+  namespace: pep-dps-cgf-pepconnrou-dev
+spec:
+  gateways:
+  - pep-dps-cgf-pepconnrou-dev/pep-dps-cgf-pepconnrou-dev-cv-gw
+  hosts:
+  - pepsico-pepconnect-b2bweb-romania.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - pepsicopartner.dev.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-romania.pep-dps-cgf-pepconnrou-dev.svc.cluster.local
+        port:
+          number: 80

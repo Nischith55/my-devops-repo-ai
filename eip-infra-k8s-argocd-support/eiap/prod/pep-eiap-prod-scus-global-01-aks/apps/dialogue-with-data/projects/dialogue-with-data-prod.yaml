@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dialogue-with-data-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dialogue-with-data-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/dialogue-with-data-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-dwd-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: dialogue-with-data-prod-admin
+        description: Admin privileges to dialogue-with-data-prod
+        policies:
+        - p, proj:dialogue-with-data-prod:dialogue-with-data-prod-admin, applications, *, dialogue-with-data-prod/*, allow
+        - p, proj:dialogue-with-data-prod:dialogue-with-data-prod-admin, repositories, *, dialogue-with-data-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dialogue-with-data-prod-user
+        description: Read-only privileges to dialogue-with-data-prod
+        policies:
+        - p, proj:dialogue-with-data-prod:dialogue-with-data-prod-user, applications, get, dialogue-with-data-prod/*, allow
+        - p, proj:dialogue-with-data-prod:dialogue-with-data-prod-user, applications, sync, dialogue-with-data-prod/*, allow
+        - p, proj:dialogue-with-data-prod:dialogue-with-data-prod-user, repositories, get, dialogue-with-data-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.AI4BIPBF.users"
+        - "Team.Support.EIAP.READ"
+    

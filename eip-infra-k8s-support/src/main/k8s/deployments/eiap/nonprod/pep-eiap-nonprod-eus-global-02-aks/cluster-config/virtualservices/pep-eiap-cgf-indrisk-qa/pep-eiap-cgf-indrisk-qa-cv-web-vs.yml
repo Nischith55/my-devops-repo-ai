@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService 
+metadata:
+  name: pep-eiap-cgf-indrisk-qa-cv-web-vs
+  namespace: pep-eiap-cgf-indrisk-qa
+  labels:
+    app: pep-eiap-cgf-indrisk-qa-cv-web
+spec:
+  hosts:
+    - chinaindirectrisk.qa.mypepsico.com
+    - pep-eiap-cgf-indrisk-qa-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-indrisk-qa/pep-eiap-cgf-indrisk-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-indrisk-qa-cv-web.pep-eiap-cgf-indrisk-qa.svc.cluster.local
+        port:
+          number: 80

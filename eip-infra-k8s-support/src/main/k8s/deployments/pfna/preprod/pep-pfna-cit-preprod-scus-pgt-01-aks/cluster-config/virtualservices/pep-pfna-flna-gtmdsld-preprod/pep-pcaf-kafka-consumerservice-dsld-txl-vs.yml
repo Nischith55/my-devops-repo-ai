@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-pcaf-kafka-consumerservice-dsld-txl-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-pcaf-kafka-consumerservice-dsld-txl.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/api/v1/dsld/txl/kafka/consumer"}}],"route":[{"destination":{"host":"pep-pcaf-kafka-consumerservice-dsld-txl.pep-pfna-flna-gtmdsld-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-pcaf-kafka-consumerservice-dsld-txl
+  name: pep-pcaf-kafka-consumerservice-dsld-txl-vs
+  namespace: pep-pfna-flna-gtmdsld-preprod
+spec:
+  gateways:
+  - pep-pfna-flna-gtmdsld-preprod/pep-pfna-flna-gtmdsld-preprod-cv-gw
+  hosts:
+  - pep-pcaf-kafka-consumerservice-dsld-txl.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/dsld/txl/kafka/consumer
+    route:
+    - destination:
+        host: pep-pcaf-kafka-consumerservice-dsld-txl.pep-pfna-flna-gtmdsld-preprod.svc.cluster.local
+        port:
+          number: 80

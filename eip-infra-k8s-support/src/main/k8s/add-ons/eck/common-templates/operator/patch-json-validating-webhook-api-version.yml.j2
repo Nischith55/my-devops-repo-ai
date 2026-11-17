@@ -1,0 +1,35 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  ECK operator: Validating WebHook Patch Munge API version
+
+  NOTES:
+  - Currently the all-in-one uses v1beta1 for admissionregistration.k8s.io API
+    - K8S > 1.16 v1 is the model to move
+  - Also, v1 API requires additional keys in each of the hook configuration
+      * admissionReviewVersions: [v1beta1, v1]
+      * sideEffects: "None"
+  - Also we give the ability to change the failure policy
+
+  This generates a JsonPatches6902 data that is referenced from path.
+  INPUTS:
+    - params_tmpl:
+        json6902:
+          [custom-map]
+#}
+{% set _p = params_tmpl %}
+{% set _pj = _p['json6902'] %}
+{% set _pj_api = _pj['api_version'] | default({}) %}
+---
+- op: replace
+  path: /apiVersion
+  value: admissionregistration.k8s.io/v1
+{% if (_pj_api | length) > 0 %}
+  {% set _indexes = range(_pj_api['start_idx'], _pj_api['end_idx'] + 1) %}
+  {% set _adm_rvw = _pj_api['admission_review_versions'] %}
+  {% for _i in _indexes %}
+- op: add
+  path: /webhooks/{{ _i }}/admissionReviewVersions
+  value:
+    {{ _adm_rvw | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+  {% endfor %}
+{% endif %}

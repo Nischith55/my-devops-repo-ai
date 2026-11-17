@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: latamtct-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for latamtct-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/transportation/_git/pep-latam-tct-argocd-config
+  - peppfnaschprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-sch-prod-eus-01-aks
+    namespace: pep-pfna-latam-tctgps-prod
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-prod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: latamtct-admin-prod
+    description: Admin privileges to latamtct-prod
+    policies:
+    - p, proj:latamtct-prod:latamtct-admin-prod, applications, *, latamtct-prod/*, allow
+    - p, proj:latamtct-prod:latamtct-admin-prod, repositories, *, latamtct-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: latamtct-user-prod
+    description: Read-only privileges to latamtct-prod
+    policies:
+    - p, proj:latamtct-prod:latamtct-user-prod, applications, get, latamtct-prod/*, allow
+    - p, proj:latamtct-prod:latamtct-user-prod, applications, sync, latamtct-prod/*, allow
+    - p, proj:latamtct-dev:latamtct-dev-user, repositories, get, latamtct-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.Fleet.Developer"
+    - "Team.Support.EIAP.READ"

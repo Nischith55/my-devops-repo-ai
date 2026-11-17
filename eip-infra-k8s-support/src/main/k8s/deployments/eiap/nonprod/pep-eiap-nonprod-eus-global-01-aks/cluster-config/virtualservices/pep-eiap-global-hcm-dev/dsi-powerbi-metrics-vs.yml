@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dsi-powerbi-metrics
+  name: dsi-powerbi-metrics-vs
+  namespace: pep-eiap-global-hcm-dev
+spec:
+  gateways:
+  - pep-eiap-global-hcm-dev/pep-eiap-global-hcm-dev-cv-gw
+  hosts:
+  - dsi-powerbi-metrics.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dsi-powerbi-metrics.pep-eiap-global-hcm-dev.svc.cluster.local
+        port:
+          number: 80

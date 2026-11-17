@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: limits-conf
+  namespace: pep-eiap-ops-admin
+  labels:
+    app: pep-eiap-node-setup
+data:
+
+  zz-eiap-limits.conf: |-
+    # ###################################################
+    #
+    # ###################################################
+    *           soft      nproc             unlimited
+    *           hard      nproc             unlimited
+    *           soft      nofile            131072
+    *           hard      nofile            131072
+    *           soft      memlock           unlimited
+    *           hard      memlock           unlimited
+    *           soft      cpu               unlimited
+    *           hard      cpu               unlimited

@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: conjur-agent-sa 
+  namespace: pep-dps-cgf-aspiretwob-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: conjur-agent-role
+  namespace: pep-dps-cgf-aspiretwob-prod
+rules:
+  - apiGroups: [""]
+    resources: [ "secrets" ]
+    verbs: [ "get", "update" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: pep-dps-cgf-aspiretwob-prod
+  name: conjur-agent-rb
+subjects:
+  - kind: ServiceAccount
+    namespace: pep-dps-cgf-aspiretwob-prod
+    name: conjur-agent-sa
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: conjur-agent-role
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pep-dps-conjur-agent-job
+  namespace: pep-dps-cgf-aspiretwob-prod
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: conjur-agent-sa
+      containers:
+      - image: cyberark/secrets-provider-for-k8s:1.1.4
+        imagePullPolicy: IfNotPresent
+        ## This should be same as the policy annotation authn-k8s/authentication-container-name ##
+        name: cyberark-secrets-provider-for-k8s
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        ##  Update it with conjur follower URL ##
+        - name: CONJUR_APPLIANCE_URL
+          value:  "https://mypam.conjur.mypepsico.com"
+        ## !!! Important Update it with Conjur Authenticator URL !!! ##
+        - name: CONJUR_AUTHN_URL
+          value:  "https://mypam.conjur.mypepsico.com/authn-k8s/pep-dps-prod-scus-global-01-aks"
+        ## Update it with Conjur Account ##
+        - name: CONJUR_ACCOUNT
+          value:  "PRD"
+        - name: CONJUR_SSL_CERTIFICATE
+          valueFrom:
+            configMapKeyRef:
+              name: pep-dps-conjur-cert-cm
+              key: ssl-certificate
+        ## Update with the id from policy ##
+        - name: CONJUR_AUTHN_LOGIN
+          value: host/pep/dps/aks/pep-dps-cgf-aspiretwob-prod
+        - name: SECRETS_DESTINATION
+          value: k8s_secrets
+        - name: DEBUG
+          value: "true"
+        # Enables the support of multiple Kubernetes applications
+        - name: CONTAINER_MODE
+          value: application
+        ## !!! IMPORTANT NEED TO UPDATE !!! ##
+        - name: K8S_SECRETS
+          value: pep-dps-cgf-aspiretwob-prod-secret-conjur
+      restartPolicy: Never
+  backoffLimit: 0

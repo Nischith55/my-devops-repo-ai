@@ -1,0 +1,16 @@
+---
+
+# DEPRECATED:: placed here for backward compatibility
+# Operator installation of jaegertracing
+ns_jaeger_operator:
+
+  name: jaeger-operator
+
+  labels:
+    istio-injection: disabled
+
+  generic_secrets: |-
+    {{ jaeger_operator_misc_secrets | default([]) }}
+
+  registry_secrets: |-
+    {{ jaeger_operator_registry_secrets | default([]) }}

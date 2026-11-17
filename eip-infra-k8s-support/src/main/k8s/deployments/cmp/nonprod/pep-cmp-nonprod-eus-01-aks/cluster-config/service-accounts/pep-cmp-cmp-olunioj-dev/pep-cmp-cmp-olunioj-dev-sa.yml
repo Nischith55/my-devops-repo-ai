@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 3f71f2eb-c415-46b2-b381-4b7244e73e28
+  name: pep-cmp-cmp-olunioj-dev-sa
+  namespace: pep-cmp-cmp-olunioj-dev

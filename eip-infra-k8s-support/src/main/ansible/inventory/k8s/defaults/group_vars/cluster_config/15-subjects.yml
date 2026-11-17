@@ -1,0 +1,2948 @@
+---
+# All subjects needed for role bindings
+# IMPORTANT:
+#   - AD groups needs the name to be object id
+#   - Service Accounts should be in their namespace with the required
+#     role bindings
+
+k8s_sup_subjects:
+#BEGIN cgf_llmaas
+  cgf_llmaas:
+    name: 72ade007-54d3-491c-a50c-79e1320630b8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_llmaas
+#BEGIN cgf_pepgptqa
+  cgf_pepgptqa:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgptqa
+#BEGIN cgf_pepgptdev
+  cgf_pepgptdev:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgptdev
+#BEGIN europe_btbota
+  europe_btbota:
+    name: cbefdd90-a114-4307-b669-3c1295f0fc05
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbota
+#BEGIN cgf_decvh
+  cgf_decvh:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_decvh
+#BEGIN cgf_dcfvgn
+  cgf_dcfvgn:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dcfvgn
+#BEGIN cgf_pepconnnam
+  cgf_pepconnnam:
+    name: efd00850-8875-4f46-9426-5ee90a3f24ba
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepconnnam
+#BEGIN pbna_savvyochn
+  pbna_savvyochn:
+    name: 88702048-fe12-4df2-9e6b-5b415502f1aa
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_savvyochn
+#BEGIN latam_nabtborch
+  latam_nabtborch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_nabtborch
+#BEGIN pbna_vmsprprd
+  pbna_vmsprprd:
+    name: 8fcc967e-58d9-4d1a-8dac-98fe50ef0032
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_vmsprprd
+#BEGIN cgf_afhblue
+  cgf_afhblue:
+    name: a1d76377-a391-43e3-9a0c-929b6af7d01c
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_afhblue
+#BEGIN cgf_nabtboms
+  cgf_nabtboms:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtboms
+#BEGIN cgf_nabtbprof
+  cgf_nabtbprof:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtbprof
+#BEGIN cgf_nabtbprod
+  cgf_nabtbprod:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtbprod
+#BEGIN cgf_nabtbprom
+  cgf_nabtbprom:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtbprom
+#BEGIN cgf_nabtbcarts
+  cgf_nabtbcarts:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtbcarts
+#BEGIN cgf_nabtbloy
+  cgf_nabtbloy:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nabtbloy
+#BEGIN flna_mfgmatinfo
+  flna_mfgmatinfo:
+    name: 3d25e48e-c30b-4c39-8c9d-fb56fe12e2c5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_mfgmatinfo
+#BEGIN flna_ast
+  flna_ast:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_ast
+#BEGIN cgf_pepgptnv
+  cgf_pepgptnv:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgptnv
+#BEGIN flna_salesplus
+  flna_salesplus:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_salesplus
+#BEGIN cgf_assetmgmt
+  cgf_assetmgmt:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_assetmgmt
+#BEGIN flna_apppbna
+  flna_apppbna:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_apppbna
+#BEGIN flna_schstckout
+  flna_schstckout:
+    name: 96e2e0c4-ab99-4b4e-84f2-e578fa69886f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schstckout
+#BEGIN apac_pepconnind
+  apac_pepconnind:
+    name: efd00850-8875-4f46-9426-5ee90a3f24ba
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_pepconnind
+#BEGIN cgf_askada
+  cgf_askada:
+    name: 6fe3ae37-6950-47dc-a2f8-3c6f5fc256f6
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_askada
+#BEGIN europe_accessbr
+  europe_accessbr:
+    name: 5f9e820f-9a4c-4533-bc39-89e9bf5154ca
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_accessbr
+#BEGIN cgf_tctsa
+  cgf_tctsa:
+    name: 52687da8-98f8-485d-927c-a25cdfeddb11
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_tctsa
+#BEGIN cgf_test12
+  cgf_test12:
+    name: 38dc80f9-30c8-474b-85a3-c2749ec6880c
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_test12
+#BEGIN europe_indbtbloy
+  europe_indbtbloy:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_indbtbloy
+#BEGIN europe_indbtboms
+  europe_indbtboms:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_indbtboms
+#BEGIN europe_indbtbprod
+  europe_indbtbprod:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_indbtbprod
+#BEGIN europe_indbtbprof
+  europe_indbtbprof:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_indbtbprof
+#BEGIN europe_indbtbprom
+  europe_indbtbprom:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_indbtbprom
+#BEGIN flna_schwmit
+  flna_schwmit:
+    name: 5a99d2b1-e019-4038-b980-d30890919763
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schwmit
+#BEGIN amesa_dsxwado
+  amesa_dsxwado:
+    name: 7f0e6e5b-6686-4b15-adb6-df59cf72f2ec
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_dsxwado
+#BEGIN latam_tctgps
+  latam_tctgps:
+    name: b7c43b89-de36-4eb1-99ca-7dc95621c087
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_tctgps
+#BEGIN amesa_dsxdo
+  amesa_dsxdo:
+    name: 7f0e6e5b-6686-4b15-adb6-df59cf72f2ec
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_dsxdo
+#BEGIN europe_pepconnind
+  europe_pepconnind:
+    name: d3e1ecf6-e9b5-4041-bb08-52a2fbb26c73
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_pepconnind
+#BEGIN europe_surveyeu
+  europe_surveyeu:
+    name: 4087d25d-8855-4e7b-858d-6d8a3f6cbcb5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_surveyeu
+#BEGIN cmp_test
+  cmp_test:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cmp_test
+#BEGIN europe_globtbprod
+  europe_globtbprod:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_globtbprod
+#BEGIN europe_globtbloy
+  europe_globtbloy:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_globtbloy
+#BEGIN europe_globtboms
+  europe_globtboms:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_globtboms
+#BEGIN europe_globtbprof
+  europe_globtbprof:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_globtbprof
+#BEGIN latam_btbcep
+  latam_btbcep:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbcep
+#BEGIN devx_test
+  devx_test:
+    name: cbefdd90-a114-4307-b669-3c1295f0fc05
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END devx_test
+#BEGIN cgf_dsxdevops
+  cgf_dsxdevops:
+    name: cbefdd90-a114-4307-b669-3c1295f0fc05
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsxdevops
+#BEGIN flna_tctgps
+  flna_tctgps:
+    name: 928e4ef2-bbf1-4dae-b8dd-b7423ae21e38
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_tctgps
+#BEGIN cgf_pepiris03
+  cgf_pepiris03:
+    name: 9c0f5386-ccb8-4270-ae4b-4b0ee5ca59c5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepiris03
+#BEGIN cgf_pepiris04
+  cgf_pepiris04:
+    name: 9c0f5386-ccb8-4270-ae4b-4b0ee5ca59c5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepiris04
+#BEGIN cgf_pepiris02
+  cgf_pepiris02:
+    name: 9c0f5386-ccb8-4270-ae4b-4b0ee5ca59c5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepiris02
+#BEGIN cgf_pepiris01
+  cgf_pepiris01:
+    name: 9c0f5386-ccb8-4270-ae4b-4b0ee5ca59c5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepiris01
+#BEGIN cgf_ainego
+  cgf_ainego:
+    name: 7f1acd13-a6a4-4896-860f-c83c445354fa
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ainego
+#BEGIN cgf_pepline
+  cgf_pepline:
+    name: d67df7e1-8bd4-4e12-861c-947e40c91fb9
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepline
+#BEGIN latam_bffprofile
+  latam_bffprofile:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_bffprofile
+#BEGIN latam_btbrwrd
+  latam_btbrwrd:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbrwrd
+#BEGIN cgf_schservice
+  cgf_schservice:
+    name: 38dc80f9-30c8-474b-85a3-c2749ec6880c
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_schservice
+#BEGIN flna_schhatest
+  flna_schhatest:
+    name: 96e2e0c4-ab99-4b4e-84f2-e578fa69886f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schhatest
+#BEGIN cgf_rndkmfw
+  cgf_rndkmfw:
+    name: 7a1c7d25-0d2e-4f12-aba8-2ed7165b69ff
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_rndkmfw
+#BEGIN cgf_dsxhub
+  cgf_dsxhub:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsxhub
+#BEGIN cgf_transp
+  cgf_transp:
+    name: 987654321
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_transp
+#BEGIN cgf_opsteam
+  cgf_opsteam:
+    name: 987654321
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_opsteam
+#BEGIN pbna_pbnalghous
+  pbna_pbnalghous:
+    name: be0a9e07-3df6-4e4e-a514-dde172951183
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_pbnalghous
+#BEGIN cgf_iamai
+  cgf_iamai:
+    name: b5c08c03-c253-4dee-b006-62fa6597d2e1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_iamai
+#BEGIN flna_airbyte
+  flna_airbyte:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_airbyte
+#BEGIN cgf_dsnotes
+  cgf_dsnotes:
+    name: 4a384833-066e-4e22-8353-3844f3db0dbf
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsnotes
+#BEGIN cgf_pepgenxsit
+  cgf_pepgenxsit:
+    name: 72ade007-54d3-491c-a50c-79e1320630b8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgenxsit
+#BEGIN flna_schservice
+  flna_schservice:
+    name: 96e2e0c4-ab99-4b4e-84f2-e578fa69886f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schservice
+#BEGIN flna_schopscon
+  flna_schopscon:
+    name: 96e2e0c4-ab99-4b4e-84f2-e578fa69886f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schopscon
+#BEGIN cgf_pepiris
+  cgf_pepiris:
+    name: 929bc949-0c97-48c7-be5d-fd26cedf21e5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepiris
+#BEGIN cgf_nvingest
+  cgf_nvingest:
+    name: eb95d99a-b407-4e73-bf47-bc6a2283c7bc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nvingest
+#BEGIN cgf_dsxadaptor
+  cgf_dsxadaptor:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsxadaptor
+#BEGIN europe_pgcsui
+  europe_pgcsui:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_pgcsui
+#BEGIN cgf_testingcmp
+  cgf_testingcmp:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_testingcmp
+#BEGIN cgf_pepci
+  cgf_pepci:
+    name: 1a310ed0-2be5-4a6f-a9bb-42520d651221
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepci
+#BEGIN europe_pgcsdomain
+  europe_pgcsdomain:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_pgcsdomain
+#BEGIN europe_pgcsbff
+  europe_pgcsbff:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_pgcsbff
+#BEGIN flna_risingwave
+  flna_risingwave:
+    name: 38dc80f9-30c8-474b-85a3-c2749ec6880c
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_risingwave
+#BEGIN cgf_bffbcp
+  cgf_bffbcp:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_bffbcp
+#BEGIN latam_globtboms
+  latam_globtboms:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtboms
+#BEGIN latam_globtbprod
+  latam_globtbprod:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtbprod
+#BEGIN latam_globtbprof
+  latam_globtbprof:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtbprof
+#BEGIN latam_globtbcart
+  latam_globtbcart:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtbcart
+#BEGIN latam_globtborch
+  latam_globtborch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtborch
+#BEGIN cgf_agfactory
+  cgf_agfactory:
+    name: 72ade007-54d3-491c-a50c-79e1320630b8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_agfactory
+#BEGIN latam_globtbprom
+  latam_globtbprom:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtbprom
+#BEGIN latam_globtbloy
+  latam_globtbloy:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_globtbloy
+#BEGIN cgf_cle
+  cgf_cle:
+    name: e0bee19c-5b36-4188-8a1f-1311a099d23b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cle
+#BEGIN flna_wfm
+  flna_wfm:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_wfm
+#BEGIN cgf_pepgafs
+  cgf_pepgafs:
+    name: 1a310ed0-2be5-4a6f-a9bb-42520d651221
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgafs
+#BEGIN cgf_aibiflna
+  cgf_aibiflna:
+    name: a0077fa7-f3f9-4b06-a459-c60dedd6f5c1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_aibiflna
+#BEGIN pbna_pescntcr
+  pbna_pescntcr:
+    name: 09136c46-1031-4e9e-a570-ea6a93e6c7c0
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_pescntcr
+#BEGIN cgf_uaemt
+  cgf_uaemt:
+    name: a0077fa7-f3f9-4b06-a459-c60dedd6f5c1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_uaemt
+#BEGIN pbna_awxtest
+  pbna_awxtest:
+    name: 2c45c3bc-0474-4fd6-911d-8d7575f3ba20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_awxtest
+#BEGIN cgf_temporal
+  cgf_temporal:
+    name: eb95d99a-b407-4e73-bf47-bc6a2283c7bc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_temporal
+#BEGIN cgf_llamaparse
+  cgf_llamaparse:
+    name: eb95d99a-b407-4e73-bf47-bc6a2283c7bc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_llamaparse
+#BEGIN cgf_crewai
+  cgf_crewai:
+    name: 5a3ca03a-6a61-4df5-a23b-2a4384f367eb
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_crewai
+#BEGIN flna_app
+  flna_app:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_app
+#BEGIN cgf_ppsipreprd
+  cgf_ppsipreprd:
+    name: 96d4b183-b5b4-47cb-85d9-61d85037809f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ppsipreprd
+#BEGIN cgf_bffmxbcp
+  cgf_bffmxbcp:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_bffmxbcp
+#BEGIN latam_udfna
+  latam_udfna:
+    name: 427f9f07-ff85-4221-ab49-ad1c409226cf
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_udfna
+#BEGIN cgf_wiz
+  cgf_wiz:
+    name: 2e153404-d630-4325-9334-8fe4a6a9dd61
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_wiz
+#BEGIN flna_shp
+  flna_shp:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_shp
+#BEGIN apac_uaemt
+  apac_uaemt:
+    name: 07dcfe45-75d3-4a57-ba93-a0478622344e
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_uaemt
+#BEGIN flna_saleshub
+  flna_saleshub:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_saleshub
+#BEGIN cgf_shrdagntai
+  cgf_shrdagntai:
+    name: a1a5dbc9-8d83-4ea3-b218-f8545d24b986
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_shrdagntai
+#BEGIN latam_notify
+  latam_notify:
+    name: 300436a8-d980-4e34-a906-c07c819ade3a
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_notify
+#BEGIN flna_picassoqa
+  flna_picassoqa:
+    name: 8aa54b31-0551-439f-a64e-3edeefc50f70
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_picassoqa
+#BEGIN apac_agfactory
+  apac_agfactory:
+    name: 7ff3c841-7231-423e-b264-13f27a69144f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_agfactory
+#BEGIN flna_whsecc
+  flna_whsecc:
+    name: 13182b19-ae69-4806-a4cd-25997fe48518
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_whsecc
+#BEGIN sntdps_fspoc
+  sntdps_fspoc:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END sntdps_fspoc
+#BEGIN europe_btbprofile
+  europe_btbprofile:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbprofile
+#BEGIN europe_bffmerch
+  europe_bffmerch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_bffmerch
+#BEGIN cgf_awxtest
+  cgf_awxtest:
+    name: 2c45c3bc-0474-4fd6-911d-8d7575f3ba20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_awxtest
+#BEGIN europe_btbcarts
+  europe_btbcarts:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbcarts
+#BEGIN europe_bffckout
+  europe_bffckout:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_bffckout
+#BEGIN europe_bfflylty
+  europe_bfflylty:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_bfflylty
+#BEGIN europe_btbpromo
+  europe_btbpromo:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbpromo
+#BEGIN cgf_ppsi
+  cgf_ppsi:
+    name: 96d4b183-b5b4-47cb-85d9-61d85037809f
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ppsi
+#BEGIN flna_schwmi
+  flna_schwmi:
+    name: 5a99d2b1-e019-4038-b980-d30890919763
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schwmi
+#BEGIN europe_dtcjoy
+  europe_dtcjoy:
+    name: e434bd23-7dc3-412b-abaf-aa04739dbc49
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_dtcjoy
+#BEGIN apac_ochapac
+  apac_ochapac:
+    name: bbc6cdc6-17a9-48b9-bf10-dd2567d68f43
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_ochapac
+#BEGIN cgf_ckptgptppc
+  cgf_ckptgptppc:
+    name: 9c8f1cf4-7cab-498d-ad9a-c3bfed3493e8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ckptgptppc
+#BEGIN cgf_ckptgptpp
+  cgf_ckptgptpp:
+    name: 50c8638b-78bd-499e-a943-a0a526d6d558
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ckptgptpp
+#BEGIN latam_pickabox
+  latam_pickabox:
+    name: 89937da7-9fad-4959-8b21-70bde8f1cd6d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_pickabox
+#BEGIN cgf_ngadapter
+  cgf_ngadapter:
+    name: b6511fc5-9e91-4215-8993-2a4794d7c0fc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ngadapter
+#BEGIN cgf_adapter
+  cgf_adapter:
+    name: b6511fc5-9e91-4215-8993-2a4794d7c0fc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_adapter
+#BEGIN latam_btbprofile
+  latam_btbprofile:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbprofile
+#BEGIN cgf_dseagntdev
+  cgf_dseagntdev:
+    name: 97abe431-cae7-4472-9c81-86655e314251
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dseagntdev
+#BEGIN flna_schwmitwo
+  flna_schwmitwo:
+    name: 5a99d2b1-e019-4038-b980-d30890919763
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_schwmitwo
+#BEGIN flna_trmmrw
+  flna_trmmrw:
+    name: 928e4ef2-bbf1-4dae-b8dd-b7423ae21e38
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_trmmrw
+#BEGIN cgf_pepagm
+  cgf_pepagm:
+    name: 370aa28b-4a09-417d-a69d-0f16ed34a2d4
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepagm
+#BEGIN cgf_edocs
+  cgf_edocs:
+    name: 0d69ec1c-e851-4e21-87a4-0c50c00567f8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_edocs
+#BEGIN cgf_devsol
+  cgf_devsol:
+    name: 2501204b-91e5-4bad-823e-cb210280eee5
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_devsol
+#BEGIN cgf_dwd
+  cgf_dwd:
+    name: a0077fa7-f3f9-4b06-a459-c60dedd6f5c1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dwd
+#BEGIN cgf_flnatop
+  cgf_flnatop:
+    name: a0077fa7-f3f9-4b06-a459-c60dedd6f5c1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_flnatop
+#BEGIN apac_nsgflip
+  apac_nsgflip:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_nsgflip
+#BEGIN amesa_nsgflip
+  amesa_nsgflip:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_nsgflip
+#BEGIN cgf_nsgtest
+  cgf_nsgtest:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_nsgtest
+#BEGIN cgf_dsworkbench
+  cgf_dsworkbench:
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsworkbench
+#BEGIN cgf_iamcentral
+  cgf_iamcentral:
+    name: b5c08c03-c253-4dee-b006-62fa6597d2e1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_iamcentral
+#BEGIN pgcs_aibidwd
+  pgcs_aibidwd:
+    name: 07dcfe45-75d3-4a57-ba93-a0478622344e
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pgcs_aibidwd
+#BEGIN cgf_aisp
+  cgf_aisp:
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_aisp
+#BEGIN flna_transp
+  flna_transp:
+    name: 928e4ef2-bbf1-4dae-b8dd-b7423ae21e38
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_transp
+#BEGIN cgf_fss
+  cgf_fss:
+    name: 0d69ec1c-e851-4e21-87a4-0c50c00567f8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_fss
+#BEGIN cgf_ecm
+  cgf_ecm:
+    name: 0d69ec1c-e851-4e21-87a4-0c50c00567f8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ecm
+#BEGIN cgf_hcmfar
+  cgf_hcmfar:
+    name: ec5642ad-bf72-4e02-bc2b-4614c0c28278
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_hcmfar
+#BEGIN cgf_pepsar
+  cgf_pepsar:
+    name: ec5642ad-bf72-4e02-bc2b-4614c0c28278
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepsar
+#BEGIN cgf_cavo
+  cgf_cavo:
+    name: 0d69ec1c-e851-4e21-87a4-0c50c00567f8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cavo
+#BEGIN latam_pepgpt
+  latam_pepgpt:
+    name: 1a310ed0-2be5-4a6f-a9bb-42520d651221
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_pepgpt
+#BEGIN cgf_eiotptools
+  cgf_eiotptools:
+    name: 17ddd233-d43b-4495-af4d-385ccf825162
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_eiotptools
+#BEGIN europe_btbcep
+  europe_btbcep:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbcep
+#BEGIN europe_btboms
+  europe_btboms:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btboms
+#BEGIN europe_btbproduct
+  europe_btbproduct:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btbproduct
+#BEGIN europe_btblylty
+  europe_btblylty:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btblylty
+#BEGIN europe_btborch
+  europe_btborch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_btborch
+#BEGIN latam_och
+  latam_och:
+    name: 88702048-fe12-4df2-9e6b-5b415502f1aa
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_och
+#BEGIN cgf_ckmspprod
+  cgf_ckmspprod:
+    name: 545a6cbe-d6c7-4ec3-bbf8-49c315e5c4c3
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ckmspprod
+#BEGIN latam_bfflylty
+  latam_bfflylty:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_bfflylty
+#BEGIN cgf_pepvigil
+  cgf_pepvigil:
+    name: a414ca81-d2ad-4f7e-94e0-2835d0482108
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepvigil
+#BEGIN cgf_gssilabs
+  cgf_gssilabs:
+    name: 58d69692-3fdb-419a-b5c7-0693b57fd4fc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_gssilabs
+#BEGIN cgf_pepgenx
+  cgf_pepgenx:
+    name: 72ade007-54d3-491c-a50c-79e1320630b8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgenx
+#BEGIN cgf_mtc
+  cgf_mtc:
+    name: 1460ac87-9d6d-4892-bc31-03d609307c23
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_mtc
+#BEGIN pbna_walmartdsd
+  pbna_walmartdsd:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_walmartdsd
+#BEGIN flna_monday
+  flna_monday:
+    name: 846c3eb0-5dd9-42e2-a264-b0b587944939
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_monday
+#BEGIN cgf_canvas
+  cgf_canvas:
+    name: 7c8f421e-3a9a-42f8-8f85-a42e5bcca3f4
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_canvas
+#BEGIN apac_dwd
+  apac_dwd:
+    name: 8e3feb40-6cad-4734-9737-d20f9bf6ba3c
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_dwd
+#BEGIN latam_bffckout
+  latam_bffckout:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_bffckout
+#BEGIN latam_bffmerch
+  latam_bffmerch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_bffmerch
+#BEGIN pfna_schwhseint
+  pfna_schwhseint:
+    name: 5a99d2b1-e019-4038-b980-d30890919763
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_schwhseint
+#BEGIN cgf_spot
+  cgf_spot:
+    name: cf1a4bb8-3ea0-4440-9bfe-a244f927acd6
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_spot
+#BEGIN latam_btbpromo
+  latam_btbpromo:
+    name: 55cea7cf-3e16-49c6-ab9e-acf852c3420b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbpromo
+#BEGIN pbna_quikpick
+  pbna_quikpick:
+    name: b9fe6755-d41b-4c0a-831c-ffac0402141a
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_quikpick
+#BEGIN cgf_cvgtst
+  cgf_cvgtst:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cvgtst
+#BEGIN cgf_daily
+  cgf_daily:
+    name: be581b38-19c8-4fb2-8b74-b9fc846b87dc
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_daily
+#BEGIN cgf_ckptgpt
+  cgf_ckptgpt:
+    name: 9c8f1cf4-7cab-498d-ad9a-c3bfed3493e8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ckptgpt
+#BEGIN pfna_schubwhse
+  pfna_schubwhse:
+    name: 5a99d2b1-e019-4038-b980-d30890919763
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_schubwhse
+#BEGIN cgf_pepgptgpu
+  cgf_pepgptgpu:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgptgpu
+#BEGIN cgf_pepgpt
+  cgf_pepgpt:
+    name: 1a310ed0-2be5-4a6f-a9bb-42520d651221
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_pepgpt
+#BEGIN pfna_pogon
+  pfna_pogon:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_pogon
+#BEGIN latam_btboms
+  latam_btboms:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btboms
+#BEGIN latam_btborch
+  latam_btborch:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btborch
+#BEGIN latam_btbcarts
+  latam_btbcarts:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbcarts
+#BEGIN latam_btbproduct
+  latam_btbproduct:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbproduct
+#BEGIN latam_btblylty
+  latam_btblylty:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btblylty
+#BEGIN latam_btbpla
+  latam_btbpla:
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbpla
+#BEGIN latam_btbcartsla
+  latam_btbcartsla:
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbcartsla
+#BEGIN latam_btblyltyla
+  latam_btblyltyla:
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btblyltyla
+#BEGIN latam_btbomsla
+  latam_btbomsla:
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_btbomsla
+#BEGIN cgf_catalystgp
+  cgf_catalystgp:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_catalystgp
+#BEGIN cgf_catalyst
+  cgf_catalyst:
+    name: 28081a67-c616-4e43-b7d1-e3955afe5d82
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_catalyst
+#BEGIN cgf_ckms
+  cgf_ckms:
+    name: 1f8a4384-3f08-4bc5-9a4b-6a0489db6578
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ckms
+#BEGIN apac_fmcshs
+  apac_fmcshs:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_fmcshs
+#BEGIN cgf_dtcjoykz
+  cgf_dtcjoykz:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dtcjoykz
+#BEGIN europe_dtcjoykz
+  europe_dtcjoykz:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_dtcjoykz
+#BEGIN pfna_walmartdsd
+  pfna_walmartdsd:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_walmartdsd
+#BEGIN europe_fmcshs
+  europe_fmcshs:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_fmcshs
+#BEGIN pbna_pbnasckm
+  pbna_pbnasckm:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_pbnasckm
+#BEGIN pfna_ast
+  pfna_ast:
+    name: a888b388-ed36-485e-8412-a5d1954fb02d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_ast
+#BEGIN europe_dtcjoyperf
+  europe_dtcjoyperf:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_dtcjoyperf
+#BEGIN apac_psd
+  apac_psd:
+    name: 83bef1a0-6b72-4eac-ac37-5e29f3a8abef
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_psd
+#BEGIN europe_psd
+  europe_psd:
+    name: 83bef1a0-6b72-4eac-ac37-5e29f3a8abef
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_psd
+#BEGIN pbna_acpmaysvil
+  pbna_acpmaysvil:
+    name: 7db6ab8e-bf2a-4cdd-ad46-f0b9c7dda20d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_acpmaysvil
+#BEGIN pbna_acpcollier
+  pbna_acpcollier:
+    name: 7db6ab8e-bf2a-4cdd-ad46-f0b9c7dda20d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_acpcollier
+#BEGIN cgf_cpgpt
+  cgf_cpgpt:
+    name: 9c8f1cf4-7cab-498d-ad9a-c3bfed3493e8
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cpgpt
+#BEGIN cgf_cvopa
+  cgf_cvopa:
+    name: f32dff2b-8d05-43ea-9abf-3404123210ab
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cvopa
+#BEGIN sntdps_toggle
+  sntdps_toggle:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END sntdps_toggle
+#BEGIN pbna_senfsv
+  pbna_senfsv:
+    name: f824e990-d8dd-4eaa-8b38-e36820c84691
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_senfsv
+#BEGIN cgf_dsd
+  cgf_dsd:
+    name: 7a65669a-a179-4f63-9210-546b9f94175d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_dsd
+#BEGIN flna_iwms
+  flna_iwms:
+    name: 1505c0c1-71c6-4c31-bd82-762149bdfb06
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END flna_iwms
+#BEGIN latam_iaipsr
+  latam_iaipsr:
+    name: 94f04ddd-cdf9-4f94-9b31-5b97d49bf353
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_iaipsr
+#BEGIN cgf_peployalty
+  cgf_peployalty:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_peployalty
+#BEGIN cgf_vcr
+  cgf_vcr:
+    name: 5987debe-aec7-4b16-8f66-5084b637d104
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_vcr
+#BEGIN cgf_aspiretwob
+  cgf_aspiretwob:
+    name: 0ed416cf-a75d-4895-90fd-51a5c7973a6d
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_aspiretwob
+#BEGIN cgf_appdynamic
+  cgf_appdynamic:
+    name: 4c3d7c91-aad4-446c-8c09-d8cabcd77c07
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_appdynamic
+#BEGIN latam_dtcjoy
+  latam_dtcjoy:
+    name: e434bd23-7dc3-412b-abaf-aa04739dbc49
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_dtcjoy
+#BEGIN cgf_risingwave
+  cgf_risingwave:
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_risingwave
+#BEGIN europe_opeurope
+  europe_opeurope:
+    name: cf1a4bb8-3ea0-4440-9bfe-a244f927acd6
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END europe_opeurope
+#BEGIN cgf_cmp
+  cgf_cmp:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_cmp
+#BEGIN latam_dtcjoyperf
+  latam_dtcjoyperf:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_dtcjoyperf
+#BEGIN cgf_ibp
+  cgf_ibp:
+    name: 66c728bb-7d95-4e31-8638-af3999485a72
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_ibp
+#BEGIN pbna_cmptaq3
+  pbna_cmptaq3:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_cmptaq3
+#BEGIN latam_iaipsrtest
+  latam_iaipsrtest:
+    name: 94f04ddd-cdf9-4f94-9b31-5b97d49bf353
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END latam_iaipsrtest
+#BEGIN cgf_artgvhh2
+  cgf_artgvhh2:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_artgvhh2
+#BEGIN apac_cmptest4567
+  apac_cmptest4567:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest4567
+#BEGIN apac_cmpkart
+  apac_cmpkart:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpkart
+#BEGIN apac_cmpx
+  apac_cmpx:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpx
+#BEGIN apac_cmpesax
+  apac_cmpesax:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpesax
+#BEGIN apac_cmpr
+  apac_cmpr:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpr
+#BEGIN apac_cmpqa
+  apac_cmpqa:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpqa
+#BEGIN apac_cmps
+  apac_cmps:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmps
+#BEGIN apac_akscmp
+  apac_akscmp:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_akscmp
+#BEGIN apac_cmpnbr
+  apac_cmpnbr:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpnbr
+#BEGIN apac_cmpoik
+  apac_cmpoik:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpoik
+#BEGIN apac_cmpthtst
+  apac_cmpthtst:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpthtst
+#BEGIN apac_cmptstdb
+  apac_cmptstdb:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptstdb
+#BEGIN apac_cmptsa
+  apac_cmptsa:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptsa
+#BEGIN apac_cmpqatest
+  apac_cmpqatest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpqatest
+#BEGIN apac_aksazure
+  apac_aksazure:
+    name: d59bbc4b-690d-4288-afd3-f41b07db9d88
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_aksazure
+#BEGIN apac_cmptsttw
+  apac_cmptsttw:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptsttw
+#BEGIN apac_cmptstt
+  apac_cmptstt:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptstt
+#BEGIN apac_cmptsttwo
+  apac_cmptsttwo:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptsttwo
+#BEGIN apac_cmpzas
+  apac_cmpzas:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpzas
+#BEGIN apac_cmpkhj
+  apac_cmpkhj:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpkhj
+#BEGIN apac_cmptstone
+  apac_cmptstone:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptstone
+#BEGIN amesa_bahwqvs
+  amesa_bahwqvs:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_bahwqvs
+#BEGIN apac_cmpmjis
+  apac_cmpmjis:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpmjis
+#BEGIN apac_cmpsts
+  apac_cmpsts:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsts
+#BEGIN apac_cmptestka
+  apac_cmptestka:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestka
+#BEGIN apac_cmpsesku
+  apac_cmpsesku:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsesku
+#BEGIN apac_cmpsesk
+  apac_cmpsesk:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsesk
+#BEGIN apac_cmpspace
+  apac_cmpspace:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpspace
+#BEGIN apac_cmpprovisn
+  apac_cmpprovisn:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpprovisn
+#BEGIN apac_cmptetten
+  apac_cmptetten:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptetten
+#BEGIN apac_cmpbishwa
+  apac_cmpbishwa:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpbishwa
+#BEGIN apac_testcmpdb
+  apac_testcmpdb:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_testcmpdb
+#BEGIN apac_cmpkjkjk
+  apac_cmpkjkjk:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpkjkjk
+#BEGIN apac_cmpytr
+  apac_cmpytr:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpytr
+#BEGIN apac_cmpesvf
+  apac_cmpesvf:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpesvf
+#BEGIN apac_cmpdsw
+  apac_cmpdsw:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpdsw
+#BEGIN amesa_oskxhth
+  amesa_oskxhth:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_oskxhth
+#BEGIN apac_cmptestdb
+  apac_cmptestdb:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestdb
+#BEGIN apac_cmpsadc
+  apac_cmpsadc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsadc
+#BEGIN apac_cmpwqa
+  apac_cmpwqa:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpwqa
+#BEGIN apac_cmpakstest
+  apac_cmpakstest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpakstest
+#BEGIN apac_cmpdbtest
+  apac_cmpdbtest:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpdbtest
+#BEGIN apac_cmpsxv
+  apac_cmpsxv:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsxv
+#BEGIN apac_akstestcmp
+  apac_akstestcmp:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_akstestcmp
+#BEGIN apac_cmpazx
+  apac_cmpazx:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpazx
+#BEGIN apac_cmpoh
+  apac_cmpoh:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpoh
+#BEGIN apac_akproj
+  apac_akproj:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_akproj
+#BEGIN apac_cmpaks
+  apac_cmpaks:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpaks
+#BEGIN apac_cmpkarf
+  apac_cmpkarf:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpkarf
+#BEGIN apac_cmpujn
+  apac_cmpujn:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpujn
+#BEGIN apac_cmpre
+  apac_cmpre:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpre
+#BEGIN apac_cmpds
+  apac_cmpds:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpds
+#BEGIN apac_cmpbvc
+  apac_cmpbvc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpbvc
+#BEGIN apac_cmprf
+  apac_cmprf:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmprf
+#BEGIN apac_cmpcvb
+  apac_cmpcvb:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpcvb
+#BEGIN apac_cmpredtest
+  apac_cmpredtest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpredtest
+#BEGIN apac_sesktest
+  apac_sesktest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_sesktest
+#BEGIN apac_cmptst
+  apac_cmptst:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptst
+#BEGIN apac_cmpsd
+  apac_cmpsd:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpsd
+#BEGIN apac_cmped
+  apac_cmped:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmped
+#BEGIN apac_cmpproj
+  apac_cmpproj:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpproj
+#BEGIN pbna_cmptest19
+  pbna_cmptest19:
+    name: 12345678
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_cmptest19
+#BEGIN apac_cmptestaks
+  apac_cmptestaks:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestaks
+#BEGIN apac_cmprbtest
+  apac_cmprbtest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmprbtest
+#BEGIN apac_tescmp
+  apac_tescmp:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_tescmp
+#BEGIN apac_cmptethree
+  apac_cmptethree:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptethree
+#BEGIN apac_cmprestest
+  apac_cmprestest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmprestest
+#BEGIN amesa_oisslns
+  amesa_oisslns:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_oisslns
+#BEGIN apac_cmpscd
+  apac_cmpscd:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpscd
+#BEGIN apac_cmptest333
+  apac_cmptest333:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest333
+#BEGIN apac_cmptest222
+  apac_cmptest222:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest222
+#BEGIN apac_cmptest111
+  apac_cmptest111:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest111
+#BEGIN amesa_azrbnwo
+  amesa_azrbnwo:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_azrbnwo
+#BEGIN apac_cmptestoo
+  apac_cmptestoo:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestoo
+#BEGIN apac_cmptestkk
+  apac_cmptestkk:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestkk
+#BEGIN apac_cmptestll
+  apac_cmptestll:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestll
+#BEGIN apac_cmptestmm
+  apac_cmptestmm:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestmm
+#BEGIN apac_cmptestdm
+  apac_cmptestdm:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestdm
+#BEGIN apac_cmptestn
+  apac_cmptestn:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestn
+#BEGIN apac_cmptestt
+  apac_cmptestt:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestt
+#BEGIN apac_cmptestchg
+  apac_cmptestchg:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestchg
+#BEGIN apac_cmptestnew
+  apac_cmptestnew:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptestnew
+#BEGIN apac_cmpgg
+  apac_cmpgg:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpgg
+#BEGIN apac_cmpd
+  apac_cmpd:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpd
+#BEGIN apac_cmpwe
+  apac_cmpwe:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpwe
+#BEGIN apac_ets
+  apac_ets:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_ets
+#BEGIN apac_cmpyh
+  apac_cmpyh:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpyh
+#BEGIN apac_cmptest
+  apac_cmptest:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest
+#BEGIN apac_cmpvg
+  apac_cmpvg:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpvg
+#BEGIN apac_cmpdf
+  apac_cmpdf:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpdf
+#BEGIN apac_cmpew
+  apac_cmpew:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpew
+#BEGIN apac_cmpas
+  apac_cmpas:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpas
+#BEGIN apac_cmpxc
+  apac_cmpxc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpxc
+#BEGIN apac_cmpvb
+  apac_cmpvb:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpvb
+#BEGIN apac_cmpp
+  apac_cmpp:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpp
+#BEGIN amesa_bfnmvuc
+  amesa_bfnmvuc:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_bfnmvuc
+#BEGIN apac_cmpc
+  apac_cmpc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpc
+#BEGIN apac_hjbkk
+  apac_hjbkk:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_hjbkk
+#BEGIN test_test3
+  test_test3:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END test_test3
+#BEGIN test_test1
+  test_test1:
+    name: b5c08c03-c253-4dee-b006-62fa6597d2e1
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END test_test1
+#BEGIN test_test
+  test_test:
+    name: 2fb06ef0-56cd-4f51-8c16-9599224e0a01
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END test_test
+#BEGIN apac_ser
+  apac_ser:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_ser
+#BEGIN apac_sestest
+  apac_sestest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_sestest
+#BEGIN pgcs_sbmtest
+  pgcs_sbmtest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pgcs_sbmtest
+#BEGIN apac_sbhtest
+  apac_sbhtest:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_sbhtest
+#BEGIN apac_cmptest321
+  apac_cmptest321:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptest321
+#BEGIN apac_cmpthree
+  apac_cmpthree:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpthree
+#BEGIN apac_cmptesttwo
+  apac_cmptesttwo:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmptesttwo
+#BEGIN amesa_ojikwtu
+  amesa_ojikwtu:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_ojikwtu
+#BEGIN amesa_rjclfsg
+  amesa_rjclfsg:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_rjclfsg
+#BEGIN amesa_cmpcbv
+  amesa_cmpcbv:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpcbv
+#BEGIN apac_cmpbvcx
+  apac_cmpbvcx:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpbvcx
+#BEGIN amesa_eas
+  amesa_eas:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_eas
+#BEGIN amesa_cmpassde
+  amesa_cmpassde:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpassde
+#BEGIN amesa_cmpxsz
+  amesa_cmpxsz:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpxsz
+#BEGIN amesa_cmphtg
+  amesa_cmphtg:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmphtg
+#BEGIN amesa_cmpsxz
+  amesa_cmpsxz:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpsxz
+#BEGIN amesa_cmpbnm
+  amesa_cmpbnm:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpbnm
+#BEGIN amesa_cmphnm
+  amesa_cmphnm:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmphnm
+#BEGIN amesa_cmpsdw
+  amesa_cmpsdw:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpsdw
+#BEGIN amesa_cmpcvbn
+  amesa_cmpcvbn:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpcvbn
+#BEGIN amesa_cmpyep
+  amesa_cmpyep:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpyep
+#BEGIN amesa_dev
+  amesa_dev:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_dev
+#BEGIN amesa_cmpvbc
+  amesa_cmpvbc:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpvbc
+#BEGIN amesa_cmpasa
+  amesa_cmpasa:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpasa
+#BEGIN amesa_cmpbkh
+  amesa_cmpbkh:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpbkh
+#BEGIN amesa_cmpscd
+  amesa_cmpscd:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpscd
+#BEGIN amesa_cmpqer
+  amesa_cmpqer:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpqer
+#BEGIN amesa_cmpfdc
+  amesa_cmpfdc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpfdc
+#BEGIN amesa_cmpabc
+  amesa_cmpabc:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpabc
+#BEGIN amesa_tstses
+  amesa_tstses:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_tstses
+#BEGIN amesa_movie
+  amesa_movie:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_movie
+#BEGIN amesa_khdskae
+  amesa_khdskae:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_khdskae
+#BEGIN amesa_blkfyic
+  amesa_blkfyic:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_blkfyic
+#BEGIN amesa_cmpp
+  amesa_cmpp:
+    name: 06558e96-97e2-4468-9919-1e502cce2423
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpp
+#BEGIN amesa_cmpepsi
+  amesa_cmpepsi:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpepsi
+#BEGIN amesa_czlgvos
+  amesa_czlgvos:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_czlgvos
+#BEGIN amesa_abs
+  amesa_abs:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_abs
+#BEGIN apac_apc
+  apac_apc:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_apc
+#BEGIN amesa_ame
+  amesa_ame:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_ame
+#BEGIN amesa_xkmruy
+  amesa_xkmruy:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_xkmruy
+#BEGIN amesa_cmpttest
+  amesa_cmpttest:
+    name: 40028d20-f9ce-4c97-b181-a9973e69e1c7
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpttest
+#BEGIN cgf_yellow
+  cgf_yellow:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_yellow
+#BEGIN amesa_vymhxs
+  amesa_vymhxs:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_vymhxs
+#BEGIN amesa_cjscsu
+  amesa_cjscsu:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cjscsu
+#BEGIN amesa_bxeycf
+  amesa_bxeycf:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_bxeycf
+#BEGIN cgf_tree
+  cgf_tree:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END cgf_tree
+#BEGIN amesa_gsthnz
+  amesa_gsthnz:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_gsthnz
+#BEGIN apac_apa
+  apac_apa:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_apa
+#BEGIN apac_abcd
+  apac_abcd:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_abcd
+#BEGIN apac_cmpim
+  apac_cmpim:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpim
+#BEGIN amesa_pdiamg
+  amesa_pdiamg:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_pdiamg
+#BEGIN apac_cmpl
+  apac_cmpl:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmpl
+#BEGIN pgcs_snows
+  pgcs_snows:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pgcs_snows
+#BEGIN amesa_cmpten
+  amesa_cmpten:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpten
+#BEGIN amesa_cmpeht
+  amesa_cmpeht:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_cmpeht
+#BEGIN apac_chopper
+  apac_chopper:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_chopper
+#BEGIN amesa_nami
+  amesa_nami:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END amesa_nami
+#BEGIN apac_cloud
+  apac_cloud:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cloud
+#BEGIN apac_abc
+  apac_abc:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_abc
+#BEGIN pgcs_snow
+  pgcs_snow:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pgcs_snow
+#BEGIN apac_dev
+  apac_dev:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_dev
+#BEGIN pfna_watch
+  pfna_watch:
+    name: 80331333-0eec-4e7d-b830-ed74838cea2b
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pfna_watch
+#BEGIN apac_cmp
+  apac_cmp:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END apac_cmp
+#BEGIN pbna_cmptesting
+  pbna_cmptesting:
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+#END pbna_cmptesting
+  # #########
+  # AD Groups -- SORT lexicographically by var name
+  # #########
+
+  eiap_admins:
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+#    alias: Team.Support.EIAP.Admins
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_couchbase:
+    name: 71436262-8293-43bd-a4d1-ca2b30270ea3
+#    alias: Team.Support.HHNext.Couchbase.Admin
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_eiv:
+    name: d01606a1-772f-41f7-8c2a-a4d3fe9ed75a
+#    alias: Team.Support.EIAP.FLNA.EIV.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_mdp:
+    name: 73c6a2bc-fdb3-47df-ac06-2b5714372505
+#    alias: Team.Support.EIAP.GLOBAL.MDP.AppSupport
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  iacoe_admin:
+    name: d28a3e04-0692-4c12-81bc-4794cde1f936
+#    alias: Team.Support.IACOE.Admins
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_gaia:
+    name: 40524656-26d7-45f7-91ce-687ffc874e77
+#    alias: Team.Support.EIAP.TECHM.GAiA.Dev
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+  
+  global_services:
+    name: 9b6ffed0-c645-45ba-b34f-f0d3790b9eed
+#    alias: Team.Support.EIAP.GLOBAL.SERVICES.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+ 
+  global_idt:
+    name: 08a23e79-b42b-4fea-9933-5332397269f5
+#    alias: Team.Support.EIAP.Global.InnovationDigitalTwin.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  k8s_admin:
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+#    alias: Team.Support.EIAP.K8S.Admin
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  latam_gtm:
+    name: 605e4cf8-3a2f-4b52-ac22-dae327e4e8d4
+#    alias: Team.Support.EIAP.LATAM.GTM.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+  
+  flna_hhnext:
+    name: baf49f99-ef11-45be-8a10-d70ca0829015
+#    alias: Team.Support.EIAP.FLNA.HHNext.AksAppSupport
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_cle: 
+    name: e0bee19c-5b36-4188-8a1f-1311a099d23b
+#    alias: Team.Support.EIAP.CGF.NextGenCLE.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_f2p: 
+    name: f69fd0f0-ae9c-4a14-86ad-3d45bca10a87
+#    alias: Team.Support.EIAP.EnterpriseIntegration.Dev
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_dop: 
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+#    alias: Team.Support.EIAP.GLOBAL.CEP.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_pog: 
+    name: 2d3540a9-bdc6-4258-8f2b-c975b21268e0
+#    alias: Team.Support.POGStoreMappingAutomation
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_eiotp: 
+    name: b2a241b8-1076-47e2-a9b9-6f48792c657f
+#    alias: Team.Support.EIAP.Global.EIOTP.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_cmp:
+    name: 470d23ce-10b5-4038-975d-70160619df87
+#    alias: Team.Support.EIAP.GLOBAL.CMP.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+  
+  cgf_wsp:
+    name: d6214fcd-54e3-42af-953b-394c158cfb26
+#    alias: Team.Support.MyPepsiCo.AKS.NonProd.Admins
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_devsecops:
+    name: 8e70f8e9-4239-4b49-883b-3802dad7e1cd
+#    alias: Team.Support.EIAP.GLOBAL.DevSecOps.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_cep: 
+    name: bc6f6411-d213-4e3d-a757-698aafa953dd
+#    alias: Team.Support.EIAP.GLOBAL.CEP.Developer  
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_tpo: 
+    name: 214e0e6b-3fff-42bc-a56d-00a5328d3b67
+#    alias: Team.support.App.Developers.TPO
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+  
+  global_wsp:
+    name: 90a43a08-72ad-4aa3-b570-fb0dee1012b9 
+#    alias: team.support.mypepsico.aks.admins
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+       
+  cgf_vantagex:
+    name: 1ec1cbe3-1b44-4034-b528-907904f472c6
+#    alias: Team.Support.Azure.Vanxdashboard
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_halo:
+    name: 6456152d-39e8-4d97-bd21-167521b36312
+#    alias: Team.Support.EIAP.PBNA.HALO.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_plci:
+    name: 4e5581eb-00d0-41b6-b35d-9f34890eca47
+#    alias: Team.Support.PLCI.Contributor
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_difac:
+    name: cf1a4bb8-3ea0-4440-9bfe-a244f927acd6
+#    alias: Team.Support.IAI.PWC.Azure.Dev
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_pgt:
+    name: 2e2d401d-fb25-4308-afb4-1bab29ad1a92
+#    alias: Team.Support.EIAP.PFNA.CommercialIT.AppSupport
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_pdm:
+    name: 97ca7245-9539-4a6d-a55a-1c5d47b4d3f3
+#    alias: Team.Support.GDM.EIAP.Infrastructure
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_gtm:
+    name: fad909bf-4418-4ea1-9c22-7b84736a1a68
+#    alias: Team.Support.PGT.FLNA.GTM.Developers
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  global_eip:
+    name: 9b6ffed0-c645-45ba-b34f-f0d3790b9eed
+#    alias: Team.Support.EIAP.GLOBAL.SERVICES.Developer 
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  och_edt:
+    name: 9a17b77c-544e-4f01-a8b5-fd08492ea1c7
+#    alias: Team.Support.OCH.ESSA.DigitalSales.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_smartr:
+    name: 7f5591c4-3039-408f-bedd-dbe9900b479d
+#    alias: Team.Support.EIAP.PBNA.SMARTR.Developer
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  iacoe_nprdcntb:
+    name: 929bc949-0c97-48c7-be5d-fd26cedf21e5
+#    alias: Team.Support.IACOE.MLOPS.NPRDCNTB
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  pfna_onepep:
+    name: 701848d1-173e-4ddb-99a3-698067597f20
+#    alias: Team.AppSupportDPS.OnePEP.CAF
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_btb:
+    name: 3748b0e2-b193-40a6-a652-0605ac1d9c87
+#    alias: Team.Support.btb.aks.nonprod.Admins
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_btb_prod:
+    name: f87b7927-6e8d-4c05-8ba8-8fd85c630c7b
+    alias: Team.Support.btb.aks.Admins
+    kind: Group
+
+  pfna_ipp:
+    name: 05e20b52-d3bb-4d23-91f6-0edc816162a4
+#    alias: Team.Support.GDA.IPP.Contributors
+    kind: Group
+    apiGroup: rbac.authorization.k8s.io
+
+  och_na:
+    name: 88702048-fe12-4df2-9e6b-5b415502f1aa
+    alias: Team.Support.OCH.NA.DigitalSales.Developer
+    kind: Group
+  
+  global_eiotp_pepsns:
+    name: ae62bd72-16ed-4576-aab0-5ded9e591efb
+    alias: Team.Support.EIAP.Global.PEPsenseIoT.Preprod
+    kind: Group
+
+  flna_dxpicasso:
+    name: 8aa54b31-0551-439f-a64e-3edeefc50f70
+    alias: Team.Support.EIAP.PBNA.dxpicasso
+    kind: Group
+
+  pfna_vct:
+    name: a49c2351-3325-4dfc-acd7-e3e239dbba4d
+    alias: Team.Support.VCT.AKS.NonProd.Admins
+    kind: Group
+
+  cgf_pdmpublisher:
+    name: cbaeec6e-658e-4cc4-81c6-70b0055f05fa
+    alias: Team.Support.GDM.Publisher
+    kind: Group
+
+  eiotp_pepsns_prod:
+    name: 3821cf5b-5c76-423a-bc19-2e19cceac101
+    alias: Team.Support.EIAP.Global.PEPsenseIoT.Prod
+    kind: Group
+  
+  global_hrsev:
+    name: cf1a4bb8-3ea0-4440-9bfe-a244f927acd6
+    alias: Team.Support.IAI.PWC.Azure.Dev
+    kind: Group
+
+  pbna_svtrobo:
+    name: 7db6ab8e-bf2a-4cdd-ad46-f0b9c7dda20d
+    alias: Team.App.SVTRobotics.Developers
+    kind: Group
+
+  global_hcm:
+    name: f693dbbf-f9ab-41ec-8b8d-80068803d84d
+    alias: Team.Support.Hcm.Aks.Nonprod.Admins
+    kind: Group
+
+  global_hcmprod:
+    name: bd2f88d7-e5e9-4c19-9c65-8b3029b53884
+    alias: team.support.hcm.aks.admins
+    kind: Group  
+
+  europe_anm:
+    name: 15203b5b-07e4-41b9-a732-ed4c4be4e6a0
+    alias: Team.Support.AnM.Privileged.Admins
+    kind: Group  
+
+  cgfrd_labrt:
+    name: 1937997c-a8eb-4a06-b5fc-525c19ef9ead
+    alias: Team.Support.IACOE.LabelRight.NPRDCNTB
+    kind: Group 
+
+  pfna_xcontamination:
+    name: ad938fe8-69b0-4b91-9ca3-553934a773a0
+    alias: Team.Support.PFNA.XContamination.nonprod
+    kind: Group 
+
+
+
+  # #########
+  # AD Users
+  # Updates - Authentication happens on email-id and not object-id
+  # #########
+
+  mkannapa:
+    name: mkannapa@pepsico.com
+#    alias: 2207322a-6b0b-4c77-9a19-a8ba1f0230fa
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  pnaduvat:
+    name: pnaduvat@pepsico.com
+#    alias: 791b5db1-bc75-48a6-995a-f1bf58e93840
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  vkosara1:
+    name: ba3c4f5e-0133-42c9-adcf-10009b1d9882
+#    alias: vkosara1@pepsico.com
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  amele123:
+    name: amele123@pepsico.com
+#    alias: 2ab2aca6-98db-4256-bae5-c0aa5d0b7f47
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  psaxena12:
+    name: psaxena12@pepsico.com
+#    alias: b858d709-fc7b-4f51-af81-1a240452b4b0
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  cgolla01:
+    name: cgolla01@pepsico.com
+#    alias: 0004fd5e-d171-49a1-9a9e-436860d16989
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  pmotupal:
+    name: pmotupal@pepsico.com
+#    alias: b912f86f-e691-4b92-ac53-5b1ba43e2699
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  sowola01:
+    name: sowola01@pepsico.com
+#    alias: 95bfb4c9-524e-4c26-9b01-9cc1405e8652
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  hgurram5:
+    name: hgurram5@pepsico.com
+#    alias: 67684993-0260-48f9-90ce-bf20d2253947
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  ssulluru:
+    name: ssulluru@pepsico.com
+#    alias: 286845aa-f368-4385-840c-ec539109790d
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  upareta5:
+    name: upareta5@pepsico.com
+#    alias: 44cc6bc0-a397-4ac0-98bd-fa70ff369d45
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  mnalavad:
+    name: mnalavad@pepsico.com
+    alias: 70fa8ecd-b5b0-4601-916d-21d4fac61986
+    kind: User    
+
+  # #########
+  # Service Principals
+  # #########
+
+  flna_couchbase_sp:
+    name: 86061b53-a306-401d-bdb5-6b8e7e27f643
+#    alias: pep-eiap-svc-flna-couchbase-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_iacoe_sp:
+    name: c8fd7fc3-e8ff-46bb-8def-1945ce73d58c
+#    alias: pep-eiap-svc-flna-iacoe-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io          
+
+  flna_eiv_sp:
+    name: 6dd2d798-bbe2-4eba-98be-d3dd0f5256c4
+#    alias: pep-eiap-svc-flna-eiv-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  eiap_infra_sp:
+    name: 2822624f-6db7-4c3e-bb9e-63dc840ea1d4
+#    alias: pep-eiap-svc-eiap-infra-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+    
+  global_mdp_sp:
+    name: f3193d0e-b62a-4e41-a3cf-76e0d42facb8
+#    alias: pep-eiap-svc-global-mdp-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+    
+  global_gaia_sp:
+    name: 928e430b-b581-4cf5-8682-d7e2973eaa77
+#    alias: pep-eiap-svc-global-gaia-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+    
+  global_services_sp:
+    name: cb36c379-9f40-482c-9c14-34be5f626839
+#    alias: pep-eiap-svc-global-services-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+        
+  global_idt_sp:
+    name: 6b41739b-e813-436d-ace3-b43cb95a7ef1 
+#    alias: acr-digitaltwindev-service-principal
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  global_cep_sp:
+    name: 1205cec5-4315-4e3e-875e-5babeb1af398
+#    alias: dop-gwc-acr-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  global_cep_prod_sp:
+    name: 0933f80d-88aa-44bd-a71d-39e874da1c1d
+#    alias: eiap-acr-service-principal
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  latam_gtm_sp:
+    name: 786dc970-986e-4f2f-8ea2-c3549b402708
+#    alias: pep-eiap-svc-latam-gtm-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_hhnext_sp:
+    name: be5e1679-f3ba-417d-bf28-1d3602267e0c
+#    alias: pep-eiap-svc-flna-hhnext-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io   
+  
+  cgf_cle_sp:
+    name: 0c7cb5d2-94cf-456c-9392-10e44d114cbf
+#    alias: pep-eiap-svc-global-cle-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_f2p_sp:
+    name: 9a0d7274-a8d3-4970-8bfe-83c99923759f
+#    alias: pep-eiap-svc-cgf-f2p-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io    
+
+  cgf_dop_sp:
+    name: 055f8008-68ec-44aa-87bd-2de1918bb4d5
+#    alias: pep-eiap-svc-cgf-dop-sp
+    kind: User    
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_pog_sp:
+    name: 0d4a4ed1-8302-4313-9f39-63770bc9d722
+#    alias: pep-eiap-svc-pbna-pog-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io  
+
+  global_eiotp_sp:
+    name: 871d11a3-7ba1-4f97-a15d-bb5ee6682ef7 
+#    alias: pep-eiap-svc-global-eiotp-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  global_cmp_sp:
+    name: 2e23c725-e1e0-4a61-9b45-f79eb6ea22bf
+#    alias: pep-eiap-svc-global-cmp-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_wsp_sp:
+    name: ba01cc87-3d02-4c8d-9473-982ee92ae720
+#    alias: eiap-mypepsico-acr-svc
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  global_devsecops_sp:
+    name: 17e4954c-637f-4c1c-bb3a-ff0a6a69a108
+#    alias: pep-eiap-nonprod-devsecops-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  global_tpo_sp:
+    name: 02eec520-13e2-4c6f-a9e4-1b380db619dc
+#    alias: pep-eiap-svc-global-tpo-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  cgf_vantagex_sp:
+    name: d8bb3c67-920c-4d6c-ba8e-47e77300c10c
+#    alias: pep-eiap-svc-cgf-vantagex-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  pbna_halo_sp:
+    name: 0811018b-8f42-42e2-83ef-37a28996e673
+#    alias: pep-eiap-svc-pbna-halo-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_pgt_sp:
+    name: 197067ec-d850-4f0b-8470-ac0d7af85a32
+#    alias: pep-eiap-flna-pgt-dev-aks-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  flna_pgt_qa_sp:
+    name: 43b63877-c36e-4121-95d4-5ef126335a81
+#    alias: pep-eiap-flna-pgt-qa-aks-sp
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+  
+  flna_gtm_sp:
+    name: e937d482-344d-4e51-ad0d-ad88904529bc
+#    alias: eiap-akscluster-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  nonprod_devsecops_spn:
+    name: 17e4954c-637f-4c1c-bb3a-ff0a6a69a108
+#    alias: pep-eiap-nonprod-devsecops-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  preprod_devsecops_spn:
+    name: 89b32fe8-f980-4857-8c26-37e763ddb047
+#    alias: pep-eiap-preprod-devsecops-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  prod_devsecops_spn:
+    name: eea00c38-1800-4362-98ea-2e594b4585f5
+#    alias: pep-eiap-prod-devsecops-spn
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  # #########
+  # Manage Identity
+  # #########
+
+  nonprod_scus_infra_02_aks_agentpool_mi:
+    name: 059bae6d-965e-462d-9d72-b19e9bed2a43
+#    alias: pep-eiap-nonprod-scus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  nonprod_eus_infra_02_aks_agentpool_mi:
+    name: 1b8a08eb-7897-4fbf-b755-fafc651f214d
+#    alias: pep-eiap-nonprod-eus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  preprod_scus_infra_02_aks_agentpool_mi:
+    name: 81c437b9-b014-405a-b98b-0c45f41f692c
+#    alias: pep-eiap-preprod-scus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  preprod_eus_infra_02_aks_agentpool_mi:
+    name: ce1141f0-62d0-4628-a284-61bc6706f823
+#    alias: pep-eiap-preprod-eus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  prod_scus_infra_02_aks_agentpool_mi:
+    name: 1109d5dc-f397-4160-bd36-17df554443d2
+#    alias: pep-eiap-prod-scus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+
+  prod_eus_infra_02_aks_agentpool_mi:
+    name: be54708b-c486-48ce-bc76-90e69dc50e43
+#    alias: pep-eiap-prod-eus-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+  prod_gwc_infra_02_aks_agentpool_mi:
+    name: 229f5bef-edbe-498f-962e-2560bcd9f5ff
+#    alias: pep-eiap-prod-gwc-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+  prod_sea_infra_02_aks_agentpool_mi:
+    name: 9341d4ca-60a5-4f73-8794-0af684050576
+#    alias: pep-eiap-prod-sea-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io
+  prod_suk_infra_02_aks_agentpool_mi:
+    name: 76016917-18af-4fb4-9eb7-b5eaa0446a5b
+#    alias: pep-eiap-prod-suk-infra-02-aks-agentpool
+    kind: User
+    apiGroup: rbac.authorization.k8s.io

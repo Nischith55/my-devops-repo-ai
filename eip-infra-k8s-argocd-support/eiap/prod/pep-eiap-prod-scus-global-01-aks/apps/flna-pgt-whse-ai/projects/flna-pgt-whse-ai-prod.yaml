@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: flna-pgt-whse-ai-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for flna-pgt-whse-ai-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/FLNA_PWM/_git/pep-flna-whse-ai-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-flna-flnawh-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: flna-pgt-whse-ai-prod-admin
+        description: Admin privileges to flna-pgt-whse-ai-prod
+        policies:
+        - p, proj:flna-pgt-whse-ai-prod:flna-pgt-whse-ai-prod-admin, applications, *, flna-pgt-whse-ai-prod/*, allow
+        - p, proj:flna-pgt-whse-ai-prod:flna-pgt-whse-ai-prod-admin, repositories, *, flna-pgt-whse-ai-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: flna-pgt-whse-ai-prod-user
+        description: Read-only privileges to flna-pgt-whse-ai-prod
+        policies:
+        - p, proj:flna-pgt-whse-ai-prod:flna-pgt-whse-ai-prod-user, applications, get, flna-pgt-whse-ai-prod/*, allow
+        - p, proj:flna-pgt-whse-ai-prod:flna-pgt-whse-ai-prod-user, applications, sync, flna-pgt-whse-ai-prod/*, allow
+        - p, proj:flna-pgt-whse-ai-prod:flna-pgt-whse-ai-prod-user, repositories, get, flna-pgt-whse-ai-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.FLNA.NonProd.WHSECC"
+        - "Team.Support.EIAP.READ"
+    

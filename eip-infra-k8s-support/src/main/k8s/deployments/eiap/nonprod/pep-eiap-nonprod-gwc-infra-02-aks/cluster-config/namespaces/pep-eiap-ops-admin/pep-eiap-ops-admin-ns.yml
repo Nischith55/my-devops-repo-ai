@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: disabled
+    team: eiap-admins
+    # MUST Change
+    cluster-name: pep-eiap-nonprod-gwc-infra-02-aks
+    environment: nonprod
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    app.kubernetes.io/created-by: Haritha_Shakirat_Prasad_2021-09-07_12-15-07
+    app.kubernetes.io/managed-by: manual
+  name: pep-eiap-ops-admin

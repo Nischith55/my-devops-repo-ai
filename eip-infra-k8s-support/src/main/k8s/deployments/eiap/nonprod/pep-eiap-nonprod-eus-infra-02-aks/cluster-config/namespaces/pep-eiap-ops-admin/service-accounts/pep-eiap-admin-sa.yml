@@ -1,0 +1,7 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-admin-sa
+  namespace: pep-eiap-ops-admin

@@ -1,0 +1,107 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-cmp-cmp-ecec-qa-cv-gw
+  namespace: pep-cmp-cmp-ecec-qa
+spec:
+  selector:
+    istio: pep-cmp-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-cmp-cmp-ecec-qa.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-ecec-qa-cv-gw-tls-443
+    port:
+      name: https-pep-cmp-cmp-ecec-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-cmp-cmp-ecec-qa-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-infra-ecec-qa-cv-web.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-cmp-ecec-qa-cv-gw-https-443
+    port:
+      name: https-pep-cmp-cmp-ecec-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - efcrewfced.qa.mypepsico.com
+    - pep-cmp-cmp-ecec-qa-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - qcmp1.dev.mypepsico.com
+    - pep-cmp-infra-ecec-qa-cv-web.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - qinf1.qa.mypepsico.com
+    name: pep-cmp-cmp-ecec-qa-cv-gw-http-80
+    port:
+      name: http-pep-cmp-cmp-ecec-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - efcrewfced.qa.mypepsico.com
+    name: pep-cmp-cmp-ecec-qa-cv-gw-https-1-443
+    port:
+      name: https-pep-cmp-cmp-ecec-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-cmp-ecec-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - qinf1.qa.mypepsico.com
+    name: pep-cmp-cmp-ecec-qa-cv-gw-4-https-443
+    port:
+      name: pep-cmp-cmp-ecec-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: qinf1.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

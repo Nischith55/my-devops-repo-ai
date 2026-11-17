@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-flna-scopt-delivery-stop
+  name: pep-pfna-flna-scopt-delivery-stop-vs
+  namespace: pep-pfna-flna-scopt-prod
+spec:
+  gateways:
+  - pep-pfna-flna-scopt-prod/pep-pfna-flna-scopt-prod-cv-gw
+  hosts:
+  - pep-pfna-flna-scopt-delivery-stop.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-flna-scopt-delivery-stop.pep-pfna-flna-scopt-prod.svc.cluster.local
+        port:
+          number: 80

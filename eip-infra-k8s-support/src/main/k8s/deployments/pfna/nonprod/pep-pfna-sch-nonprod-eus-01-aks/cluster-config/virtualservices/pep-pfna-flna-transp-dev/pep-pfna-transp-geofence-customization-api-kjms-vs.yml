@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-geofence-customization-api-kjms-vs
+  namespace: pep-pfna-flna-transp-dev
+  labels:
+      app: pep-pfna-transp-geofence-customization-api
+spec:
+  hosts:
+  - pep-pfna-transp-geofence-customization-api.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-dev/pep-pfna-flna-transp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-transp-geofence-customization-api.pep-pfna-flna-transp-dev.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pep-pfna-geofence-customization-ui.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - PUT
+      - GET
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Accept
+       
+  

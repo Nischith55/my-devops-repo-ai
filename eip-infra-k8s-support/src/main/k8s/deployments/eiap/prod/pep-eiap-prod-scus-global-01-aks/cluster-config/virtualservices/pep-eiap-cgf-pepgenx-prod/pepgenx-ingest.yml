@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    meta.helm.sh/release-name: pep-cto-ee-pepgenx-ingestion
+    meta.helm.sh/release-namespace: pep-eiap-cgf-pepgenx-prod
+  labels:
+    app: pepgenx-ingest
+    app.kubernetes.io/instance: pep-cto-ee-pepgenx-ingestion
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: '20240718.1'
+    helm.sh/chart: platform-chart-0.1.1
+  name: pepgenx-ingest
+  namespace: pep-eiap-cgf-pepgenx-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-pepgenx-prod/pep-eiap-cgf-pepgenx-prod-cv-gw
+  hosts:
+  - pepgenx-ingest.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepgenx-ingest.pep-eiap-cgf-pepgenx-prod.svc.cluster.local
+        port:
+          number: 8080
+      corsPolicy:
+        allowCredentials: true
+        allowHeaders:
+        - Authorization
+        - Link
+        - Content-Type
+        - Access-Control-Allow-Origin
+        - Access-Control-Allow-Headers
+        allowMethods:
+        - POST
+        - GET
+        - PUT
+        - DELETE
+        - OPTIONS
+        - PATCH
+        allowOrigins:
+        - exact: https://cicchatbot.pepsico.com
+        exposeHeaders:
+        - x-total-count
+        - x-source

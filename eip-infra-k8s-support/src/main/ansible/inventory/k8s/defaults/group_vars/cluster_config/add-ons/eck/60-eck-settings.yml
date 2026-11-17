@@ -1,0 +1,45 @@
+---
+# ##
+# ABBREVIATIONS
+#  - eck -> elastic-system
+#  - istio_operator_tag: override for specific cluster if you need it
+# ##
+
+_eck_common_ns_: elastic-system
+
+eck_app_name: eck
+
+_eck_op_namespace_: |-
+  {{ eck_op_namespace | default(_eck_common_ns_) }}
+
+# ##
+# All directories
+# ##
+# This can be configure various components directory paths.
+eck_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, eck_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+eck_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, eck_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_eck_setting:
+
+  #app_name
+  name: "{{ eck_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with es_ and ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^eck_.+_component_setting$'))
+    }}
+

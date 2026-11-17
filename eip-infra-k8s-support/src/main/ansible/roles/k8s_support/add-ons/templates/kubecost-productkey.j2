@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  productkey.json: {{ productkey }}
+kind: Secret
+metadata:
+  name: productkey
+  namespace: kubecost
+type: Opaque

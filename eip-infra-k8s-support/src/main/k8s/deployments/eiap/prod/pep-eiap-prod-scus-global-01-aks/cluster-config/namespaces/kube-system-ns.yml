@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    control-plane: 'true'
+    crosscharge_aks: crosscharge
+    field.cattle.io/projectId: p-285vc
+    kubernetes.azure.com/managedby: aks
+    kubernetes.io/cluster-service: 'true'
+    kubernetes.io/metadata.name: kube-system
+    servicename_aks: sharedaks
+  name: kube-system

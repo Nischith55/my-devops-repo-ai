@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aisp-genai-mtc-feature
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for aisp-genai-mtc-feature   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/aisp-genai-mtc-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-mtc-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: aisp-genai-mtc-feature-admin
+    description: Admin privileges to aisp-genai-mtc-feature
+    policies:
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-admin, applications, *, aisp-genai-mtc-feature/*, allow
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-admin, repositories, *, aisp-genai-mtc-feature/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: aisp-genai-mtc-feature-user
+    description: Read-only privileges to aisp-genai-mtc-feature
+    policies:
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-user, applications, get, aisp-genai-mtc-feature/*, allow
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-user, applications, sync, aisp-genai-mtc-feature/*, allow
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-user, repositories, get, aisp-genai-mtc-feature/*, allow
+    - p, proj:aisp-genai-mtc-feature:aisp-genai-mtc-feature-user, applications, action/apps/Deployment/restart, aisp-genai-mtc-feature/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.MTCDEV"
+    - "Team.Support.EIAP.READ"

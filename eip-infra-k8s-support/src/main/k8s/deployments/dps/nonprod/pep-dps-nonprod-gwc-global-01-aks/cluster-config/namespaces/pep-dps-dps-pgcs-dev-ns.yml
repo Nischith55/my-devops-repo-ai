@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-pgcs-dev
+  labels:
+    env-nonprod: "true"
+    project: pgcs
+    sector: dps
+    team: dps-pgcs
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsiconnectb2bportalpgcsnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-cmdb-app-service-id: 9de26c69974f6e1012ced104a253afd2
+    pep-environment: Development
+    

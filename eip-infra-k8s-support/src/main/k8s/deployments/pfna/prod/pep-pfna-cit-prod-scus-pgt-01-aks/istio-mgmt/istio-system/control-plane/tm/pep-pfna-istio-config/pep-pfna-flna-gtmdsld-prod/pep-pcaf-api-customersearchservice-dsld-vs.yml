@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-customersearchservice-dsld-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-customersearchservice-dsld.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/dsld/sfod/customersearch
+    route:
+    - destination:
+        host: pep-pcaf-api-customersearchservice-dsld.pep-pfna-flna-gtmdsld-prod.svc.cluster.local
+        port:
+          number: 80
+          

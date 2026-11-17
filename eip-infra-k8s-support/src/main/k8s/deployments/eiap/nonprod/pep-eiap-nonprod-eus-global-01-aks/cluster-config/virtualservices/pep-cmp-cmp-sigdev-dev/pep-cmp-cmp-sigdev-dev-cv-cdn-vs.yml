@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-cmp-cmp-sigdev-dev-cv-webdeploy
+  name: pep-cmp-cmp-sigdev-dev-cv-cdn-vs
+  namespace: pep-cmp-cmp-sigdev-dev
+spec:
+  gateways:
+  - pep-cmp-cmp-sigdev-dev/pep-cmp-cmp-sigdev-dev-cv-gw
+  hosts:
+  - sig.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-sigdev-dev-cv-webdeploy.pep-cmp-cmp-sigdev-dev.svc.cluster.local
+        port:
+          number: 80

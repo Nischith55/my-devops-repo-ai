@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-dps-dps-afhmenup-dev-cv-webdeploy
+  name: pep-dps-dps-afhmenup-dev-cv-cdn-vs
+  namespace: pep-dps-dps-afhmenup-dev
+spec:
+  gateways:
+  - pep-dps-dps-afhmenup-dev/pep-dps-dps-afhmenup-dev-cv-gw
+  hosts:
+  - afhmenupro.dev.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-ui.pep-dps-dps-afhmenup-dev.svc.cluster.local
+        port:
+          number: 80

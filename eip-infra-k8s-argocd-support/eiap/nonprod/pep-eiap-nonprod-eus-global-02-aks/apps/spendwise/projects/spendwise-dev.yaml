@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: spendwise-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for spendwise-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/spend-wise-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-ai4bisw-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: spendwise-dev-admin
+        description: Admin privileges to spendwise-dev
+        policies:
+        - p, proj:spendwise-dev:spendwise-dev-admin, applications, *, spendwise-dev/*, allow
+        - p, proj:spendwise-dev:spendwise-dev-admin, repositories, *, spendwise-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: spendwise-dev-user
+        description: Read-only privileges to spendwise-dev
+        policies:
+        - p, proj:spendwise-dev:spendwise-dev-user, applications, get, spendwise-dev/*, allow
+        - p, proj:spendwise-dev:spendwise-dev-user, applications, sync, spendwise-dev/*, allow
+        - p, proj:spendwise-dev:spendwise-dev-user, repositories, get, spendwise-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:spendwise-dev:spendwise-dev-user, applications, action/apps/Deployment/restart, spendwise-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.AI4BISW"
+        - "Team.Support.EIAP.READ"
+    

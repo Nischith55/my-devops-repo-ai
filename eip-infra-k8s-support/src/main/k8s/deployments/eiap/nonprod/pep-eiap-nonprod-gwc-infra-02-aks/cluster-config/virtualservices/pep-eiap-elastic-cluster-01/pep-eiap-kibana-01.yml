@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-kibana-01
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  gateways:
+  - pep-eiap-elastic-cluster-01/pep-eiap-elastic-cluster-01-cv-gw
+  hosts:
+  - pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: cluster-01-nonprod-gwc-kb-http.pep-eiap-elastic-cluster-01.svc.cluster.local
+        port:
+          number: 5601

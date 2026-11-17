@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"dsd-directsubscription-preprod","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-0.1.2"},"name":"dsd-directsubscription","namespace":"pep-snt-cgf-walmart-preprod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["dsd-directsubscription.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/dsd-directsubscription"}}],"route":[{"destination":{"host":"dsd-directsubscription.pep-snt-cgf-walmart-preprod.svc.cluster.local","port":{"number":8081}}}]}]}}
+  labels:
+    app: dsd-directsubscription
+    app.kubernetes.io/instance: dsd-directsubscription-preprod
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: dsd-directsubscription
+  namespace: pep-snt-cgf-walmart-preprod
+spec:
+  gateways:
+  - pep-snt-cgf-walmart-preprod/pep-snt-cgf-walmart-preprod-cv-gw
+  hosts:
+  - dsd-directsubscription.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dsd-directsubscription
+    route:
+    - destination:
+        host: dsd-directsubscription.pep-snt-cgf-walmart-preprod.svc.cluster.local
+        port:
+          number: 8081

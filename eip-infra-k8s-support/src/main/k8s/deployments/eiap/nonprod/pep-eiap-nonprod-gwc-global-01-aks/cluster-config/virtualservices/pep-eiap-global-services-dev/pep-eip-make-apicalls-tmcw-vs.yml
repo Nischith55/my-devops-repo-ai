@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-make-apicalls-tmcw-vs
+  namespace: pep-eiap-global-services-dev
+  labels:
+      app: pep-eip-make-apicalls
+spec:
+  hosts:
+  - pep-eip-make-apicalls.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-services-dev/pep-eiap-global-services-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-make-apicalls.pep-eiap-global-services-dev.svc.cluster.local
+        port:
+          number: 8080
+  

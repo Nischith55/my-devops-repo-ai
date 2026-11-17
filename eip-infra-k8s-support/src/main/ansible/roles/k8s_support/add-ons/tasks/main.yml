@@ -1,0 +1,60 @@
+- include_tasks:
+    file: elastic-client.yml
+ 
+- include_tasks:
+    file: kubecost.yml
+
+# - include_tasks:
+#     file: solo-istio.yml
+
+- include_tasks:
+    file: nginx.yml
+ 
+- include_tasks:
+    file: kubestatemetrics.yml
+
+- include_tasks:
+    file: prometheus.yml
+
+# - include_tasks:
+#     file: opagatekeeper.yml
+
+- include_tasks:
+    file: snow_discovery.yml
+
+- include_tasks:
+    file: gateway-patch.yml
+
+- include_tasks:
+    file: gpu-operator.yml
+  when: gpuOperator | bool
+
+- name: Add output directory to git
+  lvrfrc87.git_acp.git_acp:
+    path: "/azp/agent/_work/1/s/src/tmp1"
+    branch: "{{ gitbranch }}"
+    comment: "Add manifest."
+    add: [ "." ]
+    url: "https://{{ svcuser | urlencode }}:{{ pat | urlencode }}@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-support"
+    push: true
+    pull: true
+  environment:
+    GIT_AUTHOR_NAME: "{{ svcuser }}"
+    GIT_AUTHOR_EMAIL: "{{ svcuser }}:{{ pat }}@dev.azure.com"
+    GIT_COMMITTER_NAME: "{{ svcuser }}"
+    GIT_COMMITTER_EMAIL: "{{ svcuser }}:{{ pat }}@dev.azure.com"
+  register: gitadd
+
+- name: git cat add
+  shell: |
+    echo "present working directory"
+    pwd
+    git branch
+    echo "directory contents"
+    ls -a
+    git log -4
+    echo "git status shown below"
+    git status
+  args: 
+    chdir: /azp/agent/_work/1/s/src/tmp1/src
+  register: gitcat1

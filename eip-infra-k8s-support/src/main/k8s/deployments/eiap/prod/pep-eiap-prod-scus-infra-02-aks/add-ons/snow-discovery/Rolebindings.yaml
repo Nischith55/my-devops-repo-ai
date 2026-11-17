@@ -1,0 +1,35 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: pep-eiap-snowdiscovery-prod
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: snow-sa-pepsico-prod
+  namespace: pep-eiap-snowdiscovery-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: snow-cr-pep-eiap-snowdiscovery-pepsico
+  namespace: pep-eiap-snowdiscovery-prod
+rules:
+  - apiGroups: ["","apps","batch", "networking.k8s.io"]
+    resources: ["namespaces","nodes","deployments","statefulsets","daemonsets","replicasets","replicationcontrollers",
+                "jobs","cronjobs","pods", "pods/log", "endpoints","services", "ingresses","routes", "groups", "users"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: snow-sa-snow-cr-pep-eiap-snowdiscovery-pepsico
+  namespace: pep-eiap-snowdiscovery-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: snow-cr-pep-eiap-snowdiscovery-pepsico
+subjects:
+  - kind: ServiceAccount
+    name: snow-sa-pepsico-prod
+    namespace: pep-eiap-snowdiscovery-prod  

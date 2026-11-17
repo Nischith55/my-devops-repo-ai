@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-pbna-lightho-qa-cv-web-vs
+  namespace: pep-eiap-pbna-lightho-qa
+  labels:
+    app: pep-eiap-pbna-lightho-qa-cv-web
+spec:
+  hosts:
+    - lighthouse.qa.mypepsico.com
+    - pep-eiap-pbna-lightho-qa-cv.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-lightho-qa/pep-eiap-pbna-lightho-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-pbna-lightho-qa-cv-web.pep-eiap-pbna-lightho-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-kafka-infra-dev
+    project: infra
+    sector: global
+    servicename_aks: infratools
+    team: global-kafka
+  name: pep-kafka-infra-dev

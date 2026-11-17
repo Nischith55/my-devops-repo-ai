@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_pgcs_snows_dev:
+  
+  name: pep-eiap-pgcs-snows-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pgcs-snows
+    sector: pgcs
+    project: snows
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-pgcs-snows-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pgcs_snows'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

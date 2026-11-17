@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-cmaservice-dsld-xpc-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pcaf-api-cmaservice-dsld-xpc.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/dsld/xpc/cma
+    route:
+    - destination:
+        host: pep-pcaf-api-cmaservice-dsld-xpc.pep-eiap-flna-gtmds-dev.svc.cluster.local

@@ -1,0 +1,15 @@
+enableRuntimeDefaultSeccompProfile: true
+global:
+  cattle:
+    psp:
+      enabled: false
+      clusterId: c-mfqgf
+    url: 'https://rancher.suk.prod.azure.intra.pepsico.com'
+image:
+  repository: rancher/kubectl
+  tag: v1.20.2
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL

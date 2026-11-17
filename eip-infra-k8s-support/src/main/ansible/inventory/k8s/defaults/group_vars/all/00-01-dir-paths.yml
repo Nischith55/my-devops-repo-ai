@@ -1,0 +1,72 @@
+---
+# ##
+# All path variables (should be top-level since we have indirect reference)
+# ##
+
+# target directory -- for storing temporary files - 5 levels up
+target_dir: |-
+  {{ 
+    ((playbook_dir, '..', '..', '..', '..', '..', 'target') | path_join)
+    | expanduser | expandvars | realpath 
+  }}
+
+# src/main directory (3 levels up)
+src_main_dir: |-
+  {{ 
+    ((playbook_dir, '..', '..', '..') | path_join)
+    | expanduser | expandvars | realpath 
+  }}
+
+# This is the certs root dir
+certs_root_dir: |-
+  {{ ((src_main_dir, 'certs') | path_join) | expanduser | expandvars | realpath  }}
+
+# Environment Inventory base_dir for k8s (env variable must exist)
+k8s_inv_env_base_dir: |-
+  {{ 
+    ((playbook_dir, '..', '..', 'inventory' ,'k8s', env) | path_join)
+    | expanduser | expandvars | realpath 
+  }}
+
+k8s_inv_defaults_base_dir: |-
+  {{ 
+    ((playbook_dir, '..', '..', 'inventory' ,'k8s', 'defaults', 'group_vars', 'cluster_config', 'role_bindings') | path_join)
+    | expanduser | expandvars | realpath 
+  }}
+
+# playbook templates dir
+k8s_playbook_templates_dir: |-
+  {{
+    (playbook_dir, 'templates') | path_join
+  }}
+  
+# Root path for generated inventory directory
+k8s_generated_aks_inv_dir: |-
+  {{ 
+    (k8s_inv_env_base_dir, 'hosts_generated', 'aks')
+    | path_join
+  }}
+
+# This is the k8s root directory where manifests and deployments are stored
+k8s_root_dir: |-
+  {{ ((playbook_dir, '..', '..', '..','k8s') | path_join)
+    | expanduser | expandvars | realpath 
+  }}
+
+# Add ons directory
+k8s_add_ons_base_dir: |-
+  {{ 
+    (k8s_root_dir, 'add-ons') | path_join
+  }}
+
+# Apps root directory
+k8s_apps_base_dir: |-
+  {{ 
+    (k8s_root_dir, 'apps') | path_join
+  }}
+
+# Manifest base directorys
+k8s_deployments_base_dir: |-
+  {{ 
+    (k8s_root_dir, 'deployments') | path_join
+  }}

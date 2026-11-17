@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-wfm-replay-facade-qndf-vs
+  namespace: pep-pfna-pcaf-prod
+  labels:
+      app: pcaf-wfm-replay-facade
+spec:
+  hosts:
+  - pcaf-wfm-replay-facade.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-wfm-replay-facade.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80
+  

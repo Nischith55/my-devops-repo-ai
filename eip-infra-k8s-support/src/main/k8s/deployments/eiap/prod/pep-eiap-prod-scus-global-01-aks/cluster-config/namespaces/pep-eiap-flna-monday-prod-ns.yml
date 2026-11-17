@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 04ee27d6873095104acb311d0ebb35bd
+    pep-cmdb-bus-app-id: 88ee27d6873095104acb311d0ebb35ba
+    pep-environment: Production
+    project: monday
+    sector: flna
+    servicename_aks: monday.comprod
+    team: flna-monday
+  name: pep-eiap-flna-monday-prod

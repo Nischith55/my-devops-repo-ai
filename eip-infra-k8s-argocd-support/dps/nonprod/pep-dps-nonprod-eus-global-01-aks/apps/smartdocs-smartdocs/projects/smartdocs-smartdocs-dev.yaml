@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: smartdocs-smartdocs-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for smartdocs-smartdocs-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/smartdocs-smartdocs-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-adportal-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: smartdocs-smartdocs-dev-admin
+    description: Admin privileges to smartdocs-smartdocs-dev
+    policies:
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-admin, applications, *, smartdocs-smartdocs-dev/*, allow
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-admin, repositories, *, smartdocs-smartdocs-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: smartdocs-smartdocs-dev-user
+    description: Read-only privileges to smartdocs-smartdocs-dev
+    policies:
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-user, applications, get, smartdocs-smartdocs-dev/*, allow
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-user, applications, sync, smartdocs-smartdocs-dev/*, allow
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-user, repositories, get, smartdocs-smartdocs-dev/*, allow
+    - p, proj:smartdocs-smartdocs-dev:smartdocs-smartdocs-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.ST.AdminPortal.AppSupport"
+    - "Team.Support.EIAP.READ"

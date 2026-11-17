@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: prometheus-yzcz-vs
+  namespace: pep-dps-latam-btborch-preprod
+  labels:
+      app: prometheus
+spec:
+  hosts:
+  - prometheus-b2b.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-latam-btborch-preprod/pep-dps-latam-btborch-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: prometheus.pep-dps-latam-btborch-preprod.svc.cluster.local
+        port:
+          number: 9090
+  

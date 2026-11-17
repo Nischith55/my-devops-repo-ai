@@ -1,0 +1,6 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+- op: replace
+  path: /spec/template/spec/containers/0/env/0/value
+  value: istio-system

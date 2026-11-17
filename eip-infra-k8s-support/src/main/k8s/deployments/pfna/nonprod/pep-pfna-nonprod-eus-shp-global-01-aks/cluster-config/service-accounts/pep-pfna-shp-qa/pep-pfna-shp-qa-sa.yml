@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 88172da4-d349-47f7-b0a6-709fe1c7e1de
+  name: pep-pfna-shp-qa-sa
+  namespace: pep-pfna-shp-qa

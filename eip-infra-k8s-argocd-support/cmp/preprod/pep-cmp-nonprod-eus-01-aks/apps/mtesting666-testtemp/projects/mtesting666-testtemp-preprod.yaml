@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mtesting666-testtemp-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for mtesting666-testtemp-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/mtesting666-testtemp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: eiap-ops-admin
+  roles:
+  - name: mtesting666-testtemp-preprod-admin
+    description: Admin privileges to mtesting666-testtemp-preprod
+    policies:
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-admin, applications, *, mtesting666-testtemp-preprod/*, allow
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-admin, repositories, *, mtesting666-testtemp-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: mtesting666-testtemp-preprod-user
+    description: Read-only privileges to mtesting666-testtemp-preprod
+    policies:
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-user, applications, get, mtesting666-testtemp-preprod/*, allow
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-user, applications, sync, mtesting666-testtemp-preprod/*, allow
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-user, repositories, get, mtesting666-testtemp-preprod/*, allow
+    - p, proj:mtesting666-testtemp-preprod:mtesting666-testtemp-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

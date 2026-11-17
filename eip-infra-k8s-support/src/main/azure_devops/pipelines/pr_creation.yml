@@ -1,0 +1,85 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+
+variables:
+  - group: repo_access_token
+  - name: agent_pool
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  - name: repo_name
+    value: eip-infra-k8s-support
+  - name: source_branch
+    value: develop
+  - name: target_branch
+    value: master
+  - name: folder_path
+    value: 'src/main/k8s/deployments/cmp/nonprod/pep-cmp-nonprod-dmz-eus-01-aks/cluster-config'
+  - name: to_email
+    value: DL-AzureAutomation@pepsico.com
+
+stages:
+  - stage: pr_creation
+    displayName: PR Creation
+    pool:
+      name: $(agent_pool)
+    jobs:
+    - job: create_pr 
+      displayName: create_pr 
+      steps:
+      - task: Bash@3    
+        name: "delete_cmp_files"
+        displayName: 'Delete the cmp cluster testing files'
+        inputs:
+          targetType: 'inline'
+          script: |
+            git clone 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/$(repo_name)'
+            cd $(repo_name)
+            git checkout $(source_branch)
+            echo "########files to be deleted from deployments,gateways,role-bindings,secrets,service-accounts,virtualservices########"
+            find $(folder_path)/{deployments,gateways,role-bindings,secrets,service-accounts,virtualservices}/ -mindepth 1 ! -name ".*"
+            echo "########files to be deleted from namespace directory########"
+            find $(folder_path)/namespaces/ -maxdepth 1 -type f -name "*.yml"
+            find $(folder_path)/{deployments,gateways,role-bindings,secrets,service-accounts,virtualservices}/ -mindepth 1 ! -name ".*" -delete
+            find $(folder_path)/namespaces/ -maxdepth 1 -type f -name "*.yml" -delete
+            git status
+            git add .
+            git config --global user.email "$(svcuser_automation)@pepsico.com"
+            git config --global user.name "$(svcuser_automation)"
+            git commit -m "deleted the dmz cmp files"
+            git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/$(repo_name)'
+            git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/$(repo_name)'
+            
+      - pwsh: |  
+          $env:AZURE_DEVOPS_EXT_PAT =  "$(svcautoPersonalAccessToken)"  
+          az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+          $pr_response=(az repos pr create --project $(System.TeamProject) --repository $(repo_name) --target-branch $(target_branch) --source-branch $(source_branch)  --title "PR to merge $(source_branch) to $(target_branch)") | ConvertFrom-Json
+          $pr_num = $pr_response.pullRequestId         
+          Write-Output "$pr_num"
+          Write-Host "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num" 
+        displayName: 'Create_PR'
+        name: 'Create_PR'
+
+      - template: templates/log_failure.yml  # Template reference
+
+  - stage: Invoke_Email_Notification
+    dependsOn:
+      - pr_creation
+    condition: or(failed('pr_creation'),succeeded('pr_creation'))
+    variables:
+      message: $[ stageDependencies.pr_creation.create_pr.outputs['setOutput.setout'] ]
+      pr_num: $[ stageDependencies.pr_creation.create_pr.outputs['Create_PR.PR_NUM'] ]
+    pool:
+      name: $(agent_pool)
+    jobs:
+    - job: email_notification
+      displayName: email_notification 
+      steps:
+      - task: Bash@3    
+        name: "send_email"
+        displayName: 'Send Email'
+        inputs:
+          targetType: 'inline'
+          script: |
+            ansible-playbook -e '{"check_var": "$(message)", "to_email": "$(to_email)" , "pr_num": "$(pr_num)"}' $(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/pr_email_notification.yml

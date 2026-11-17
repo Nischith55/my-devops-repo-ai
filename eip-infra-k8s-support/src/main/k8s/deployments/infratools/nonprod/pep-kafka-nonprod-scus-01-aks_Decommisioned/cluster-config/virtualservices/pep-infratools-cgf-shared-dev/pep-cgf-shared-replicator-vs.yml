@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: replicator
+  name: pep-cgf-shared-replicator-vs
+  namespace: pep-infratools-cgf-shared-dev
+spec:
+  gateways:
+  - pep-infratools-cgf-shared-dev/pep-infratools-cgf-shared-dev-cv-gw
+  hosts:
+  - replicator.shared.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - replicator.shared.kafka.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: replicator.pep-infratools-cgf-shared-dev.svc.cluster.local
+        port:
+          number: 8083

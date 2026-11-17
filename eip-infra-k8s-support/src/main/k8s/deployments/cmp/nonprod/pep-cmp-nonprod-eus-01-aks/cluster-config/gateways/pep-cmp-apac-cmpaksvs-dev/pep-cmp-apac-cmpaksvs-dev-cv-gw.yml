@@ -1,0 +1,228 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-cmp-apac-cmpaksvs-dev-cv-gw
+  namespace: pep-cmp-apac-cmpaksvs-dev
+spec:
+  selector:
+    istio: pep-cmp-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-cmp-apac-cmpaksvs-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-tls-443
+    port:
+      name: https-pep-cmp-apac-cmpaksvs-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-cmp-apac-cmpaksvs-dev-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv1-dev9.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dev4.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4a.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4b.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4c.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-apac-dev-cmpakasvs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - testinguuu.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4uiui.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-test.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dedahw.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dbsge.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv8-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv8-pol.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv5-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv6-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-https-443
+    port:
+      name: https-pep-cmp-apac-cmpaksvs-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-cmp-nonprod-eus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-cmp-apac-cmpaksvs-dev-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv1-dev9.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cmpvstst78.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dev4.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cmvs4tst.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4a.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - name1.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4b.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4c.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - namw3.dev.mypepsico.com
+    - pep-apac-dev-cmpakasvs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - testinguuu.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4uiui.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ddgffg.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-test.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dedahw.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dbsge.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv4-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv8-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - zgtsh3.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv8-pol.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - test76.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv5-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - djncbhfdd.dev.mypepsico.com
+    - pep-cmp-apac-cmpaksvs-dev-cv6-devs.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-http-80
+    port:
+      name: http-pep-cmp-apac-cmpaksvs-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - cmpvstst78.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-3-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: cmpvstst78.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cmvs4tst.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-4-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: cmvs4tst.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - name1.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-5-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: name1.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - namw3.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-6-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: namw3.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ddgffg.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-7-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: ddgffg.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - djncbhfdd.dev.mypepsico.com
+    name: pep-cmp-apac-cmpaksvs-dev-cv-gw-8-https-443
+    port:
+      name: pep-cmp-apac-cmpaksvs-dev-cv-gw-8-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: djncbhfdd.dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

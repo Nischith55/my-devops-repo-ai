@@ -1,0 +1,29 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockLoadBalancer",
+  "metadata": {
+    "annotations": {},
+    "labels": {
+      "app.kubernetes.io/instance": "opa-constraints-pep-pbna-nonprod-eus-global-01-aks-dev"
+    },
+    "name": "block-load-balancer"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "istio-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ]
+    }
+  }
+}

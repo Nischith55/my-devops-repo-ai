@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-flna-eiv-order-utility
+  name: pepsico-flna-eiv-order-utility-vs
+  namespace: pep-eiap-flna-eiv-dev
+spec:
+  gateways:
+  - pep-eiap-flna-eiv-dev/pep-eiap-flna-eiv-dev-cv-gw
+  hosts:
+  - flna-eiv-order-utility.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /flna/eiv/v1
+    route:
+    - destination:
+        host: pepsico-flna-eiv-order-utility.pep-eiap-flna-eiv-dev.svc.cluster.local
+        port:
+          number: 80

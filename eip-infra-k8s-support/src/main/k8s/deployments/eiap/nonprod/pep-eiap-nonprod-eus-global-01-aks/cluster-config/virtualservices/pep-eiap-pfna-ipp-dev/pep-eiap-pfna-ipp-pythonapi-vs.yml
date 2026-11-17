@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pythonapi
+  name: pep-eiap-pfna-ipp-pythonapi-vs
+  namespace: pep-eiap-pfna-ipp-dev
+spec:
+  gateways:
+  - pep-eiap-pfna-ipp-dev/pep-eiap-pfna-ipp-dev-cv-gw
+  hosts:
+  - pep-eiap-pfna-ipp-pythonapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    - ignoreUriCase: true
+      uri:
+        prefix: /api
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/promo_predict
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/promo_optimize
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/plan_optimize
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/plan_predict
+    route:
+    - destination:
+        host: pythonapi.pep-eiap-pfna-ipp-dev.svc.cluster.local
+        port:
+          number: 8080

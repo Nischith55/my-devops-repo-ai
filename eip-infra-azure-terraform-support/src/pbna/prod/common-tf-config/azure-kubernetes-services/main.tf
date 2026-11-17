@@ -1,0 +1,27 @@
+module "aks_np_prod" {
+  source                                  = "git::https://PepsiCoIT@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-terraform-modules//modules/azure_kubernetes_services"
+  node_pools                              = var.node_pools
+  aks_clusters                            = var.aks_clusters
+  cluster_vnet_snet_resource_group_name   = var.cluster_vnet_snet_resource_group_name
+  cluster_vnet_name                       = var.cluster_vnet_name
+  cluster_snet_name                       = var.cluster_snet_name
+  managed_identity_name                   = var.managed_identity_name
+  managed_identity_resource_group_name    = var.managed_identity_resource_group_name
+  cluster_resource_group_name             = var.cluster_resource_group_name
+  resource_name_to_create                 = var.resource_name_to_create
+  subscription                            = var.subscription
+  clientid                                = var.clientid
+  clientsecret                            = var.clientsecret
+  tenantid                                = var.tenantid
+  cluster_tags                            = var.cluster_tags
+  default_node_pool_tags                  = var.default_node_pool_tags
+  default_node_pool_resource_group        = var.default_node_pool_resource_group
+  active_directory_admin_group_object_ids = var.active_directory_admin_group_object_ids
+  private_dns_zone_id                     = var.private_dns_zone_id
+  kubernetes_version                      = var.kubernetes_version
+  cluster_location                        = var.cluster_location
+  lp_admin_username                       = var.lp_admin_username
+  lp_ssh_key                              = var.lp_ssh_key
+  wp_admin_username                       = var.wp_admin_username
+  wp_admin_password                       = var.wp_admin_password
+}

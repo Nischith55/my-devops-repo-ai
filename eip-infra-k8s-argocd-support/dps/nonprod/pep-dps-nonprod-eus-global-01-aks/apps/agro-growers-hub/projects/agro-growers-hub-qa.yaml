@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-growers-hub-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-growers-hub-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/agro-growers-hub-web-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-ghub-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  # clusterResourceWhitelist:
+  # - group: '*'
+  #   kind: 'PersistentVolume'
+  roles:
+  - name: agro-growers-hub-qa-admin
+    description: Admin privileges to agro-growers-hub-qa
+    policies:
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-admin, applications, *, agro-growers-hub-qa/*, allow
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-admin, applications, get, argocd/*, allow
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-admin, repositories, *, agro-growers-hub-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-growers-hub-qa-user
+    description: Read-only privileges to agro-growers-hub-qa
+    policies:
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-user, applications, get, agro-growers-hub-qa/*, allow
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-user, applications, sync, agro-growers-hub-qa/*, allow
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-user, repositories, get, agro-growers-hub-qa/*, allow
+    - p, proj:agro-growers-hub-qa:agro-growers-hub-qa-user, applications, action/apps/Deployment/restart, agro-growers-hub-qa/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GRA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

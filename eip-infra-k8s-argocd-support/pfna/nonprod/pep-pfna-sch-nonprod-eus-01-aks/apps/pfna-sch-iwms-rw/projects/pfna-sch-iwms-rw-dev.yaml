@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pfna-sch-iwms-rw-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pfna-sch-iwms-rw-dev  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/IT_Supply_Chain_Data_and_Analytics_Program/_git/pfna-sch-iwms-argocd-configs-rw
+      - peppfnaschnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-flna-iwms-dev
+      - name: pep-pfna-sch-nonprod-eus-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pfna-sch-iwms-rw-dev-admin
+        description: Admin privileges to pfna-sch-iwms-rw-dev
+        policies:
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-admin, applications, *, pfna-sch-iwms-rw-dev/*, allow
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-admin, repositories, *, pfna-sch-iwms-rw-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pfna-sch-iwms-rw-dev-user
+        description: Read-only privileges to pfna-sch-iwms-rw-dev
+        policies:
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-user, applications, get, pfna-sch-iwms-rw-dev/*, allow
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-user, applications, sync, pfna-sch-iwms-rw-dev/*, allow
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-user, repositories, get, pfna-sch-iwms-rw-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pfna-sch-iwms-rw-dev:pfna-sch-iwms-rw-dev-user, applications, action/apps/Deployment/restart, pfna-sch-iwms-rw-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.EIAP.READ"
+    

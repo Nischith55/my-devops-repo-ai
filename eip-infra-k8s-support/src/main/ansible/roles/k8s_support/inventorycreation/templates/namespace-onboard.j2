@@ -1,0 +1,64 @@
+#jinja2:variable_start_string:'[%' , variable_end_string:'%]'
+---
+ns_pep_[% department %]_[% sector %]_[% project %]_[% env %]:
+  
+  name: [% namespace %]
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: [% sector %]-[% project %]
+    sector: [% sector %]
+    project: [% project %]
+    crosscharge_aks: [% crosscharge_aks %]
+    istio-injection: enabled
+    servicename_aks: [% servicename_tag %]
+    pep-cmdb-app-service-id: "[% pep_cmdb_app_service_id %]"
+    pep-cmdb-bus-app-id: "[% pep_cmdb_bus_app_id %]"
+    pep-environment: "[% pep_environment %]"
+{% if ( env  == 'dev') or ( env  == 'qa') %}
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+{% elif ( env  == 'preprod') %}
+    istio.io/rev: preprod-stable
+    environment: preprod
+{% else %}
+    istio.io/rev: prod-stable
+    environment: prod
+{% endif %}
+    env-[% env %]: "true"
+
+  service_accounts:
+{% if ( isspringbootapp  == 'false') %}
+    - name: [% namespace %]-sa
+{% else %}
+    - name: [% namespace %]-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-[% department %]-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+{% endif %}
+
+{% if ( env  == 'preprod') or ( env  == 'prod') %}
+  role_bindings:
+    - name: pep-[% department %]-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['[% sector %]_[% project %]'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+{% else %}
+  role_bindings:
+    - name: pep-[% department %]-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['[% sector %]_[% project %]'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+{% endif %}
+  secrets: 
+    name: [% namespace %]-sa-token
+    namespace: [% namespace %]
+    annotations:
+{% if ( env  == 'dev') or ( env  == 'qa') or ( env  == 'preprod') or ( env  == 'prod') %}
+      kubernetes.io/service-account.name : "[% namespace %]-sa"
+{% endif %}

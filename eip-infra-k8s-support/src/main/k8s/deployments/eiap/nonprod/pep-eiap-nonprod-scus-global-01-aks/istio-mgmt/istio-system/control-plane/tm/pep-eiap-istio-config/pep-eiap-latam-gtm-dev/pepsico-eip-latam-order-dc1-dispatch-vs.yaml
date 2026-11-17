@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-eip-latam-order-dc1-dispatch-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-eip-latam-order-dc1-dispatch.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /dc1/order/replay
+    route:
+    - destination:
+        host: pepsico-eip-latam-order-dc1-dispatch.pep-eiap-latam-gtm-dev.svc.cluster.local
+        port:
+          number: 80

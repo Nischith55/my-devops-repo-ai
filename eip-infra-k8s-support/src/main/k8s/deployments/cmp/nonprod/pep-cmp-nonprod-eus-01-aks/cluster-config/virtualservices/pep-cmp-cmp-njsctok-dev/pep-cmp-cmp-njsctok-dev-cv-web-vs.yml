@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-njsctok-dev-cv-web-vs
+  namespace: pep-cmp-cmp-njsctok-dev
+  labels:
+    app: pep-cmp-cmp-njsctok-dev-cv-web
+spec:
+  hosts:
+    - njsctok.dev.mypepsico.com
+    - pep-cmp-cmp-njsctok-dev-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-njsctok-dev/pep-cmp-cmp-njsctok-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cmp-cmp-njsctok-dev-cv-web.pep-cmp-cmp-njsctok-dev.svc.cluster.local
+        port:
+          number: 80

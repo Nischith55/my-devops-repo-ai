@@ -1,0 +1,30 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-ingest-01-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - pep-eiap-ingest-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com
+      route:
+        - destination:
+            host: cluster-01-es-ingest.pep-eiap-elastic-cluster-01.svc.cluster.local
+            port: 
+              number: 9200
+          # use weights for zero-downtime deployment
+          weight: 0
+        # Below is an example: when new POD name change weight to 100 and other
+        # to 0
+        - destination:
+            host: pep-eiap-ingest-01.pep-eiap-elastic-cluster-01.svc.cluster.local
+            port: 
+              number: 9200
+          weight: 100

@@ -1,0 +1,433 @@
+trigger: none
+parameters:
+- name: sectorname
+  displayName: "Select sector name"
+  type: string
+  values:
+  - eiap
+  - apigee
+  - snt
+  - pfna
+  - infratools
+  - dps
+  - pbna
+  - aisp
+  - cgf
+  - cmp
+- name: environmentname
+  displayName: "Select environment"
+  type: string
+  values:
+  - dev
+  - qa
+  - preprod
+  - preprodn1
+  - prod
+  - feature
+  - uat
+  - hfdev
+  - dev-mx
+  - hfpreprod
+  - qa-mx
+  - dev-amp
+  - sit
+- name: region
+  type: string
+  displayName: "Select region"
+  values:
+  - eus
+  - scus
+  - ae
+  - sea
+  - gwc
+  - suk
+
+- name: orgname
+  type: string
+  displayName: "Select org"
+  values:
+  - PepsiCoIT
+  - PepsiCoIT2
+  - GitHub
+
+- name: githuborgname
+  type: string
+  displayName: "Enter GitHub org name (required only when 'Select org' = GitHub)"
+  default: ' '
+
+- name: applicationnamespace
+  type: string
+  displayName: Enter target application namespace
+- name: readeradgroupname
+  type: string
+  displayName: Enter reader AD group
+- name: adminadgroupname
+  type: string
+  displayName: Enter admin AD group
+- name: teamschannelname
+  type: string
+  displayName: Enter teams channel name to send notifications
+- name: acrurl
+  type: string
+  displayName: Enter helm chart ACR name (Ex:pepeiapnonprodcommonacr)
+- name: argocdconfigrepositoryproject
+  type: string
+  displayName: Enter ArgoCD configuration project name (not required when Select org = GitHub)
+  default: ' '
+- name: argocdconfigrepositoryname
+  type: string
+  displayName: Enter ArgoCD configuration repository name
+- name: targetbranchname
+  type: string
+  displayName: Enter ArgoCD configuration branch name
+  default: develop
+- name: applicationname
+  type: string
+  displayName: Enter application name
+- name: IstiojobImage
+  type: string
+  displayName: Enter istio job image (Ex:pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1)
+- name: argocdclname
+  type: string
+  displayName: Argocd instance cluster name (Ex:pep-eiap-preprod-eus-infra-02-aks)
+- name: argocddestclname
+  type: string
+  displayName: Cluster where argocd app to be created (Ex:pep-eiap-nonprod-eus-global-01-aks)
+- name: createfalconnamespace
+  type: boolean
+  displayName: Create falcon namespace via ArgoCD (leave unchecked for non falcon apps)
+  default: false
+###############################################################################
+
+jobs:
+- job: 'config_argocd_repository'
+  #condition: eq('${{ parameters.clustername }}')
+  pool: 'pep-eiap-nonprod-scus-infra-02-aks-agents'
+  variables:
+  - name: argocd_pr_branch
+    value: argo_repo_config/$(Build.BuildNumber)
+  - ${{ if eq(parameters.orgname, 'GitHub') }}:
+    - name: argocd_repo_url
+      value: "https://github.com/${{parameters.githuborgname}}/${{parameters.argocdconfigrepositoryname}}"
+  - ${{ else }}:
+    - name: argocd_repo_url
+      value: "$(System.CollectionUri)${{parameters.argocdconfigrepositoryproject}}/_git/${{parameters.argocdconfigrepositoryname}}"
+  - group: argocd_repo_configuration
+
+  steps:
+  # Create new branch and push override file changes to new branch
+  - task: DownloadSecureFile@1
+    displayName: 'Download config file'
+    name: config
+    inputs:
+      secureFile: 'config'
+  - task: Bash@3
+    name: "Argocd_create_branch"
+    displayName: 'Replace values and push the changes'
+    inputs:
+      targetType: 'inline'
+      script: |
+        git pull
+        git branch
+        git checkout -b $(argocd_pr_branch)
+        git add -A
+        echo "##vso[task.setvariable variable=GIT_STATUS]$(git status --porcelain | head -1)"   
+        echo "secureFilePath: $(config.secureFilePath)"
+        git config --global user.email "$(svcuser)@pepsico.com"
+        git config --global user.name $(svcuser)
+
+        if [[ ${{parameters.orgname}} = "PepsiCoIT" ]]
+        then
+          git clone -b ${{parameters.targetbranchname}} https://$(svcuser):$(svcPersonalAccessToken-old)@${{ parameters.orgname }}.visualstudio.com/${{parameters.argocdconfigrepositoryproject}}/_git/${{parameters.argocdconfigrepositoryname}}
+        elif [[ ${{parameters.orgname}} = "GitHub" ]]
+        then
+          # GitHub supports multiple orgs, so the org name is a free-text input supplied at pipeline run time
+          [ $(echo -n "${{parameters.githuborgname}}" | wc -c) -eq 0 ] && echo "githuborgname is required when Select org = GitHub" && exit 1
+          git clone -b ${{parameters.targetbranchname}} https://$(svcuser-github):$(svcPersonalAccessToken-github)@github.com/${{parameters.githuborgname}}/${{parameters.argocdconfigrepositoryname}}.git
+
+          [ $(echo -n "${{parameters.argocddestclname}}" | wc -c) -eq 0 ] && echo "Argocd folder structure incorrectly configured in argocd configs: ${{parameters.argocdconfigrepositoryname}}" && exit  || echo "argocddestclname:${{parameters.argocddestclname}}"
+
+        else
+          git clone -b ${{parameters.targetbranchname}} https://$(svcuser-2):$(svcPersonalAccessToken-2)@${{ parameters.orgname }}.visualstudio.com/${{parameters.argocdconfigrepositoryproject}}/_git/${{parameters.argocdconfigrepositoryname}}  
+
+        [ $(echo -n "${{parameters.argocddestclname}}" | wc -c) -eq 0 ] && echo "Argocd folder structure incorrectly configured in argocd configs: ${{parameters.argocdconfigrepositoryname}}" && exit  || echo "argocddestclname:${{parameters.argocddestclname}}"
+
+        fi
+
+        # Repo URL used in ArgoCD Application/Project templates below (GitHub has no "project" path segment)
+        if [[ ${{parameters.orgname}} = "GitHub" ]]
+        then
+          repourl="https://github.com/${{parameters.githuborgname}}/${{parameters.argocdconfigrepositoryname}}"
+        else
+          repourl="https://dev.azure.com/${{parameters.orgname}}/${{parameters.argocdconfigrepositoryproject}}/_git/${{parameters.argocdconfigrepositoryname}}"
+        fi
+        escapedrepourl="${repourl//\//\\/}"
+              
+        case ${{parameters.environmentname}} in
+            dev )
+                envpath="nonprod"
+                ;;
+            dev-amp )
+                envpath="nonprod"
+                ;;
+            qa )
+                envpath="nonprod"
+                ;;
+            sit )
+                envpath="nonprod"
+                ;;
+            feature )
+                envpath="nonprod"
+                ;;
+            uat )
+                envpath="nonprod"
+                ;;
+            hfdev )
+                envpath="nonprod"
+                ;;
+            dev-mx )
+                envpath="nonprod"
+                ;;
+            qa-mx )
+                envpath="nonprod"
+                ;;
+            preprod )
+                envpath="preprod"
+                ;;
+            preprodn1 )
+                envpath="preprod"
+                ;;
+            hfpreprod )
+                envpath="preprod"
+                ;;                
+            prod )
+                envpath="prod"
+                ;;
+            * )
+        echo "Invalid environment value: ${{parameters.environmentname}}"
+        esac       
+
+        # Configure argocd for apps folder 
+
+        appsfolder=$(find -type d -name "${{parameters.argocdclname}}" -not -path "./${{parameters.argocdconfigrepositoryname}}/*")
+        argocdenv=$(echo "$appsfolder" | cut -d'/' -f 3)
+        clusterfolder="$appsfolder/apps/clusters"
+        [ ! -d "$appsfolder/apps" ] && echo "apps directory does not exist!" && mkdir -p "$appsfolder/apps"
+        [ ! -f $appsfolder/apps/argo-apps.yaml ] && echo "argo-apps.yaml file not exists!" && cp templates/argo-apps.yaml $appsfolder/apps/argo-apps.yaml
+
+        # Are both argocd and destination clusters same?
+
+        if [[ ${{parameters.argocddestclname}} != ${{parameters.argocdclname}} ]]
+        then
+          echo "Parent and child clusters are different"
+          mkdir -p "$clusterfolder"
+          cp templates/argo-apps.yaml $clusterfolder/${{parameters.argocddestclname}}-argo-apps.yaml
+          # update tempalte: cluster-argo-apps.yaml
+          sed -i s/envname/"${envpath}"/g $clusterfolder/${{parameters.argocddestclname}}-argo-apps.yaml
+          sed -i s/sector/"${{parameters.sectorname}}"/g $clusterfolder/${{parameters.argocddestclname}}-argo-apps.yaml
+          sed -i s/clustername/"${{parameters.argocddestclname}}"/g $clusterfolder/${{parameters.argocddestclname}}-argo-apps.yaml
+          sed -i s/argocd-apps/"${{parameters.argocddestclname}}-argo-apps"/g $clusterfolder/${{parameters.argocddestclname}}-argo-apps.yaml
+
+        fi  
+
+
+        applicationfolder="${{parameters.sectorname}}/$envpath/${{parameters.argocddestclname}}/apps/${{parameters.applicationname}}/applications"
+        projectfolder="${{parameters.sectorname}}/$envpath/${{parameters.argocddestclname}}/apps/${{parameters.applicationname}}/projects"
+        defaultprojectfolder="$appsfolder/argocd-configs/defaults/projects"
+        echo $applicationfolder
+        [ ! -d $applicationfolder ] && echo "Applications directory doese not exist!" && mkdir -p $applicationfolder      
+
+        [ ! -f $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml ] && echo "${{parameters.applicationname}}-${{parameters.environmentname}}.yaml file not exists!" && cp templates/app_bootstraper_shema.yaml $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+
+        # Determine if this is a falcon app based on the createfalconnamespace checkbox parameter
+        createfalconnamespace=$(echo "${{ parameters.createfalconnamespace }}" | tr '[:upper:]' '[:lower:]')
+        is_falcon=false
+        if [[ "$createfalconnamespace" == "true" ]]; then
+          is_falcon=true
+        fi
+
+        # Parse comma-separated namespace list. First = primary (used for app + namespace project
+        # destination defaults); any additional entries are injected as extra destinations.
+        IFS=',' read -ra ns_array <<< "${{ parameters.applicationnamespace }}"
+        primaryns=$(echo "${ns_array[0]}" | xargs)
+        extrans=()
+        for ((i=1; i<${#ns_array[@]}; i++)); do
+          trimmed=$(echo "${ns_array[$i]}" | xargs)
+          [ -n "$trimmed" ] && extrans+=("$trimmed")
+        done
+        echo "Primary namespace: $primaryns"
+        echo "Additional namespaces: ${extrans[*]:-<none>}"
+
+        namespacefile="$applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces.yaml"
+        namespaceprojectfile="$projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces.yaml"
+        if [[ "$createfalconnamespace" == "true" ]]; then
+          echo "createfalconnamespace=true: scaffolding namespace-creation Application"
+          [ ! -f $namespacefile ] && echo "${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces.yaml file not exists!" && cp templates/app_namespace_schema.yaml $namespacefile
+        else
+          echo "createfalconnamespace=false: skipping namespace-creation Application (app manages its own namespace)"
+        fi
+
+        [ ! -d $projectfolder ] && echo "Project directory does not exist!" && mkdir -p $projectfolder   
+
+        [ ! -f $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml ] && echo "${{parameters.applicationname}}-${{parameters.environmentname}}.yaml file not exists!" && cp templates/app_project_schema.yaml $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+
+        # Optionally scaffold dedicated namespace project (inherits global-platform so it can create the Namespace resource)
+        if [[ "$createfalconnamespace" == "true" ]]; then
+          [ ! -f $namespaceprojectfile ] && echo "${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces.yaml project file not exists!" && cp templates/app_namespace_project_schema.yaml $namespaceprojectfile
+        fi
+
+        # update application tempalte
+        sed -i s/envname/"${{parameters.environmentname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/clustername/"${{parameters.argocddestclname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/applicationname/"${{parameters.applicationname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i "s/argorepourl/${escapedrepourl}/g" $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/argoreponame/"${{parameters.argocdconfigrepositoryname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml      
+        sed -i s/teamschannelname/"${{parameters.teamschannelname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/acrurl/"${{parameters.acrurl}}.azurecr.io\/helm"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml        
+        sed -i s/targetbranchname/"${{parameters.targetbranchname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/sector/"${{parameters.sectorname}}"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        istioimageurl="${{parameters.IstiojobImage}}"
+        echo "istioimageurl: $istioimageurl"
+        escapeimagechar="${istioimageurl//"/"/"\/"}"
+        echo "escapeimagechar: $escapeimagechar"
+        sed -i s/istioimage/"$escapeimagechar"/g $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+
+        # For falcon apps, update the bootstrapper metadata.name to include cluster suffix
+        # and inject sector into the valueFiles path (env/sector/cluster instead of env/cluster)
+        if [[ "$is_falcon" == "true" ]]; then
+          sed -i "s/${{parameters.applicationname}}-${{parameters.environmentname}}-bootstrapper/${{parameters.applicationname}}-${{parameters.environmentname}}-${{parameters.argocddestclname}}-bootstrapper/g" $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          sed -i "s/${{parameters.applicationname}}-${{parameters.environmentname}}-rel/${{parameters.applicationname}}-${{parameters.environmentname}}-${{parameters.argocddestclname}}/g" $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          sed -i "s|\$values/${{parameters.environmentname}}/${{parameters.argocddestclname}}/|\$values/${{parameters.environmentname}}/${{parameters.sectorname}}/${{parameters.argocddestclname}}/|g" $applicationfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        fi
+
+        # update namespace application + project tempaltes (only when createfalconnamespace=true)
+        if [[ "$createfalconnamespace" == "true" ]]; then
+          # namespace application
+          sed -i s/applicationname/"${{parameters.applicationname}}"/g $namespacefile
+          sed -i s/envname/"${{parameters.environmentname}}"/g $namespacefile
+          sed -i s/clustername/"${{parameters.argocddestclname}}"/g $namespacefile
+          sed -i s/destcluster/"${{parameters.argocddestclname}}"/g $namespacefile
+          sed -i s/appnamespace/"$primaryns"/g $namespacefile
+          sed -i "s/argorepourl/${escapedrepourl}/g" $namespacefile
+          sed -i s/targetbranchname/"${{parameters.targetbranchname}}"/g $namespacefile
+
+          # namespace project
+          sed -i s/applicationname/"${{parameters.applicationname}}"/g $namespaceprojectfile
+          sed -i s/envname/"${{parameters.environmentname}}"/g $namespaceprojectfile
+          sed -i s/appnamespace/"$primaryns"/g $namespaceprojectfile
+          sed -i "s/argorepourl/${escapedrepourl}/g" $namespaceprojectfile
+          sed -i s/destcluster/"${{parameters.argocddestclname}}"/g $namespaceprojectfile
+          sed -i s/readergroup/"${{parameters.readeradgroupname}}"/g $namespaceprojectfile
+          sed -i s/admingroup/"${{parameters.adminadgroupname}}"/g $namespaceprojectfile
+
+          # For falcon apps, update namespace app and project metadata.name to include cluster suffix
+          # and inject sector into the namespace app path (env/sector/cluster instead of env/cluster)
+          if [[ "$is_falcon" == "true" ]]; then
+            sed -i "s/${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces/${{parameters.applicationname}}-${{parameters.environmentname}}-${{parameters.argocddestclname}}-namespaces/g" $namespacefile
+            sed -i "s/${{parameters.applicationname}}-${{parameters.environmentname}}-namespaces/${{parameters.applicationname}}-${{parameters.environmentname}}-${{parameters.argocddestclname}}-namespaces/g" $namespaceprojectfile
+            sed -i "s|path: ${{parameters.environmentname}}/${{parameters.argocddestclname}}/|path: ${{parameters.environmentname}}/${{parameters.sectorname}}/${{parameters.argocddestclname}}/|g" $namespacefile
+          fi
+
+          # Inject any additional namespaces (from comma-separated list) as extra destinations
+          if [ ${#extrans[@]} -gt 0 ]; then
+            for ns in "${extrans[@]}"; do
+              echo "Injecting extra namespace destination: $ns"
+              sed -i "s/      # SECOND_NAMESPACE_PLACEHOLDER/      - name: ${{parameters.argocddestclname}}\n        namespace: ${ns}\n      # SECOND_NAMESPACE_PLACEHOLDER/g" $namespaceprojectfile
+            done
+          fi
+          sed -i "/# SECOND_NAMESPACE_PLACEHOLDER/d" $namespaceprojectfile
+        fi
+
+        # update project tempalte
+        sed -i s/envname/"${{parameters.environmentname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/applicationname/"${{parameters.applicationname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/appnamespace/"$primaryns"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i "s/argorepourl/${escapedrepourl}/g" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/acrurl/"${{parameters.acrurl}}.azurecr.io\/helm"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/destcluster/"${{parameters.argocddestclname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/readergroup/"${{parameters.readeradgroupname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/admingroup/"${{parameters.adminadgroupname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        sed -i s/sector/"${{parameters.sectorname}}"/g $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+
+        # Inject any additional namespaces (from comma-separated list) as extra destinations in the app project
+        if [ ${#extrans[@]} -gt 0 ]; then
+          for ns in "${extrans[@]}"; do
+            echo "Injecting extra namespace destination into app project: $ns"
+            sed -i "s/      # SECOND_NAMESPACE_PLACEHOLDER/      - name: ${{parameters.argocddestclname}}\n        namespace: ${ns}\n      # SECOND_NAMESPACE_PLACEHOLDER/g" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          done
+        fi
+        sed -i "/# SECOND_NAMESPACE_PLACEHOLDER/d" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+
+        # For falcon apps: remove global-app label inheritance and add resource allowlists
+        if [[ "$is_falcon" == "true" ]]; then
+          echo "Applying falcon-specific project configuration: removing global-app label and adding resource allowlists"
+          # Remove the global-app label
+          sed -i '/labels:/d' $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          sed -i '/argocd.argoproj.io\/project-inherit: global-app/d' $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          # Add empty namespace destination for cluster-scoped resources
+          sed -i '/namespace: pep-.*-ops-admin/a \      - name: ${{parameters.argocddestclname}}\n        namespace: '"''"'' $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          # Add clusterResourceWhitelist and namespaceResourceWhitelist before roles:
+          sed -i '/^      roles:/i \      clusterResourceWhitelist:\n      - group: rbac.authorization.k8s.io\n        kind: ClusterRole\n      - group: rbac.authorization.k8s.io\n        kind: ClusterRoleBinding\n      - group: admissionregistration.k8s.io\n        kind: ValidatingWebhookConfiguration\n      namespaceResourceWhitelist:\n      - group: rbac.authorization.k8s.io\n        kind: Role\n      - group: rbac.authorization.k8s.io\n        kind: RoleBinding\n      - group: \"\"\n        kind: ResourceQuota\n      - group: \"\"\n        kind: ConfigMap\n      - group: \"\"\n        kind: Secret\n      - group: \"\"\n        kind: Service\n      - group: \"\"\n        kind: ServiceAccount\n      - group: apps\n        kind: Deployment\n      - group: apps\n        kind: DaemonSet\n      - group: apps\n        kind: ReplicaSet\n      - group: \"\"\n        kind: Pod' $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+        fi
+
+        # Add conditional restart policy for specified non-prod environments
+        if [[ "${{parameters.environmentname}}" == "dev" || \
+              "${{parameters.environmentname}}" == "qa" || \
+              "${{parameters.environmentname}}" == "preprod" || \
+              "${{parameters.environmentname}}" == "feature" || \
+              "${{parameters.environmentname}}" == "uat" || \
+              "${{parameters.environmentname}}" == "hfdev" || \
+              "${{parameters.environmentname}}" == "hfpreprod" || \
+              "${{parameters.environmentname}}" == "sit" ]]; then
+          echo "Adding restart policy for ${{parameters.environmentname}} environment."
+          # Corrected indentation: 10 spaces before '- p, proj:'
+          sed -i "/# RESTART_POLICY_PLACEHOLDER/a \        - p, proj:${{parameters.applicationname}}-${{parameters.environmentname}}:${{parameters.applicationname}}-${{parameters.environmentname}}-user, applications, action/apps/Deployment/restart, ${{parameters.applicationname}}-${{parameters.environmentname}}/*, allow" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml
+          sed -i "s/# RESTART_POLICY_PLACEHOLDER//g" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml # Remove the placeholder
+        else
+          echo "Skipping restart policy for ${{parameters.environmentname}} environment (only applies to dev, qa, preprod, feature, uat, hfdev, hfpreprod, sit)."
+          sed -i "s/# RESTART_POLICY_PLACEHOLDER//g" $projectfolder/${{parameters.applicationname}}-${{parameters.environmentname}}.yaml # Remove the placeholder if it exists
+        fi
+
+        # update tempalte: argo-apps.yaml
+        sed -i s/envname/"$argocdenv"/g $appsfolder/apps/argo-apps.yaml
+        sed -i s/sector/"${{parameters.sectorname}}"/g $appsfolder/apps/argo-apps.yaml
+        sed -i s/clustername/"${{parameters.argocdclname}}"/g $appsfolder/apps/argo-apps.yaml
+
+
+        # update project file:sector/env/cluster/argocd-configs/defaults/projects/argocd.yaml
+        echo $(grep -R "${{parameters.argocdconfigrepositoryname}}" $defaultprojectfolder/argocd.yaml | wc -c)
+        echo "defaultprojectfolder:${defaultprojectfolder}"
+              
+        [ $(grep -R "${{parameters.argocdconfigrepositoryname}}" $defaultprojectfolder/argocd.yaml | wc -c) -eq 0 ] && sed -i "s/destinations:/- ${escapedrepourl}\n  destinations:/g" $defaultprojectfolder/argocd.yaml && echo "Source repository: ${{parameters.argocdconfigrepositoryname}} does not exist" || echo "Source repository: ${{parameters.argocdconfigrepositoryname}} already exist"
+
+        # Add ACR helm repo to argocd project sourceRepos if not already present
+        acrhelm="${{parameters.acrurl}}.azurecr.io/helm"
+        echo "Checking if ACR helm repo exists in argocd.yaml: $acrhelm"
+        [ $(grep -R "$acrhelm" $defaultprojectfolder/argocd.yaml | wc -c) -eq 0 ] && sed -i "s/destinations:/- ${acrhelm}\n  destinations:/g" $defaultprojectfolder/argocd.yaml && echo "ACR helm repo: $acrhelm added to argocd project" || echo "ACR helm repo: $acrhelm already exists in argocd project"
+
+        echo "********** End Of File *************" 
+        git status
+        git add "${applicationfolder}/."
+        git add "${projectfolder}/."
+        git add "${appsfolder}/apps/."
+        git add "${defaultprojectfolder}/."
+        if [[ ${{parameters.argocddestclname}} != ${{parameters.argocdclname}} ]]
+        then
+          git add "${clusterfolder}/."
+        fi
+        git commit -m "updated argocd repository with $(Build.BuildNumber)"
+        git pull
+        git push https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/$(System.TeamProject)/_git/$(Build.Repository.Name)
+  #Create pull request with the newly created branch to argocd support repo branch
+  - pwsh: |
+      $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"  
+      az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+      $pr_response=(az repos pr create --project $(System.TeamProject) --repository eip-infra-k8s-argocd-support --target-branch main --source-branch $(argocd_pr_branch)  --title "Configure argoCD application for $(argocd_repo_url) $(Build.BuildNumber)") | ConvertFrom-Json
+      $pr_num = $pr_response.pullRequestId 
+      #export pr_num=$(echo $pr_response | jq '.pullRequestId')
+
+      Write-Output "$pr_num"
+      Write-Host "##vso[task.setvariable variable=PR_NUM;isOutput=true]$pr_num" 
+
+    displayName: 'Create_PR'
+    name: 'Create_PR'

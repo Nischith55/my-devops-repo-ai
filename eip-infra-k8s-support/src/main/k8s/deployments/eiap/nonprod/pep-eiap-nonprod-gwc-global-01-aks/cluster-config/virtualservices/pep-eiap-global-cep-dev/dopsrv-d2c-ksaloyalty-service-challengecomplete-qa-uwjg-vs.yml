@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dopsrv-d2c-ksaloyalty-service-challengecomplete-qa-uwjg-vs
+  namespace: pep-eiap-global-cep-dev
+  labels:
+      app: dopsrv-d2c-ksaloyalty-service-challengecomplete-qa
+spec:
+  hosts:
+  - dopsrv-d2c-ksaloyalty-service-challengecomplete-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cep-dev/pep-eiap-global-cep-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopsrv-d2c-ksaloyalty-service-challengecomplete-qa.pep-eiap-global-cep-dev.svc.cluster.local
+        port:
+          number: 80
+  

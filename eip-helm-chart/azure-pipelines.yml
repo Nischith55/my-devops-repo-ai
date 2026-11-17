@@ -1,0 +1,21 @@
+trigger:
+  branches:
+    include:
+    - master
+
+  tags:
+    include:
+      - master*
+      - feature* 
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: EIAP_Devops/eip-helm-chart-pipeline-template
+      ref: feature/helm  
+
+
+variables:
+  - template: variables.yaml@templates
+stages:
+- template: Spring-CICD.yaml@templates

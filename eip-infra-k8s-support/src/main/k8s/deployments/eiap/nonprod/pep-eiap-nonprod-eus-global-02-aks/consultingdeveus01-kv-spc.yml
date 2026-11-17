@@ -1,0 +1,43 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+    name: consultingdeveus01-kv-spc
+    namespace: pep-eiap-cgf-ckms-dev
+spec:
+  provider: azure
+  secretObjects:                         
+    - data:
+        - key: MSSQLHOST                    
+          objectName: MSSQLHOST
+        - key: MSSQLUSERNAME                     
+          objectName: MSSQLUSERNAME
+        - key: MSSQLPASSWORD                     
+          objectName: MSSQLPASSWORD
+        - key: MSSQLDATABASE                 
+          objectName: MSSQLDATABASE
+      secretName: consultingdeveus01-kv-secret
+      type: Opaque  
+  
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "false"
+    clientID: fe25ef7e-e3be-499c-ac93-2135a37b4b61
+    keyvaultName: consultingdeveus01-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects: |
+      array:
+        - |
+          objectName: MSSQLHOST
+          objectType: secret
+        - |
+          objectName: MSSQLUSERNAME
+          objectType: secret
+        - |
+          objectName: MSSQLPASSWORD
+          objectType: secret
+        - |
+          objectName: MSSQLDATABASE
+          objectType: secret                  
+                            
+
+---

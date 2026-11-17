@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: schiso-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for schiso-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-schiso-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm
+  - peppfnaschprodacr.azurecr.io/bitnamicharts
+  destinations:
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-flna-schisostou-prod
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-flna-schisokgn-prod
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-flna-schisotrp-prod
+    server: https://kubernetes.default.svc   
+    
+  roles:
+  - name: schiso-prod-admin
+    description: Admin privileges to schiso-prod
+    policies:
+    - p, proj:schiso-prod:schiso-prod-admin, applications, *, schiso-prod/*, allow
+    - p, proj:schiso-prod:schiso-prod-admin, repositories, *, schiso-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: schiso-prod-user
+    description: Read-only privileges to schiso-prod
+    policies:
+    - p, proj:schiso-prod:schiso-prod-user, applications, get, schiso-prod/*, allow
+    - p, proj:schiso-prod:schiso-prod-user, applications, sync, schiso-prod/*, allow
+    - p, proj:schiso-prod:schiso-prod-user, repositories, get, schiso-prod/*, allow
+    - p, proj:schiso-prod:schiso-prod-user, applications, action/apps/Deployment/restart, schiso-prod/*, allow
+    groups:
+    - "Team.Support.PFNA.SCH.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.PFNA.SCH.Contributor"

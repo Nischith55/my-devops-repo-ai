@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ops-central-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ops-central-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Service_Reliability/_git/ops-central-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-bsradius-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ops-central-prod-admin
+        description: Admin privileges to ops-central-prod
+        policies:
+        - p, proj:ops-central-prod:ops-central-prod-admin, applications, *, ops-central-prod/*, allow
+        - p, proj:ops-central-prod:ops-central-prod-admin, repositories, *, ops-central-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: ops-central-prod-user
+        description: Read-only privileges to ops-central-prod
+        policies:
+        - p, proj:ops-central-prod:ops-central-prod-user, applications, get, ops-central-prod/*, allow
+        - p, proj:ops-central-prod:ops-central-prod-user, applications, sync, ops-central-prod/*, allow
+        - p, proj:ops-central-prod:ops-central-prod-user, repositories, get, ops-central-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.NextGenITSM"
+        - "Team.Support.EIAP.READ"
+    

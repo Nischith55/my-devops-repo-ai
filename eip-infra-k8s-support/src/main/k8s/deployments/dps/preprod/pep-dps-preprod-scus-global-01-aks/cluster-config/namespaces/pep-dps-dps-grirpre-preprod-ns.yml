@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-grirpre-preprod
+  labels:
+    env-preprod: "true"
+    project: grirpre
+    sector: dps
+    team: dps-grirpre
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: goodsreceipts-invoicereceiptsprod
+    istio.io/rev: preprod-stable
+    environment: preprod
+    pep-cmdb-bus-app-id: 7bd5d015c32862501a7f9dddd401312f
+    pep-cmdb-app-service-id: dd400033c3c36290bf4e92af050131c5
+    pep-environment: Pre-Production
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-global-digitalfactory-convai-prod
+  name: pep-eip-global-digitalfactory-convai-prod-vs
+  namespace: pep-eiap-cgf-gbsreport-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-gbsreport-prod/pep-eiap-cgf-gbsreport-prod-cv-gw
+  hosts:
+  - pep-eip-global-digitalfactory-convai-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /sales
+    route:
+    - destination:
+        host: pep-eip-global-digitalfactory-convai-prod.pep-eiap-cgf-gbsreport-prod.svc.cluster.local
+        port:
+          number: 80

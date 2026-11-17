@@ -1,0 +1,45 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: b2b-loyalty-uat
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for b2b-loyalty-uat   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btblylty-qa
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-ops-admin
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btboms-qa
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btbproduct-qa
+      roles:
+      - name: b2b-loyalty-uat-admin
+        description: Admin privileges to b2b-loyalty-uat
+        policies:
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-admin, applications, *, b2b-loyalty-uat/*, allow
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-admin, repositories, *, b2b-loyalty-uat/*, allow
+        groups:
+        - "Team.Support.LATAM.NonProd.B2BOps"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: b2b-loyalty-uat-user
+        description: Read-only privileges to b2b-loyalty-uat
+        policies:
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-user, applications, get, b2b-loyalty-uat/*, allow
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-user, applications, sync, b2b-loyalty-uat/*, allow
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-user, repositories, get, b2b-loyalty-uat/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:b2b-loyalty-uat:b2b-loyalty-uat-user, applications, action/apps/Deployment/restart, b2b-loyalty-uat/*, allow
+        groups:
+        - "Team.Support.LATAM.NonProd.B2BOps"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.devops"

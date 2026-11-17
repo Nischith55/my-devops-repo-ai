@@ -1,0 +1,32 @@
+[
+  { "op": "add",
+    "path": "/spec/match/excludedNamespaces",
+    "value": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "cert-manager-system",
+        "reloader",       
+        "policy-system",
+        "default",
+        "keda",
+        "local",   
+        "gpu-operator"    
+    ]
+  }
+]
+

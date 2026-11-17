@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test9java-testindy2octrelease2026-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test9java-testindy2octrelease2026-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test9java-testindy2octrelease2026-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test9java-testindy2octrelease2026-qa-admin
+    description: Admin privileges to test9java-testindy2octrelease2026-qa
+    policies:
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-admin, applications, *, test9java-testindy2octrelease2026-qa/*, allow
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-admin, repositories, *, test9java-testindy2octrelease2026-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: test9java-testindy2octrelease2026-qa-user
+    description: Read-only privileges to test9java-testindy2octrelease2026-qa
+    policies:
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-user, applications, get, test9java-testindy2octrelease2026-qa/*, allow
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-user, applications, sync, test9java-testindy2octrelease2026-qa/*, allow
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-user, repositories, get, test9java-testindy2octrelease2026-qa/*, allow
+    - p, proj:test9java-testindy2octrelease2026-qa:test9java-testindy2octrelease2026-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

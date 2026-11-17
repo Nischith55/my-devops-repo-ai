@@ -1,0 +1,58 @@
+# NOTE: pep-eiap-nonprod-eus-infra-02-aks is not currently registered as an
+# ArgoCD destination anywhere in this repo -- it has no entry under apps/ or
+# add-ons/. These applications are provisioned but disabled; ARC is installed
+# manually via pep-eiap-arc/setup.sh. Before flipping them to enabled: true the
+# cluster must be added as an ArgoCD destination, and the AppProject governing
+# apps/** must allow the arc-systems and pep-eiap-global-devsecops-dev
+# destinations plus the Artifactory helm repo (the InvalidSpecError seen on the
+# DPS cluster).
+
+global:
+  spec:
+    destination:
+      clusterName: pep-eiap-nonprod-eus-infra-02-aks
+
+argoCDApplications:
+  arc-controller-pep-eiap-nonprod-eus-infra-02-aks:
+    enabled: false
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set-controller
+    revision: 0.14.2
+    namespace: arc-systems
+    path: src/main/k8s/deployments/apps/nonprod/eiap/pep-eiap-nonprod-eus-infra-02-aks/pep-eiap-arc/controller
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-runner-set-pep-eiap-nonprod-eus-infra-02-aks:
+    enabled: false
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set
+    revision: 0.14.2
+    namespace: pep-eiap-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/eiap/pep-eiap-nonprod-eus-infra-02-aks/pep-eiap-arc/runner-set
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-image-prepull-pep-eiap-nonprod-eus-infra-02-aks:
+    enabled: false
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-eiap-global-devsecops-dev
+    path: src/main/k8s/deployments/apps/nonprod/eiap/pep-eiap-nonprod-eus-infra-02-aks/pep-eiap-arc/prepull
+    syncOptions:
+      - CreateNamespace=true
+
+  # arc-kaniko-rbac-pep-eiap-nonprod-eus-infra-02-aks:
+  #   enabled: true
+  #   autoSync: true
+  #   helm: false
+  #   recursive: false
+  #   namespace: pep-eiap-global-devsecops-dev
+  #   path: src/main/k8s/deployments/apps/nonprod/eiap/pep-eiap-nonprod-eus-infra-02-aks/pep-eiap-arc/kaniko-rbac
+  #   syncOptions:
+  #     - CreateNamespace=true

@@ -1,0 +1,77 @@
+---
+# ##
+# OVERRIDES
+#  - istio_operator_tag: override for specific cluster if you need it
+# ##
+
+istio_app_name: istio
+
+## Overrides -- if you want a different version override to specific cluster
+_istio_operator_namespace: |-
+  {{ istio_operator_namespace | default('istio-operator') }}
+
+# Base image tag
+_istio_base_tag: "1.7.4"
+
+_istio_operator_tag: "{{ istio_operator_tag | default(_istio_base_tag) }}"
+
+_istio_system_namespace: |-
+  {{ istio_system_namespace | default('istio-system') }}
+
+# control plane overrides
+_istio_control_plane_tag: |-
+  {{ istio_control_plane_tag | default(_istio_base_tag) }}
+
+# pre-kustomization if generated differently
+_istio_operator_source_namespace: istio-operator
+
+_istio_control_plane_source_namespace: istio-system
+
+# istio control plane common root namespace -- to manage centralized
+# VS, DR etc..
+istio_control_plane_root_namespace: |-
+  {{ istio_root_namespace | default('pep-eiap-istio-config') }}
+
+
+# note; istio operator uses this variable
+#TODO DO NOT USE#
+# _istio_control_plane_revision: |-
+#   {{ istio_control_plane_revision | default('1-7-4') }}
+
+# ##
+# All directories
+# ##
+# This can be configure various components directory paths.
+istio_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, istio_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+istio_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, istio_app_name) | path_join }}
+
+# common templates for any control plane
+istio_control_plane_common_templates_dir: |-
+  {{ (istio_source_app_root_dir, 'common-templates', 'control-plane') 
+     | path_join 
+  }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_istio_setting:
+
+  #app_name
+  name: "{{ istio_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with es_ and ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^istio_.+_component_setting$'))
+    }}
+

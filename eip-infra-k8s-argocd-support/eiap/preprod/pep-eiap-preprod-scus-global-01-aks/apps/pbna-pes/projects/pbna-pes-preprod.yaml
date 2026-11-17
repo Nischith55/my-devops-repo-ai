@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pbna-pes-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pbna-pes-preprod  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/PBNA_PES_Request_To_Serve/_git/pbna-pes-request-to-serve-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-pbna-halo-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pbna-pes-preprod-admin
+        description: Admin privileges to pbna-pes-preprod
+        policies:
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-admin, applications, *, pbna-pes-preprod/*, allow
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-admin, repositories, *, pbna-pes-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pbna-pes-preprod-user
+        description: Read-only privileges to pbna-pes-preprod
+        policies:
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-user, applications, get, pbna-pes-preprod/*, allow
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-user, applications, sync, pbna-pes-preprod/*, allow
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-user, repositories, get, pbna-pes-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pbna-pes-preprod:pbna-pes-preprod-user, applications, action/apps/Deployment/restart, pbna-pes-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.PBNA.HALO.Developer"
+        - "Team.Support.EIAP.READ"
+    

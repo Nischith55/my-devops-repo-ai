@@ -1,0 +1,105 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"admissionregistration.k8s.io/v1","kind":"MutatingWebhookConfiguration","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"app":"sidecar-injector","install.operator.istio.io/owning-resource":"unknown","istio.io/rev":"1-14-4","istio.io/tag":"prod-stable","operator.istio.io/component":"Pilot","release":"istio"},"name":"istio-revision-tag-prod-stable"},"webhooks":[{"admissionReviewVersions":["v1beta1","v1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvRENDQWVTZ0F3SUJBZ0lRQXkxeVBhYWtISWV3TUZFUElRS0V5VEFOQmdrcWhraUc5dzBCQVFzRkFEQVkKTVJZd0ZBWURWUVFLRXcxamJIVnpkR1Z5TG14dlkyRnNNQjRYRFRJek1EUXlOVEEzTkRBeE5sb1hEVE16TURReQpNakEzTkRBeE5sb3dHREVXTUJRR0ExVUVDaE1OWTJ4MWMzUmxjaTVzYjJOaGJEQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFKY2xIelExQW02THRNb28vczJ2TEx2d2dYZkFCZ0pFQ0M5ZktvOE4KZXhZb1QwVFdZcWUxUVBMbVB3SE9WczNadmFsa0toSFZ0ZCtNNklsZ3hsUkkvM1hRM3NtN2dGbnNaZWhZZVVDaQpCVWplbld5S0JGK1ZTcHZuWVNBdHNHVjRMaTZhYnFmYi9reVF5UklXNXlFajF4RXZRa1ZEOXI2dTVoeURaTUNCCkl3aTRrVzY0SlVLdzZZYk1pKzJxcDQ2SWlWY1hUZ3FUVG8xeFkzUWNuaEcvcnJhd1k1N3Y3emVTdnZBcjlJNUoKd09GY2orZzZFRU9qajV3cUhqZGxUYkt4a3czYzlWNko3aEFpdGNadFM3by80bzJxRXNZTmt1eHR2b2ZGdnpsbApFZG44UjRuMkxkUWNwZWxQb2NTUGJkTXRQdnRWNEVNeHV1NzJybWpDSWxmRUVWMENBd0VBQWFOQ01FQXdEZ1lEClZSMFBBUUgvQkFRREFnSUVNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQzRkWTRXbHJQZ1AKTjl0L0hVZVVqTXlvcERaME1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQmh0MDZ1SVNVUmN3Wi9kRldoTDlFdwpRQitLVW53ck8wSjg3cEd4YWJWU2ZYbXJTWG1pYlRhNExzVFp0MG4rQnE5TitxUnlUMHVBeWFXM2swQWlPaWpDCkNYdGV0R1o0S1doK2lPOU4vTFFoT1JNN2Rnbzc5NWRCV0QzbXY0K1RVdU1sdGlFZVJ4ajVGVTFXUGh1WDA2SDkKVTNGMjhOZlBJVjFERnFSV0JLTWtTVnFLcnJWbnp5NWtzbFh6M1piNWZLcTQxQmd2N0dHTUhwQllIZiszSnc1VgpkcjFNZlpKTUp1Rk96RDJCZTBlTmFoTWdXbHdia3VkVmNET00wcWZIa1k4Y05sdTNSN3Q5VWExeVpSY2x6c2hTCkRLa1VtT1NxRm1tcUdzVHdDY2Q1QzVya055NmxCTTdNcWpXTWlZTUR2dVp0MjJ4d2Vvb3dOWWZVSWJZTk8wSDUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"istiod-1-14-4","namespace":"istio-system","path":"/inject","port":443}},"failurePolicy":"Fail","name":"rev.namespace.sidecar-injector.istio.io","namespaceSelector":{"matchExpressions":[{"key":"istio.io/rev","operator":"In","values":["prod-stable"]},{"key":"istio-injection","operator":"DoesNotExist"}]},"objectSelector":{"matchExpressions":[{"key":"sidecar.istio.io/inject","operator":"NotIn","values":["false"]}]},"rules":[{"apiGroups":[""],"apiVersions":["v1"],"operations":["CREATE"],"resources":["pods"]}],"sideEffects":"None"},{"admissionReviewVersions":["v1beta1","v1"],"clientConfig":{"caBundle":"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvRENDQWVTZ0F3SUJBZ0lRQXkxeVBhYWtISWV3TUZFUElRS0V5VEFOQmdrcWhraUc5dzBCQVFzRkFEQVkKTVJZd0ZBWURWUVFLRXcxamJIVnpkR1Z5TG14dlkyRnNNQjRYRFRJek1EUXlOVEEzTkRBeE5sb1hEVE16TURReQpNakEzTkRBeE5sb3dHREVXTUJRR0ExVUVDaE1OWTJ4MWMzUmxjaTVzYjJOaGJEQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFKY2xIelExQW02THRNb28vczJ2TEx2d2dYZkFCZ0pFQ0M5ZktvOE4KZXhZb1QwVFdZcWUxUVBMbVB3SE9WczNadmFsa0toSFZ0ZCtNNklsZ3hsUkkvM1hRM3NtN2dGbnNaZWhZZVVDaQpCVWplbld5S0JGK1ZTcHZuWVNBdHNHVjRMaTZhYnFmYi9reVF5UklXNXlFajF4RXZRa1ZEOXI2dTVoeURaTUNCCkl3aTRrVzY0SlVLdzZZYk1pKzJxcDQ2SWlWY1hUZ3FUVG8xeFkzUWNuaEcvcnJhd1k1N3Y3emVTdnZBcjlJNUoKd09GY2orZzZFRU9qajV3cUhqZGxUYkt4a3czYzlWNko3aEFpdGNadFM3by80bzJxRXNZTmt1eHR2b2ZGdnpsbApFZG44UjRuMkxkUWNwZWxQb2NTUGJkTXRQdnRWNEVNeHV1NzJybWpDSWxmRUVWMENBd0VBQWFOQ01FQXdEZ1lEClZSMFBBUUgvQkFRREFnSUVNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQzRkWTRXbHJQZ1AKTjl0L0hVZVVqTXlvcERaME1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQmh0MDZ1SVNVUmN3Wi9kRldoTDlFdwpRQitLVW53ck8wSjg3cEd4YWJWU2ZYbXJTWG1pYlRhNExzVFp0MG4rQnE5TitxUnlUMHVBeWFXM2swQWlPaWpDCkNYdGV0R1o0S1doK2lPOU4vTFFoT1JNN2Rnbzc5NWRCV0QzbXY0K1RVdU1sdGlFZVJ4ajVGVTFXUGh1WDA2SDkKVTNGMjhOZlBJVjFERnFSV0JLTWtTVnFLcnJWbnp5NWtzbFh6M1piNWZLcTQxQmd2N0dHTUhwQllIZiszSnc1VgpkcjFNZlpKTUp1Rk96RDJCZTBlTmFoTWdXbHdia3VkVmNET00wcWZIa1k4Y05sdTNSN3Q5VWExeVpSY2x6c2hTCkRLa1VtT1NxRm1tcUdzVHdDY2Q1QzVya055NmxCTTdNcWpXTWlZTUR2dVp0MjJ4d2Vvb3dOWWZVSWJZTk8wSDUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=","service":{"name":"istiod-1-14-4","namespace":"istio-system","path":"/inject","port":443}},"failurePolicy":"Fail","name":"rev.object.sidecar-injector.istio.io","namespaceSelector":{"matchExpressions":[{"key":"istio.io/rev","operator":"DoesNotExist"},{"key":"istio-injection","operator":"DoesNotExist"}]},"objectSelector":{"matchExpressions":[{"key":"sidecar.istio.io/inject","operator":"NotIn","values":["false"]},{"key":"istio.io/rev","operator":"In","values":["prod-stable"]}]},"rules":[{"apiGroups":[""],"apiVersions":["v1"],"operations":["CREATE"],"resources":["pods"]}],"sideEffects":"None"}]}
+  creationTimestamp: "2023-04-25T08:04:25Z"
+  generation: 2
+  labels:
+    app: sidecar-injector
+    install.operator.istio.io/owning-resource: unknown
+    istio.io/rev: 1-14-4
+    istio.io/tag: prod-stable
+    operator.istio.io/component: Pilot
+    release: istio
+  name: istio-revision-tag-prod-stable
+  resourceVersion: "1800173"
+  uid: 4cff000f-dc94-4005-a702-638f199669f4
+webhooks:
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvRENDQWVTZ0F3SUJBZ0lRQXkxeVBhYWtISWV3TUZFUElRS0V5VEFOQmdrcWhraUc5dzBCQVFzRkFEQVkKTVJZd0ZBWURWUVFLRXcxamJIVnpkR1Z5TG14dlkyRnNNQjRYRFRJek1EUXlOVEEzTkRBeE5sb1hEVE16TURReQpNakEzTkRBeE5sb3dHREVXTUJRR0ExVUVDaE1OWTJ4MWMzUmxjaTVzYjJOaGJEQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFKY2xIelExQW02THRNb28vczJ2TEx2d2dYZkFCZ0pFQ0M5ZktvOE4KZXhZb1QwVFdZcWUxUVBMbVB3SE9WczNadmFsa0toSFZ0ZCtNNklsZ3hsUkkvM1hRM3NtN2dGbnNaZWhZZVVDaQpCVWplbld5S0JGK1ZTcHZuWVNBdHNHVjRMaTZhYnFmYi9reVF5UklXNXlFajF4RXZRa1ZEOXI2dTVoeURaTUNCCkl3aTRrVzY0SlVLdzZZYk1pKzJxcDQ2SWlWY1hUZ3FUVG8xeFkzUWNuaEcvcnJhd1k1N3Y3emVTdnZBcjlJNUoKd09GY2orZzZFRU9qajV3cUhqZGxUYkt4a3czYzlWNko3aEFpdGNadFM3by80bzJxRXNZTmt1eHR2b2ZGdnpsbApFZG44UjRuMkxkUWNwZWxQb2NTUGJkTXRQdnRWNEVNeHV1NzJybWpDSWxmRUVWMENBd0VBQWFOQ01FQXdEZ1lEClZSMFBBUUgvQkFRREFnSUVNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQzRkWTRXbHJQZ1AKTjl0L0hVZVVqTXlvcERaME1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQmh0MDZ1SVNVUmN3Wi9kRldoTDlFdwpRQitLVW53ck8wSjg3cEd4YWJWU2ZYbXJTWG1pYlRhNExzVFp0MG4rQnE5TitxUnlUMHVBeWFXM2swQWlPaWpDCkNYdGV0R1o0S1doK2lPOU4vTFFoT1JNN2Rnbzc5NWRCV0QzbXY0K1RVdU1sdGlFZVJ4ajVGVTFXUGh1WDA2SDkKVTNGMjhOZlBJVjFERnFSV0JLTWtTVnFLcnJWbnp5NWtzbFh6M1piNWZLcTQxQmd2N0dHTUhwQllIZiszSnc1VgpkcjFNZlpKTUp1Rk96RDJCZTBlTmFoTWdXbHdia3VkVmNET00wcWZIa1k4Y05sdTNSN3Q5VWExeVpSY2x6c2hTCkRLa1VtT1NxRm1tcUdzVHdDY2Q1QzVya055NmxCTTdNcWpXTWlZTUR2dVp0MjJ4d2Vvb3dOWWZVSWJZTk8wSDUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    service:
+      name: istiod-1-14-4
+      namespace: istio-system
+      path: /inject
+      port: 443
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: rev.namespace.sidecar-injector.istio.io
+  namespaceSelector:
+    matchExpressions:
+    - key: istio.io/rev
+      operator: In
+      values:
+      - prod-stable
+    - key: istio-injection
+      operator: DoesNotExist
+    - key: control-plane
+      operator: DoesNotExist
+  objectSelector:
+    matchExpressions:
+    - key: sidecar.istio.io/inject
+      operator: NotIn
+      values:
+      - "false"
+  reinvocationPolicy: Never
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - pods
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 10
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvRENDQWVTZ0F3SUJBZ0lRQXkxeVBhYWtISWV3TUZFUElRS0V5VEFOQmdrcWhraUc5dzBCQVFzRkFEQVkKTVJZd0ZBWURWUVFLRXcxamJIVnpkR1Z5TG14dlkyRnNNQjRYRFRJek1EUXlOVEEzTkRBeE5sb1hEVE16TURReQpNakEzTkRBeE5sb3dHREVXTUJRR0ExVUVDaE1OWTJ4MWMzUmxjaTVzYjJOaGJEQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFKY2xIelExQW02THRNb28vczJ2TEx2d2dYZkFCZ0pFQ0M5ZktvOE4KZXhZb1QwVFdZcWUxUVBMbVB3SE9WczNadmFsa0toSFZ0ZCtNNklsZ3hsUkkvM1hRM3NtN2dGbnNaZWhZZVVDaQpCVWplbld5S0JGK1ZTcHZuWVNBdHNHVjRMaTZhYnFmYi9reVF5UklXNXlFajF4RXZRa1ZEOXI2dTVoeURaTUNCCkl3aTRrVzY0SlVLdzZZYk1pKzJxcDQ2SWlWY1hUZ3FUVG8xeFkzUWNuaEcvcnJhd1k1N3Y3emVTdnZBcjlJNUoKd09GY2orZzZFRU9qajV3cUhqZGxUYkt4a3czYzlWNko3aEFpdGNadFM3by80bzJxRXNZTmt1eHR2b2ZGdnpsbApFZG44UjRuMkxkUWNwZWxQb2NTUGJkTXRQdnRWNEVNeHV1NzJybWpDSWxmRUVWMENBd0VBQWFOQ01FQXdEZ1lEClZSMFBBUUgvQkFRREFnSUVNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQzRkWTRXbHJQZ1AKTjl0L0hVZVVqTXlvcERaME1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQmh0MDZ1SVNVUmN3Wi9kRldoTDlFdwpRQitLVW53ck8wSjg3cEd4YWJWU2ZYbXJTWG1pYlRhNExzVFp0MG4rQnE5TitxUnlUMHVBeWFXM2swQWlPaWpDCkNYdGV0R1o0S1doK2lPOU4vTFFoT1JNN2Rnbzc5NWRCV0QzbXY0K1RVdU1sdGlFZVJ4ajVGVTFXUGh1WDA2SDkKVTNGMjhOZlBJVjFERnFSV0JLTWtTVnFLcnJWbnp5NWtzbFh6M1piNWZLcTQxQmd2N0dHTUhwQllIZiszSnc1VgpkcjFNZlpKTUp1Rk96RDJCZTBlTmFoTWdXbHdia3VkVmNET00wcWZIa1k4Y05sdTNSN3Q5VWExeVpSY2x6c2hTCkRLa1VtT1NxRm1tcUdzVHdDY2Q1QzVya055NmxCTTdNcWpXTWlZTUR2dVp0MjJ4d2Vvb3dOWWZVSWJZTk8wSDUKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    service:
+      name: istiod-1-14-4
+      namespace: istio-system
+      path: /inject
+      port: 443
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: rev.object.sidecar-injector.istio.io
+  namespaceSelector:
+    matchExpressions:
+    - key: istio.io/rev
+      operator: DoesNotExist
+    - key: istio-injection
+      operator: DoesNotExist
+    - key: control-plane
+      operator: DoesNotExist
+  objectSelector:
+    matchExpressions:
+    - key: sidecar.istio.io/inject
+      operator: NotIn
+      values:
+      - "false"
+    - key: istio.io/rev
+      operator: In
+      values:
+      - prod-stable
+  reinvocationPolicy: Never
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - pods
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 10

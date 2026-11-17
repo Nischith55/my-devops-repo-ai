@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gnrm-promoai-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gnrm-promoai-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/GNRM_PromoAI_Pricing/_git/gnrm-promoai-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-promoai-preprod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gnrm-promoai-preprod-admin
+    description: Admin privileges to gnrm-promoai-preprod
+    policies:
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-admin, applications, *, gnrm-promoai-preprod/*, allow
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-admin, repositories, *, gnrm-promoai-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gnrm-promoai-preprod-user
+    description: Read-only privileges to gnrm-promoai-preprod
+    policies:
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-user, applications, get, gnrm-promoai-preprod/*, allow
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-user, applications, sync, gnrm-promoai-preprod/*, allow
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-user, repositories, get, gnrm-promoai-preprod/*, allow
+    - p, proj:gnrm-promoai-preprod:gnrm-promoai-preprod-user, applications, action/apps/Deployment/restart, gnrm-promoai-preprod/*, allow
+    groups:
+    - "Team.App.CDO.GNRM.NonProd.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

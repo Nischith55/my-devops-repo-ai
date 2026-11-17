@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-informer-pepsico
+  namespace: pep-dps-snowdiscovery-preprod
+  labels:
+    app: k8s_informer-pepsico
+spec:
+  selector:
+    matchLabels:
+      app: k8s_informer-pepsico
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: k8s_informer-pepsico
+    spec:
+      volumes:
+        - name: credentials
+          secret:
+            secretName: k8s-informer-cred-pepsico
+      dnsPolicy: Default
+      serviceAccountName: snow-sa-pepsico-preprod
+      securityContext:
+        runAsNonRoot: true
+      # imagePullSecrets:
+      # - name: k8s-informer-repo-cred
+      containers:
+      - command:
+        - /k8s_informer
+        args: ["--kubeconfig", "in_cluster", "--standalone", "true"]
+        image: "pepeiapprodcommonacr.azurecr.io/servicenowdocker/informer:2.0.0"
+        name: k8sinformer
+        imagePullPolicy: Always
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+          - name: credentials
+            readOnly: true
+            mountPath: "/etc/credentials"
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: CLUSTER_NAME
+          value: "pep-dps-preprod-sea-global-01-aks"
+        - name: RESYNC_MIN
+          value: "0"
+        - name: SEND_INTERVAL_SEC
+          value: "10"
+        - name: MAX_CI_IN_MESSAGE
+          value: "50"
+        - name: REFRESH_TIME_MIN
+          value: "0"
+        - name: FULL_DISCOVERY_MIN
+          value: "1440"
+        - name: READ_COMMAND_SEC
+          value: "60"
+        - name: HEARTBEAT_MIN
+          value: "5"
+        - name: MAX_QUEUE_SIZE_BYTES
+          value: "104755200"
+        - name: MAX_RETRY
+          value: "5"
+        - name: MAX_ECC_PAYLOAD_SIZE_BYTES
+          value: "1048576"
+        - name: PROXY_URL
+          value: ""
+        - name: INSTANCE_URL
+          value: "https://pepsico.service-now.com"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CONTINUOUS_DISCOVERY
+          value: "true"
+        - name: ECC_SENDER_INTERVAL_SEC
+          value: "30"
+        - name: VERBOSE_LOGGING
+          value: "false"
+        - name: INFORMER_VERSION
+          value: "pepeiapprodcommonacr.azurecr.io/servicenowdocker/informer:2.0.0"
+        - name: SKIP_TLS_CERT_VALIDATION
+          value: "false"
+        - name: SUPPRESS_FREQUENT_CHANGES
+          value: "true"
+        - name: SUPPRESS_CHANGES_RATE_PER_MIN
+          value: "0.15"
+        - name: OPENSHIFT
+          value: "false"
+        - name: ADD_NODE_LABELS
+          value: "false"
+        - name: CLUSTER_RESOURCE_ID
+          value: ""
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 20m
+            memory: 200Mi
+      terminationGracePeriodSeconds: 10

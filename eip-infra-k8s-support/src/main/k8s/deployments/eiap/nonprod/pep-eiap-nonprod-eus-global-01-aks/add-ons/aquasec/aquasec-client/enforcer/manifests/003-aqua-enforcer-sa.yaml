@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+imagePullSecrets:
+- name: aqua-registry
+kind: ServiceAccount
+metadata:
+  annotations:
+    description: Service account for pulling Aqua images and for Aqua privileged
+  labels:
+    app.kubernetes.io/created-by: haritha_shakirat_2021-09-20
+    app.kubernetes.io/managed-by: manual
+  name: aqua-sa
+  namespace: aquasec-client
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/created-by: haritha_shakirat_2021-09-20
+    app.kubernetes.io/managed-by: manual
+    rbac.example.com/aggregate-to-monitoring: "true"
+  name: aqua-discovery-cr
+  namespace: aquasec-client
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  - deployments
+  - namespaces
+  - componentstatuses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aqua-discovery-crb
+  namespace: aquasec-client
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: aqua-discovery-cr
+subjects:
+- kind: ServiceAccount
+  name: aqua-sa
+  namespace: aquasec-client

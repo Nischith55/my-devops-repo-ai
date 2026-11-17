@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    admission.gatekeeper.sh/ignore: no-self-managing
+    crosscharge_aks: crosscharge
+    kubernetes.io/metadata.name: cattle-gatekeeper-system
+    servicename_aks: sharedaks
+  name: cattle-gatekeeper-system

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-api-kams-calendar-master-data-pea-ixiw-vs
+  namespace: pep-pfna-pcaf-qa
+  labels:
+      app: pep-pcaf-api-kams-calendar-master-data-pea
+spec:
+  hosts:
+  - pep-pcaf-api-kams-calendar-master-data-pea-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-api-kams-calendar-master-data-pea.pep-pfna-pcaf-qa.svc.cluster.local
+        port:
+          number: 80
+  

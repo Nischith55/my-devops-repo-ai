@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-iam-okta-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-iam-okta-prod  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iam-okta-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-iamservice-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-iam-okta-prod-admin
+        description: Admin privileges to pep-iam-okta-prod
+        policies:
+        - p, proj:pep-iam-okta-prod:pep-iam-okta-prod-admin, applications, *, pep-iam-okta-prod/*, allow
+        - p, proj:pep-iam-okta-prod:pep-iam-okta-prod-admin, repositories, *, pep-iam-okta-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-iam-okta-prod-user
+        description: Read-only privileges to pep-iam-okta-prod
+        policies:
+        - p, proj:pep-iam-okta-prod:pep-iam-okta-prod-user, applications, get, pep-iam-okta-prod/*, allow
+        - p, proj:pep-iam-okta-prod:pep-iam-okta-prod-user, applications, sync, pep-iam-okta-prod/*, allow
+        - p, proj:pep-iam-okta-prod:pep-iam-okta-prod-user, repositories, get, pep-iam-okta-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.support.AssociateSSO.PROD.Admins"
+        - "Team.Support.EIAP.READ"
+    

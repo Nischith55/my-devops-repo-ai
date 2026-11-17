@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: labelright-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for labelright-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/labelright-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgfrd-labrt-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: labelright-dev-admin
+        description: Admin privileges to labelright-dev
+        policies:
+        - p, proj:labelright-dev:labelright-dev-admin, applications, *, labelright-dev/*, allow
+        - p, proj:labelright-dev:labelright-dev-admin, repositories, *, labelright-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: labelright-dev-user
+        description: Read-only privileges to labelright-dev
+        policies:
+        - p, proj:labelright-dev:labelright-dev-user, applications, get, labelright-dev/*, allow
+        - p, proj:labelright-dev:labelright-dev-user, applications, sync, labelright-dev/*, allow
+        - p, proj:labelright-dev:labelright-dev-user, repositories, get, labelright-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:labelright-dev:labelright-dev-user, applications, action/apps/Deployment/restart, labelright-dev/*, allow
+        groups:
+        - "Team.Support.IACOE.LabelRight.NPRDCNTB"
+        - "Team.Support.EIAP.READ"
+    

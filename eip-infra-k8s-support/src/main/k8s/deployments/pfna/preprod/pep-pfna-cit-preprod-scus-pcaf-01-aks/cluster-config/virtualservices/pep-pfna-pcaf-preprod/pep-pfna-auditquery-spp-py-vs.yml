@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pfna-auditquery-spp-py
+  name: pep-pfna-auditquery-spp-py-vs
+  namespace: pep-pfna-pcaf-preprod
+spec:
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  hosts:
+  - pep-pfna-auditquery-spp-py.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-auditquery-spp-py.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80

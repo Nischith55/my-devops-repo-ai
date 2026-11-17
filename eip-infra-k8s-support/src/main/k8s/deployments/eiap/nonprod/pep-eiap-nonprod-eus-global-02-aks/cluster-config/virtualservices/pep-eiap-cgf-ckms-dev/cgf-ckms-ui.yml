@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: cgf-ckms-ui
+        meta.helm.sh/release-namespace: pep-eiap-cgf-ckms-dev
+    labels:
+        app: cgf-ckms-ui
+        app.kubernetes.io/instance: cgf-ckms-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250401.3'
+        environment: dev
+        helm.sh/chart: platform-chart-1.0.2
+    name: cgf-ckms-ui
+    namespace: pep-eiap-cgf-ckms-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-ckms-dev/pep-eiap-cgf-ckms-dev-cv-gw
+    hosts:
+    - cgf-ckms-ui.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - spendwisehub.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: cgf-ckms-ui.pep-eiap-cgf-ckms-dev.svc.cluster.local
+                port:
+                    number: 8080

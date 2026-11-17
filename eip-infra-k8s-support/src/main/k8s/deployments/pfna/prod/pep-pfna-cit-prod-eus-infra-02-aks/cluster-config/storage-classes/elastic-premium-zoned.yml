@@ -1,0 +1,24 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: elastic-premium-zoned
+
+# a) need for dynamic provision
+provisioner: disk.csi.azure.com
+
+reclaimPolicy: Delete
+
+volumeBindingMode: WaitForFirstConsumer
+
+allowVolumeExpansion: True
+
+
+# c) need for dynamic provision
+parameters:
+  fsType: xfs
+  kind: Managed
+  resourceGroup: pep-pfna-cit-prod-eus-k8s-hhnxt-01-rg
+  storageaccounttype: Premium_LRS
+  zoned: 'true'
+

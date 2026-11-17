@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-snt-conjur-cr-sa
+  namespace: pep-snt-ops-admin
+secrets:
+- name: pep-snt-conjur-cr-sa-token 

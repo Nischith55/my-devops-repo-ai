@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pep-pfna-flna-whorch-pvc-azuredisk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+  volumeName: pep-pfna-flna-whorch-pv-azuredisk
+  storageClassName: azure-disk-as-state-store

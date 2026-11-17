@@ -1,0 +1,49 @@
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAllowedUsers
+metadata:
+  name: psp-pods-allowed-user-ranges
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+      - argocd
+      - gatekeeper-system
+      - default
+      - istio-ingress
+      - istio-system
+      - keda
+      - kube-node-lease
+      - kube-public
+      - kube-system
+      - kubecost
+      - monitoring
+      - pep-pepgenx-elastic-client-01
+      - pep-pepgenx-elastic-askadaa-01
+      - pep-pepgenx-global-devsecops-dev
+      - pep-pepgenx-global-dev
+      - pep-pepgenx-snowdiscovery-nonprod
+  parameters:
+    runAsUser:
+      rule: MustRunAs
+      ranges:
+        - min: 100
+          max: 200
+    runAsGroup:
+      rule: MustRunAs
+      ranges:
+        - min: 100
+          max: 200
+    supplementalGroups:
+      rule: MustRunAs
+      ranges:
+        - min: 100
+          max: 200
+    fsGroup:
+      rule: MustRunAs
+      ranges:
+        - min: 100
+          max: 200

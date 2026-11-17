@@ -1,0 +1,33 @@
+---
+# ##
+# Given a file path create intermediate directories if does not exist
+# INPUT:
+# - params_mkdirs
+#     path: <must be a file, if directory end with a slash>
+# ##
+
+- name: MKDIRS_BLOCK
+  block:
+
+    - name: MKDIRS_GET_STAT {{ __path }}
+      stat:
+        path: "{{ __path }}"
+        follow: no
+      register: __st
+
+    - name: MKDIRS_CREATE {{ __path }}
+      file:
+        path: "{{ __path }}"
+        state: directory
+        mode: "{{ params_mkdirs['mode'] | default('u=rwx,g=rx,o=rx') }}"
+        recurse: yes
+      when: (__st.stat is defined and not __st.stat.exists)
+
+  vars:
+    # we always pipe it to dirname
+    __path: |-
+      {{ 
+        params_mkdirs['path'] | expandvars | expanduser | realpath 
+        |
+        dirname
+      }}

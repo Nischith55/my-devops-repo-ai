@@ -1,0 +1,17 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# WARNING: This is a built-in namespace SHOULD never be deleted.
+
+ns_kube_node_lease:
+
+  name: kube-node-lease
+
+  labels:
+    istio-injection: disabled
+

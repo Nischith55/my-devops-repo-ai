@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-pfna-mfgpropl-prod-cv-cdn-vs
+  namespace: pep-pfna-pfna-mfgpropl-prod
+spec:
+  hosts:
+    - mfgproplus.pepsico.com
+  gateways:
+  - "pep-pfna-pfna-mfgpropl-prod/pep-pfna-pfna-mfgpropl-prod-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-pfna-pfna-mfgpropl-prod-cv-webdeploy.pep-pfna-pfna-mfgpropl-prod.svc.cluster.local"
+        port:
+          number: 80

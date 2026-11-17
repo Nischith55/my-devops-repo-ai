@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 279e4941-5be0-4e4b-b2b2-b85211736ab0
+  name: pep-eiap-cgf-askeadig-qa-sa
+  namespace: pep-eiap-cgf-askeadig-qa

@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: pep-och-auditstore-pdb
+  namespace: pep-eiap-och-edt-prod
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: pep-och-auditstore

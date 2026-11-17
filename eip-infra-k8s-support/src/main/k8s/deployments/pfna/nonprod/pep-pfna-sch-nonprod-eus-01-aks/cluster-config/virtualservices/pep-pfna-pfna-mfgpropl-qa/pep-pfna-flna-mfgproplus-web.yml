@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-flna-mfgproplus-web
+  name: pep-pfna-flna-mfgproplus-web
+  namespace: pep-pfna-pfna-mfgpropl-qa
+spec:
+  gateways:
+  - pep-pfna-pfna-mfgpropl-qa/pep-pfna-pfna-mfgpropl-qa-cv-gw
+  hosts:
+  - mfgproplus.qa.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /app/forms
+    route:
+    - destination:
+        host: pep-pfna-flna-mfgproplus-web.pep-pfna-pfna-mfgpropl-qa.svc.cluster.local
+        port:
+          number: 8080

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dtv-tpo-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for dtv-tpo-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dtv-tpo-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-dtvtpo-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dtv-tpo-dev-admin
+    description: Admin privileges to dtv-tpo-dev
+    policies:
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-admin, applications, *, dtv-tpo-dev/*, allow
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-admin, applications, get, argocd/*, allow
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-admin, repositories, *, dtv-tpo-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dtv-tpo-dev-user
+    description: Read-only privileges to dtv-tpo-dev
+    policies:
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-user, applications, get, dtv-tpo-dev/*, allow
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-user, applications, sync, dtv-tpo-dev/*, allow
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-user, repositories, get, dtv-tpo-dev/*, allow
+    - p, proj:dtv-tpo-dev:dtv-tpo-dev-user, applications, action/apps/Deployment/restart, dtv-tpo-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.dtvtpo"
+    - "Team.Support.EIAP.READ"

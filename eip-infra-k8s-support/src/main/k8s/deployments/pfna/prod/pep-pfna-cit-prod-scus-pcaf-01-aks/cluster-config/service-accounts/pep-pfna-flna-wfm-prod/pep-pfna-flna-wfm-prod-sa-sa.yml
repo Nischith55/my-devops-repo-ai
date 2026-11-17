@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pfna-flna-wfm-prod-sa
+  namespace: pep-pfna-flna-wfm-prod

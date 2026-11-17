@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-dps-cgf-dsxdevops-dev-sa
+  namespace: pep-dps-cgf-dsxdevops-dev

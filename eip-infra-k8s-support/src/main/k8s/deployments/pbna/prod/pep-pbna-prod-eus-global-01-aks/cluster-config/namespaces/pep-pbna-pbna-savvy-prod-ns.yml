@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    project: savvy
+    sector: pbna
+    servicename_aks: savvypbnaprod
+    team: pbna-savvy
+  name: pep-pbna-pbna-savvy-prod

@@ -1,0 +1,35 @@
+---
+ns_pep_latam_latam_obs_prod:
+  
+  name: pep-latam-latam-obs-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-obs
+    sector: latam
+    project: obs
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-latam-latam-obs-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-latam-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-latam-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_obs'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-latam-latam-obs-prod-sa-token
+    namespace: pep-latam-latam-obs-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-latam-latam-obs-prod-sa"

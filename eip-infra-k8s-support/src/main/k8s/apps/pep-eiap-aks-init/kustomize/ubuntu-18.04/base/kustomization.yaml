@@ -1,0 +1,13 @@
+---
+# apiVersion and kind of Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ntp-configmap.yml
+  - sysctl-configmap.yml
+  - initialize-scripts-configmap.yml
+  - cacerts-configmap.yml
+  - limits-configmap.yml
+  - daemonset.yml
+

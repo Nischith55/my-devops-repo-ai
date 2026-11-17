@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-eiap-nginx
+  namespace: pep-eiap-infra-dev
+spec:
+  template:
+    spec:
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: gw01-tls.crt
+              - key: tls.key
+                path: gw01-tls.key
+              name: pep-eiap-nonprod-scus-sbox-03-aks-gw01-tls

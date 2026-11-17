@@ -1,0 +1,9 @@
+apiVersion: karpenter.azure.com/v1beta1
+kind: AKSNodeClass
+metadata:
+  name: pepgenx-general
+  annotations:
+    kubernetes.io/description: "AKSNodeClass for Karpenter (NAP) provisioned nodes"
+spec:
+  imageFamily: Ubuntu2204
+  osDiskSizeGB: 128

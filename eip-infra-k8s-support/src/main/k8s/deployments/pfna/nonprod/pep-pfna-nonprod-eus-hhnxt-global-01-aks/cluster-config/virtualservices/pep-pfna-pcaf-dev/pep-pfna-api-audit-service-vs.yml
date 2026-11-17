@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-api-audit-service
+  name: pep-pfna-api-audit-service-vs
+  namespace: pep-pfna-pcaf-dev
+spec:
+  gateways:
+  - pep-pfna-pcaf-dev/pep-pfna-pcaf-dev-cv-gw
+  hosts:
+  - pep-pfna-api-audit-service.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pep-pfna-api-audit-service.pep-pfna-pcaf-dev.svc.cluster.local
+        port:
+          number: 80

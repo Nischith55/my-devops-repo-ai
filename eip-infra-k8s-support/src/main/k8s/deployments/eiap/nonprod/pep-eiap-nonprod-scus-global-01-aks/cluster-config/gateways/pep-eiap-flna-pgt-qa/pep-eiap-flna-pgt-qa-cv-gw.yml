@@ -1,0 +1,154 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-flna-pgt-qa-cv-gw
+  namespace: pep-eiap-flna-pgt-qa
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-flna-pgt-qa.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-pgt-qa-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-flna-pgt-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-och-orderintake-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-ordersearch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-orderstore-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-validationservice-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-to-location-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-adhoc-trigger-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-audit-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-azure-blob-list-poller-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-bdc-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-closed-loop-order-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-consumer-data-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-couchbase-data-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-chain-hierarchy-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-manifest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-master-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-tax-rate-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-to-district-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-to-route-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-domain-camel-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-employee-webapp-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-employeetocustroute-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-error-handler-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-init-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-locationmaterialsequence-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-performance-to-plan-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-pickseq-consumer-api-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-policy-distributor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-policy-server-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-product-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-promo-grped-evnt-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-promoted-product-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-replay-facade-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-auth-gtin-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-location-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-webapp-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-routefullcaseupclist-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sales-unit-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sales-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-salesforce-microbatch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-selectable-promotions-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sfapiproxy-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-shipper-material-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-tot-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-transactional-processor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-uow-processor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-visit-plan-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-whitelist-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-pgt-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-flna-pgt-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-och-orderintake-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-ordersearch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-orderstore-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pep-och-validationservice-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-to-location-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-adhoc-trigger-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-audit-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-azure-blob-list-poller-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-bdc-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-closed-loop-order-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-consumer-data-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-couchbase-data-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-chain-hierarchy-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-manifest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-master-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-tax-rate-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-to-district-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-to-route-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-customer-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-domain-camel-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-employee-webapp-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-employeetocustroute-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-error-handler-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-init-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-locationmaterialsequence-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-performance-to-plan-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-pickseq-consumer-api-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-policy-distributor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-policy-server-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-product-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-promo-grped-evnt-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-promoted-product-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-replay-facade-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-auth-gtin-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-location-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-route-webapp-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-routefullcaseupclist-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sales-unit-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sales-web-app-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-salesforce-microbatch-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-selectable-promotions-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-sfapiproxy-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-shipper-material-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-tot-list-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-transactional-processor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-uow-processor-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-visit-plan-ingest-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    - pepsico-pgt-och-hhnx-whitelist-service-qa.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-flna-pgt-qa-cv-gw-http-80
+    port:
+      name: http-pep-eiap-flna-pgt-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

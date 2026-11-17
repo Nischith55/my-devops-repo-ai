@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: flna-pgt-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for flna-pgt-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/flna-pgt-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-flna-flnawqa-qa
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: flna-pgt-qa-admin
+    description: Admin privileges to flna-pgt-qa
+    policies:
+    - p, proj:flna-pgt-qa:flna-pgt-qa-admin, applications, *, flna-pgt-qa/*, allow
+    - p, proj:flna-pgt-qa:flna-pgt-qa-admin, repositories, *, flna-pgt-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: flna-pgt-qa-user
+    description: Read-only privileges to flna-pgt-qa
+    policies:
+    - p, proj:flna-pgt-qa:flna-pgt-qa-user, applications, get, flna-pgt-qa/*, allow
+    - p, proj:flna-pgt-qa:flna-pgt-qa-user, applications, sync, flna-pgt-qa/*, allow
+    - p, proj:flna-pgt-qa:flna-pgt-qa-user, repositories, get, flna-pgt-qa/*, allow
+    - p, proj:flna-pgt-qa:flna-pgt-qa-user, applications, action/apps/Deployment/restart, flna-pgt-qa/*, allow
+    groups:
+    - "Team.Support.EUPGTKnowledgeAsst.Admins"
+    - "Team.Support.EIAP.READ"

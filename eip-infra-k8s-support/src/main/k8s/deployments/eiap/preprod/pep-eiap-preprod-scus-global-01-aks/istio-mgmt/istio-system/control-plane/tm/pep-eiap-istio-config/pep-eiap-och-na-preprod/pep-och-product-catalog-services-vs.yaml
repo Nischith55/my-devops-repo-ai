@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-product-catalog-service-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-product-catalog-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-product-catalog-service.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.preprod.na.pepsico.com
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://pep-och-ui.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+      - exact: https://apim-na.preprod.mypepsico.com
+      - exact: https://pep-och-ui.pbna.gw01.aks01.scus.preprod.azure.intra.pepsico.com   
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Access-Control-Allow-Origin
+      - content-type
+      exposeHeaders:
+      - x-total-count
+      - x-source

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsxadapter-dsxpepadapt-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dsxadapter-dsxpepadapt-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-euadapt-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsxadapter-dsxpepadapt-dev-admin
+    description: Admin privileges to dsxadapter-dsxpepadapt-dev
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-admin, applications, *, dsxadapter-dsxpepadapt-dev/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-admin, repositories, *, dsxadapter-dsxpepadapt-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dsxadapter-dsxpepadapt-dev-user
+    description: Read-only privileges to dsxadapter-dsxpepadapt-dev
+    policies:
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-user, applications, get, dsxadapter-dsxpepadapt-dev/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-user, applications, sync, dsxadapter-dsxpepadapt-dev/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-user, repositories, get, dsxadapter-dsxpepadapt-dev/*, allow
+    - p, proj:dsxadapter-dsxpepadapt-dev:dsxadapter-dsxpepadapt-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.DPS.NonProd.adapt"
+    - "Team.Support.EIAP.READ"

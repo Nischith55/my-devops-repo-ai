@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    kubernetes.io/metadata.name: arize
+    servicename_aks: infratools
+    istio-injection: enabled
+  name: arize

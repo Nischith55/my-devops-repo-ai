@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsx-adaptor-kafka-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsx-adaptor-kafka-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsx-adaptor-kafka-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-dsxadaptor-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsx-adaptor-kafka-prod-admin
+    description: Admin privileges to dsx-adaptor-kafka-prod
+    policies:
+    - p, proj:dsx-adaptor-kafka-prod:dsx-adaptor-kafka-prod-admin, applications, *, dsx-adaptor-kafka-prod/*, allow
+    - p, proj:dsx-adaptor-kafka-prod:dsx-adaptor-kafka-prod-admin, repositories, *, dsx-adaptor-kafka-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsx-adaptor-kafka-prod-user
+    description: Read-only privileges to dsx-adaptor-kafka-prod
+    policies:
+    - p, proj:dsx-adaptor-kafka-prod:dsx-adaptor-kafka-prod-user, applications, get, dsx-adaptor-kafka-prod/*, allow
+    - p, proj:dsx-adaptor-kafka-prod:dsx-adaptor-kafka-prod-user, applications, sync, dsx-adaptor-kafka-prod/*, allow
+    - p, proj:dsx-adaptor-kafka-prod:dsx-adaptor-kafka-prod-user, repositories, get, dsx-adaptor-kafka-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

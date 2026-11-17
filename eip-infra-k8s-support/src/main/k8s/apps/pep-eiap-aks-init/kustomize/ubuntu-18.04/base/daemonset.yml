@@ -1,0 +1,143 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pep-eiap-node-setup
+  namespace: pep-eiap-ops-admin
+  labels:
+    app: pep-eiap-node-setup
+spec:
+  selector:
+    matchLabels:
+      app: pep-eiap-node-setup
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: pep-eiap-node-setup
+        app: pep-eiap-node-setup
+      # disable any istio side-car injection!
+      annotations:
+        sidecar.istio.io/inject: "false"
+
+    spec:
+      # make sure we do it on every node
+      tolerations:
+        - operator: Exists
+
+      # We need this since we are doing some sysctl ops
+      hostNetwork: true
+
+      # Do the sysctl first
+      initContainers:
+        - name: aks-node-initialize
+          image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-18.04-2021.02.27
+          command:
+            - /bin/bash
+            - -c
+            - |
+              #: ##
+              #: IMPORTANT
+              #: - Step 1) execute the setup-changes.sh
+              #: - Step 2) Apply changes
+              #: ##
+
+              admin_user=${AKS_ADMIN_USER:-neipi002}
+              # setup-changes
+              if /tmp/setup-changes.sh; then
+                ssh -l "${admin_user}" -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${NODE_IP} "sudo /tmp/apply-node-changes.sh"
+              fi
+              exit 0
+
+          env:
+
+            - name: AKS_ADMIN_USER
+              value: neipi002
+
+            - name: ROOT_MOUNT_DIR
+              value: /root
+
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+
+          imagePullPolicy: IfNotPresent
+
+          securityContext:
+            privileged: true
+            runAsUser: 0
+
+          volumeMounts:
+            - name: root-mount
+              mountPath: /root
+            - name: all-configmaps
+              mountPath: /tmp
+              readOnly: true
+
+      containers:
+        - name: pause
+          image: mcr.microsoft.com/oss/kubernetes/pause:3.5
+
+      volumes:
+        # node root!
+        - name: root-mount
+          hostPath:
+            path: /
+            type: Directory
+        # setup all configmaps
+        - name: all-configmaps
+          projected:
+            defaultMode: 420
+            sources:
+            - configMap:
+                name: sysctl-conf
+                items:
+                  - key: zzz-sysctl-aks-eiap.conf
+                    path: zzz-sysctl-aks-eiap.conf
+            - configMap:
+                name: timesyncd-conf
+                items:
+                  - key: timesyncd.conf
+                    path: timesyncd.conf
+            - configMap:
+                name: limits-conf
+                items:
+                  - key: zz-eiap-limits.conf
+                    path: zz-eiap-limits.conf
+            - configMap:
+                name: eiap-node-initialize-scripts
+                items:
+                  - key: setup-changes.sh
+                    mode: 493
+                    path: setup-changes.sh
+                  - key: apply-node-changes.sh
+                    mode: 493
+                    path: apply-node-changes.sh
+            - configMap:
+                name: cacerts-conf
+                items:
+                  - key: PepsiCoRootCA.crt
+                    path: PepsiCoRootCA.crt
+                  - key: PepsiCoCA01.crt
+                    path: PepsiCoCA01.crt
+            - secret:
+                # IMPORTANT: changed see 45-target-namespace-secrets.yml
+                name: pep-eiap-aks-init-secret
+                items:
+                  - key: ssh_private_key_0
+                    # must be relative path
+                    path: id_rsa_0
+                    # 256 -> 0400
+                    mode: 256
+                  - key: ssh_public_key_0
+                    # must be relative path
+                    path: id_rsa_0.pub
+                    # 420 -> 0644
+                    mode: 420

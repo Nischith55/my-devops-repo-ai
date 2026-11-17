@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-iacoe-pepconnect-model-server-svc
+  name: pep-iacoe-pepconnect-model-server-svc-vs
+  namespace: pep-eiap-global-iaicv-plt-prod
+spec:
+  gateways:
+  - pep-eiap-global-iaicv-plt-prod/pep-eiap-global-iaicv-plt-prod-cv-gw
+  hosts:
+  - pep-iacoe-pepconnect-model-server-svc.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-global-iaicv-plt-prod.svc.cluster.local
+        port:
+          number: 8000
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/pepiris
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-global-iaicv-plt-prod.svc.cluster.local
+        port:
+          number: 8000        
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iacoe-pepconnect-model-server-svc.pep-eiap-global-iaicv-plt-prod.svc.cluster.local
+        port:
+          number: 8265

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: api-server
+  name: api-server-vs
+  namespace: pep-eiap-amesa-paperless-prod
+spec:
+  gateways:
+  - pep-eiap-amesa-paperless-prod/pep-eiap-amesa-paperless-prod-cv-gw
+  hosts:
+  - api-server.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: api-server.pep-eiap-amesa-paperless-prod.svc.cluster.local
+        port:
+          number: 3000

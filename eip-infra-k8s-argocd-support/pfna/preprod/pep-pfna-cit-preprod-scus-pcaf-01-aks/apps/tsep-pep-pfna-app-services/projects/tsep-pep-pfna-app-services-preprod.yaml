@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: tsep-pep-pfna-app-services-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for tsep-pep-pfna-app-services-preprod  
+      sourceRepos:
+      - https://github.com/Global-SnT/tsep-pep-pfna-app-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+        namespace: pep-pfna-pcaf-preprod
+      - name: pep-pfna-cit-preprod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: tsep-pep-pfna-app-services-preprod-admin
+        description: Admin privileges to tsep-pep-pfna-app-services-preprod
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-admin, applications, *, tsep-pep-pfna-app-services-preprod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-admin, repositories, *, tsep-pep-pfna-app-services-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: tsep-pep-pfna-app-services-preprod-user
+        description: Read-only privileges to tsep-pep-pfna-app-services-preprod
+        policies:
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-user, applications, get, tsep-pep-pfna-app-services-preprod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-user, applications, sync, tsep-pep-pfna-app-services-preprod/*, allow
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-user, repositories, get, tsep-pep-pfna-app-services-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:tsep-pep-pfna-app-services-preprod:tsep-pep-pfna-app-services-preprod-user, applications, action/apps/Deployment/restart, tsep-pep-pfna-app-services-preprod/*, allow
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.RG.AKS.PREPROD.Reader"
+        - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    

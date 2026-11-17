@@ -1,0 +1,143 @@
+---
+# component: control-plane-main
+# Default control plane
+# ##
+# INPUTS:
+# - istio_control_plane_main_patches_combined:
+#     <map> <required> but defaults to empty
+# IMPORTANT:
+# - istio_control_plane_main_setting: 
+#     is cluster and control plane specific and should be in host_vars
+# ABBREVIATIONS:
+#   - _icpm: istio_control_plane_main
+# ##
+
+istio_control_plane_main_name: control-plane-main
+
+# ##
+# component meta information
+# ##
+istio_control_plane_main_meta:
+
+  # component_name
+  name: "{{ istio_control_plane_main_name }}"
+
+  # namespace where this control plane is installed
+  namespace: "{{ _istio_system_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+
+# we use common templates for istio/control plane instead of global
+_icpm_src_templates_dir: "{{ istio_control_plane_common_templates_dir }}"
+_icpm_component_kustomize_resource_base_dir: |-
+  {{ (istio_source_app_root_dir, 'kustomize', istio_control_plane_main_meta['name'], 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_icpm_component_dest_root_dir: |-
+  {{ (istio_deploy_app_root_dir, istio_control_plane_main_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_icpm_component_overlays_dest_dir: |-
+  {{ (_icpm_component_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_icpm_component_manifests_dest_dir: |-
+  {{ (_icpm_component_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_icpm_manifest_path: |-
+  {{ 
+    (_icpm_component_manifests_dest_dir,  
+      istio_control_plane_main_name + '.yml') | path_join 
+  }}
+
+# re-usable patch target
+__iop_target:
+  group: install.istio.io
+  version: v1alpha1
+  kind: IstioOperator
+  name: "{{ istio_control_plane_main_meta['name'] }}"
+  namespace: "{{ istio_control_plane_main_meta['namespace'] }}"
+
+__icpm_pjson_igw_fn__: patch-json-ingress-gateways.yml
+__icpm_pjson_igw_tmpl_fn__: "{{ __icpm_pjson_igw_fn__ + '.j2' }}"
+
+__icpm_pmerge_ns_fn__: patch-merge-node-selection.yml
+__icpm_pmerge_ns_tmpl_fn__: "{{ __icpm_pmerge_ns_fn__ + '.j2' }}"
+
+# mesh-config merge patch
+__icpm_m_mc_fn__: patch-merge-mesh-config.yml
+__icpm_m_mc_tmpl_fn__: "{{ __icpm_m_mc_fn__ + '.j2' }}"
+
+# control plane main build params
+_icpm_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _icpm_component_overlays_dest_dir }}"
+    output_path: "{{ _icpm_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_icpm_component_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _icpm_component_kustomize_resource_base_dir 
+            | relpath(_icpm_component_manifests_dest_dir) 
+        }}
+
+  patches:
+
+    - name: patch-node-selection
+      template_merge_src: |-
+        {{ (_icpm_src_templates_dir, __icpm_pmerge_ns_tmpl_fn__) | path_join }}
+      template_merge_dest: |-
+        {{ 
+          (_icpm_component_overlays_dest_dir, __icpm_pmerge_ns_fn__)
+          | path_join
+        }}
+      target: "{{ __iop_target }}"
+      merge: |-
+        {{ istio_control_plane_main_patches }}
+
+    # 2:
+    - name: patch-merge-mesh-config
+      template_merge_src: |-
+        {{ (_icpm_src_templates_dir, __icpm_m_mc_tmpl_fn__) | path_join }}
+      template_merge_dest: |-
+        {{ (_icpm_component_overlays_dest_dir, __icpm_m_mc_fn__) | path_join }}
+      target: "{{ __iop_target }}"
+      merge: "{{ icpm_merge_mesh_config }}"
+
+    - name: patch-ingress-gateways
+      template_json_src: |-
+        {{ (_icpm_src_templates_dir, __icpm_pjson_igw_tmpl_fn__) | path_join }}
+      template_json_dest: |-
+        {{ 
+          (_icpm_component_overlays_dest_dir, __icpm_pjson_igw_fn__)
+          | path_join
+        }}
+      target: "{{ __iop_target }}"
+      # pass in the whole patch - note: needs to be set in
+      # host_vars/<cluster_name>
+      json6902: |-
+        {{ istio_control_plane_main_patches }}
+
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+istio_control_plain_main_component_setting: |-
+  {{
+    istio_control_plane_main_meta
+    |
+    combine(_icpm_build_params, recursive=True)
+  }}
+

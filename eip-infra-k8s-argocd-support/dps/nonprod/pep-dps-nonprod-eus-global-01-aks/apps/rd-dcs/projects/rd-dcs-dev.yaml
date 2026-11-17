@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-dcs-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for rd-dcs-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-dcs-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-dcs-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: rd-dcs-dev-admin
+    description: Admin privileges to rd-dcs-dev
+    policies:
+    - p, proj:rd-dcs-dev:rd-dcs-dev-admin, applications, *, rd-dcs-dev/*, allow
+    - p, proj:rd-dcs-dev:rd-dcs-dev-admin, repositories, *, rd-dcs-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-dcs-dev-user
+    description: Read-only privileges to rd-dcs-dev
+    policies:
+    - p, proj:rd-dcs-dev:rd-dcs-dev-user, applications, get, rd-dcs-dev/*, allow
+    - p, proj:rd-dcs-dev:rd-dcs-dev-user, applications, sync, rd-dcs-dev/*, allow
+    - p, proj:rd-dcs-dev:rd-dcs-dev-user, repositories, get, rd-dcs-dev/*, allow
+    - p, proj:rd-dcs-dev:rd-dcs-dev-user, applications, action/apps/Deployment/restart, rd-dcs-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.DCS"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

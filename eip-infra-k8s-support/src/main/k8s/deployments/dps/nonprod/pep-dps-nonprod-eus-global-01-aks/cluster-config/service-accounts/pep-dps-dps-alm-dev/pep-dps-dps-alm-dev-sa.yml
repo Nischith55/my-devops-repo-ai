@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 8af88700-eeda-4775-9fe1-4265efffc754
+  name: pep-dps-dps-alm-dev-sa
+  namespace: pep-dps-dps-alm-dev

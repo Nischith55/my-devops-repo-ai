@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-cto-cmp-order-snow-integration-kztz-vs
+  namespace: pep-eiap-global-cmp-prod
+  labels:
+      app: pepsico-cto-cmp-order-snow-integration
+spec:
+  hosts:
+  - pepsico-cto-cmp-order-snow-integration.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cmp-prod/pep-eiap-global-cmp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-snow-integration.pep-eiap-global-cmp-prod.svc.cluster.local
+        port:
+          number: 80
+  

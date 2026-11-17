@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: cceuoijtest
+    sector: amesa
+    team: amesa-cceuoijtest
+  name: pep-eiap-amesa-cceuoijtest-dev

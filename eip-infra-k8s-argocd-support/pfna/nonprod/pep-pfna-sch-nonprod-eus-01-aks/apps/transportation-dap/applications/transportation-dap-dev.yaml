@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: transportation-dap-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/transportation/_git/pep-pfna-dap-argocd-config
+    targetRevision: develop
+  - repoURL: peppfnaschnonprodacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: transportation-dap-dev
+      valueFiles:
+      - $values/dev/pep-pfna-sch-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: peppfnaschnonprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-pfna-sch-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'transportation-dap-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/transportation/_git/pep-pfna-dap-argocd-config
+              repoName: pep-pfna-dap-argocd-config
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

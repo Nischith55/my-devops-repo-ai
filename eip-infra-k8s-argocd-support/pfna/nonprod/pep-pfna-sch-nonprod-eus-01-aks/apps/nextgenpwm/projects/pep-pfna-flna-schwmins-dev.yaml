@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nextgenpwm-acpsldev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/SCHUB_WHSE/_git/pepsico-global-schub-whse-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-schwmins-dev
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: nextgenpwm-admin-acpsldev
+    description: Admin privileges to nextgenpwm-acpsldev
+    policies:
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-admin-acpsldev, applications, *, nextgenpwm-acpsldev/*, allow
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-admin-acpsldev, repositories, *, nextgenpwm-acpsldev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: nextgenpwm-user-acpsldev
+    description: Read-only privileges to nextgenpwm-acpsldev
+    policies:
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-user-acpsldev, applications, get, nextgenpwm-acpsldev/*, allow
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-user-acpsldev, applications, sync, nextgenpwm-acpsldev/*, allow
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-user-acpsldev, repositories, get, nextgenpwm-acpsldev/*, allow
+    - p, proj:nextgenpwm-acpsldev:nextgenpwm-user-acpsldev, applications, action/apps/Deployment/restart, nextgenpwm-sldev/*, allow
+    groups:
+    - "Team.Support.NGPWM.Admins"
+    - "Team.Support.NGPWM.Dev"

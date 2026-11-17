@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-manufacturing-ipc-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-manufacturing-ipc-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/LATAM_IPC_TC/_git/pepsico-manufacturing-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-latam-latamipc-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-manufacturing-ipc-dev-admin
+    description: Admin privileges to pepsico-manufacturing-ipc-dev
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-admin, applications, *, pepsico-manufacturing-ipc-dev/*, allow
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-admin, applications, get, argocd/*, allow
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-admin, repositories, *, pepsico-manufacturing-ipc-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-manufacturing-ipc-dev-user
+    description: Read-only privileges to pepsico-manufacturing-ipc-dev
+    policies:
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-user, applications, get, pepsico-manufacturing-ipc-dev/*, allow
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-user, applications, sync, pepsico-manufacturing-ipc-dev/*, allow
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-user, repositories, get, pepsico-manufacturing-ipc-dev/*, allow
+    - p, proj:pepsico-manufacturing-ipc-dev:pepsico-manufacturing-ipc-dev-user, applications, action/apps/Deployment/restart, pepsico-manufacturing-ipc-dev/*, allow
+    groups:
+    - "Team.App.TechScouting.LatamBonsai.Contributor"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

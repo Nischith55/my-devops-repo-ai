@@ -1,0 +1,37 @@
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmpattesting-testtemp-cmpattesting-testtemp-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmpattesting-testtemp-cmpattesting-testtemp-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/mtesting9009-testtemp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: eiap-ops-admin
+  roles:
+  - name: cmpattesting-testtemp-cmpattesting-testtemp-preprod-admin
+    description: Admin privileges to cmpattesting-testtemp-cmpattesting-testtemp-preprod
+    policies:
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-admin, applications, *, cmpattesting-testtemp-cmpattesting-testtemp-preprod/*, allow
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-admin, repositories, *, cmpattesting-testtemp-cmpattesting-testtemp-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: cmpattesting-testtemp-cmpattesting-testtemp-preprod-user
+    description: Read-only privileges to cmpattesting-testtemp-cmpattesting-testtemp-preprod
+    policies:
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-user, applications, get, cmpattesting-testtemp-cmpattesting-testtemp-preprod/*, allow
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-user, applications, sync, cmpattesting-testtemp-cmpattesting-testtemp-preprod/*, allow
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-user, repositories, get, cmpattesting-testtemp-cmpattesting-testtemp-preprod/*, allow
+    - p, proj:cmpattesting-testtemp-cmpattesting-testtemp-preprod:cmpattesting-testtemp-cmpattesting-testtemp-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

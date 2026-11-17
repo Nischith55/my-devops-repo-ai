@@ -1,0 +1,12 @@
+####### BEGIN Added recently --pep-kafka-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_infratools_cgf_operator_dev
+  - ns_pep_infratools_cgf_shared_dev
+  - ns_pep_infratools_latam_shared_dev
+  - ns_pep_infratools_latam_operator_dev
+  - ns_pep_infratools_test_kafka_qa
+  - ns_pep_infratools_test_test_qa
+####### END Added recently --pep-kafka-nonprod-eus-01-aks######

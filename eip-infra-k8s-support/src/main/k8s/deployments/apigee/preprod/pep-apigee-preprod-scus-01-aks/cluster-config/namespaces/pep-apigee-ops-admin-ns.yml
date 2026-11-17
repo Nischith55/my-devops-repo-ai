@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster-name: pep-apigee-nonprod-scus-01-aks
+    crosscharge_aks: direct
+    kubernetes.io/metadata.name: pep-apigee-ops-admin
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    servicename_aks: apigee
+    team: eiap-admins
+  name: pep-apigee-ops-admin

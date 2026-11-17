@@ -1,0 +1,38 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowedTags
+metadata:
+  name: disallow-latest-tag
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+      - apiGroups: ["apps"]
+        kinds:
+          - Deployment
+          - StatefulSet
+          - DaemonSet
+          - ReplicaSet
+    excludedNamespaces:
+    - argocd
+    - gatekeeper-system
+    - default
+    - istio-ingress
+    - istio-system
+    - keda
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - monitoring
+    - pep-pepgenx-elastic-client-01
+    - pep-pepgenx-elastic-askadaa-01
+    - pep-pepgenx-global-devsecops-dev
+    - pep-pepgenx-global-dev
+    - pep-pepgenx-snowdiscovery-nonprod
+    - apigee
+
+  parameters:
+    tags:
+      - latest

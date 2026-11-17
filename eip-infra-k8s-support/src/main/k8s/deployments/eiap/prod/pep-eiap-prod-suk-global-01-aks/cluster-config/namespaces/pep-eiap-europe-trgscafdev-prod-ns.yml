@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    env-prod: 'true'
+    environment: prod
+    istio.io/rev: prod-stable
+    project: trgscafdev
+    sector: europe
+    team: europe-trgscafdev
+  name: pep-eiap-europe-trgscafdev-prod

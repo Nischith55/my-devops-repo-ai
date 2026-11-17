@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: vending-fsv-mor-assets-service
+  name: vending-fsv-mor-assets-service-qa-vs
+  namespace: pep-eiap-pbna-vms365-qa
+spec:
+  gateways:
+  - pep-eiap-pbna-vms365-qa/pep-eiap-pbna-vms365-qa-cv-gw
+  hosts:
+  - vending-fsv-mor-assets-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vending-fsv-mor-assets-service.pep-eiap-pbna-vms365-qa.svc.cluster.local
+        port:
+          number: 80

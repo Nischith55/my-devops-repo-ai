@@ -1,0 +1,76 @@
+# ##
+# PEP
+# - filebeat SA, CR and CRB
+# - change NAMESPACE
+# - minimum required permissions for filebeat to operate
+# ##
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: pep-pfna-sch-elastic-client-01
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-pfna-sch-elastic-client-01-filebeat
+roleRef:
+  kind: ClusterRole
+  name: pep-pfna-sch-elastic-client-filebeat
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: pep-pfna-sch-elastic-client-01
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    k8s-app: filebeat
+  name: filebeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - pods
+  - nodes
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: filebeat
+  namespace: pep-pfna-sch-elastic-client-01
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: filebeat
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: pep-pfna-sch-elastic-client-01

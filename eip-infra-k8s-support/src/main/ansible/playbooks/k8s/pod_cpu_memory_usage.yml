@@ -1,0 +1,141 @@
+---
+- name: POD_CPU_MEMORY_USAGE
+  hosts: localhost
+  connection: local
+  collections:
+    - kubernetes.core
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks:
+
+  - debug:
+      msg: "{{ cluster_name }} and {{ env }} and {{ department }} and {{ mypath }} and {{ job_name }} and {{ region }} and {{ namespaces  }}"
+
+
+  - name: Convert comma-separated namespaces to list
+    set_fact:
+      namespace_list: "{{ namespaces | split(',') }}"
+
+  - set_fact:
+      pod_details: []
+      pod_metrics: []
+      overall_color: "GREEN"
+
+  - name: calling the role
+    include_role: 
+      name: k8s_support/pod_cpu_memory_usage
+    with_items: "{{ namespace_list }}"
+
+  - name: Determine overall color RED
+    set_fact:
+      overall_color: 'RED'
+    when: (item.cpu_usage_percentage | float > 85) or (item.memory_usage_percentage | float > 85)
+    with_items: "{{ pod_metrics }}"
+    no_log: True
+  
+  - name: Determine overall color AMBER
+    set_fact:
+      overall_color: 'AMBER'
+    when: (item.cpu_usage_percentage | float > 80 and item.cpu_usage_percentage | float <= 85) or (item.memory_usage_percentage | float > 80 and item.memory_usage_percentage | float <=85)
+    with_items: "{{ pod_metrics }}"
+    no_log: True
+
+  # - name: Determine overall color
+  #   set_fact:
+  #     overall_color: >-
+  #       {% set color = 'GREEN' %}
+  #       {% for item2 in pod_metrics %}
+  #         {% if item2.cpu_usage_percentage > 80 or item2.memory_usage_percentage > 80 %}
+  #           {% set color = 'RED' %}
+  #         {% elif item2.cpu_usage_percentage > 60 or item2.memory_usage_percentage > 60 %}
+  #           {% set color = 'AMBER' %}
+  #         {% endif %}
+  #       {% endfor %}
+  #       {{ color }}
+
+  - debug: var=overall_color
+
+  - name: Create email body with table format
+    set_fact:
+      email_body: >-
+        <html>
+        <body>
+        <h2>Pod Resource Usage Report</h2>
+        <div style="display: inline;">
+          <h3 style="display: inline;">Cluster Name:</h3> <span style="font-size: 16px;">{{ cluster_name }}</span>
+        </div>
+        <table border="1">
+          <tr>
+            <th>Namespace</th>
+            <th>Pod Name</th>
+            <th>Container Name</th>
+            <th>CPU Usage (m)</th>
+            <th>Memory Usage (Mi)</th>
+            <th>CPU Limit (millicores)</th>
+            <th>Memory Limit (Mi)</th>
+            <th>CPU Usage (%)</th>
+            <th>Memory Usage (%)</th>
+          </tr>
+          {% for item2 in pod_metrics %}
+          <tr>
+            <td>{{ item2.namespace }}</td>
+            <td>{{ item2.pod_name }}</td>
+            <td>{{ item2.container_name }}</td>
+            <td>{{ item2.cpu_usage }}</td>
+            <td>{{ item2.memory_usage }}</td>
+            <td>{{ item2.cpu_limit }}</td>
+            <td>{{ item2.memory_limit }}</td>
+            <td style="background-color: {% if item2.cpu_usage_percentage < 80 %}green{% elif item2.cpu_usage_percentage <= 85 %}yellow{% else %}red{% endif %};">
+              {{ item2.cpu_usage_percentage }}
+            </td>
+            <td style="background-color: {% if item2.memory_usage_percentage < 80 %}green{% elif item2.memory_usage_percentage <= 85 %}yellow{% else %}red{% endif %};">
+              {{ item2.memory_usage_percentage }}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+        </body>
+        </html>
+
+  - name: Send email with resource usage report
+    ansible.builtin.mail:
+      host: planrr.corp.pep.pvt
+      port: 25
+      to:
+      - Anupam.Shanker@pepsico.com
+      - Jaya.Ramachandran@pepsico.com
+      - Hitha.Alex@pepsico.com
+      - RaviTeja.Koluguri@pepsico.com
+      - AdityaKumar.Maddala.Contractor@pepsico.com
+      - Twardowski.Matthew.Contractor@pepsico.com
+      - Deepak.Naik@pepsico.com
+      - Shakti.Singh1.Contractor@pepsico.com
+      - BhanuPrakash.Podugu@pepsico.com
+      - Rajesh.Sriramdas@pepsico.com
+      - Muthukumar.Subramanian@pepsico.com
+      - Vamsi.J.Contractor@pepsico.com
+      - SIDHARTHA.PANDA.Contractor@pepsico.com
+      - Usha.Gavva.Contractor@pepsico.com
+      - Amit.Chaurasia@pepsico.com
+      - Kabiraj.Pratihari@pepsico.com
+      - Gerardo.DeOcaIbarra.Contractor@pepsico.com
+      - Alberto.Obregon.Contractor@pepsico.com
+      - Tack.Chang@pepsico.com
+      - Marcel.Brito1.Contractor@pepsico.com
+      - jeff.s.jackson@pepsico.com
+      - Venkata.Guntreddi.Contractor@pepsico.com
+      - DL-DPAB2BSREOps@pepsico.com
+      - DL-OCHL2Sustain@pepsico.com
+      - Archana.Yellu@pepsico.com
+      cc: 
+      - DL-iteiapk8ssupport@pepsico.com
+      from: "ITEIAPALERTS@pepsico.com"
+      subject: "Pod CPU Memory Usage Statistics - {{ overall_color }}"
+      body: "{{ email_body }}"
+      subtype: html
+    when: overall_color != 'GREEN'

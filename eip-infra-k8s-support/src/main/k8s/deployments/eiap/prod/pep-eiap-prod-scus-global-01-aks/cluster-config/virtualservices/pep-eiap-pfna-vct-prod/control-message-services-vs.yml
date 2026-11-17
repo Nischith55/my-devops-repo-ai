@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"control-message-services-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["control-message-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"control-message-services.pep-eiap-pfna-vct-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: control-message-services
+  name: control-message-services-vs
+  namespace: pep-eiap-pfna-vct-prod
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-prod/pep-eiap-pfna-vct-prod-cv-gw
+  hosts:
+  - control-message-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: control-message-services.pep-eiap-pfna-vct-prod.svc.cluster.local
+        port:
+          number: 80

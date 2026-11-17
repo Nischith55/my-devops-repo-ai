@@ -1,0 +1,172 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-retailqa-qa-cv-gw
+  namespace: pep-dps-cgf-retailqa-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-retailqa-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-retailqa-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-cgf-retailqa-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-common-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-file-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-xda-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-sf-blob-migration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-metrics-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-insights-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-nginx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-fileproxy-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-graph-fedration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-promotions-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-retailqa-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-cgf-retailqa-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-common-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-file-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-xda-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-sf-blob-migration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-metrics-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-insights-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-nginx-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - retail360assets.qa.pepsico.com
+    - r360-caf-fileproxy-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-auth-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360-caf-graph-fedration-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - r360assets.qa.pepsico.com
+    - retail360.qa.pepsico.com
+    - r360-promotions-frontend-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aiq.qa.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-retailqa-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - retail360assets.qa.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-cgf-retailqa-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: retail360assets.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - r360assets.qa.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-cgf-retailqa-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: r360assets.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - retail360.qa.pepsico.com
+    name: pep-dps-cgf-retail360qa-qa-cv-gw-5-https-443
+    port:
+      name: pep-dps-cgf-retail360qa-qa-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: retail360-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - aiq.qa.pepsico.com
+    name: pep-dps-cgf-retailqa-qa-cv-gw-6-https-443
+    port:
+      name: pep-dps-cgf-retailqa-qa-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: aiq.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

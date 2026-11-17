@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: simple-fastapi-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - simple-fastapi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: simple-fastapi.pep-eiap-cgf-dlops-dev.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: dlops-frontend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: dlops-mlflow-server.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: model-mgmt-backend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - x-organization
+      exposeHeaders:
+      - x-total-count

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pbna-acpgrime-prod
+  labels:
+    env-prod: "true"
+    project: acpgrime
+    sector: pbna
+    team: pbna-acpgrime
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: systemlogisticswarehouseautomation
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: a157e6e6c3aff5544c9669deb00131ec
+    pep-cmdb-app-service-id: 65572ae6c3aff5544c9669deb001319a
+    pep-environment: Production
+    

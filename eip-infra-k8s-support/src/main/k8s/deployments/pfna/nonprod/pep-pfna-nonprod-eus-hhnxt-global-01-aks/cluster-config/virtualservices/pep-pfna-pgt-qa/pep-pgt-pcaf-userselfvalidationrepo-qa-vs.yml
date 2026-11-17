@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pgt-pcaf-userselfvalidationrepo
+  name: pep-pgt-pcaf-userselfvalidationrepo-qa-vs
+  namespace: pep-pfna-pgt-qa
+spec:
+  gateways:
+  - pep-pfna-pgt-qa/pep-pfna-pgt-qa-cv-gw
+  hosts:
+  - pep-pgt-pcaf-userselfvalidationrepo-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pgt-pcaf-userselfvalidationrepo.pep-pfna-pgt-qa.svc.cluster.local
+        port:
+          number: 80

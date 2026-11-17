@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"nginx-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["nginx1.global.gw01.aks01.eus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"nginx.default.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: nginx
+  name: nginx-vs
+  namespace: default
+spec:
+  gateways:
+  - default/default-cv-gw
+  hosts:
+  - nginx1.global.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: nginx.default.svc.cluster.local
+        port:
+          number: 80

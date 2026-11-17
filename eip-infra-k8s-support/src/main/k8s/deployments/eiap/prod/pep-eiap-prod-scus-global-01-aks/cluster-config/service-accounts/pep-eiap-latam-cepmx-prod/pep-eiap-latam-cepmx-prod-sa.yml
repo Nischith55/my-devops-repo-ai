@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: e14440e2-62a4-4114-b9ba-9dfc711d72bf
+  name: pep-eiap-latam-cepmx-prod-sa
+  namespace: pep-eiap-latam-cepmx-prod

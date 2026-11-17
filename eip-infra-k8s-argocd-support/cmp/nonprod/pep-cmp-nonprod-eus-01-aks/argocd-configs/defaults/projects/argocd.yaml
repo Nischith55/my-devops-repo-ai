@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for cmp
+  sourceRepos:
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-test-testing-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-devsecops-testing-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_IT2_Org_Test_Release/_git/cmptest1-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/devxtestingdevsecops-jan2026devxtesting-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_IT2_Org_Test_Release/_git/cmptest-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/slajdlksaf-lkhslkahdlaw-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/asdsd-operationteamkt01-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testonboarding-operationkt02-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_IT2_Org_Test_Release/_git/cmpattest-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_IT2_Org_Test_Release/_git/cmpattestt-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpatte-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmptesting-testteam-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmptestapril-testteam-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmptest12may-testcmp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testregion01-testrepo001-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testregion02-testrepo001-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testblob01-testargorepo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/mtestingmultimarket-testcmp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/manualtestmutliple-test-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/manualtest-test-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpjune-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpjuneee-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpjulyy-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/devxtest1208--argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testui001-operationkt02-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test01-operationkt02-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testui004-operationkt02-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/testui003-operationkt02-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-august19testingnondpa-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/testing-dpatestaugust2026-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-testnodenondpa003-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/aksnode01-aksnodetest0012026-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test001-testpyaug20226-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpaug21-testtemp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/npmtest01-august19testingnondpa-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test90-august19testingnondpa-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/node001-testingaugus2026new-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythonaks01-aks001testingpython-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythontst-releasetestrepo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testnode0001-testnoderelease-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test9java-testindy2octrelease2026-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/nodeday2test-testingoct2026new-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/testing101-testingoctqualitynewrepo-argocd-configs
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

@@ -1,0 +1,84 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-pfna-pogon-dev-cv-gw
+  namespace: pep-pfna-pfna-pogon-dev
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-pfna-pogon-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-pogon-dev-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-pfna-pogon-dev-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-pfna-pfna-pogon-dev-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dev-01.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-scheduler-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pcaf-filestore-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-test.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-scheduler.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-print-fulfillment-ms-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-reference-access-ms-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-user-context-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-product-catalog-java-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-product-catalog-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-partner-integration-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-pogon-dev-cv-gw-https-443
+    port:
+      name: https-pep-pfna-pfna-pogon-dev-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-nonprod-eus-hhnxt-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-pfna-pfna-pogon-dev-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - dev-01.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-scheduler-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pcaf-filestore-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-test.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-backend-scheduler.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-print-fulfillment-ms-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-reference-access-ms-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-user-context-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-product-catalog-java-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-product-catalog-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pcaf-pogon-partner-integration-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-pfna-pfna-pogon-dev-cv-gw-http-80
+    port:
+      name: http-pep-pfna-pfna-pogon-dev-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

@@ -1,0 +1,26 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sBlockNodePort",
+  "metadata": {
+    "annotations": {},
+    "labels": {
+      "app.kubernetes.io/instance": "opa-constraints-pep-pbna-nonprod-eus-global-01-aks-dev"
+    },
+    "name": "block-node-port"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Service"
+          ]
+        }
+      ]
+    }
+  }
+}

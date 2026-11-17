@@ -1,0 +1,71 @@
+# ##
+# NOTES
+# - This will be the default namespace(s) format. Essentially all namespaces
+#   that logically need to be grouped should be in a variable.
+# - The cluster-setup-lifecycle script will not read any other global namespace
+#   variables.
+#
+# ##
+
+k8s_common_dev_namespaces_defaults:
+  metadata:
+    labels:
+      env-dev: "true"
+    
+k8s_common_dev_namespaces:
+
+  - name: pep-eiap-global-infra-dev
+    # defaults to add
+    config_defaults:
+      - varname: k8s_namespaces_defaults
+
+    # BEGIN: any other configuration data for this namespace
+    metadata:
+      labels:
+        team: global-eiap
+        sector: global
+        project: infra
+
+        # # NOTE: istio is enabled so it will send the traces!!
+        # annotations:
+        #   # NOTE: it can be an jaeger instance
+        #   sidecar.jaegertracing.io/inject: "true"
+
+    # Service Accounts for this namespace
+
+    service_accounts:
+      # - name: default
+      #   role_bindings:
+      #     - name: pep-eiap-developer-rb
+      - name: &sa_global_infra_dev pep-eiap-global-infra-dev-sa
+        role_bindings:
+          - name: pep-eiap-devsecops-rb
+          
+    role_bindings:
+
+      # name of the rolebinding 
+      - name: pep-eiap-developer-rb
+        # just the keys are required from the subject arrays (k8s_sup_subjects)
+        subject_keys:
+          - eiap_infra_sp
+        service_accounts:
+          - default
+      - name: pep-eiap-devsecops-rb
+        service_accounts:
+          - pep-eiap-global-infra-dev-sa
+
+    # registry secrets
+    registry_secrets:
+
+      - secret_name: "{{ _eiap_infra_spn_name }}"
+        registries: 
+          - pepeiapnonprodcommonacr.azurecr.io
+
+    # generic secrets
+
+    generic_secrets:
+      - secret_name: "{{ _eiap_infra_spn_name }}"
+        # Any contents apart from what is in secret
+
+    tls_secrets: |-
+      {{ global_infra_dev_tls_secrets | default([]) }}

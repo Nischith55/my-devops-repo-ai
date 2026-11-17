@@ -1,0 +1,21 @@
+---
+# ##
+# AppDynamics Cluster agent settings Common for NONPROD
+# appd_ca_tag: set in global defaults to last official build.
+#  set a global parameter appd_ca_tag_ovrd to override
+# ##
+
+# override image tag -- unofficial
+appd_ca_tag_ovrd: ubuntu-18.04-20.10.0.1820-unofficial
+
+_appd_env_ca_cfg:
+  controllerUrl: https://pepsi-test.saas.appdynamics.com:443
+  account: pepsi-test
+  image: "pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/vendor/appdynamics/cluster-agent:{{ appd_ca_tag }}"
+  # name of the imagepull secret.
+  image_pull_secret: "{{ _eiap_infra_spn_name }}-regcred"
+
+appd_ca_cfg_ovrd: |-
+  {{ _appd_env_ca_cfg 
+    | combine( (appd_ca_host_cfg | default({})), recursive=True) 
+  }}

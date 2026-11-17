@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gnrm-pricingai-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gnrm-pricingai-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/GNRM_Pricing_Accelerator/_git/gnrm-pricingai-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-gnrm-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gnrm-pricingai-dev-admin
+    description: Admin privileges to gnrm-pricingai-dev
+    policies:
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-admin, applications, *, gnrm-pricingai-dev/*, allow
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-admin, applications, get, argocd/*, allow
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-admin, repositories, *, gnrm-pricingai-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gnrm-pricingai-dev-user
+    description: Read-only privileges to gnrm-pricingai-dev
+    policies:
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-user, applications, get, gnrm-pricingai-dev/*, allow
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-user, applications, sync, gnrm-pricingai-dev/*, allow
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-user, repositories, get, gnrm-pricingai-dev/*, allow
+    - p, proj:gnrm-pricingai-dev:gnrm-pricingai-dev-user, applications, action/apps/Deployment/restart, gnrm-pricingai-dev/*, allow
+    groups:
+    - "Team.App.CDO.GNRM.PricingAxlrtr.NonProd.Reader"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

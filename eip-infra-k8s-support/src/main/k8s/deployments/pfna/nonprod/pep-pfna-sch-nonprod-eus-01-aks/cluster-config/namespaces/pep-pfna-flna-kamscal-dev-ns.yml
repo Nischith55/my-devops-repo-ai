@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-kamscal-dev
+  labels:
+    env-nonprod: "true"
+    project: kamscal
+    sector: flna
+    team: flna-kamscal
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: kams-calendar-web-application-flna
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

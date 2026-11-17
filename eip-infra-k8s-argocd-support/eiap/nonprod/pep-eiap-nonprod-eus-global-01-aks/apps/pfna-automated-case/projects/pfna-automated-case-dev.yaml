@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pfna-automated-case-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pfna-automated-case-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_Automated_Case_Picking_ACP/_git/PFNA-Automated-Case-Picking-ACP-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-qfna-whseauto-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pfna-automated-case-dev-admin
+        description: Admin privileges to pfna-automated-case-dev
+        policies:
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-admin, applications, *, pfna-automated-case-dev/*, allow
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-admin, repositories, *, pfna-automated-case-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pfna-automated-case-dev-user
+        description: Read-only privileges to pfna-automated-case-dev
+        policies:
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-user, applications, get, pfna-automated-case-dev/*, allow
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-user, applications, sync, pfna-automated-case-dev/*, allow
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-user, repositories, get, pfna-automated-case-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pfna-automated-case-dev:pfna-automated-case-dev-user, applications, action/apps/Deployment/restart, pfna-automated-case-dev/*, allow
+        groups:
+        - "Team.App.SVTRobotics.Developers"
+        - "Team.Support.EIAP.READ"
+    

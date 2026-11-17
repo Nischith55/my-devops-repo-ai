@@ -1,0 +1,50 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: container-must-have-limits
+spec:
+  enforcementAction: warn
+  match:
+    excludedNamespaces:
+    - calico-system
+    - cattle-fleet-system
+    - cattle-gatekeeper-system
+    - cattle-impersonation-system
+    - cattle-system
+    - default
+    - istio-operator
+    - istio-system
+    - keda
+    - kube-node-lease
+    - observability
+    - kube-public
+    - kube-system
+    - kubecost
+    - kubernetes-dashboard
+    - local
+    - monitoring
+    - msi-acrpull-system
+    - observability
+    - pep-pfna-elastic-client-01
+    - pep-pfna-istio-config
+    - pep-pfna-ops-admin
+    - tigera-operator
+    - twistlockpp
+    - cert-manager-system
+    - reloader
+    - flux-system
+    - flagger
+    - pep-pfna-gremlin
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    scope: '*'
+  parameters:
+    cpu: "2"
+    memory: "4Gi"
+    exemptImages:
+    - cyberark/secrets-provider-for-k8s*
+    - docker.io/istio/*
+    - docker.elastic.co/observability/*
+    - appdynamics/*
+    - docker.io/appdynamics/*

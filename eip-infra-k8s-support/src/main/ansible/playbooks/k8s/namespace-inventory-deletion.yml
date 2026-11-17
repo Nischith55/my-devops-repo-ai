@@ -1,0 +1,10 @@
+---
+- name: Inventory deletion
+  hosts: localhost
+  vars:
+    myenv: "{{ 'nonprod' if (env == 'dev') or (env == 'qa') else 'preprod' if env == 'preprod' else 'prod' }}"
+  tasks:
+    - name: Inventory deletion of namespace file
+      include_role: 
+        name: k8s_support/inventorycreation
+        tasks_from: rollback.yml

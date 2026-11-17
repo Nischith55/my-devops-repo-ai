@@ -1,0 +1,13 @@
+####### BEGIN Added recently --pep-paas-infratools-nonprod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_infratools_cgf_testingcmp_dev
+  - ns_pep_infratools_cgf_awxtest_qa
+  - ns_pep_infratools_cgf_eiotptools_dev
+  - ns_pep_infratools_cgf_appdynamic_dev
+  - ns_pep_infratools_cgf_swaggerhub_dev
+  - ns_pep_infratools_cgf_awx_dev
+  - ns_pep_infratools_test_test1_qa
+####### END Added recently --pep-paas-infratools-nonprod-eus-01-aks######

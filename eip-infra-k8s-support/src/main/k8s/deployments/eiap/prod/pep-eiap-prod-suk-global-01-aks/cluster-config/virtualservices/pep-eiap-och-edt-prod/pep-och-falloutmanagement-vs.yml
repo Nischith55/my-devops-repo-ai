@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-falloutmanagement-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-falloutmanagement.global.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-och-falloutmanagement.pep-eiap-och-edt-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-falloutmanagement
+  name: pep-och-falloutmanagement-vs
+  namespace: pep-eiap-och-edt-prod
+spec:
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  hosts:
+  - pep-och-falloutmanagement.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-och-falloutmanagement.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 80

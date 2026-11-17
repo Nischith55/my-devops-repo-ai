@@ -1,0 +1,49 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedReposv2
+metadata:
+  name: repo-is-openpolicyagent
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+    - argocd
+    - gatekeeper-system
+    - default
+    - istio-ingress
+    - istio-system
+    - keda
+    - kube-node-lease
+    - kube-public
+    - kube-system
+    - kubecost
+    - monitoring
+    - pep-pepgenx-elastic-client-01
+    - pep-pepgenx-elastic-askadaa-01
+    - pep-pepgenx-global-devsecops-dev
+    - pep-pepgenx-global-dev
+    - pep-pepgenx-snowdiscovery-nonprod
+
+  parameters:
+    allowedImages:
+    # Solo Istio
+    - "docker.io/istio/*"
+    - "istio/*"
+
+    # CyberArk
+    - "cyberark/*"
+    - "docker.io/cyberark/*"
+
+    # Elastic
+    - "docker.elastic.co/*"
+
+    # Amazon ECR (Non-Prod)
+    - "928734899669.dkr.ecr.*.amazonaws.com/*"
+
+    # AppDynamics
+    - "appdynamics/*"
+    - "docker.io/appdynamics/*"
+    # Temporalio - https://docs.temporal.io/production-deployment/worker-deployments/kubernetes-controller
+    - "docker.io/temporalio/*"

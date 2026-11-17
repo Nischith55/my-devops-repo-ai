@@ -1,0 +1,40 @@
+---
+ns_pep_pbna_cgf_spot_dev:
+  
+  name: pep-pbna-cgf-spot-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-spot
+    sector: cgf
+    project: spot
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: ibpm-spotfrieghtintake-negotiationmanagement
+    pep-cmdb-app-service-id: "284ab2bac3fdd6d44c9669deb00131e3"
+    pep-cmdb-bus-app-id: "604ab2bac3fdd6d44c9669deb00131aa"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pbna-cgf-spot-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pbna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pbna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_spot'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pbna-cgf-spot-dev-sa-token
+    namespace: pep-pbna-cgf-spot-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pbna-cgf-spot-dev-sa"

@@ -1,0 +1,9 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-elastic-cluster-02
+  labels:
+    eck-managed: 'true'
+    istio-injection: enabled

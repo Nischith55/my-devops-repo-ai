@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-pcaf-webapps-services-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-pcaf-webapps-services-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pcaf-webapps-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pgt-qa
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-pcaf-webapps-services-qa-admin
+    description: Admin privileges to pep-pfna-pcaf-webapps-services-qa
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-admin, applications, *, pep-pfna-pcaf-webapps-services-qa/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-admin, repositories, *, pep-pfna-pcaf-webapps-services-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-pcaf-webapps-services-qa-user
+    description: Read-only privileges to pep-pfna-pcaf-webapps-services-qa
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-user, applications, get, pep-pfna-pcaf-webapps-services-qa/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-user, applications, sync, pep-pfna-pcaf-webapps-services-qa/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-user, repositories, get, pep-pfna-pcaf-webapps-services-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-pfna-pcaf-webapps-services-qa:pep-pfna-pcaf-webapps-services-qa-user, applications, action/apps/Deployment/restart, pep-pfna-pcaf-webapps-services-qa/*, allow
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"

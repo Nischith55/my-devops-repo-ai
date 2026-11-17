@@ -1,0 +1,53 @@
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-ops-admin
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-global-infra-dev
+  
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-istio-config
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-elastic-client-01
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-elastic-client-02
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-elastic-cluster-01
+     
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-elastic-cluster-02
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-elastic-monitor-01
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-global-devsecops-dev
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-eiap-snowdiscovery-nonprod
+
+    
+
+

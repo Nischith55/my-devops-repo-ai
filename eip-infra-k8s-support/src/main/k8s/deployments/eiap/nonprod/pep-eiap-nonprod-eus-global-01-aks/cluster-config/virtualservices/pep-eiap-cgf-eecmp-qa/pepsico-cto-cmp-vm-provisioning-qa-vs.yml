@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:40:40Z"
+  generation: 1
+  name: pepsico-cto-cmp-vm-provisioning-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638246983"
+  uid: 742d842f-16c6-4420-beb8-9b6aaf24c918
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-vm-provisioning-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/selfserviceprovisioning/vm
+    route:
+    - destination:
+        host: pepsico-cto-cmp-vm-provisioning.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace global-hrsev
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_global_hrsev_prod:
+  
+  name: pep-eiap-global-hrsev-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-hrsev
+    sector: global
+    project: hrsev
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_hrsev'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-global-hrsev-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb

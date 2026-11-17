@@ -1,0 +1,110 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-aiq360hf-preprod-cv-gw
+  namespace: pep-dps-dps-aiq360hf-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-aiq360hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-aiq360hf-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - gusr360-lite-frontend-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-common-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-nginx-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-jbp-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-aiq360hf-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - gusr360-lite-frontend-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-auth-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-file-auth-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-common-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-config-loader-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-metrics-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-xda-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-jbp-frontend-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-promotions-frontend-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - aiqassetshf.preprod.pepsico.com
+    - gusr360-caf-nginx-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-insights-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-caf-graph-fedration-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-caf-personalisation-hfpreprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-lite-jbp-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - gusr360-insights-ui-lib-hf-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-aiq360hf-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-aiq360hf-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - aiqassetshf.preprod.pepsico.com
+    name: pep-dps-dps-aiq360hf-preprod-cv-gw-3-https-443
+    port:
+      name: pep-dps-dps-aiq360hf-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: aiqassetshf.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

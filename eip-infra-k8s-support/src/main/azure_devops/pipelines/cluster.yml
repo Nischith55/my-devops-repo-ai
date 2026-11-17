@@ -1,0 +1,84 @@
+trigger: none
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: develop
+
+parameters:
+
+- name: cluster
+  displayName: 'Aks Cluster Name'
+  type: string
+
+- name: env
+  displayName: 'env'
+  type: string
+
+- name: department
+  displayName: 'department'
+  type: string
+
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: repo_access_token
+  - group: prod_ansible_azure_secrets
+
+  - name: env
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: prod
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+      value: preprod
+    ${{ else }}:
+      value: nonprod
+  
+  - name: agent_pool
+    ${{ if and(eq(variables.env, 'nonprod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'snt'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'snt'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'prod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'snt'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'nonprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-nonprod-${{ parameters.region }}-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-preprod-${{ parameters.region }}-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-pfna-cit-prod-${{ parameters.region }}-infra-02-aks-agents
+  
+stages:
+  - stage: OPA_Violations_Report 
+    displayName: OPA_Violations_Report
+       
+    pool: 
+      name: $(agent_pool)
+    jobs: 
+    - job: Job_1
+      displayName: JsontoCsv
+
+      steps:
+      - template: templates/set_config_devsecops.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+      
+      - task: Bash@3
+        displayName: Extracting All Constraints
+        inputs:
+          targetType: 'inline'
+          script: |
+            kubectl get constraints -A -o json > constraints.json
+
+
+      - template: templates/jsontopython.yml
+        parameters:
+          cluster: ${{ parameters.cluster }}
+
+      - task: CopyFiles@2
+        inputs:
+          contents: '*.csv'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: MyBuildOutputs

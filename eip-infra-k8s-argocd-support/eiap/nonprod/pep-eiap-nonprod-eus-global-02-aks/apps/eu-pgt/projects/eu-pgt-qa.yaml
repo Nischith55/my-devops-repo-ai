@@ -1,0 +1,39 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: eu-pgt-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for eu-pgt-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/eu-pgt-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-pfna-genie-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: eu-pgt-qa-admin
+        description: Admin privileges to eu-pgt-qa
+        policies:
+        - p, proj:eu-pgt-qa:eu-pgt-qa-admin, applications, *, eu-pgt-qa/*, allow
+        - p, proj:eu-pgt-qa:eu-pgt-qa-admin, repositories, *, eu-pgt-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: eu-pgt-qa-user
+        description: Read-only privileges to eu-pgt-qa
+        policies:
+        - p, proj:eu-pgt-qa:eu-pgt-qa-user, applications, get, eu-pgt-qa/*, allow
+        - p, proj:eu-pgt-qa:eu-pgt-qa-user, applications, sync, eu-pgt-qa/*, allow
+        - p, proj:eu-pgt-qa:eu-pgt-qa-user, repositories, get, eu-pgt-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:eu-pgt-qa:eu-pgt-qa-user, applications, action/apps/Deployment/restart, eu-pgt-qa/*, allow
+        groups:
+        - "Team.Support.EUPGTKnowledgeAsst.Admins"
+        - "Team.Support.EIAP.READ"
+    

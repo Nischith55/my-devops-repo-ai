@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: demo-hello-world
+  namespace: pep-eiap-flna-eiv-dev
+spec:
+  host: demo-hello-world.pep-eiap-flna-eiv-dev.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 78d3e5cac3f135906e47f145df013110
+    pep-cmdb-bus-app-id: 38d3a5cac3f135906e47f145df0131ee
+    pep-environment: QA
+    project: awxtest
+    sector: cgf
+    servicename_aks: hyperautomationansibletower
+    team: cgf-awxtest
+  name: pep-infratools-cgf-awxtest-qa

@@ -1,0 +1,40 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  ECK operator: Validating WebHook Patch
+
+  NOTES:
+  - Currently the all-in-one uses v1beta1 for admissionregistration.k8s.io API
+    - K8S > 1.16 v1 is the model to move
+  - Also, v1 API requires additional keys in each of the hook configuration
+      * admissionReviewVersions: [v1beta1, v1]
+      * sideEffects: "None"
+  - Also we give the ability to change the failure policy
+
+  This generates a JsonPatches6902 data that is referenced from path.
+  INPUTS:
+    - params_tmpl:
+        json6902:
+          webhook_patch: [object/map]
+            start_idx:
+            ...
+#}
+{% set _p = params_tmpl %}
+{% set _pj = _p['json6902'] %}
+{% set _pj_wh = _pj['webhook_patch'] %}
+---
+{% if (_pj_wh | length) > 0 %}
+  {% set _indexes = range(_pj_wh['start_idx'], _pj_wh['end_idx'] + 1) %}
+  {% set _side_effects = _pj_wh['side_effects'] %}
+  {% set _timeout_secs = _pj_wh['timeout_secs'] %}
+  {% for _i in _indexes %}
+- op: replace
+  path: /webhooks/{{ _i }}/failurePolicy
+  value: {{ _pj_wh['failure_policy'] }}
+- op: add
+  path: /webhooks/{{ _i }}/sideEffects
+  value: {{ _side_effects }}
+- op: add
+  path: /webhooks/{{ _i }}/timeoutSeconds
+  value: {{ _timeout_secs | int }}
+  {% endfor %}
+{% endif %}

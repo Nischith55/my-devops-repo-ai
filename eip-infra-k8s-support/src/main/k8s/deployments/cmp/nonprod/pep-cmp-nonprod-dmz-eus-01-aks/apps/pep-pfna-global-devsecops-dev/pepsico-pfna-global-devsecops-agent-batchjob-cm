@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+  pepsico-pfna-global-devsecops-agent-batchjob.yaml: "#######################################################################################################\r\n#
+    \       KUBERNETES JOB TEMPLATE that creates batch Job which registers Azure devops
+    agent \r\n#        and shut downs the pod once the Job is completed\r\n#######################################################################################################\r\n\r\n#
+    Placeholders enclosed inside double braces {{PLACEHOLDERS}} - Replace this with
+    actual values during implementation\r\n\r\n# Job Resource\r\n---\r\napiVersion:
+    batch/v1\r\nkind: Job\r\nmetadata:\r\n  generateName: pepsico-pfna-global-devsecops-agent-batchjob-\r\n
+    \ namespace: pep-pfna-global-devsecops-dev     # Kubernetes Namespace in which
+    the deployment will be perfomed. Example: pep-pfna-latam-akv-dev-ns\r\nspec:\r\n
+    \ completions: 1  # Number of fixed completion count\r\n  parallelism: 1  # Number
+    of Parallel Jobs\r\n  template:\r\n    spec:\r\n      imagePullSecrets: \r\n      -
+    name: pep-pfna-svc-global-devsecops-acr-creds\r\n      containers:\r\n      -
+    name: pepsico-pfna-global-devsecops-agent\r\n        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20230707.17
+    \          # Image Name including the absolute path of the Azure Container Registry\r\n
+    \       imagePullPolicy: IfNotPresent\r\n        resources:               # Resource
+    limits for the pod\r\n          requests:\r\n            memory: \"4Gi\"\r\n            cpu:
+    \"1000m\"\r\n          limits:\r\n            memory: \"16Gi\"\r\n            cpu:
+    \"8000m\"\r\n        envFrom:\r\n        - secretRef:\r\n            name: pep-pfna-svc-global-devsecops-azdevops\r\n
+    \       volumeMounts:\r\n        - mountPath: \"/mnt/azure\"\r\n          name:
+    volume\r\n      serviceAccountName: pep-pfna-buildagent\r\n      nodeSelector:
+    \       # Agent pool restriction\r\n        balance-group: FoundationonebuildagentZonedpools\r\n
+    \     tolerations:\r\n      - key: \"Foundationonebuildagentpool\"\r\n        operator: \"Exists\"\r\n
+    \       effect: \"NoSchedule\"\r\n      restartPolicy: \"OnFailure\"\r\n      volumes:\r\n
+    \     - name: volume\r\n        persistentVolumeClaim:\r\n          claimName:
+    pvc-azurefile-devops"
+kind: ConfigMap
+metadata:
+  name: pepsico-pfna-global-devsecops-agent-batchjob
+  namespace: pep-pfna-global-devsecops-dev
+

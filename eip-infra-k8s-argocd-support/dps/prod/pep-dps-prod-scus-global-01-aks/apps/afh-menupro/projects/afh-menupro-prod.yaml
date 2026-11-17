@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: afh-menupro-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for afh-menupro-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/afh-menupro-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-dps-afhmenu-prod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: afh-menupro-prod-admin
+    description: Admin privileges to afh-menupro-prod
+    policies:
+    - p, proj:afh-menupro-prod:afh-menupro-prod-admin, applications, *, afh-menupro-prod/*, allow
+    - p, proj:afh-menupro-prod:afh-menupro-prod-admin, applications, get, argocd/*, allow
+    - p, proj:afh-menupro-prod:afh-menupro-prod-admin, repositories, *, afh-menupro-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: afh-menupro-prod-user
+    description: Read-only privileges to afh-menupro-prod
+    policies:
+    - p, proj:afh-menupro-prod:afh-menupro-prod-user, applications, get, afh-menupro-prod/*, allow
+    - p, proj:afh-menupro-prod:afh-menupro-prod-user, applications, sync, afh-menupro-prod/*, allow
+    - p, proj:afh-menupro-prod:afh-menupro-prod-user, repositories, get, afh-menupro-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.AFHMenuPro"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

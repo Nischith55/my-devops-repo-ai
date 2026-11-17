@@ -1,0 +1,51 @@
+---
+# ##
+# ABBREVIATION:
+# - kured
+# ##
+
+# must match [add-ons|apps]/<app_name>, where app_name is below value
+kured_app_name: kured
+
+# The namespace in SOURCE files -- i.e. in base directory change
+kured_src_namespace: pep-eiap-ops-admin
+
+# target namespace!
+kured_target_namespace: pep-eiap-ops-admin
+# kured_target_namespace: |-
+#   {{ kured_namespace | v1.7.0(kured_src_namespace) }}
+
+# ##
+# All directories
+# ##
+
+# apps manifest go under namespace (target)
+kured_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, kured_app_name) 
+    | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory NOTE: apps 
+kured_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, kured_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_kured_setting:
+
+  #app_name
+  name: "{{ kured_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with app prefix or app abbrv prefix and 
+  # ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^kured_.+_component_setting$'))
+    }}
+

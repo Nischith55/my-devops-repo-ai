@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-flag-preprod-cv-web-vs
+  namespace: pep-dps-dps-flag-preprod
+  labels:
+    app: pep-dps-dps-flag-preprod-cv-web
+spec:
+  hosts:
+    - fritolayag.preprod.pepsico.com
+    - pep-dps-dps-flag-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-flag-preprod/pep-dps-dps-flag-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-flag-preprod-cv-web.pep-dps-dps-flag-preprod.svc.cluster.local
+        port:
+          number: 80

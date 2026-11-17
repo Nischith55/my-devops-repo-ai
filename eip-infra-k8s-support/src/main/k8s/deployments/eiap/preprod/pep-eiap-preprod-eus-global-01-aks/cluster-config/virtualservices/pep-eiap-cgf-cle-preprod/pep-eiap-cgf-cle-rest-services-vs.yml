@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-cgf-cle-rest-services
+  name: pep-eiap-cgf-cle-rest-services-vs
+  namespace: pep-eiap-cgf-cle-preprod
+spec:
+  gateways:
+  - pep-eiap-cgf-cle-preprod/pep-eiap-cgf-cle-preprod-cv-gw
+  hosts:
+  - pep-eiap-cgf-cle-rest-services.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  - cle-rest-api.preprod.intra.pepsico.com
+  - cle-rest-api.eus.preprod.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-cle-rest-services.pep-eiap-cgf-cle-preprod.svc.cluster.local
+        port:
+          number: 80

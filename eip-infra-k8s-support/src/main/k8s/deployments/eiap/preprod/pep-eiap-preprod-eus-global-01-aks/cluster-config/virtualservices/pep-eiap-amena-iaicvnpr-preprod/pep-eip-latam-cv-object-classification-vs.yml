@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-latam-cv-object-classification
+  name: pep-eip-latam-cv-object-classification-vs
+  namespace: pep-eiap-amena-iaicvnpr-preprod
+spec:
+  gateways:
+  - pep-eiap-amena-iaicvnpr-preprod/pep-eiap-amena-iaicvnpr-preprod-cv-gw
+  hosts:
+  - pep-eip-latam-cv-object-classification.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model-objectclassification
+    route:
+    - destination:
+        host: pep-eip-latam-cv-object-classification.pep-eiap-amena-iaicvnpr-preprod.svc.cluster.local
+        port:
+          number: 8000

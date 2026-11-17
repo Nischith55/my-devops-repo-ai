@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: afh-blueprint-ui-us-prod:networking.istio.io/VirtualService:pep-dps-cgf-afhblue-prod/afh-blueprint-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"afh-blueprint-ui-us-prod:networking.istio.io/VirtualService:pep-dps-cgf-afhblue-prod/afh-blueprint-ui"},"labels":{"app":"afh-blueprint-ui","app.kubernetes.io/instance":"afh-blueprint-ui-us","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.9"},"name":"afh-blueprint-ui","namespace":"pep-dps-cgf-afhblue-prod"},"spec":{"gateways":["pep-dps-cgf-afhblue-prod/pep-dps-cgf-afhblue-prod-cv-gw"],"hosts":["afh-blueprint-ui-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"afh-blueprint-ui.pep-dps-cgf-afhblue-prod.svc.cluster.local","port":{"number":8080},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: afh-blueprint-ui
+        app.kubernetes.io/instance: afh-blueprint-ui-us
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.9
+    name: afh-blueprint-ui
+    namespace: pep-dps-cgf-afhblue-prod
+spec:
+    gateways:
+    - pep-dps-cgf-afhblue-prod/pep-dps-cgf-afhblue-prod-cv-gw
+    hosts:
+    - afh-blueprint-ui-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - afhblueprint.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: afh-blueprint-ui.pep-dps-cgf-afhblue-prod.svc.cluster.local
+                port:
+                    number: 8080

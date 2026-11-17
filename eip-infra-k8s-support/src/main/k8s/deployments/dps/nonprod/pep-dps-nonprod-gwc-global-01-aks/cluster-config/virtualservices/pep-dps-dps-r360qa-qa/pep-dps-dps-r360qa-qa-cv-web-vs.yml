@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-r360qa-qa-cv-web-vs
+  namespace: pep-dps-dps-r360qa-qa
+  labels:
+    app: pep-dps-dps-r360qa-qa-cv-web
+spec:
+  hosts:
+    - euretail360.qa.pepsico.com
+    - pep-dps-dps-r360qa-qa-cv.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-r360qa-qa/pep-dps-dps-r360qa-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-r360qa-qa-cv-web.pep-dps-dps-r360qa-qa.svc.cluster.local
+        port:
+          number: 80

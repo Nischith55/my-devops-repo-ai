@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-infra-preprod
+  labels:
+    env-dev: 'true'
+    environment: preprod
+    istio-injection: enabled
+    project: infra
+    sector: pfna
+    team: global-pfna

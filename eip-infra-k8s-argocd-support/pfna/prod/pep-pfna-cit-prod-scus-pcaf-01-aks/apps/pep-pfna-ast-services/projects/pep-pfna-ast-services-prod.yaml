@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-ast-services-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-ast-services-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-ast-services-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-ast-prod
+  - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-ast-services-prod-admin
+    description: Admin privileges to pep-pfna-ast-services-prod
+    policies:
+    - p, proj:pep-pfna-ast-services-prod:pep-pfna-ast-services-prod-admin, applications, *, pep-pfna-ast-services-prod/*, allow
+    - p, proj:pep-pfna-ast-services-prod:pep-pfna-ast-services-prod-admin, repositories, *, pep-pfna-ast-services-prod/*, allow
+    groups:
+    - "Team.Support.PFNA.RG.AKS.PROD.Admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-ast-services-prod-user
+    description: Read-only privileges to pep-pfna-ast-services-prod
+    policies:
+    - p, proj:pep-pfna-ast-services-prod:pep-pfna-ast-services-prod-user, applications, get, pep-pfna-ast-services-prod/*, allow
+    - p, proj:pep-pfna-ast-services-prod:pep-pfna-ast-services-prod-user, applications, sync, pep-pfna-ast-services-prod/*, allow
+    - p, proj:pep-pfna-ast-services-prod:pep-pfna-ast-services-prod-user, repositories, get, pep-pfna-ast-services-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"

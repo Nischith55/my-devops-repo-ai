@@ -1,0 +1,185 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:  
+  name: pep-eiap-k8sautomation-clusterrole
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - persistentvolumeclaims
+  - events
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ''
+  resources:
+  - nodes
+  - namespaces
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  - podtemplates
+  - pods/attach
+  - pods/binding
+  - pods/eviction
+  - pods/exec
+  - pods/log
+  - pods/status
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments  
+  - deployments/scale
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - virtualservices
+  - destinationrules
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - persistentvolumeclaims
+  - pods
+  - pods/status
+  - pods/log
+  - events
+  - secrets
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  - pods/eviction
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - delete
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  - virtualservices
+  - sidecars
+  - destinationrules
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - create
+- apiGroups:
+  - msi-acrpull.microsoft.com
+  resources:
+  - acrpullbindings
+  verbs:
+  - get
+  - list
+  - delete
+  - create
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - virtualservices
+  - destinationrules
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - batch
+  resources:
+  - cronjob
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ''
+  resources:
+  - services
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list 

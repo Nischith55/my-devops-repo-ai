@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-location-py-v4-ectd-vs
+  namespace: pep-pfna-pcaf-prod
+  labels:
+      app: pcaf-location-py-v4
+spec:
+  hosts:
+  - pcaf-location-py-v4-prod.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-location-py-v4.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080
+  

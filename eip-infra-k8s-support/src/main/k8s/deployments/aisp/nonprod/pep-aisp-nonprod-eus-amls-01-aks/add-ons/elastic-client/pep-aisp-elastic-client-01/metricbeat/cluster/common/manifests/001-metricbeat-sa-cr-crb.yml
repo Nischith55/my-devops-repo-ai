@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+  namespace: pep-aisp-elastic-client-01
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  # <namespace>-<beat type>
+  name: pep-aisp-elastic-client-01-metricbeat
+roleRef:
+  kind: ClusterRole
+  name: pep-aisp-elastic-client-metricbeat
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: metricbeat
+  namespace: pep-aisp-elastic-client-01

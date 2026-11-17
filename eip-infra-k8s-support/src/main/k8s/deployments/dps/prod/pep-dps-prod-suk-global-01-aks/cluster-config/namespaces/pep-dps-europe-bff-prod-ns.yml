@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-dps-europe-bff-prod
+    pep-cmdb-app-service-id: ceddd29847f8b91408c57752846d4336
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: bff
+    sector: europe
+    servicename_aks: pepsiconnectb2bportaldominicanrepublicmenegocio-plusprod
+    team: europe-bff
+  name: pep-dps-europe-bff-prod

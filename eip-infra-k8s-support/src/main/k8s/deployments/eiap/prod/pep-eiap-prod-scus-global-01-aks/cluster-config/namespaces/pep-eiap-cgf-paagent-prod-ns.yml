@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-paagent-prod
+  labels:
+    env-prod: "true"
+    project: paagent
+    sector: cgf
+    team: cgf-paagent
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: sowsavingsreviewagent
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 7dce047ddb3e8c10c2b5f381399619ae
+    pep-cmdb-app-service-id: 1065905bc301fad485be750f0501317a
+    pep-environment: Production
+    

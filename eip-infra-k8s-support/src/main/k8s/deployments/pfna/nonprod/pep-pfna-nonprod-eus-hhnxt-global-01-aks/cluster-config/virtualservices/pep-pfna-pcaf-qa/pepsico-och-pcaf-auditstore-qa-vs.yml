@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-och-pcaf-auditstore
+  name: pepsico-och-pcaf-auditstore-qa-vs
+  namespace: pep-pfna-pcaf-qa
+spec:
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  hosts:
+  - pepsico-och-pcaf-auditstore-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - x-source
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowOrigins:
+      - exact: https://t1.uap.pepenv.com
+      - exact: https://pepsico-och-pcaf-auditstore-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://api-na.qa.mypepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-och-pcaf-auditstore.pep-pfna-pcaf-qa.svc.cluster.local
+        port:
+          number: 80

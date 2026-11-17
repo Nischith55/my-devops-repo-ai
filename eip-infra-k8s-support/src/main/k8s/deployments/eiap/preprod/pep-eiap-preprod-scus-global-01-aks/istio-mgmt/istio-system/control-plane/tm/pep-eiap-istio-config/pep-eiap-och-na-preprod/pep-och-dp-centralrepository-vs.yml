@@ -1,0 +1,41 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-dp-centralrepository-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-dp-centralrepository.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    - ignoreUriCase: true
+      uri:
+        prefix: /management
+    route:
+    - destination:
+        host: pep-och-dp-centralrepository.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:  
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com    
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count   

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: applicationname-envname-destcluster
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for applicationname-envname-destcluster  
+      sourceRepos:
+      - argorepourl
+      - acrurl
+      destinations:
+      - name: destcluster
+        namespace: appnamespace
+      # SECOND_NAMESPACE_PLACEHOLDER
+      - name: destcluster
+        namespace: pep-sector-ops-admin
+      roles:
+      - name: applicationname-envname-destcluster-admin
+        description: Admin privileges to applicationname-envname-destcluster
+        policies:
+        - p, proj:applicationname-envname-destcluster:applicationname-envname-destcluster-admin, applications, *, applicationname-envname-destcluster/*, allow
+        - p, proj:applicationname-envname-destcluster:applicationname-envname-destcluster-admin, repositories, *, applicationname-envname-destcluster/*, allow
+        groups:
+        - "admingroup"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: applicationname-envname-destcluster-user
+        description: Read-only privileges to applicationname-envname-destcluster
+        policies:
+        - p, proj:applicationname-envname-destcluster:applicationname-envname-destcluster-user, applications, get, applicationname-envname-destcluster/*, allow
+        - p, proj:applicationname-envname-destcluster:applicationname-envname-destcluster-user, applications, sync, applicationname-envname-destcluster/*, allow
+        - p, proj:applicationname-envname-destcluster:applicationname-envname-destcluster-user, repositories, get, applicationname-envname-destcluster/*, allow
+        # RESTART_POLICY_PLACEHOLDER # This line will be replaced by the pipeline script
+        groups:
+        - "readergroup"
+        - "Team.Support.EIAP.READ"
+    

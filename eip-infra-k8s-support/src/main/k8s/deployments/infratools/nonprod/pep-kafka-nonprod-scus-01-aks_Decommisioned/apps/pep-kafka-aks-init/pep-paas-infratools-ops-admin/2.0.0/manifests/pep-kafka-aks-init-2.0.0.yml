@@ -1,0 +1,502 @@
+apiVersion: v1
+data:
+  PepsiCoCA01.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIG4jCCBcqgAwIBAgITeAAAAA4Q3a6mda3qewAAAAAADjANBgkqhkiG9w0BAQsF
+    ADA7MQswCQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMT
+    DVBlcHNpQ29Sb290Q0EwHhcNMjAwOTIxMjAyOTI2WhcNMzAwOTIxMjAzOTI2WjBW
+    MRMwEQYKCZImiZPyLGQBGRYDcHZ0MRMwEQYKCZImiZPyLGQBGRYDcGVwMRQwEgYK
+    CZImiZPyLGQBGRYEY29ycDEUMBIGA1UEAxMLUGVwc2lDb0NBMDEwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+weVFlzME+jhiJCx9ZES4yG7bt5tZ+mDI
+    nWPqn6KAqAGTGUbhLNkMY5MjXBqGkXAVapmbrMTcnsLGWV9o3ClX9gpRyZ/AzSNz
+    c47EDQRtk3geY7Ttsje00ZgOcTKdN8rtWsPL4mb8UktDFFwlgcCbDuR/zVLrdYna
+    OQxCF1S5+SxTYuJJMKGAwOGXGGS59mQdePedu6tzfAam2Pj4x889tU4Aj3ZLB9fD
+    rq1/AehSQas1VFDe7cgJxKj2SUtqVn7kNuv3+sh/l3PB67q340fsKCpCSZCzQ7Ff
+    ynjYY1SrYTbuarn/H8NRh6Yu3AXCcu717b9a2MkJeIiE8shJk2jJAgMBAAGjggPC
+    MIIDvjAOBgNVHQ8BAf8EBAMCAYYwEAYJKwYBBAGCNxUBBAMCAQIwIwYJKwYBBAGC
+    NxUCBBYEFOaT3eRcSJLUZZCrdQB0iUNn5aDRMB0GA1UdDgQWBBRYp0p0oyEn44Xz
+    tgGaTQc2CH96zDCCAlMGA1UdIASCAkowggJGMIICQgYLKwYBBAGBgjyDfQEwggIx
+    MIIB/gYIKwYBBQUHAgIwggHwHoIB7ABUAGgAaQBzACAAQwBlAHIAdABpAGYAaQBj
+    AGEAdABpAG8AbgAgAEEAdQB0AGgAbwByAGkAdAB5ACAAKABDAEEAKQAgAGkAcwAg
+    AGEAbgAgAGkAbgB0AGUAcgBuAGEAbAAgAFAAZQBwAHMAaQBDAG8AIAByAGUAcwBv
+    AHUAcgBjAGUALgAgAEMAZQByAHQAaQBmAGkAYwBhAHQAZQBzACAAaQBzAHMAdQBl
+    AGQAIABiAHkAIAB0AGgAaQBzACAAQwBBACAAYQByAGUAIABmAG8AcgAgAGkAbgB0
+    AGUAcgBuAGEAbAAgAFAAZQBwAHMAaQBDAG8AIABvAG4AbAB5AC4AIABGAG8AcgAg
+    AG0AbwByAGUAIABpAG4AZgBvAHIAbQBhAHQAaQBvAG4ALAAgAHAAbABlAGEAcwBl
+    ACAAcgBlAGYAZQByACAAdABvACAAdABoAGUAIABQAGUAcABzAGkAQwBvACAAQwBl
+    AHIAdABpAGYAaQBjAGEAdABpAG8AbgAgAFAAcgBhAGMAdABpAGMAZQAgAFMAdABh
+    AHQAZQBtAGUAbgB0ACAAYQB0ACAAaAB0AHQAcAA6AC8ALwBwAGsAaQAuAGMAbwBy
+    AHAALgBwAGUAcAAuAHAAdgB0AC8AYwBwAHMALgBoAHQAbTAtBggrBgEFBQcCARYh
+    aHR0cDovL2FpYS5teXBlcHNpY28uY29tL2Nwcy50eHQAMBkGCSsGAQQBgjcUAgQM
+    HgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUODCI
+    a55UbSh4EZeJVl/FHiXDYkAwOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5t
+    eXBlcHNpY28uY29tL1BlcHNpQ29Sb290Q0EuY3JsMHIGCCsGAQUFBwEBBGYwZDA2
+    BggrBgEFBQcwAoYqaHR0cDovL2FpYS5teXBlcHNpY28uY29tL1BlcHNpQ29Sb290
+    Q0EuY3J0MCoGCCsGAQUFBzABhh5odHRwOi8vb2NzcC5teXBlcHNpY28uY29tL29j
+    c3AwDQYJKoZIhvcNAQELBQADggEBAGET6imjTRWn6JBEM8tSw2iCiwYI1Cj55+sg
+    L9bkcRpHKj6ioMRMMVdU8veJlCoGWB3wzBu2kukmcCFQ/56LzCXRPZ0dPnHmY9aN
+    8fmwIshjh660rCwvPtY9l4BwxP5h4yRD5qZuNOj2f3suv+TLNBK22WGvCK6d+uwI
+    FDuZ6gNBhq+Vzuw7PTmREEsgJLcit6YLCivYlo1nWULzAbduZFrob8Z9/5OlhibN
+    PM6ogoc4XkphqhftQnO4njvn5BIgmr99wiPx3T0KzQkYdvOj/m66LKFzCCUomN4/
+    T8LOrtnq1ZV/qPHFxRupWjLetfj9e40in+O/rd8LvMxP0m8sN7s=
+    -----END CERTIFICATE-----
+  PepsiCoRootCA.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDVDCCAjygAwIBAgIQGMjWESYDLpVMtN3463GkazANBgkqhkiG9w0BAQsFADA7
+    MQswCQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMTDVBl
+    cHNpQ29Sb290Q0EwHhcNMTcwNDE0MTY1NTA3WhcNMzcwNDE0MTcwNDU3WjA7MQsw
+    CQYDVQQGEwJVUzEUMBIGA1UEChMLUGVwc2lDbyBJbmMxFjAUBgNVBAMTDVBlcHNp
+    Q29Sb290Q0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+ga0bPWdq
+    fI/QrPA+yFXZH3HjN/yZ6Znmx6wndjDn3AhNotaxi6M2A9F/+QX/Pj6MWoi4uCv+
+    3XuONE9XC+dSbysseiutX0rftmq430fyUzm5CM1w+a/7Hk3jC5kDtzZTPUwhTrzS
+    +3VIdSz8OOptqcolPTcRCvmAxMP9SboBK5qkWjFDnsNPw28VOAUClmX5OXi8JYD+
+    1PK0ZxP+XOthPunnAABrM0ij9ROP2ryu+4iUTmWKRNQdom2+i+tcZ9+VTj84NoTR
+    YXkEd9/fbf1DEfVGamVDclyj74goUpybBkVg2sFviUHpDNfcVE1ah35NfJ2lSyPG
+    UfqLfzB3EomrAgMBAAGjVDBSMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTAD
+    AQH/MB0GA1UdDgQWBBQ4MIhrnlRtKHgRl4lWX8UeJcNiQDAQBgkrBgEEAYI3FQEE
+    AwIBADANBgkqhkiG9w0BAQsFAAOCAQEApuV0Bd4cEN/yX8S0F7dSXEaCHG4JCwnW
+    SPUquzh+COUdLDn6sfpW/0d8ejUhvLj1xDv5Qj8zmrEdsN+WxsYuwaycB4NEFz7H
+    93qSy6OuXAArIUKKeccd5dOtYZXXzYoTtBXP9zjaEbaavMMuCXgrfDM7bIWjjIw2
+    HKP8wJOX2EtM6oGgk/hweHX9IFRncmIfDo6Zf5n5AlQSgdQfj/DjemSHScLBRqpW
+    xKKMsXaOs1BbaQLfjPYgF9YEboq+gsJ+209SNpC/bzTKpAKX6nZiGB+C6lOJlUox
+    HpFB474coTnKJXP/0o57A5pkQI//d9AeT1UT3k1tJvdiaCi5KbKrOg==
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: pep-ca-certs-config
+  namespace: pep-kafka-ops-admin
+---
+apiVersion: v1
+data:
+  apply-node-changes.sh: |
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # ##
+    # IMPORTANT:
+    # - This is designed to run on the NODE and NOT the pod make sure you can
+    #   ssh from the pod to run the script
+    # - Also, this script should be "scp'ed" OR copied by the initContainer to
+    #   the NODE filesystem
+    # - This must be run as sudo
+    # ##
+
+    DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_FRONTEND
+
+    # ##
+    # reload all sysctl settings in ubuntu
+    # ##
+    echo "---------- START: reload sysctl --------"
+    custom_sysctl_file=/etc/sysctl.d/zzz-sysctl-aks-eiap.conf
+    if [[ -r "${custom_sysctl_file}" ]]; then
+      echo "Applying [${custom_sysctl_file}]"
+      /sbin/sysctl --load="${custom_sysctl_file}" || echo "Failed sysctl load"
+    else
+      echo "WARNING: [${custom_sysctl_file}] file not found.."
+    fi
+    echo "---------- END: reload sysctl --------"
+
+    # ##
+    # Make sure /etc/ssl/certs/ca-certificates.crt is updated
+    # ##
+    echo "---------- START: configure PepsiCo CA Certs --------"
+    # Check whether pepsico cacerts are already in the bundle
+    pep_certs=$(ls /etc/ssl/certs | awk '/PepsiCoRootCA/ || /PepsiCoCA01/' | wc -l)
+    if [[ "${pep_certs}" == "2" ]]; then
+      echo "pepsico cacerts already available; Skipping cacert update block"
+    else
+      # install ca certificates
+      cacert_log=/tmp/cacert-update.log
+      echo "updating ca certificates"
+      update-ca-certificates > $cacert_log
+      # Capture the number of certs added and removed into variables
+      added_certs=$(cat $cacert_log | head -2 | tail -1 | awk '{print $1, $3}' | awk '{print $1}')
+      removed_certs=$(cat $cacert_log | head -2 | tail -1 | awk '{print $1, $3}' | awk '{print $2}')
+      # Check for cacert addition/removal and restart containerd
+      if [[ "$added_certs" > "0" || "$removed_certs" > "0" ]]; then
+        echo "$added_certs pepsico cacerts added to the bundle, $removed_certs removed; restarting containerd"
+        # restart containerd
+        systemctl restart containerd || echo "restart containerd failed"
+        echo "succesfully restarted containerd"
+      else
+        echo "no certificates added/removed; skipping containerd restart"
+      fi
+    fi
+    echo "---------- END: configure PepsiCo CA Certs --------"
+
+    # ##
+    # restart timesyncd
+    # ##
+
+    echo "---------- START: restart timesyncd --------"
+    systemctl restart systemd-timesyncd || echo "Failed to restart timesyncd"
+    echo "---------- END: restart timesyncd --------"
+
+    # ##
+    # Install and update packages...
+    # ##
+
+    echo "---------- START: apt disable autoupgrade  --------"
+
+    # # NOTE: uncomment below if u ever get messed up with lock files
+    # if lockfile_pids=$(lsof -t /var/lib/dpkg/lock-frontend 2>/dev/null); then
+    #   echo "  ++ Appears we have lockfile in use"
+    #   for _p in $lockfile_pids; do
+    #     kill -9 ${_p} || echo "Failed to kill process [${_p}]"
+    #   done
+    # fi
+    # rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/lib/apt/lists/lock /var/cache/apt/archives/lock
+    # dpkg --configure -a
+
+    pkg_mgr="apt-get -qq -y --no-install-recommends "
+
+    echo "~~ Disabling auto-update..."
+    ${pkg_mgr} purge unattended-upgrades || echo "unattended-upgrades purge failed"
+    echo "~~ Disable auto-update done ..."
+
+    echo "---------- END: apt disable autoupgrade  --------"
+
+    # echo "---------- START: apt dist upgrade  --------"
+    # echo "~~ Updating apt cache..."
+    # ${pkg_mgr} update || echo "update failed.."
+    # echo "~~ Done Updating apt cache.."
+
+    # echo "Performing dist-upgrade"
+    # dpkg_options="-o \"Dpkg::Options::=--force-confdef\" -o \"Dpkg::Options::=--forceconfold\" "
+    # ${pkg_mgr} $dpkg_options dist-upgrade || echo "dist-upgrade failed"
+    # echo "~~ Done Performing dist-upgrade"
+    # echo "---------- END: apt dist upgrade  --------"
+
+    # ##
+    # Cleanup motd
+    # ##
+
+    upgrade_file=/var/lib/ubuntu-release-upgrader/release-upgrade-available
+    if [[ -r "${upgrade_file}" ]]; then
+      truncate -s 0 "${upgrade_file}" || echo "Failed to truncate [${upgrade_file}]"
+    fi
+    echo "Done: applying changes"
+    exit 0
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # ##
+    # Setup the Node Changes.
+    # - involves setting up ssh into nodes
+    # - copy all necessary files.
+    # ##
+    # IMPORTANT:
+    # - Please be extremely careful since this is a daemonset and any
+    #   error will do a redeployment, so watch for duplicated.
+    # - EVERY command must be checked for errors, if you cop out using
+    #   || true, then ensure idempotency where required.
+    #: ##
+    # This should already be passed in container env else default
+    ROOT_MOUNT_DIR="${ROOT_MOUNT_DIR}"
+    # add to node admin user [NOTE: defaults to neipi002]
+    ADMIN_USER="${AKS_ADMIN_USER}"
+    # where our config map files are
+    PROJECTED_DIR="${PROJECTED_MOUNT_DIR}"
+
+    # ##
+    # - setup ssh hack
+    # ##
+    setup_ssh_node() {
+      # Step 1. copy private key to home_dir of this pods user context
+      ssh_dir=~/.ssh
+      mkdir -p ${ssh_dir}
+      chmod 0700 ${ssh_dir}
+      cp -pf ${PROJECTED_DIR}/id_rsa_0 ${ssh_dir}/id_rsa || echo "Failed to copy [id_rsa_0]"
+      cp -pf ${PROJECTED_DIR}/id_rsa_0.pub ${ssh_dir}/id_rsa.pub || echo "Failed to copy [id_rsa_0.pub]"
+
+      # Step 2. Copy to node admin use pub key
+      admin_ssh_dir="${ROOT_MOUNT_DIR}/home/${ADMIN_USER}/.ssh"
+      node_auth_keys_file=${admin_ssh_dir}/authorized_keys
+      node_auth_keys_file_orig=${admin_ssh_dir}/authorized_keys.ORIG
+      # make a backup
+      if [[ ! -f "${node_auth_keys_file_orig}" ]]; then
+        cp -pn ${node_auth_keys_file} ${node_auth_keys_file_orig} || echo "Failed copy: [${node_auth_keys_file_orig}]"
+      fi
+
+      # Step 3. append public key if not present.
+      pub_key_0=$(cat ${PROJECTED_DIR}/id_rsa_0.pub)
+      # now, append authorized_keys on the node
+      if ! grep -q -F "${pub_key_0}" "${node_auth_keys_file}"; then
+        echo "Adding public key to [${node_auth_keys_file}]"
+        echo ${pub_key_0} >> "${node_auth_keys_file}"
+      fi
+      return 0
+    }
+    #
+
+
+    # ##
+    # Copy PepsiCo CA Certs
+    # IMPORTANT:
+    # - in Ubuntu bionic and lower /usr/local/share/ca-certificates will
+    #   be picked up by update-ca-certificates command
+    # ##
+    copy_pep_ca_certs() {
+      cacert_dir=${ROOT_MOUNT_DIR}/usr/local/share/ca-certificates
+      # just in case
+      mkdir -p "${cacert_dir}" || echo "Failed to create directory [${cacert_dir}]"
+      cp -pf ${PROJECTED_DIR}/PepsiCoRootCA.crt "${cacert_dir}/PepsiCoRootCA.crt" || echo Failed to copy [PepsiCoRootCA.crt]
+      cp -pf ${PROJECTED_DIR}/PepsiCoCA01.crt "${cacert_dir}/PepsiCoCA01.crt" || echo Failed to copy [PepsiCoCA01.crt]
+      return 0
+    }
+
+    # ##
+    # Copy limits
+    # ##
+    copy_limits_conf() {
+      # remove old ones one if it exists
+      local old_files=${PROJECTED_DIR}/zz-eiap-limits.conf
+      local f conf_file
+      for _f in $old_files; do
+        if [[ -e ${_f} ]]; then
+          rm -f ${_f}
+        fi
+      done
+      conf_file=${PROJECTED_DIR}/zzz-eiap-limits.conf
+      cp -pf ${conf_file} ${ROOT_MOUNT_DIR}/etc/security/limits.d/${conf_file}
+      return 0
+    }
+
+    ##
+    # Copy timesyncd conf
+    ##
+    copy_timesyncd_conf() {
+      local conf_filename=timesyncd.conf
+      local timesyncd_conf=${ROOT_MOUNT_DIR}/etc/systemd/${conf_filename}
+      local backup_file=${ROOT_MOUNT_DIR}/etc/systemd/timesyncd.conf.aks-orig
+      local pod_conf_path
+      if [[ ! -r ${backup_file} ]]; then
+        cp -p ${timesyncd_conf} ${backup_file}
+      fi
+      pod_conf_path=${PROJECTED_DIR}/timesyncd.conf
+      cp -pf ${pod_conf_path} ${timesyncd_conf} || echo "Failed copy: [${timesyncd_conf}] -> [${pod_conf_path}]"
+      return 0
+    }
+
+    ##
+    # Copy sysctl
+    ##
+    copy_sysctl_conf() {
+      local conf_filename=zzz-sysctl-aks-eiap.conf
+      local node_sysctl_file=${ROOT_MOUNT_DIR}/etc/sysctl.d/${conf_filename}
+      local pod_conf_path=${PROJECTED_DIR}/${conf_filename}
+      cp -pf ${pod_conf_path} ${node_sysctl_file} || echo "Failed copy: [${pod_conf_path}] -> [${node_sysctl_file}]"
+      return 0
+    }
+
+    ## Apply the changes
+    apply_changes() {
+      # ##
+      # Now we copy the ubuntu apply changes script to the NODE
+      # ##
+      cp -pf ${PROJECTED_DIR}/apply-node-changes.sh ${ROOT_MOUNT_DIR}/tmp/apply-node-changes.sh || echo "Failed copy: [${apply-node-changes.sh}]"
+      echo "Done setup for node change script"
+
+      # -- Apply the changes by ssh'ing
+
+      ssh -l "${ADMIN_USER}" -tt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${NODE_IP} "sudo /tmp/apply-node-changes.sh" || echo "ERROR: Failed to apply changes"
+    }
+
+    setup_ssh_node || echo "ERROR: non-zero return status setup_ssh_node()"
+    copy_pep_ca_certs || echo "ERROR: non-zero return status copy_pep_ca_certs()"
+    copy_limits_conf || echo "ERROR: non-zero return status copy_limits_conf()"
+    copy_timesyncd_conf || echo "ERROR: non-zero return status copy_timesyncd_conf()"
+    copy_sysctl_conf || echo "ERROR: non-zero return status copy_sysctl_conf()"
+    apply_changes || echo "ERROR: non-zero return status"
+    exit 0
+  timesyncd.conf: |
+    #  This file is part of systemd.
+    #
+    #  systemd is free software; you can redistribute it and/or modify it
+    #  under the terms of the GNU Lesser General Public License as published by
+    #  the Free Software Foundation; either version 2.1 of the License, or
+    #  (at your option) any later version.
+    #
+    # Entries in this file show the compile time defaults.
+    # You can change settings by editing this file.
+    # Defaults can be restored by simply deleting this file.
+    #
+    # See timesyncd.conf(5) for details.
+
+    [Time]
+    NTP=time.pbsg.pvt
+    #FallbackNTP=ntp.ubuntu.com
+    #RootDistanceMaxSec=5
+    #PollIntervalMinSec=32
+    #PollIntervalMaxSec=2048
+  zzz-eiap-limits.conf: |
+    # ###################################################
+    # This ups the limits on node, but would require a
+    # restart most likely to take effect.
+    # ###################################################
+    *           soft      nproc             unlimited
+    *           hard      nproc             unlimited
+    *           soft      nofile            131072
+    *           hard      nofile            131072
+    *           soft      memlock           unlimited
+    *           hard      memlock           unlimited
+    *           soft      cpu               unlimited
+    *           hard      cpu               unlimited
+  zzz-sysctl-aks-eiap.conf: |
+    # ##
+    # IMPORTANT: Kubernetes has moved to safe and unsafe (namespaced) sysctl.
+    # Do NOT mess around with net.* as it will not be inherited by pods.
+    # This is mainly for nodelevel tuning
+    #
+    # ##
+
+    # 65530 - 262144  65530
+    vm.max_map_count=262144
+    #: ORIG: 3000, flush 5 secs instead of 30 secs
+    vm.dirty_expire_centisecs = 500
+    # 0 - 100 60
+    vm.swappiness=0
+    # default: 3284687
+    fs.file-max=8388608
+    # 65536 - 6553500 (default: 65536)
+    fs.aio-max-nr=1048576
+    # 8192 - 20000500 (default:1048576)
+    fs.nr_open=15728640
+    # 4096 - 3240000  def:16384
+    net.core.somaxconn=2097152
+    # 1000 - 3240000  1000
+    net.core.netdev_max_backlog=1048576
+    # 212992 - 134217728  212992 (ours: 30mb)
+    net.core.rmem_max=31457280
+    # 20480 - 4194304 20480
+    net.core.optmem_max=2097152
+    # 128 - 3240000 16384
+    net.ipv4.tcp_max_syn_backlog=65536
+    # Formulae: CONNTRACK_MAX = RAMSIZE (in bytes) / 16384 / (ARCH / 32)
+    # Depends on ram
+    # 131072 - 589824 131072
+    net.netfilter.nf_conntrack_max=262144
+    # 65536 - 147456  65536
+    net.netfilter.nf_conntrack_buckets=98304
+    # Default is 2: IMPORTANT please monitor this
+    net.ipv4.tcp_tw_reuse=1
+    #: this effects nproc as PID's wrap (max for 32bit and default is 32768)
+    #: for 64bit  max 2^22 = 4194304
+    #: Also this is in kubelet configuration
+    kernel.pid_max=4194304
+kind: ConfigMap
+metadata:
+  name: pep-kafka-init-configs
+  namespace: pep-kafka-ops-admin
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/name: pep-kafka-aks-init
+    app.kubernetes.io/version: 2.0.0
+  name: pep-kafka-aks-init
+  namespace: pep-kafka-ops-admin
+spec:
+  minReadySeconds: 120
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pep-kafka-aks-init
+      app.kubernetes.io/version: 2.0.0
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: pep-kafka-aks-init
+        app.kubernetes.io/name: pep-kafka-aks-init
+        app.kubernetes.io/version: 2.0.0
+        version: 2.0.0
+    spec:
+      # imagePullSecrets:
+      # - name: pepeiapnonprodcommonacr-msi-acrpull-secret
+      containers:
+      - image: mcr.microsoft.com/oss/kubernetes/pause:3.5
+        name: pause
+      initContainers:
+      - command:
+        - /tmp/entrypoint.sh
+        env:
+        - name: AKS_ADMIN_USER
+          value: neipi002
+        - name: ROOT_MOUNT_DIR
+          value: /root
+        - name: PROJECTED_MOUNT_DIR
+          value: /tmp
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-bionic-2021.07.12
+        imagePullPolicy: IfNotPresent
+        name: node-init
+        volumeMounts:
+        - mountPath: /root
+          name: root-mount
+        - mountPath: /tmp
+          name: projected
+          readOnly: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext:
+        runAsUser: 0
+      tolerations:
+      - operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /
+          type: Directory
+        name: root-mount
+      - name: projected
+        projected:
+          defaultMode: 420
+          sources:
+          - configMap:
+              items:
+              - key: PepsiCoRootCA.crt
+                path: PepsiCoRootCA.crt
+              - key: PepsiCoCA01.crt
+                path: PepsiCoCA01.crt
+              name: pep-ca-certs-config
+          - configMap:
+              items:
+              - key: zzz-sysctl-aks-eiap.conf
+                path: zzz-sysctl-aks-eiap.conf
+              - key: timesyncd.conf
+                path: timesyncd.conf
+              - key: zzz-eiap-limits.conf
+                path: zzz-eiap-limits.conf
+              - key: entrypoint.sh
+                mode: 493
+                path: entrypoint.sh
+              - key: apply-node-changes.sh
+                mode: 493
+                path: apply-node-changes.sh
+              name: pep-kafka-init-configs
+          - secret:
+              items:
+              - key: ssh_private_key_0
+                mode: 256
+                path: id_rsa_0
+              - key: ssh_public_key_0
+                mode: 420
+                path: id_rsa_0.pub
+              name: pep-kafka-aks-init-secret
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 3
+    type: RollingUpdate

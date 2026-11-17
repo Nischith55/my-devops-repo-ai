@@ -1,0 +1,28 @@
+---
+ns_pep_eiap_apac_cmptest4567_dev:
+  
+  name: pep-eiap-apac-cmptest4567-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: apac-cmptest4567
+    sector: apac
+    project: cmptest4567
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-apac-cmptest4567-dev-sa
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['apac_cmptest4567'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-apac-cmptest4567-dev-sa-token
+    namespace: pep-eiap-apac-cmptest4567-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-apac-cmptest4567-dev-sa"

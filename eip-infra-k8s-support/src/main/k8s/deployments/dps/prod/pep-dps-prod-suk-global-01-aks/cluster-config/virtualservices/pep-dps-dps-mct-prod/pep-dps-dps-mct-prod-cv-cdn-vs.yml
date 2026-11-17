@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-dps-dps-mct-prod-cv-webdeploy
+  name: pep-dps-dps-mct-prod-cv-cdn-vs
+  namespace: pep-dps-dps-mct-prod
+spec:
+  gateways:
+  - pep-dps-dps-mct-prod/pep-dps-dps-mct-prod-cv-gw
+  hosts:
+  - mct-eu.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dps-dps-mct-prod-cv-webdeploy.pep-dps-dps-mct-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: no-name
+spec:
+  template:
+    spec:
+      nodeSelector:
+        balance-group: ArgoZonedPools
+      tolerations:
+      - key: "ArgoZonedPools"
+        operator: "Exists"
+        effect: "NoSchedule"
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+

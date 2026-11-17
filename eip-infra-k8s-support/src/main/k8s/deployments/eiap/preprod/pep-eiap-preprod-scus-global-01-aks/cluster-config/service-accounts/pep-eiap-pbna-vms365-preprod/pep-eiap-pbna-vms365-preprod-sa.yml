@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 7c775e7e-9730-4819-a659-3d8c77b11052
+  name: pep-eiap-pbna-vms365-preprod-sa
+  namespace: pep-eiap-pbna-vms365-preprod

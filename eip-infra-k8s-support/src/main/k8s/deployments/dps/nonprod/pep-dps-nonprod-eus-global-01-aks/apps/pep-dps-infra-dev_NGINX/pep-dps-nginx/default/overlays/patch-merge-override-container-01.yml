@@ -1,0 +1,30 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-eiap-nginx
+  namespace: pep-eiap-global-infra-dev
+spec:
+  template:
+    spec:
+      volumes:
+      - name: all-gw-secrets
+        projected:
+          defaultMode: 256
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: gw01-tls.crt
+              - key: tls.key
+                path: gw01-tls.key
+              name: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+          - secret:
+              items:
+              - key: tls.crt
+                path: gw02-tls.crt
+              - key: tls.key
+                path: gw02-tls.key
+              name: pep-eiap-nonprod-eus-global-01-aks-gw02-tls

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nba-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for nba-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/nba-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-nba-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: nba-dev-admin
+    description: Admin privileges to nba-dev
+    policies:
+    - p, proj:nba-dev:nba-dev-admin, applications, *, nba-dev/*, allow
+    - p, proj:nba-dev:nba-dev-admin, applications, get, argocd/*, allow
+    - p, proj:nba-dev:nba-dev-admin, repositories, *, nba-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: nba-dev-user
+    description: Read-only privileges to nba-dev
+    policies:
+    - p, proj:nba-dev:nba-dev-user, applications, get, nba-dev/*, allow
+    - p, proj:nba-dev:nba-dev-user, applications, sync, nba-dev/*, allow
+    - p, proj:nba-dev:nba-dev-user, repositories, get, nba-dev/*, allow
+    - p, proj:nba-dev:nba-dev-user, applications, action/apps/Deployment/restart, nba-dev/*, allow
+    groups:
+    - "Team.App.DPS.NonProd.NBA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

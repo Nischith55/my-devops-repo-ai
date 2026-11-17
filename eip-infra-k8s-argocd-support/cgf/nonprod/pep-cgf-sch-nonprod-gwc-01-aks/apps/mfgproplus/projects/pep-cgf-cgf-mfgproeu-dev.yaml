@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mfgproplus-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app       
+spec:
+  description: Project for mfgproplus-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SC_Manufacturing_MfgPro/_git/pep-pfna-mfgpro-argocd-configs
+  - pepcgfschnonprodgwcacr.azurecr.io/helm
+  destinations:
+  - name: pep-cgf-sch-nonprod-gwc-01-aks
+    namespace: pep-cgf-cgf-mfgproeu-dev
+  - name: pep-cgf-sch-nonprod-gwc-01-aks
+    namespace: pep-cgf-ops-admin
+  roles:
+  - name: mfgproplus-dev-admin
+    description: Admin privileges to mfgproplus-dev
+    policies:
+    - p, proj:mfgproplus-dev:mfgproplus-dev-admin, applications, *, mfgproplus-dev/*, allow
+    - p, proj:mfgproplus-dev:mfgproplus-dev-admin, repositories, *, mfgproplus-dev/*, allow
+    - p, proj:mfgproplus-dev:mfgproplus-dev-admin, applications, get, argocd/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: mfgproplus-dev-user
+    description: Read-only privileges to mfgproplus-dev
+    policies:
+    - p, proj:mfgproplus-dev:mfgproplus-dev-user, applications, get, mfgproplus-dev/*, allow
+    - p, proj:mfgproplus-dev:mfgproplus-dev-user, applications, sync, mfgproplus-dev/*, allow
+    - p, proj:mfgproplus-dev:mfgproplus-dev-user, repositories, get, mfgproplus-dev/*, allow
+    - p, proj:mfgproplus-dev:mfgproplus-dev-user, applications, action/apps/Deployment/restart, mfgproplus-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.Mfgpro.Developer"
+    - "Team.Support.PFNA.Fleet.Developer"

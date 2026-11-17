@@ -1,0 +1,37 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Patch for Deployments
+    params_tmpl
+  # In case you want to re-generate as new, drop the following line
+  # Generated:  {{ lookup('pipe','date \"+%Y-%m-%d %H:%M:%S %Z\"') }}
+  NOTES
+   - rendering whole arrays via to_nice_yaml: trim is required to remove
+     the trailing new-line
+   - also indent spec is (indentfirst renamed as first)
+    indent(s, width=4, first=False, blank=False)
+#}
+{% set _p = params_tmpl['params'] %}
+{% if _p['node_params']['node_selector'] is defined %}
+{% set _node_selector = _p['node_params']['node_selector'] %}
+{% endif %}
+{% if _p['node_params']['tolerations'] is defined %}
+{% set _tolerations = _p['node_params']['tolerations'] %}
+{% endif %}
+---
+# generated file please do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appdynamics-operator
+  namespace: appdynamics
+spec:
+  template:
+    spec:
+      {% if _node_selector is defined %}
+      nodeSelector:
+        {{ _node_selector | to_nice_yaml(indent=2) | trim | indent(8) }}
+      {% endif %}
+      {% if _tolerations is defined %}
+      tolerations:
+        {{ _tolerations | to_nice_yaml(indent=2) | trim | indent(8) }}
+      {% endif %}

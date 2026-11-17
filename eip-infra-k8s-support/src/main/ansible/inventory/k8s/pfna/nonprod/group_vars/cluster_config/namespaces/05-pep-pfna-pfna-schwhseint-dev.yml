@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_pfna_schwhseint_dev:
+  
+  name: pep-pfna-pfna-schwhseint-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pfna-schwhseint
+    sector: pfna
+    project: schwhseint
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: supplychainhub
+    pep-cmdb-app-service-id: "1f4542cc97b52d504bb8326e6253af8b"
+    pep-cmdb-bus-app-id: "ba4502cc97b52d504bb8326e6253af48"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-pfna-schwhseint-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pfna_schwhseint'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-pfna-schwhseint-dev-sa-token
+    namespace: pep-pfna-pfna-schwhseint-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-pfna-schwhseint-dev-sa"

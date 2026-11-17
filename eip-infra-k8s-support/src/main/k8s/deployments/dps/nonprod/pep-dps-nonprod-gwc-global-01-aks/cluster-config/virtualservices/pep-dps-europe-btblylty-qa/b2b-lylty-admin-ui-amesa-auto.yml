@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-lylty-admin-ui-amesa-auto-uat:networking.istio.io/VirtualService:pep-dps-europe-btblylty-qa/b2b-lylty-admin-ui-amesa-auto
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-lylty-admin-ui-amesa-auto-uat:networking.istio.io/VirtualService:pep-dps-europe-btblylty-qa/b2b-lylty-admin-ui-amesa-auto"},"labels":{"app":"b2b-lylty-admin-ui-amesa-auto","app.kubernetes.io/instance":"b2b-lylty-admin-ui-amesa-auto","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-lylty-admin-ui-amesa-auto","namespace":"pep-dps-europe-btblylty-qa"},"spec":{"gateways":["pep-dps-europe-btblylty-qa/pep-dps-europe-btblylty-qa-cv-gw"],"hosts":["b2b-lylty-admin-ui-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com","rewards-b2b-amesa-auto.qa.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-lylty-admin-ui-amesa-auto.pep-dps-europe-btblylty-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-lylty-admin-ui-amesa-auto
+        app.kubernetes.io/instance: b2b-lylty-admin-ui-amesa-auto
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-lylty-admin-ui-amesa-auto
+    namespace: pep-dps-europe-btblylty-qa
+spec:
+    gateways:
+    - pep-dps-europe-btblylty-qa/pep-dps-europe-btblylty-qa-cv-gw
+    hosts:
+    - b2b-lylty-admin-ui-amesa-auto.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - rewards-b2b-amesa-auto.qa.mypepsico.com
+    - rewards-b2b-am-auto.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-lylty-admin-ui-amesa-auto.pep-dps-europe-btblylty-qa.svc.cluster.local
+                port:
+                    number: 8080

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: r360-caf-insights-gh-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for r360-caf-insights-gh-dev   
+      sourceRepos:
+      - https://github.com/09476547_pepsico/r360-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-dps-aiqr360-dev
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: r360-caf-insights-gh-dev-admin
+        description: Admin privileges to r360-caf-insights-gh-dev
+        policies:
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-admin, applications, *, r360-caf-insights-gh-dev/*, allow
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-admin, repositories, *, r360-caf-insights-gh-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: r360-caf-insights-gh-dev-user
+        description: Read-only privileges to r360-caf-insights-gh-dev
+        policies:
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-user, applications, get, r360-caf-insights-gh-dev/*, allow
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-user, applications, sync, r360-caf-insights-gh-dev/*, allow
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-user, repositories, get, r360-caf-insights-gh-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:r360-caf-insights-gh-dev:r360-caf-insights-gh-dev-user, applications, action/apps/Deployment/restart, r360-caf-insights-gh-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.App.SupportDPS.OnePEP.CAF"
+        - "Team.Support.EIAP.READ"

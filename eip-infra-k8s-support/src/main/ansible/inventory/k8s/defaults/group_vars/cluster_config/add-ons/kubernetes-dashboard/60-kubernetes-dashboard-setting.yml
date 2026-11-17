@@ -1,0 +1,54 @@
+---
+# ##
+# ABBREVIATION:
+# - kd -> kubernetes-dashboard
+# ##
+kubernetes_dashboard_app_name: kubernetes-dashboard
+
+# NOTE: changing the namespace
+kubernetes_dashboard_namespace: kubernetes-dashboard
+
+kubernetes_dashboard_port: "443"
+
+#: GLOBAL - used in many add-ons
+kubernetes_dashboard_svc_host: |-
+  {{ kubernetes_dashboard_app_name + '.' + kubernetes_dashboard_namespace 
+     + '.' + k8s_svc_domain
+  }}
+kubernetes_dashboard_url: |-
+  {{ kubernetes_dashboard_svc_host + ':' +  kubernetes_dashboard_port }}
+
+# NOTE: this is the source namespace in default base manifests
+kubernetes_dashboard_src_namespace: kubernetes-dashboard
+
+# ##
+# All directories
+# ##
+# This can be configure various components directory paths.
+kd_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, kubernetes_dashboard_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+kd_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, kubernetes_dashboard_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_kubernetes_dashboard_setting:
+
+  #app_name
+  name: "{{ kubernetes_dashboard_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with app prefix or app abbrv prefix and 
+  # ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^kd_.+_component_setting$'))
+    }}

@@ -1,0 +1,168 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-peployalty-preprod-cv-gw
+  namespace: pep-dps-cgf-peployalty-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-peployalty-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-peployalty-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-peployalty-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-cgf-peployalty-preprod-443.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminuiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminbffptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcadmincampaignptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminconfigurationapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admincontentptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminnotesapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcadminprofileadminprofileptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsadminfilemanagerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsmanagerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerhistoryptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilehistoryconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeprofileeventconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilemessageconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofileptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerreceiptptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsdeploymentptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardspointsserviceptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimerewardsitemsprocessorptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-consumerrewardsrptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsexpirybatchptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeactivityptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeeventptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesweepstakesptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentapirptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentextractapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesegmentextractconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimsegmenttransformptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeenginebatchconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminsurveyapi-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesurveyapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimecontentapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminhistorylogapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerprofilepackageapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeloyaltyengineleaderboards-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminrewardscipapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admindatamigrationjobs-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admincodegroupapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeenginecodeptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardsinventory-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardspricingptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimenotificationapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-3pptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dssrewardscatalogptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-peployalty-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-peployalty-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-cgf-peployalty-preprod-80.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminuiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminbffptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcadmincampaignptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminconfigurationapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admincontentptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminnotesapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcadminprofileadminprofileptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsadminfilemanagerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsmanagerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerhistoryptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilehistoryconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeprofileeventconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofilemessageconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeprofileptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimeconsumerreceiptptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsdeploymentptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardspointsserviceptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimerewardsitemsprocessorptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-consumerrewardsrptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-rewardsexpirybatchptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeactivityptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeeventptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesweepstakesptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentapirptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeadminsegmentextractapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesegmentextractconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimsegmenttransformptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeenginebatchconsumerptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.d2c.pepl.uat.na.pepsico.com
+    - pep-joy-adminsurveyapi-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimesurveyapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dtcruntimecontentapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminhistorylogapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerprofilepackageapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeloyaltyengineleaderboards-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-adminrewardscipapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admindatamigrationjobs-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-admincodegroupapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeenginecodeptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardsinventory-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimeconsumerrewardspricingptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-runtimenotificationapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-3pptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pep-joy-dssrewardscatalogptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-peployalty-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-peployalty-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - admin.d2c.pepl.uat.na.pepsico.com
+    name: pep-dps-cgf-admin-d2c-pepl-uat-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-admin-d2c-pepl-uat-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-admin-d2c-pepl-uat-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-eiap-userselfvalidationrepo
+  name: pcaf-eiap-userselfvalidationrepo-vs
+  namespace: pep-pfna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-eiap-userselfvalidationrepo.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - requestId
+      - docCategory
+      - gpid
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pcaf-eiap-userselfvalidationrepo.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-eiap-userselfvalidationrepo.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

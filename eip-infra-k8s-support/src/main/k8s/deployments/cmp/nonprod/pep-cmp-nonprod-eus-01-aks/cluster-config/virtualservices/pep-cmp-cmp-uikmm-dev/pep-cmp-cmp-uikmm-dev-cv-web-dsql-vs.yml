@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-uikmm-dev-cv-web-dsql-vs
+  namespace: pep-cmp-cmp-uikmm-dev
+  labels:
+      app: pep-cmp-cmp-uikmm-dev-cv-web
+spec:
+  hosts:
+  - pepsico-cto-cmp-dev-web-eus-vg.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-uikmm-dev/pep-cmp-cmp-uikmm-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /health
+    route:
+    - destination:
+        host: pep-cmp-cmp-uikmm-dev-cv-web.pep-cmp-cmp-uikmm-dev.svc.cluster.local
+        port:
+          number: 80
+  

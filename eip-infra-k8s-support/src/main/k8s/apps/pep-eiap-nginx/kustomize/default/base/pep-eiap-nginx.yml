@@ -1,0 +1,54 @@
+---
+# Base template -- note namespace will be specified
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &aid001 pep-eiap-nginx
+  namespace: pep-eiap-global-infra-dev
+  labels:
+    app: *aid001
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      app: *aid001
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: *aid001
+    spec:
+      containers:
+        - name: *aid001
+          # important private registry image pull secrets must be specified
+          image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-18.04-2021.02.27
+          imagePullPolicy: Always
+          command:
+            # we use sudo so we can start nginx as nginx uid
+            - sudo
+            - nginx
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+      # our image is built with this uid/gid same as istio-proxy
+      securityContext:
+        runAsUser: 1337
+        runAsGroup: 1337
+        fsGroup: 1337
+      # uncomment both if desiring hostNetwork -- dangerous
+      #PRIV# hostNetwork: true
+      #PRIV# dnsPolicy: ClusterFirstWithHostNet

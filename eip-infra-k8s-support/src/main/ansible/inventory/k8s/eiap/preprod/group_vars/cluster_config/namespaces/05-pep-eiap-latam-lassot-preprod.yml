@@ -1,0 +1,35 @@
+---
+ns_pep_eiap_latam_lassot_preprod:
+  
+  name: pep-eiap-latam-lassot-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-lassot
+    sector: latam
+    project: lassot
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-latam-lassot-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_lassot'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-latam-lassot-preprod-sa-token
+    namespace: pep-eiap-latam-lassot-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-latam-lassot-preprod-sa"

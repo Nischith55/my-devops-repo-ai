@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-metadata-mstr-dvrstatus-cosmos-cache-chgfeed-ldah-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-metadata-mstr-dvrstatus-cosmos-cache-chgfeed
+spec:
+  hosts:
+  - pep-pfna-transp-metadata-mstr-dvrstatus-cosmos-cache-chgfeed.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /transp/v1/dvrstatus-metadata-cache-changefeed
+    route:
+    - destination:
+        host: pep-pfna-transp-metadata-mstr-dvrstatus-cosmos-cache-chgfeed.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 80
+  

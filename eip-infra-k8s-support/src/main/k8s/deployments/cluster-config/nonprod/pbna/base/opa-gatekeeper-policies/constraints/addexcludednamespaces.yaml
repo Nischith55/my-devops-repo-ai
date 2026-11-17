@@ -1,0 +1,44 @@
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-ops-admin
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-global-infra-dev
+  
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-istio-config
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-elastic-client-01
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-elastic-client-02
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-elastic-cluster-01
+     
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-elastic-cluster-02
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-elastic-monitor-01
+
+- op: add
+  path: /spec/match/excludedNamespaces/-
+  value:
+     pep-pbna-global-devsecops-dev

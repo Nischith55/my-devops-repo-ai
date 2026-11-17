@@ -1,0 +1,13 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-dps-nonprod-ae-global-01-aks
+
+argoCDApplications:
+  nginx-pep-dps-nonprod-ae-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/dps/pep-dps-nonprod-ae-global-01-aks/pep-dps-global-infra-dev_NGINX

@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-cgf-springcloudk8s-rb
+  namespace: pep-cgf-europe-mfgcons-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-cgf-springcloudk8s-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-cgf-europe-mfgcons-prod
+    name: pep-cgf-europe-mfgcons-prod-sa

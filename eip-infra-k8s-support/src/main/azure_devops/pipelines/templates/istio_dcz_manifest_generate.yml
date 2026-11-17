@@ -1,0 +1,32 @@
+steps:
+- task: CmdLine@2
+  inputs:
+    script: |
+      . /opt/venv/python38-ansible211/bin/activate
+      pip3 install ruamel.yaml
+      ansible-playbook --version
+      pip install ansible[Azure]
+      pip install futures
+      pip show pyyaml
+      pip3 install openshift
+  displayName: 'ansible_pre_requisites'
+  name: 'ansible_pre_requisites'
+
+- task: Bash@3
+  name: generate_manifests
+  displayName: 'generate_manifests'
+  inputs:
+    targetType: 'inline'
+    script: |
+      . /opt/venv/python38-ansible211/bin/activate
+      ansible-playbook --version
+      ansible-galaxy collection install kubernetes.core -p ~/.ansible/collections/
+      ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+      ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+      ansible-galaxy collection install community.general -p ~/.ansible/collections/
+      ansible-playbook -e '{"env": "${{ parameters.env }}", "department": "${{ parameters.department }}", "cluster_name": "${{ parameters.cluster_name }}", "mypath": "$(system.defaultWorkingDirectory)", "region": "${{ parameters.Region }}"}'  src/main/ansible/playbooks/k8s/Istio-decentralization/manifest-generation.yml -v
+  env: 
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

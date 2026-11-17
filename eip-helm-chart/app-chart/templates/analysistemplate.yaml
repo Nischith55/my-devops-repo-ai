@@ -1,0 +1,58 @@
+{{- $namespace := .Values.global.namespace -}}
+{{- if and ( .Values.global.rollout.enabled ) .Values.analysisTemplates.enabled }}
+{{- $labels := .Values.global.labels -}}
+{{- $appChartlabels := include "app-chart.labels" . }}
+{{- range .Values.analysisTemplates.templates }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ .name }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- $appChartlabels | nindent 4 }}  
+spec:
+  args:
+  {{- range .args }}  
+  - name: {{ . }}
+  {{- end }}
+  {{- range .metrics }}          
+  metrics:
+  - name: {{ .name }}
+    interval: {{ .interval }}
+    count: {{ .count }}   
+    successCondition: {{ .successCondition }}
+    failureCondition: {{ .failureCondition }}
+    failureLimit: {{ .failureLimit }}
+    initialDelay: {{ .initialDelay }}
+    consecutiveErrorLimit: {{ .consecutiveErrorLimit }}
+    provider:
+      {{- if eq "web" .provider }}
+      web:
+        method: {{ .web.method }}
+        url:  {{ .web.url }}
+        jsonPath: {{ .web.jsonPath | quote}}
+        timeoutSeconds: {{ .web.timeoutSeconds }} # defaults to 10 seconds
+        {{- with .web.headers }}            
+        headers:
+         {{- toYaml . | nindent 12 }}
+        {{- end }}
+        body: {{ .web.body | quote }}
+        jsonBody:   
+        {{- toYaml  .web.jsonBody | nindent 10 }}
+      {{- else if eq "job" .provider }}
+       job:        
+        spec:          
+          {{- toYaml  .job.spec | nindent 10 }}
+      {{- else if eq "prometheus" .provider }}
+      prometheus:
+        address: {{  .prometheus.address }}
+        insecure: {{  .prometheus.insecure }}
+        timeout: {{  .prometheus.timeout }}
+        query:  {{- toYaml  .prometheus.query | nindent 10 }}
+        authentication: {{  .prometheus.authentication }}
+        headers: {{  .prometheus.headers }}      
+      {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

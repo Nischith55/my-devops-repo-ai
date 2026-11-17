@@ -1,0 +1,48 @@
+---
+global:
+  spec:
+    destination:
+      clusterName: pep-snt-prod-scus-global-01-aks
+
+argoCDApplications:  
+  
+  
+  opa-crd-pep-snt-prod-scus-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: rancher-gatekeeper-crd
+    revision: 103.2.0+up3.13.0
+    namespace: cattle-gatekeeper-system
+    path: src/main/k8s/deployments/add-ons/prod/snt/pep-snt-prod-scus-global-01-aks/opa-gatekeeper/crd
+    syncOptions:
+      - CreateNamespace=true
+  
+
+  opa-gatekeeper-pep-snt-prod-scus-global-01-aks:  
+    enabled: true
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: rancher-gatekeeper
+    revision: 103.2.0+up3.13.0
+    namespace: cattle-gatekeeper-system
+    ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jsonPointers:
+      - /webhooks
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jsonPointers:
+      - /webhooks
+    - group: templates.gatekeeper.sh
+      kind: ConstraintTemplate
+      jsonPointers:
+      - /metadata/labels
+    - group: templates.gatekeeper.sh
+      kind: ConstraintTemplate
+      jsonPointers:
+      - /spec/crd/spec/validation
+    path: src/main/k8s/deployments/add-ons/prod/snt/pep-snt-prod-scus-global-01-aks/opa-gatekeeper/gatekeeper

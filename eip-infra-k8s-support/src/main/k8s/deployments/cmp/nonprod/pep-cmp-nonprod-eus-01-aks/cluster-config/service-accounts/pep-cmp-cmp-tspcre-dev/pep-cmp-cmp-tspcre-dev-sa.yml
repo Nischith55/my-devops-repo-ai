@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 0f5ab8d2-1725-47e4-86fc-bd4c7aa57afe
+  name: pep-cmp-cmp-tspcre-dev-sa
+  namespace: pep-cmp-cmp-tspcre-dev

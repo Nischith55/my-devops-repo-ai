@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-oms-admin-ui-amesa-uat:networking.istio.io/VirtualService:pep-dps-europe-btboms-qa/b2b-oms-admin-ui-amesa
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-oms-admin-ui-amesa-uat:networking.istio.io/VirtualService:pep-dps-europe-btboms-qa/b2b-oms-admin-ui-amesa"},"labels":{"app":"b2b-oms-admin-ui-amesa","app.kubernetes.io/instance":"b2b-oms-admin-ui-amesa","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"b2b-oms-admin-ui-amesa","namespace":"pep-dps-europe-btboms-qa"},"spec":{"gateways":["pep-dps-europe-btboms-qa/pep-dps-europe-btboms-qa-cv-gw"],"hosts":["b2b-oms-admin-ui-am-uat.qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-oms-admin-ui-amesa.pep-dps-europe-btboms-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-oms-admin-ui-amesa
+        app.kubernetes.io/instance: b2b-oms-admin-ui-amesa
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: b2b-oms-admin-ui-amesa
+    namespace: pep-dps-europe-btboms-qa
+spec:
+    gateways:
+    - pep-dps-europe-btboms-qa/pep-dps-europe-btboms-qa-cv-gw
+    hosts:
+    - b2b-oms-admin-ui-am-uat.qa.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - oms-b2b-am-uat.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-oms-admin-ui-amesa.pep-dps-europe-btboms-qa.svc.cluster.local
+                port:
+                    number: 8080

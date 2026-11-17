@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepeiapnonprodglobalcommonacr
+  namespace: pep-dps-ops-admin
+spec:
+  acrServer: pepeiapnonprodglobalcommonacr.azurecr.io
+  managedIdentityResourceID: 
+  # serviceAccountName: <add if different than default>

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 5631de12-5e63-43d8-8529-abb40e3fb505
+  name: pep-eiap-flna-flnawhse-dev-sa
+  namespace: pep-eiap-flna-flnawhse-dev

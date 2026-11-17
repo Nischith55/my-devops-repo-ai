@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-runtime-loyalty-engine-notification-api-ptr-yjhd-vs
+  namespace: pep-dps-cgf-peployalty-prod
+  labels:
+      app: dtcsrv-joy-runtime-loyalty-engine-notification-api-ptr
+spec:
+  hosts:
+  - loyalty-rewards-partner-integration-service-prod.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-cgf-peployalty-prod/pep-dps-cgf-peployalty-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-loyalty-engine-notification-api-ptr.pep-dps-cgf-peployalty-prod.svc.cluster.local
+        port:
+          number: 8080
+  

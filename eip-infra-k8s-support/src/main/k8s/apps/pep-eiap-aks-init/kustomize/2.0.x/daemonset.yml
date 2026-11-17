@@ -1,0 +1,126 @@
+---
+# ####################################
+# IMPORTANT:
+# - Please read if going through kustomize binary, NO support for YAML anchors
+#   in 4.x of kustomize binary
+# - Also 3.x series it will work make sure enable-kyaml is false
+# ####################################
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pep-eiap-aks-init
+  labels:
+    app.kubernetes.io/name: pep-eiap-aks-init
+spec:
+  # give it 2m since we are doing a lot
+  minReadySeconds: 120
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # do 3 at a time max
+      maxUnavailable: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pep-eiap-aks-init
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app.kubernetes.io/name: pep-eiap-aks-init
+    spec:
+      securityContext:
+        runAsUser: 0
+      # --
+      # All Volumes
+      # --
+      volumes:
+        # node root!
+        - name: root-mount
+          hostPath:
+            path: /
+            type: Directory
+
+        # setup projected volume
+        - name: projected
+          projected:
+            defaultMode: 420
+            sources:
+            - configMap:
+                name: pep-ca-certs-config
+                items:
+                  - key: PepsiCoRootCA.crt
+                    path: PepsiCoRootCA.crt
+                  - key: PepsiCoCA01.crt
+                    path: PepsiCoCA01.crt
+
+            - configMap:
+                name: pep-eiap-aks-init-configs
+                items:
+                  - key: zzz-sysctl-aks-eiap.conf
+                    path: zzz-sysctl-aks-eiap.conf
+                  - key: timesyncd.conf
+                    path: timesyncd.conf
+                  - key: zzz-eiap-limits.conf
+                    path: zzz-eiap-limits.conf
+                  - key: entrypoint.sh
+                    # 0755 -> 493
+                    mode: 493
+                    path: entrypoint.sh
+                  - key: apply-node-changes.sh
+                    # 0755 -> 493
+                    mode: 493
+                    path: apply-node-changes.sh
+            - secret:
+                # IMPORTANT: changed see 45-target-namespace-secrets.yml
+                name: pep-eiap-aks-init-secret
+                items:
+                  - key: ssh_private_key_0
+                    # must be relative path
+                    path: id_rsa_0
+                    # 256 -> 0400
+                    mode: 256
+                  - key: ssh_public_key_0
+                    # must be relative path
+                    path: id_rsa_0.pub
+                    # 420 -> 0644
+                    mode: 420
+
+      initContainers:
+        # initialize our node
+        - name: node-init
+          image: pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-bionic-2021.07.12
+          imagePullPolicy: IfNotPresent
+          # using anchors must be before use
+          volumeMounts:
+          - name: root-mount
+            mountPath: /root
+          - name: projected
+            mountPath: /tmp
+            readOnly: true
+
+          command:
+          - /tmp/entrypoint.sh
+
+          env:
+          - name: AKS_ADMIN_USER
+            value: neipi002
+          - name: ROOT_MOUNT_DIR
+            value: /root
+          - name: PROJECTED_MOUNT_DIR
+            value: /tmp
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+
+      # wait forever
+      containers:
+        - name: pause
+          image: mcr.microsoft.com/oss/kubernetes/pause:3.5
+

@@ -1,0 +1,11 @@
+clusterAdmincrb: pep-{{ functionalarea }}-cluster-admin-crb
+devsecopscdcrb: pep-{{ functionalarea }}-devsecops-cd-crb
+k8sautomationcrb: pep-{{ functionalarea }}-k8sautomation-crb
+cmponboardcrb: pep-{{ functionalarea }}-cmponboard-cd-crb
+servicenowcrb: pep-{{ functionalarea }}-servicenow-crb
+filebeatcrb: pep-{{ functionalarea }}-elastic-client-01-filebeat
+heartbeatcrb: pep-{{ functionalarea }}-elastic-client-01-heartbeat
+metricbeatcrb: pep-{{ functionalarea }}-elastic-client-01-metricbeat
+{% if env == "nonprod" %}
+clusterEngineercrb: pep-{{ functionalarea }}-cluster-engineer-crb
+{% endif %}

@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pes-sfs-wss-http-bridge-eaug-vs
+  namespace: pep-eiap-pbna-halo-dev
+  labels:
+      app: pes-sfs-wss-http-bridge
+spec:
+  hosts:
+  - wsshttpbridge.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-halo-dev/pep-eiap-pbna-halo-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pes-sfs-wss-http-bridge.pep-eiap-pbna-halo-dev.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.dev.mypepsico.com
+      - exact: https://apim-pfna.qa.mypepsico.com
+      allowMethods:
+      - GET
+      - POST
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Accept
+      - Authorization
+      - Allow
+      - Host
+      - Content-Type
+      - Cookie
+       
+  

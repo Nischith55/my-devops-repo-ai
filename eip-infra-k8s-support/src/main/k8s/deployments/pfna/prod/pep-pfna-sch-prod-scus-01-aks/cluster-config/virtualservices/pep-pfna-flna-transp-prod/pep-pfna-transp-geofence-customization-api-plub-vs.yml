@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-transp-geofence-customization-api-plub-vs
+  namespace: pep-pfna-flna-transp-prod
+  labels:
+      app: pep-pfna-transp-geofence-customization-api
+spec:
+  hosts:
+  - pep-pfna-transp-geofence-customization-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-transp-prod/pep-pfna-flna-transp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/gep
+    route:
+    - destination:
+        host: pep-pfna-transp-geofence-customization-api.pep-pfna-flna-transp-prod.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:
+      allowOrigins:
+      - exact: https://pep-pfna-geofence-customization-ui.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Access-Control-Allow-Credentials
+      - Access-Control-Allow-Headers
+      - Accept
+      - Access-Control-Allow-Methods
+      - Access-Control-Allow-Origin
+       
+  

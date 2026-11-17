@@ -1,0 +1,122 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-aisp-cgf-pepsar-prod-vs
+  namespace: pep-aisp-cgf-pepsar-prod
+spec:
+  hosts:
+  - pep-pepsar.aisp.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-aisp-cgf-pepsar-prod/pep-aisp-cgf-pepsar-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dsearchadmin
+    route:
+    - destination:
+        host: indexserver.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 9300
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /IndexAgent
+    route:
+    - destination:
+        host: indexagent.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 9200
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dfs
+    route:
+    - destination:
+        host: dfs-server.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /da
+    route:
+    - destination:
+        host: da-svc.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otdsws/
+    route:
+    - destination:
+        host: otdsws.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /otds-admin/
+    route:
+    - destination:
+        host: otdsws.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /DmMethods/servlet/DoMethod
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /Acs/servlet
+    route:
+    - destination:
+        host: dcs-pg-jms-service.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 9080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dctm-rest
+    route:
+    - destination:
+        host: dctm-rest.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /HvpWorker/hvpCommand
+    route:
+    - destination:
+        host: cssap-service.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /assap
+    route:
+    - destination:
+        host: assap-service.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dmwebdav
+    route:
+    - destination:
+        host: assap-ilm-service.pep-aisp-cgf-pepsar-prod.svc.cluster.local
+        port:
+          number: 8080
+  
+  
+  

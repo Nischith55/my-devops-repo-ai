@@ -1,0 +1,29 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-eiap-appsupport-rb
+  namespace: pep-apigee-global-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-appsupport-clusterrole
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 95bfb4c9-524e-4c26-9b01-9cc1405e8652
+    name: sowola01@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 67684993-0260-48f9-90ce-bf20d2253947
+    name: hgurram5@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 2ab2aca6-98db-4256-bae5-c0aa5d0b7f47
+    name: amele123@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 791b5db1-bc75-48a6-995a-f1bf58e93840
+    name: pnaduvat@pepsico.com

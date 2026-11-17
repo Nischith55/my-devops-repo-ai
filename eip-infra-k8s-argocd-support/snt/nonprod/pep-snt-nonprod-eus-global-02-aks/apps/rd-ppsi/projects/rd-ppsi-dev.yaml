@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rd-ppsi-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for rd-ppsi-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-ppsi-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-cgf-ppsi-dev
+  - name: pep-snt-nonprod-eus-global-02-aks
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: rd-ppsi-dev-admin
+    description: Admin privileges to rd-ppsi-dev
+    policies:
+    - p, proj:rd-ppsi-dev:rd-ppsi-dev-admin, applications, *, rd-ppsi-dev/*, allow
+    - p, proj:rd-ppsi-dev:rd-ppsi-dev-admin, repositories, *, rd-ppsi-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.RnD.PPSI.Contributors"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: rd-ppsi-dev-user
+    description: Read-only privileges to rd-ppsi-dev
+    policies:
+    - p, proj:rd-ppsi-dev:rd-ppsi-dev-user, applications, get, rd-ppsi-dev/*, allow
+    - p, proj:rd-ppsi-dev:rd-ppsi-dev-user, applications, sync, rd-ppsi-dev/*, allow
+    - p, proj:rd-ppsi-dev:rd-ppsi-dev-user, repositories, get, rd-ppsi-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.PPS"
+    - "Team.App.RnD.PPSI.Contributors"
+    - "Team.Support.EIAP.READ"

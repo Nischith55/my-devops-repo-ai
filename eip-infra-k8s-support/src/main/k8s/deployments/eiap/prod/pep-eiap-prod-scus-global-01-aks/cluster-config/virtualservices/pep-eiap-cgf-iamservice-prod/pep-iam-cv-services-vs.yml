@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-iam-cv-services-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-iam-cv-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-iam-cv-services.pep-eiap-cgf-iamservice-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-iam-cv-services
+  name: pep-iam-cv-services-vs
+  namespace: pep-eiap-cgf-iamservice-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-iamservice-prod/pep-eiap-cgf-iamservice-prod-cv-gw
+  hosts:
+  - pep-iam-cv-services.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iam-cv-services.pep-eiap-cgf-iamservice-prod.svc.cluster.local
+        port:
+          number: 80

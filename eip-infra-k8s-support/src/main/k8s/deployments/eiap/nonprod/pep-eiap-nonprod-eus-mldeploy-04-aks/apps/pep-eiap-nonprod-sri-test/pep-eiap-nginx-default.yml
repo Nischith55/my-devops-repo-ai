@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pep-eiap-nginx
+  name: pep-eiap-nginx
+  namespace: pep-eiap-nonprod-sri-test
+spec:
+  ports:
+  - name: http-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pep-eiap-nginx
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pep-eiap-nginx
+  name: pep-eiap-nginx
+  namespace: pep-eiap-nonprod-sri-test
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pep-eiap-nginx
+  template:
+    metadata:
+      labels:
+        app: pep-eiap-nginx
+    spec:
+      containers:
+      - command:
+        - sudo
+        - nginx
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:ubuntu-bionic-2021.07.12
+        imagePullPolicy: Always
+        name: pep-eiap-nginx
+        ports:
+        - containerPort: 8080
+          name: http        
+        volumeMounts:
+          - name: test-configuration
+            mountPath: /app/
+            readOnly: true
+      volumes:
+        - name: test-configuration
+          configMap:
+            name: test-router    
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-router
+  labels:
+    app: pep-eiap-nginx
+  namespace: pep-eiap-nonprod-sri-test
+data:
+  configuration.yaml: |
+    health_check:
+      listen: 0.0.0.0:8088
+    supergraph:
+      listen: 0.0.0.0:4000

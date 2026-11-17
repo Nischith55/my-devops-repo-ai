@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-flna-schkgn-prod
+  labels:
+    env-prod: "true"
+    project: schkgn
+    sector: flna
+    team: flna-schkgn
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: supplychainhub-aksclusterprod
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-cmdb-app-service-id: 6a6b9809477565107c0c7a6d666d430e
+    pep-environment: Production
+    

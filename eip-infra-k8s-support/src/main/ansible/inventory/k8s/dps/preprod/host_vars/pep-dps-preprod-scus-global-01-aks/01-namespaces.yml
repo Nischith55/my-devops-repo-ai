@@ -1,0 +1,33 @@
+####### BEGIN Added recently --pep-dps-preprod-scus-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_cgf_pepconnnam_preprod
+  - ns_pep_dps_cgf_dsxadaptor_preprod
+  - ns_pep_dps_devx_test_preprod
+  - ns_pep_dps_cgf_bffmxbcp_preprod
+  - ns_pep_dps_latam_btbprofile_preprod
+  - ns_pep_dps_latam_bfflylty_preprod
+  - ns_pep_dps_latam_bffmerch_preprod
+  - ns_pep_dps_latam_bffckout_preprod
+  - ns_pep_dps_latam_btbpromo_preprod
+  - ns_pep_dps_latam_btblylty_preprod
+  - ns_pep_dps_latam_btbproduct_preprod
+  - ns_pep_dps_latam_btbcarts_preprod
+  - ns_pep_dps_latam_btboms_preprod
+  - ns_pep_dps_latam_btborch_preprod
+  - ns_pep_dps_cgf_dsd_preprod
+  - ns_pep_dps_cgf_peployalty_preprod
+  - ns_pep_dps_cgf_ibp_preprod
+  - ns_pep_dps_cgf_risingwave_preprod
+  - ns_pep_dps_cgf_psd_preprod
+  - ns_pep_dps_cgf_cct_preprod
+  - ns_pep_dps_cgf_pepconnmex_preprod
+  - ns_pep_dps_cgf_promoai_preprod
+  - ns_pep_dps_cgf_gpg_preprod
+  - ns_pep_dps_cgf_gscafso_preprod
+  - ns_pep_dps_cgf_fmcs_preprod
+  - ns_pep_dps_latam_bff_preprod
+  - ns_pep_dps_cgf_adportal_preprod
+####### END Added recently --pep-dps-preprod-scus-global-01-aks######

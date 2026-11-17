@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_europe_isalesteru_qa:
+  
+  name: pep-eiap-europe-isalesteru-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-isalesteru
+    sector: europe
+    project: isalesteru
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-isalesteru-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_isalesteru'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

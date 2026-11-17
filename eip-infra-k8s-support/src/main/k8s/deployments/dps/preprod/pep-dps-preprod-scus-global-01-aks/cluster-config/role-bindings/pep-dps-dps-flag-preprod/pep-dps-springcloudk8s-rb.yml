@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-dps-springcloudk8s-rb
+  namespace: pep-dps-dps-flag-preprod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-dps-springcloudk8s-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-dps-dps-flag-preprod
+    name: pep-dps-dps-flag-preprod-sa

@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-myidm-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-myidm-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iamc-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-cgf-iamcentral-preprod
+      - name: pep-eiap-preprod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-myidm-preprod-admin
+        description: Admin privileges to pep-myidm-preprod
+        policies:
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-admin, applications, *, pep-myidm-preprod/*, allow
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-admin, repositories, *, pep-myidm-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-myidm-preprod-user
+        description: Read-only privileges to pep-myidm-preprod
+        policies:
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-user, applications, get, pep-myidm-preprod/*, allow
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-user, applications, sync, pep-myidm-preprod/*, allow
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-user, repositories, get, pep-myidm-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-myidm-preprod:pep-myidm-preprod-user, applications, action/apps/Deployment/restart, pep-myidm-preprod/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.iamcen"
+        - "Team.Support.EIAP.READ"
+    

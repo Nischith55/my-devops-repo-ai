@@ -1,0 +1,29 @@
+---
+ns_pep_pfna_flna_auditmonit_preprod:
+  
+  name: pep-pfna-flna-auditmonit-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-auditmonit
+    sector: flna
+    project: auditmonit
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-auditmonit-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_auditmonit'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

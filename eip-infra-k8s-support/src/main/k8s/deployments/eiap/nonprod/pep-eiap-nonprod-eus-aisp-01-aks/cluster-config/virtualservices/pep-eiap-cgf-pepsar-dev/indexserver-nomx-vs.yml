@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: indexserver-nomx-vs
+  namespace: pep-eiap-cgf-pepsar-dev
+  labels:
+      app: da-app
+spec:
+  hosts:
+  - pep-pepsar-dev-indexserver.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-pepsar-dev/pep-eiap-cgf-pepsar-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /dsearchadmin
+    route:
+    - destination:
+        host: indexserver.pep-eiap-cgf-pepsar-dev.svc.cluster.local
+        port:
+          number: 9300
+  

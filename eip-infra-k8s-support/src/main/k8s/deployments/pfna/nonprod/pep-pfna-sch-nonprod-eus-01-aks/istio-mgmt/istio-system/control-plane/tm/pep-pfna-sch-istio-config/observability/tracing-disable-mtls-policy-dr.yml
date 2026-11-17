@@ -1,0 +1,15 @@
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: jaeger-collector-mtls-disable-pol
+  namespace: pep-pfna-sch-istio-config
+spec:
+  selector:
+    matchLabels:
+      app: jaeger
+  mtls:
+    mode: UNSET
+  portLevelMtls:
+    9411:
+      mode: DISABLE

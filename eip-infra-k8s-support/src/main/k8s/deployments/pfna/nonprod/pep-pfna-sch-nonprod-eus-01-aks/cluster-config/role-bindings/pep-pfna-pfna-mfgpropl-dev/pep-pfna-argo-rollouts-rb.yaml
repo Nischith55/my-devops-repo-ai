@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels: {}
+  name: pep-pfna-argo-rollouts-rb
+  namespace: pep-pfna-pfna-mfgpropl-dev
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argo-rollouts-aggregate-to-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: 3d25e48e-c30b-4c39-8c9d-fb56fe12e2c5

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-europe-isalspre-preprod-cv-web-vs
+  namespace: pep-eiap-europe-isalspre-preprod
+  labels:
+    app: pep-eiap-europe-isalspre-preprod-cv-web
+spec:
+  hosts:
+    - isalespl.preprod.mypepsico.com
+    - pep-eiap-europe-isalspre-preprod-cv.global.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-europe-isalspre-preprod/pep-eiap-europe-isalspre-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-europe-isalspre-preprod-cv-web.pep-eiap-europe-isalspre-preprod.svc.cluster.local
+        port:
+          number: 80

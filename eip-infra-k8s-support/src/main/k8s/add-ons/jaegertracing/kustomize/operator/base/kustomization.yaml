@@ -1,0 +1,16 @@
+---
+# apiVersion and kind of Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# only list resources that we need patched
+resources:
+  - crds/jaegertracing.io_jaegers_crd.yaml
+  # First create service account
+  - service_account.yaml
+  - cluster_role.yaml
+  - cluster_role_binding.yaml
+  - role.yaml
+  - role_binding.yaml
+  - operator.yaml
+  - service.yaml

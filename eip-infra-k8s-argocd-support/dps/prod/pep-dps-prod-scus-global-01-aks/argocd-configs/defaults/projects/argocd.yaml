@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for dps
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/profittoserve-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/distributiontestingtool-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-portal-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fmcs-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-bff-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dtv-should-cost-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_SNT_Global_Payment_Gateway/_git/gpg-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/afh-menupro-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/GNRM_PromoAI_Pricing/_git/gnrm-promoai-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/salesforce-connector-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/GNRM_Pricing_Accelerator/_git/gnrm-pricingai-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/LATAM_IPC_TC/_git/pepsico-manufacturing-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-gscaf-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/feature-toggle-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dtv-tpo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/customer-communication-tool-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/product-success-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/mct-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsd-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/agro-service-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Procurement/_git/pepsico-buyerconsole-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fritolay-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gds-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Canvas/_git/msp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/agro-growers-hub-web-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/appruntime-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ibp-faui-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/rules-engine-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/aig-core-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-dashboard-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_Global_Functions_Transformation/_git/rd-dcs-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gsat-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-dtv-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CGF_Grower_Relationship_Application/_git/agro-service-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-abt-shopper-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/bdr-sync-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dps-dss-collab-components-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pepsico-snt-dpa-supplier-hub-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PEPCommerce_Loyalty/_git/pep-dtcloyalty-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cct-r360-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsx-adaptor-kafka-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/udf-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/IT_SnT_GRIR/_git/pep-snt-paywise-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/proc-scm-ai-api-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/devtest2805-devtesting2805-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/mt-teamdevx-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/mtmultimarket-mt-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/afh-blueprint-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxdevopsai-dsxdevops-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: argo-rollouts
+    server: https://kubernetes.default.svc
+  roles:
+  - name: argocd-user
+    description: Read-only privileges to argocd
+    policies:
+    - p, proj:argocd:argocd-user, applications, get, argocd/*, allow
+    - p, proj:argocd:argocd-user, applications, sync, argocd/*, allow
+    - p, proj:argocd:argocd-user, repositories, get, argocd/*, allow
+    groups:
+    - Team.Support.CGF.NonProd.devops

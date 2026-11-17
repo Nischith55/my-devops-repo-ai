@@ -1,0 +1,327 @@
+{{- $platformchartFullName := include "platform-chart.fullname" . }}
+{{- $namespace := $.Values.global.namespace }}
+
+{{- if and ($.Values.keda.enabled) (or .Values.global.deployment.enabled .Values.global.rollout.enabled .Values.global.statefulset.enabled) }}
+{{- range $.Values.keda.triggers }}
+{{- if or (eq .type "kafka") (eq .type "azureblob") (eq .type "redis") (eq .type "eventhub") (eq .type "temporal") (and (eq .type "prometheus") .metadata.authModes) }}
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ $platformchartFullName }}-trigger-auth-{{ .type }}-cred
+  namespace: {{ $namespace }}
+spec:
+  {{- if or (eq .type "kafka") (eq .type "redis") }}
+  secretTargetRef:
+    - parameter: username
+      name: {{ .authenticationRef.name }}
+      key: username
+    - parameter: password
+      name: {{ .authenticationRef.name }}
+      key: password
+    {{- if eq .type "kafka" }}
+    - parameter: sasl
+      name: keda-kafka-secret
+      key: sasl
+    - parameter: tls
+      name: keda-kafka-secret
+      key: tls
+    - parameter: ca
+      name: keda-kafka-secret
+      key: ca
+    {{- end }}
+  {{- else if or (eq .type "eventhub") (eq .type "azureblob") }}
+  {{- if eq .metadata.authenticationType "podIdentity" }}
+  podIdentity:
+    provider: azure-workload
+  {{- end }}
+  {{- else if eq .type "prometheus" }}
+  {{- $authModes := splitList "," (default "" .metadata.authModes) }}
+  {{- if .metadata.authModes }}
+  secretTargetRef:
+    {{- if has "basic" $authModes }}
+    - parameter: username
+      name: {{ .authenticationRef.name }}
+      key: username
+    - parameter: password
+      name: {{ .authenticationRef.name }}
+      key: password
+    {{- end }}
+    {{- if has "bearer" $authModes }}
+    - parameter: bearerToken
+      name: {{ .authenticationRef.name }}
+      key: token
+    - parameter: ca
+      name: {{ .authenticationRef.name }}
+      key: ca
+    {{- end }}
+    {{- if has "tls" $authModes }}
+    - parameter: ca
+      name: {{ .authenticationRef.name }}
+      key: ca
+    - parameter: cert
+      name: {{ .authenticationRef.name }}
+      key: cert
+    - parameter: key
+      name: {{ .authenticationRef.name }}
+      key: key
+    {{- end }}
+  {{- end }}
+  {{- else if eq .type "temporal" }}
+  secretTargetRef:
+    - parameter: apiKey
+      name: {{ .authenticationRef.name }}
+      key: {{ .metadata.apiKeySecretKey | default "apiKey" }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ $platformchartFullName }}-scaler
+  namespace: {{ $namespace }}
+spec:
+  scaleTargetRef:
+  {{- if and (.Values.global.rollout.enabled) (not .Values.global.deployment.enabled) (not .Values.global.statefulset.enabled) }}  
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: {{ include "platform-chart.fullname" . }}
+{{- end }}
+{{- if and (not .Values.global.rollout.enabled) (.Values.global.deployment.enabled) (not .Values.global.statefulset.enabled) }}  
+    name: {{ $platformchartFullName }}
+    envSourceContainerName: {{ .Values.global.fullnameOverride }}
+{{- end }}
+{{- if .Values.global.statefulset.enabled }}  
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ $platformchartFullName }}
+    envSourceContainerName: {{ .Values.global.fullnameOverride }}
+{{- end }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 20 }} 
+  minReplicaCount: {{ .Values.keda.minReplicaCount | default 0 }} 
+  pollingInterval: {{ .Values.keda.pollingInterval | default 30 }}  
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 300 }}  
+  fallback:
+    replicas: {{ .Values.keda.fallback.failureThreshold | default 1 }} 
+    failureThreshold: {{ .Values.keda.fallback.failureThreshold | default 300 }}  
+  triggers:
+  {{- range $.Values.keda.triggers }}
+  {{- if eq .type "kafka" }}
+  - metadata:
+      bootstrapServers: {{ required "bootstrapServers is required" .metadata.bootstrapServers }}
+      consumerGroup: {{ required "consumerGroup is required" .metadata.consumerGroup }}
+      {{- if .metadata.limitToPartitionsWithLag }}
+      topic: {{ required "Topic is required as limitToPartitionsWithLag is enabled" .metadata.topic }}
+      {{- else }}
+      topic: {{ .metadata.topic }}
+      {{- end }}
+      lagThreshold: {{ .metadata.lagThreshold | quote}}
+      activationLagThreshold: {{ .metadata.activationLagThreshold | default 5 | quote}}
+      offsetResetPolicy: {{ .metadata.offsetResetPolicy  }}
+      {{- if  (.metadata.limitToPartitionsWithLag) }}
+        {{- $valid := false }}
+        {{- if not (eq .metadata.allowIdleConsumers $valid) }}
+          {{- fail "allowIdleConsumers cannot be set to true when limitToPartitionsWithLag is true"  }}
+        {{- end }}
+      {{- else }}
+      allowIdleConsumers: {{ .metadata.allowIdleConsumers  | quote}}
+      {{- end }}
+      scaleToZeroOnInvalidOffset: {{ .metadata.scaleToZeroOnInvalidOffset | default false | quote}}
+      excludePersistentLag: {{ .metadata.excludePersistentLag | default false | quote}}
+      limitToPartitionsWithLag: {{ .metadata.limitToPartitionsWithLag | quote}}
+      version: {{ .metadata.version | quote }} 
+      partitionLimitation: {{ .metadata.partitionLimitation }} 
+    authenticationRef:
+      name: {{ $platformchartFullName }}-trigger-auth-kafka-cred   
+    type: {{ .type }} 
+  {{- else if eq .type "eventhub" }}
+  - type: azure-eventhub
+    metadata:
+      {{- if not (contains  "EntityPath=" .metadata.connectionFromEnv) }}
+      {{- if and (not .metadata.eventHubName) (not .metadata.eventHubNameFromEnv ) }}
+      eventHubName: {{ required "eventHubName or eventHubNameFromEnv is required as the connection string does not end with EntityPath=<event_hub_name> " .metadata.eventHubName }}
+      eventHubNameFromEnv: {{ required "eventHubName or eventHubNameFromEnv is required as the connection string does not end with EntityPath=<event_hub_name> " .metadata.eventHubNameFromEnv }}
+      {{- else  }}
+      eventHubName: {{ .metadata.eventHubName }}
+      eventHubNameFromEnv: {{ .metadata.eventHubNameFromEnv }}
+      {{- end }}
+      {{- else }}
+      eventHubName: {{ .metadata.eventHubName }}
+      eventHubNameFromEnv: {{ .metadata.eventHubNameFromEnv }}
+      {{- end }}
+      connectionFromEnv: {{ .metadata.connectionFromEnv }} #If the connection string does not end with EntityPath=<event_hub_name>, then the parameters eventHubName / eventHubNameFromEnv must be used to provide the name of the Event Hub.
+      {{- if not ( eq .metadata.authenticationType "podIdentity" ) }}
+      storageConnectionFromEnv: {{ required "storageConnectionFromEnv is required when the podIdentity is not being used" .metadata.storageConnectionFromEnv }}
+      {- else }
+      storageConnectionFromEnv: {{ .metadata.storageConnectionFromEnv }}
+      {{- end }}
+      consumerGroup: {{ .metadata.consumerGroup  | default "$default" }}
+      unprocessedEventThreshold: {{ .metadata.unprocessedEventThreshold  | quote }}
+      activationUnprocessedEventThreshold: {{ .metadata.activationUnprocessedEventThreshold | quote }}
+      {{- if not ( eq .metadata.checkpointStrategy "azureFunction" ) }}
+      blobContainer: {{ required "blobContainer is required when checkpointStrategy is not azurefunction" .metadata.blobContainer }} # if the checkpoint strategy is not azure functions
+      {{- else }}
+      blobContainer: {{ .metadata.blobContainer }}
+      {{- end }}
+      eventHubNamespace: {{ .metadata.eventHubNamespace }}
+      eventHubNamespaceFromEnv: {{ .metadata.eventHubNamespaceFromEnv }}
+      {{- if not .metadata.storageConnectionFromEnv }}
+      storageAccountName: {{ required "storageAccountName is required when storageConnectionFromEnv is not provided" .metadata.storageAccountName }}
+      {{- else }}
+      storageAccountName: {{ .metadata.storageAccountName }}
+      {{- end }}
+      checkpointStrategy: azureFunction # azureFunction or blobMetadata or goSdk or dapr; when nothing specified, it uses the legacy methodlogy and blobcontainer is a must
+      cloud: AzurePublicCloud
+      # Required when cloud = Private
+      {{- if eq .metadata.cloud "Private" }}
+      endpointSuffix: {{ required "endpointSuffix is required when cloud is Private" .metadata.endpointSuffix }}
+      # Required when cloud = Private
+      storageEndpointSuffix: {{ required "storageEndpointSuffix is required when cloud is Private" .metadata.storageEndpointSuffix }}
+      {{- else }}
+      endpointSuffix: {{ .metadata.endpointSuffix }}
+      storageEndpointSuffix: {{ .metadata.storageEndpointSuffix }}
+      {{- end }}
+  {{- else if eq .type "azureblob" }}
+  - type: azure-blob
+    metadata: 
+      blobContainerName: {{ required "blobContainerName is required for azure-blob scaler" .metadata.blobContainerName }}
+      {{- if .metadata.blobCount }}
+      blobCount: {{ .metadata.blobCount | quote }}
+      {{- end }}
+      {{- if .metadata.activationBlobCount }}
+      activationBlobCount: {{ .metadata.activationBlobCount | quote }}
+      {{- end }}
+      {{- if .metadata.connectionFromEnv }}
+      connectionFromEnv: {{ .metadata.connectionFromEnv }}
+      {{- end }}
+      {{- if .metadata.accountName }}
+      accountName: {{ .metadata.accountName }}
+      {{- end }}
+      {{- if .metadata.blobPrefix }}
+      blobPrefix: {{ .metadata.blobPrefix }}
+      {{- end }}
+      {{- if .metadata.blobDelimiter }}
+      blobDelimiter: {{ .metadata.blobDelimiter }}
+      {{- end }}
+      {{- if  .metadata.recursive }}
+      recursive: {{ .metadata.recursive }}
+      {{- end }}
+      {{- if .metadata.globPattern }}
+      globPattern: {{ .metadata.globPattern }}
+      {{- end }}
+      {{- if .metadata.cloud }}
+      cloud: {{ .metadata.cloud }}
+      {{- end }}
+      {{- if eq .metadata.cloud "Private" }}
+      endpointSuffix: {{ required "endpointSuffix is required when cloud is Private" .metadata.endpointSuffix }}
+      {{- else if .metadata.endpointSuffix }}
+      endpointSuffix: {{ .metadata.endpointSuffix }}
+      {{- end }}
+      
+  {{- else if eq .type "redis" }}
+  - type: redis
+    metadata:
+      address: {{ required "address to connect to redis list is required and must be in host:path format" .metadata.address }} # Format must be host:port
+      listName: {{ required "ListName is required" .metadata.listName }} # Required
+      listLength: {{ required "List Length is required" .metadata.listLength | quote}} # Required
+      activationListLength: {{ .metadata.activationListLength | quote}} # optional
+      {{- if .metadata.unsafeSsl }}
+      enableTLS: {{ required "enabledTLS is required when unsafeSsl is set to true" .metadata.enableTLS | quote}} # optional
+      {{- end }}
+      unsafeSsl: {{ .metadata.unsafeSsl | default false | quote}} # optional
+      databaseIndex: {{ .metadata.databaseIndex | quote}}  # optional
+      # Alternatively, you can use existing environment variables to read configuration from:
+      # See details in "Parameter list" section
+      addressFromEnv: {{ .metadata.addressFromEnv }}  # optional
+    authenticationRef:
+      name: {{ $platformchartFullName }}-trigger-auth-redis-cred   
+  {{- else if eq .type "prometheus" }}
+  - type: prometheus
+    metadata:
+      serverAddress: {{ required "serverAddress is required for prometheus scaler" .metadata.serverAddress }}
+      metricName: {{ required "metricName is required for prometheus scaler" .metadata.metricName }}
+      threshold: {{ required "threshold is required for prometheus scaler" .metadata.threshold | quote }}
+      query: {{ required "query is required for prometheus scaler" .metadata.query }}
+      {{- if .metadata.namespace }}
+      namespace: {{ .metadata.namespace }}
+      {{- end }}
+      {{- if .metadata.activationThreshold }}
+      activationThreshold: {{ .metadata.activationThreshold | quote }}
+      {{- end }}
+      {{- if .metadata.customHeaders }}
+      customHeaders: {{ .metadata.customHeaders | quote }}
+      {{- end }}
+      {{- if .metadata.queryParameters }}
+      queryParameters: {{ .metadata.queryParameters | quote }}
+      {{- end }}
+      {{- if .metadata.unsafeSsl }}
+      unsafeSsl: {{ .metadata.unsafeSsl | quote }}
+      {{- end }}
+      {{- if .metadata.ignoreNullValues }}
+      ignoreNullValues: {{ .metadata.ignoreNullValues | quote }}
+      {{- end }}
+      {{- if .metadata.authModes }}
+    authenticationRef:
+      name: {{ $platformchartFullName }}-trigger-auth-prometheus-cred
+    {{- end }}
+  {{- else if eq .type "cpu" }}
+  - type: cpu
+    metricType: {{ required "metricType is required for CPU scaler" .metricType | quote }}
+    metadata:
+      value: {{ required "value is required for CPU scaler" .metadata.value | quote }}
+      {{- if .metadata.containerName }}
+      containerName: {{ .metadata.containerName | quote }}
+      {{- end }} 
+  {{- else if eq .type "memory" }}
+  - type: memory
+    metricType: {{ required "metricType is required for Memory scaler" .metricType | quote }}
+    metadata:
+      value: {{ required "value is required for Memory scaler" .metadata.value | quote }}
+      {{- if .metadata.containerName }}
+      containerName: {{ .metadata.containerName | quote }}
+      {{- end }}
+  {{- else if eq .type "temporal" }}
+  - type: temporal
+    metadata:
+      endpoint: {{ required "endpoint is required for temporal scaler" .metadata.endpoint | quote }}
+      namespace: {{ required "namespace is required for temporal scaler" .metadata.namespace | quote }}
+      taskQueue: {{ required "taskQueue is required for temporal scaler" .metadata.taskQueue | quote }}
+      targetQueueSize: {{ .metadata.targetQueueSize | default "5" | quote }}
+      {{- if .metadata.activationTargetQueueSize }}
+      activationTargetQueueSize: {{ .metadata.activationTargetQueueSize | quote }}
+      {{- end }}
+      {{- if .metadata.queueTypes }}
+      queueTypes: {{ .metadata.queueTypes | quote }}
+      {{- end }}
+      {{- if .metadata.workerDeploymentName }}
+      workerDeploymentName: {{ .metadata.workerDeploymentName | quote }}
+      {{- end }}
+      {{- if .metadata.workerDeploymentBuildId }}
+      workerDeploymentBuildId: {{ .metadata.workerDeploymentBuildId | quote }}
+      {{- end }}
+      {{- if .metadata.includeRunningWorkflowCount }}
+      includeRunningWorkflowCount: {{ .metadata.includeRunningWorkflowCount | quote }}
+      {{- end }}
+      {{- if .metadata.workflowTaskQueueForCount }}
+      workflowTaskQueueForCount: {{ .metadata.workflowTaskQueueForCount | quote }}
+      {{- end }}
+      {{- if .metadata.minConnectTimeout }}
+      minConnectTimeout: {{ .metadata.minConnectTimeout | quote }}
+      {{- end }}
+      {{- if .metadata.unsafeSsl }}
+      unsafeSsl: {{ .metadata.unsafeSsl | quote }}
+      {{- end }}
+      {{- if .metadata.tlsServerName }}
+      tlsServerName: {{ .metadata.tlsServerName | quote }}
+      {{- end }}
+      {{- if .metadata.enableTLS }}
+      enableTLS: {{ .metadata.enableTLS | quote }}
+      {{- end }}
+    authenticationRef:
+      name: {{ $platformchartFullName }}-trigger-auth-temporal-cred
+      {{- end }}
+    {{- end }}
+{{- end }}
+

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-dps-dps-notifym-qa-cv-webdeploy
+  name: pep-dps-dps-notifym-qa-cv-vs
+  namespace: pep-dps-dps-notifym-qa
+spec:
+  gateways:
+  - pep-dps-dps-notifym-qa/pep-dps-dps-notifym-qa-cv-gw
+  hosts:
+  - pep-dps-dps-notifym-qa-cv.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dps-dps-notifym-qa-cv-webdeploy.pep-dps-dps-notifym-qa.svc.cluster.local
+        port:
+          number: 80

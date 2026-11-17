@@ -1,0 +1,92 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-b2badmin-preprod-cv-gw
+  namespace: pep-dps-dps-b2badmin-preprod
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-b2badmin-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-b2badmin-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-b2badmin-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-dps-b2badmin-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-shell-mfe-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - nba-frontend.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - admin-dashboard-bff-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-creation-properties-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-audit-log-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-b2badmin-preprod-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-b2badmin-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-dps-b2badmin-preprod-80.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-shell-mfe-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - nba-frontend.dps.gw01.aks01.suk.preprod.azure.intra.pepsico.com
+    - b2b-admin.preprod.mypepsico.com
+    - admin-dashboard-bff-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-creation-properties-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-dashboard-audit-log-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-dps-dps-b2badmin-preprod-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-b2badmin-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - b2b-admin.preprod.mypepsico.com
+    name: pep-dps-dps-b2badmin-preprod-cv-gw-https-1-443
+    port:
+      name: https-pep-dps-dps-b2badmin-preprod-cv-gw1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-dps-b2badmin-preprod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

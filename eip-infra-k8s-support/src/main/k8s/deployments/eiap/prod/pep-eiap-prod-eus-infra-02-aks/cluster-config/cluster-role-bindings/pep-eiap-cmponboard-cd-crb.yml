@@ -1,0 +1,14 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-cmponboard-cd-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-cmponboard-clusterrole
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-nonprod-onboarding-spn
+    name: 6d01d83f-30c2-45d6-841d-e2530cbb7b03

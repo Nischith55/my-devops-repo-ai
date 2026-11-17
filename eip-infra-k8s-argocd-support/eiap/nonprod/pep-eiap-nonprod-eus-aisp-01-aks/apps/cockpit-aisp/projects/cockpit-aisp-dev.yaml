@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cockpit-aisp-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cockpit-aisp-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Mosaic_Product_Teams/_git/pep-fpa-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-aisp-01-aks
+        namespace: pep-eiap-cgf-ckptgpt-dev
+      - name: pep-eiap-nonprod-eus-aisp-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cockpit-aisp-dev-admin
+        description: Admin privileges to cockpit-aisp-dev
+        policies:
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-admin, applications, *, cockpit-aisp-dev/*, allow
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-admin, repositories, *, cockpit-aisp-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cockpit-aisp-dev-user
+        description: Read-only privileges to cockpit-aisp-dev
+        policies:
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-user, applications, get, cockpit-aisp-dev/*, allow
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-user, applications, sync, cockpit-aisp-dev/*, allow
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-user, repositories, get, cockpit-aisp-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cockpit-aisp-dev:cockpit-aisp-dev-user, applications, action/apps/Deployment/restart, cockpit-aisp-dev/*, allow
+        groups:
+        - "Team.App.FPA.CKPGPT.DEV.Developer"
+        - "Team.App.FPA.CKPGPT.DEV.Reader"
+        - "Team.Support.EIAP.READ"
+    

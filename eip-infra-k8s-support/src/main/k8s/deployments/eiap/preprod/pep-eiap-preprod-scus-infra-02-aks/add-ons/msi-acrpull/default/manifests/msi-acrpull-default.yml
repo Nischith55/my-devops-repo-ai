@@ -1,0 +1,283 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.5
+  creationTimestamp: null
+  name: acrpullbindings.msi-acrpull.microsoft.com
+spec:
+  group: msi-acrpull.microsoft.com
+  names:
+    kind: AcrPullBinding
+    listKind: AcrPullBindingList
+    plural: acrpullbindings
+    singular: acrpullbinding
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    subresources:
+      status: {}    
+    schema:
+      openAPIV3Schema:
+        description: AcrPullBinding is the Schema for the acrpullbindings API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: AcrPullBindingSpec defines the desired state of AcrPullBinding
+            properties:
+              acrServer:
+                description: The full server name for the ACR. For example, test.azurecr.io
+                minLength: 0
+                type: string
+              managedIdentityClientID:
+                description: The Managed Identity client ID that is used to authenticate with ACR (specify one of ClientID or ResourceID)
+                type: string
+              managedIdentityResourceID:
+                description: The Managed Identity resource ID that is used to authenticate with ACR (if ClientID is specified, this is ignored)
+                type: string
+              serviceAccountName:
+                description: The Service Account to associate the image pull secret with. If this is not specified, the default Service Account of the namespace will be used.
+                type: string
+            required:
+            - acrServer
+            type: object
+          status:
+            description: AcrPullBindingStatus defines the observed state of AcrPullBinding
+            properties:
+              error:
+                description: Error message if there was an error updating the token.
+                type: string
+              lastTokenRefreshTime:
+                description: Information when was the last time the ACR token was refreshed.
+                format: date-time
+                type: string
+              tokenExpirationTime:
+                description: The expiration date of the current ACR token.
+                format: date-time
+                type: string
+            type: object
+        type: object
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: msi-acrpull-leader-election-role
+  namespace: msi-acrpull-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: msi-acrpull-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - msi-acrpull.microsoft.com
+  resources:
+  - acrpullbindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - msi-acrpull.microsoft.com
+  resources:
+  - acrpullbindings/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: msi-acrpull-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: msi-acrpull-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: msi-acrpull-leader-election-rolebinding
+  namespace: msi-acrpull-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: msi-acrpull-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: msi-acrpull-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: msi-acrpull-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: msi-acrpull-manager-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: msi-acrpull-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: msi-acrpull-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: msi-acrpull-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: msi-acrpull-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: msi-acrpull-controller-manager-metrics-service
+  namespace: msi-acrpull-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: msi-acrpull-controller-manager
+  namespace: msi-acrpull-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+      - args:
+        - --metrics-addr=127.0.0.1:8080
+        - --enable-leader-election
+        command:
+        - /manager
+        image: mcr.microsoft.com/aks/msi-acrpull:v0.1.0-alpha
+        name: manager
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      terminationGracePeriodSeconds: 10
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

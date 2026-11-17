@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: b2b-portal
+  name: b2b-portal-vs
+  namespace: pep-eiap-cgf-pepconntur-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-pepconntur-dev/pep-eiap-cgf-pepconntur-dev-cv-gw
+  hosts:
+  - b2b-portal.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: b2b-portal.pep-eiap-cgf-pepconntur-dev.svc.cluster.local
+        port:
+          number: 80

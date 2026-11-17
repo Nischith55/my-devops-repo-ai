@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 3f3961a9-dca9-41dd-b3b5-41a7faadf228
+    pep-cmdb-bus-app-id: 3a366ca783b5b510f576d8426daad345
+    pep-environment: Development
+    project: ckptgpt
+    sector: cgf
+    servicename_aks: cockpitgpt
+    team: cgf-ckptgpt
+  name: pep-eiap-cgf-ckptgpt-dev

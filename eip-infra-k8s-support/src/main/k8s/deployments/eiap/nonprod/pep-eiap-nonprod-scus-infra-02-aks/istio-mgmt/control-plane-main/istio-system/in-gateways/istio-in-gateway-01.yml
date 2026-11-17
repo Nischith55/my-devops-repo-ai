@@ -1,0 +1,298 @@
+---
+# Do NOT generate from ansible
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - pep-eiap-k8s-dashboard.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-dashboard-https-443
+    port:
+      name: tls-dashboard-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ###########################################################################
+  # Elastic - cluster-01 PASSTHROUGHs
+  # ###########################################################################
+
+  # ~~~ pep-eiap-elastic-01
+  - hosts:
+    - pep-eiap-elastic-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-elastic-01-admin.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-elastic-01-tls-443
+    port:
+      name: tls-pep-eiap-elastic-01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-apm-01 (APM server)
+  - hosts:
+    - pep-eiap-apm-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    # NOTE: without - 01
+    name: istio-in-gateway-01-pep-eiap-apm-01-tls-443
+    port:
+      name: tls-pep-eiap-apm-01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-kibana01 and pep-eiap-kibana-01
+  - hosts:
+    - pep-eiap-kibana01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-kibana-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    # NOTE: without - 01
+    name: istio-in-gateway-01-pep-eiap-kibana01-tls-443
+    port:
+      # TODO change
+      name: tls-pep-eiap-kibana01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-ingest-01
+  - hosts:
+    - pep-eiap-ingest-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-ingest-01-tls-443
+    port:
+      name: tls-pep-eiap-ingest-01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ###########################################################################
+  # Elastic - cluster-02 PASSTHROUGHs
+  # ###########################################################################
+
+  # ~~~ pep-eiap-elastic-02
+  - hosts:
+    - pep-eiap-elastic-02.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-elastic-02-admin.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-elastic-02-tls-443
+    port:
+      name: tls-pep-eiap-elastic-02-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-kibana-02
+  - hosts:
+    - pep-eiap-kibana-02.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-kibana-02-tls-443
+    port:
+      name: tls-pep-eiap-kibana-02-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-ingest-02
+  - hosts:
+    - pep-eiap-ingest-02.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-ingest-02-tls-443
+    port:
+      name: tls-pep-eiap-ingest-02-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ###########################################################################
+  # Elastic - monitor-01 PASSTHROUGHs
+  # ###########################################################################
+
+  # ~~~ pep-eiap-elastic-monitor-01
+  - hosts:
+    - pep-eiap-elastic-monitor-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    - pep-eiap-elastic-monitor-01-admin.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-elastic-monitor-01-tls-443
+    port:
+      name: tls-pep-eiap-elastic-monitor-01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ~~~ pep-eiap-kibana-monitor-01
+  - hosts:
+    - pep-eiap-kibana-monitor-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-pep-eiap-kibana-monitor-01-tls-443
+    port:
+      name: pep-eiap-kibana-monitor-01-443
+      number: 443
+      protocol: tls
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+
+  # ###########################################################################
+  # https: 443 - wildcard
+  # ###########################################################################
+  - hosts:
+    - '*.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com'
+    name: istio-in-gateway-01-wildcard-https-443
+    port:
+      name: https-wc-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-scus-infra-02-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+
+
+  # ###########################################################################
+  # http: 80 - wildcard
+  # ###########################################################################
+  - hosts:
+    - '*.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com'
+    name: istio-in-gateway-01-wildcard-http-80
+    port:
+      name: http-wc-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+
+  # ###########################################################################
+  # http2: 80 - wildcard
+  # ###########################################################################
+  - hosts:
+    - '*.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com'
+    name: istio-in-gateway-01-wildcard-http2-80
+    port:
+      name: http2-wc-80
+      number: 80
+      protocol: http2

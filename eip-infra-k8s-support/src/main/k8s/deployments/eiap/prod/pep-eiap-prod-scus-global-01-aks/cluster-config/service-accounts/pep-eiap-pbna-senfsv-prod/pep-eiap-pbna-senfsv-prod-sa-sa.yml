@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-eiap-pbna-senfsv-prod-sa
+  namespace: pep-eiap-pbna-senfsv-prod

@@ -1,0 +1,50 @@
+---
+- name: create temp directory for nginx
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/nginx"
+    state: directory
+
+- name: create temp directory for virtual service
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vs"
+    state: directory
+
+- template:
+    src: nginx.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/nginx/pep-eiap-nginx-default.yml"
+
+- name: Creating service and deployment
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/nginx/pep-eiap-nginx-default.yml"
+  register: init3
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/apps/{{ prefix }}-{{ var['infrans'] }}_NGINX/{{ prefix }}-nginx/default/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/nginx/pep-eiap-nginx-default.yml"
+    force: true
+  register: copy_op
+
+- template:
+    src: nginx-vs.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vs/nginx-vs.yml"
+
+- name: Creating virtual service
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vs/nginx-vs.yml"
+  register: init3
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/cluster-config/virtualservices/{{ prefix }}-{{ infrans }}/{{ prefix }}-nginx-vs.yml"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/vs/nginx-vs.yml"
+    force: true
+  register: copy_op

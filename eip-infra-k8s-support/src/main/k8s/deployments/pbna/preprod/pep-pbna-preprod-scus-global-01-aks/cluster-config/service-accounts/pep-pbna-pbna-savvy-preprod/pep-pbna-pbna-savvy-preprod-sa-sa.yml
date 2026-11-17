@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-pbna-pbna-savvy-preprod-sa
+  namespace: pep-pbna-pbna-savvy-preprod

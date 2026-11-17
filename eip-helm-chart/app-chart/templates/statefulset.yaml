@@ -1,0 +1,485 @@
+{{- $pvc := .Values.global.pvc -}}
+{{- $saname := printf "%s-%s" .Values.global.namespace "sa" -}}
+{{- $statefulset := .Values.global.statefulset -}}
+{{- $fullName := include "app-chart.fullname" . -}}
+{{- if and ($statefulset.enabled) (not .Values.global.deployment.enabled) (not .Values.global.rollout.enabled) }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $fullName }}
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+  {{- include "app-chart.annotations" . | nindent 4 }}
+  labels:
+  {{- include "app-chart.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ $statefulset.serviceName | default (printf "%s-headless" $fullName) }}
+  podManagementPolicy: {{ $statefulset.podManagementPolicy | default "OrderedReady" }}
+  selector:   
+    matchLabels:
+      app: {{ .Values.global.labels.app }}    
+  {{- if not .Values.global.autoscalingEnabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if $statefulset.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ $statefulset.revisionHistoryLimit }}
+  {{- end }}
+  {{- if $statefulset.updateStrategy }}
+  {{- with $statefulset.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}   
+  {{- if $statefulset.persistentVolumeClaimRetentionPolicy }}
+  persistentVolumeClaimRetentionPolicy:
+    {{- toYaml $statefulset.persistentVolumeClaimRetentionPolicy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}  
+      {{- include "app-chart.annotations" . | nindent 8 }}
+      labels:
+      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}  
+      {{- include "app-chart.labels" . | nindent 8 }}       
+      {{- if .Values.global.secretManagement.enabled }}
+        azure.workload.identity/use: "true"
+      {{- end }}
+    spec:
+      hostPID: {{ .Values.hostPID | default false }}
+      hostIPC: {{ .Values.hostIPC | default false }}
+      hostNetwork: {{ .Values.hostNetwork | default false }}
+      {{- if or .Values.global.secretManagement.enabled .Values.global.awsSecretManagement.enabled }}
+      automountServiceAccountToken: true
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints.enabled }}
+      topologySpreadConstraints:
+      - maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
+        topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
+        whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
+        labelSelector:
+          matchLabels:        
+            app: {{ .Values.global.labels.app }}  
+      {{- end }}          
+      serviceAccountName: {{ .Values.serviceAccount.name | default $saname}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.global.fullnameOverride }}
+          command: 
+          {{- toYaml .Values.command | nindent 12 }}
+          args: 
+          {{- toYaml .Values.args | nindent 12 }}  
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }} 
+          ports:
+          {{- range .Values.containerPorts }}         
+          - containerPort: {{ .port }}
+            name: {{ .name }}  
+            protocol: {{ .protocol }}
+          {{- end }}        
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}      
+          {{- with .Values.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: 
+          {{- if .Values.envFromSecrets }}          
+          {{- range .Values.envFromSecrets }}
+          - name: {{ .name }}
+            valueFrom: 
+              secretKeyRef: 
+                name: {{ .secret.name }}
+                key: {{ .secret.key }}
+          {{- end }}
+          {{- end }} 
+          {{- if .Values.envFromFieldRef }}          
+          {{- range .Values.envFromFieldRef }}
+          - name: {{ .name }}
+            valueFrom:
+              fieldRef:
+                fieldPath: {{ .fieldPath }}
+          {{- end }} 
+          {{- end }}
+          {{- if .Values.env }}          
+          {{- range .Values.env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+          {{- end }} 
+          {{- if .Values.appD.enabled }}
+          {{- toYaml .Values.appD.env | nindent 10 }}
+          {{- end }}  
+          {{- if .Values.apm.enabled }}
+          {{- toYaml .Values.apm.env | nindent 10 }}
+          {{- end }}       
+          envFrom:
+          {{- if and (.Values.appD.enabled) (.Values.appD.envFrom) }}
+          {{- toYaml .Values.appD.envFrom | nindent 10 }}
+          {{- end }}
+          {{- if .Values.envFromSecretRef }}
+          {{- toYaml .Values.envFromSecretRef | nindent 10 }}
+          {{- end }}
+          {{- if .Values.envFromConfigMapRef }}
+          {{- toYaml .Values.envFromConfigMapRef | nindent 10 }}
+          {{- end }}
+          {{- if .Values.probes.enabled }}
+          readinessProbe:
+          {{- if and (.Values.probes.readiness.path) (not .Values.probes.readiness.command) }}
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.probes.readiness.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.probes.readiness.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}       
+            successThreshold: {{ .Values.probes.readiness.successThreshold }}     
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}     
+          livenessProbe:
+          {{- if and (.Values.probes.liveness.path) (not .Values.probes.liveness.command) }}
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.probes.liveness.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.probes.liveness.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }} 
+          {{- if .Values.probes.startup }}
+          startupProbe:
+          {{- if and (.Values.probes.startup.path) (not .Values.probes.startup.command) }}
+            httpGet:
+              path: {{ .Values.probes.startup.path }}
+              port: {{ .Values.probes.startup.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.probes.startup.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.startup.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.startup.successThreshold }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }} 
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}            
+          volumeMounts:
+          {{- if .Values.configmapFromFile.enabled }}
+          {{- range $configuration, $data := $.Values.configmapFromFile.configurations }}
+          {{- if $data.tobeMounted }}    
+          - name: {{ $data.volumeName }}
+            mountPath: {{ $data.mountPath }}  
+            subPath: {{ $data.subPath }}
+            readOnly: {{ $data.readOnly }}
+          {{- end}}          
+          {{- end }} 
+          {{- end }}  
+          {{- if .Values.appD.enabled -}}      
+          {{- include "app-chart.appDVolumeMounts" . | nindent 10 }}     
+          {{- end }} 
+          {{- if .Values.apm.enabled -}}      
+          {{- include "app-chart.apmVolumeMounts" . | nindent 10 }}      
+          {{- end }}           
+          {{- if .Values.global.pvc.enabled }}            
+          - name: pvc-volume
+            mountPath: {{ .Values.global.pvc.mountPath }}
+          {{- end }}
+          {{- if $statefulset.volumeClaimTemplates }}
+          {{- range $statefulset.volumeClaimTemplates }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.global.secretManagement.enabled }}
+          - name: {{ .Values.global.secretManagement.secretProviderClassName }}-volume
+            mountPath: {{ .Values.global.secretManagement.mountPath | quote}}     
+            readOnly: true     
+          {{- end }}  
+          {{- if .Values.global.awsSecretManagement.enabled }}
+          - name: {{ .Values.global.awsSecretManagement.secretProviderClassName }}-volume
+            mountPath: {{ .Values.global.awsSecretManagement.mountPath | quote}}     
+            readOnly: true     
+          {{- end }}  
+          {{- if .Values.additionalVolumes}}
+          {{- range $.Values.additionalVolumes }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- end }}
+      {{- if .Values.sidecar.enabled }}
+        - name: {{ .Values.sidecar.name }}
+          command: 
+          {{- toYaml .Values.sidecar.command | nindent 12 }} 
+          args: 
+          {{- toYaml .Values.sidecar.args | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.sidecar.securityContext | nindent 12 }}
+          ports:
+          {{- range .Values.sidecar.containerPorts }}         
+          - containerPort: {{ .port }}
+            name: {{ .name }}  
+            protocol: {{ .protocol }}
+          {{- end }}        
+          image: "{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}      
+          {{- with .Values.sidecar.lifecycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env: 
+          {{- if .Values.sidecar.envFromSecrets }}          
+          {{- range .Values.sidecar.envFromSecrets }}
+          - name: {{ .name }}
+            valueFrom: 
+              secretKeyRef: 
+                name: {{ .secret.name }}
+                key: {{ .secret.key }}
+          {{- end }}
+          {{- end }} 
+          {{- if .Values.sidecar.envFromFieldRef }}          
+          {{- range .Values.sidecar.envFromFieldRef }}
+          - name: {{ .name }}
+            valueFrom:
+              fieldRef:
+                fieldPath: {{ .fieldPath }}
+          {{- end }} 
+          {{- end }}
+          {{- if .Values.sidecar.env }}          
+          {{- range .Values.sidecar.env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
+          {{- end }} 
+          {{- if .Values.appD.enabled }}
+          {{- toYaml .Values.appD.env | nindent 10 }}
+          {{- end }}  
+          {{- if .Values.apm.enabled }}
+          {{- toYaml .Values.apm.env | nindent 10 }}
+          {{- end }}       
+          envFrom:
+          {{- if and (.Values.appD.enabled) (.Values.appD.envFrom) }}
+          {{- toYaml .Values.appD.envFrom | nindent 10 }}
+          {{- end }}
+          {{- if .Values.sidecar.envFromSecretRef }}
+          {{- toYaml .Values.sidecar.envFromSecretRef | nindent 10 }}
+          {{- end }}
+          {{- if .Values.sidecar.envFromConfigMapRef }}
+          {{- toYaml .Values.sidecar.envFromConfigMapRef | nindent 10 }}
+          {{- end }}
+          {{- if .Values.sidecar.probes.enabled }}
+          readinessProbe:
+          {{- if and (.Values.sidecar.probes.readiness.path) (not .Values.sidecar.probes.readiness.command) }}
+            httpGet:
+              path: {{ .Values.sidecar.probes.readiness.path }}
+              port: {{ .Values.sidecar.probes.readiness.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.sidecar.probes.readiness.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.sidecar.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sidecar.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.sidecar.probes.readiness.timeoutSeconds }}       
+            successThreshold: {{ .Values.sidecar.probes.readiness.successThreshold }}     
+            failureThreshold: {{ .Values.sidecar.probes.readiness.failureThreshold }}     
+          livenessProbe:
+          {{- if and (.Values.sidecar.probes.liveness.path) (not .Values.sidecar.probes.liveness.command) }}
+            httpGet:
+              path: {{ .Values.sidecar.probes.liveness.path }}
+              port: {{ .Values.sidecar.probes.liveness.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.sidecar.probes.liveness.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.sidecar.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sidecar.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.sidecar.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.sidecar.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.sidecar.probes.liveness.failureThreshold }} 
+          {{- if .Values.sidecar.probes.startup }}
+          startupProbe:
+          {{- if and (.Values.sidecar.probes.startup.path) (not .Values.sidecar.probes.startup.command) }}
+            httpGet:
+              path: {{ .Values.sidecar.probes.startup.path }}
+              port: {{ .Values.sidecar.probes.startup.port }}
+          {{- else }}
+            exec:              
+              command: 
+              {{- toYaml .Values.sidecar.probes.startup.command | nindent 14 }}
+          {{- end }}
+            initialDelaySeconds: {{ .Values.sidecar.probes.startup.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sidecar.probes.startup.periodSeconds }}
+            timeoutSeconds: {{ .Values.sidecar.probes.startup.timeoutSeconds }}
+            successThreshold: {{ .Values.sidecar.probes.startup.successThreshold }}
+            failureThreshold: {{ .Values.sidecar.probes.startup.failureThreshold }} 
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.sidecar.resources | nindent 12 }}            
+          volumeMounts:
+          {{- if .Values.configmapFromFile.enabled }}
+          {{- range $configuration, $data := $.Values.configmapFromFile.configurations }}
+          {{- if $data.tobeMounted }}    
+          - name: {{ $data.volumeName }}
+            mountPath: {{ $data.mountPath }}  
+            subPath: {{ $data.subPath }}
+            readOnly: {{ $data.readOnly }}
+          {{- end}}          
+          {{- end }} 
+          {{- end }}  
+          {{- if .Values.appD.enabled -}}      
+          {{- include "app-chart.appDVolumeMounts" . | nindent 10 }}     
+          {{- end }} 
+          {{- if .Values.apm.enabled -}}      
+          {{- include "app-chart.apmVolumeMounts" . | nindent 10 }}      
+          {{- end }}           
+          {{- if .Values.global.pvc.enabled }}            
+          - name: pvc-volume
+            mountPath: {{ .Values.global.pvc.mountPath }}
+          {{- end }}
+          {{- if $statefulset.volumeClaimTemplates }}
+          {{- range $statefulset.volumeClaimTemplates }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.global.secretManagement.enabled }}
+          - name: {{ .Values.global.secretManagement.secretProviderClassName }}-volume
+            mountPath: {{ .Values.global.secretManagement.mountPath | quote}}     
+            readOnly: true     
+          {{- end }}  
+          {{- if .Values.global.awsSecretManagement.enabled }}
+          - name: {{ .Values.global.awsSecretManagement.secretProviderClassName }}-volume
+            mountPath: {{ .Values.global.awsSecretManagement.mountPath | quote}}     
+            readOnly: true     
+          {{- end }}  
+          {{- if .Values.additionalVolumes}}
+          {{- range $.Values.additionalVolumes }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            subPath: {{ .subPath }}
+            readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
+      initContainers: 
+      {{- if .Values.apm.enabled }}
+      {{- include "app-chart.apmInitContainer" .  | nindent 6 }}      
+      {{- end }}
+      {{- if .Values.appD.enabled }}      
+      {{- include "app-chart.appDInitContainer" .  | nindent 6 }}     
+      {{- end }} 
+      {{- with .Values.initContainers -}} 
+      {{- toYaml . | nindent 6}}  
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.configmapFromFile.enabled }}
+      {{- range $configuration, $data := $.Values.configmapFromFile.configurations }}
+      {{- if $data.tobeMounted }} 
+      - name: {{ $data.volumeName }}
+        configMap:
+          items:
+          - key: {{ $configuration }}.yml
+            path: application.yml
+          name: {{ $configuration }}-configmap
+      {{- end }} 
+      {{- end }}
+      {{- end }}
+      {{- if .Values.apm.enabled -}}
+      {{ include "app-chart.apmVolumes" . | nindent 6 }}
+      {{- end }}
+      {{- if .Values.appD.enabled -}}   
+      {{ include "app-chart.appDVolumes" . | nindent 6 }}
+      {{- end }}
+      {{- if .Values.global.pvc.enabled }}            
+      - name: pvc-volume
+        persistentVolumeClaim: 
+          claimName: {{ .Values.global.fullnameOverride }}-pvc
+      {{- end }} 
+      {{- if .Values.global.secretManagement.enabled }}
+      - name: {{ .Values.global.secretManagement.secretProviderClassName }}-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.global.secretManagement.secretProviderClassName | quote}}  
+      {{- end }}
+      {{- if .Values.global.awsSecretManagement.enabled }}
+      - name: {{ .Values.global.awsSecretManagement.secretProviderClassName }}-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.global.awsSecretManagement.secretProviderClassName | quote}}  
+      {{- end }}
+      {{- if .Values.additionalVolumes}}
+      {{- range $.Values.additionalVolumes }}
+      - name: {{ .name }}
+      {{- with .type }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+  {{- if $statefulset.volumeClaimTemplates }}
+  volumeClaimTemplates:
+  {{- range $statefulset.volumeClaimTemplates }}
+  - metadata:
+      name: {{ .name }}
+      {{- with .labels }}
+      labels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      accessModes:
+      {{- toYaml .accessModes | nindent 6 }}
+      {{- if .storageClassName }}
+      storageClassName: {{ .storageClassName | quote }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .storageRequest }}
+  {{- end }}
+  {{- end }}
+{{- end }}

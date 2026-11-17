@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-flna-gtmothr-preprod
+    pep-cmdb-app-service-id: 9b1245cf8706455001ee400d0ebb3552
+    pep-cmdb-bus-app-id: 778c25ff1b6334504d6e64e1604bcb8e
+    pep-environment: Preprod
+    project: gtmothr
+    sector: flna
+    servicename_aks: och-hhnext
+    team: flna-gtmothr
+  name: pep-pfna-flna-gtmothr-preprod

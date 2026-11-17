@@ -1,0 +1,36 @@
+---
+ns_pep_pbna_pbna_savvy_preprod:
+  
+  name: pep-pbna-pbna-savvy-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-savvy
+    sector: pbna
+    project: savvy
+    crosscharge_aks: direct
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-pbna-pbna-savvy-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pbna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pbna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_savvy'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-pbna-pbna-savvy-preprod-sa-token
+    namespace: pep-pbna-pbna-savvy-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-pbna-pbna-savvy-preprod-sa"

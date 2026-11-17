@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-latam-latam-obs-dev
+    project: obs
+    sector: latam
+    servicename_aks: operation-bridge
+    team: latam-obs
+  name: pep-latam-latam-obs-dev

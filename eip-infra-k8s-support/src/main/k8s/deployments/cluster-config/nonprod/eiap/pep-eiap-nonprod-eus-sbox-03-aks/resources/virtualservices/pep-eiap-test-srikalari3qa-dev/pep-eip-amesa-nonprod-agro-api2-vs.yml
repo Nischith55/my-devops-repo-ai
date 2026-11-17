@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-amesa-nonprod-agro-api2-vs
+  namespace: pep-eiap-test-srikalari3qa-dev
+  labels:
+      app: pep-eiap-test-srikalari3qa-dev-cv-webdeploy2024
+spec:
+  hosts:
+  - api-pep-eip-amesa-nonprod-agro-dev3.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+  - api-pep-eip-amesa-nonprod-agro-dev4.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-test-srikalari3qa-dev/pep-eiap-test-srikalari3qa-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-test-srikalari3qa-dev-webdeploy2024.pep-eiap-test-srikalari3qa-dev.svc.cluster.local
+        port:
+          number: 80
+  

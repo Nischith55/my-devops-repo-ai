@@ -1,0 +1,17 @@
+####### BEGIN Added recently --pep-pfna-sch-prod-scus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pfna_latam_tctgps_prod
+  - ns_pep_pfna_flna_risingwave_prod
+  - ns_pep_pfna_pbna_pbnalghous_prod
+  - ns_pep_pfna_flna_schservice_prod
+  - ns_pep_pfna_flna_schopscon_prod
+  - ns_pep_pfna_flna_schwmi_prod
+  - ns_pep_pfna_flna_whas_prod
+  - ns_pep_pfna_flna_cshub_prod
+  - ns_pep_pfna_flna_iwms_prod
+  - ns_pep_pfna_flna_scopt_prod
+  - ns_pep_pfna_flna_transp_prod
+####### END Added recently --pep-pfna-sch-prod-scus-01-aks######

@@ -1,0 +1,52 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: swaggerhub-dev-vs
+  namespace: pep-paas-infratools-istio-config 
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - swaggerhub-dev.infratools.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  # - swaggerhub.dev.mypepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /ws
+    route:
+    - destination:
+        port:
+          number: 80
+        host: swaggerhub-notifications.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local        
+  - match:
+    - uri:
+        prefix: /v1/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local 
+  - match:
+    - uri:
+        prefix: /virts/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+  - match:
+    - uri:
+        prefix: /api/
+    route:
+    - destination:
+        port:
+          number: 80
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: swaggerhub-frontend.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local        

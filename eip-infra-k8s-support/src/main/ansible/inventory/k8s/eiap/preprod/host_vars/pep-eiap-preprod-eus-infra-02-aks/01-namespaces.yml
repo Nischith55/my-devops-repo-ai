@@ -1,0 +1,34 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: normally we provide instance_namespace_vars but we override __all_ns__
+# Exception: we override global __all_ns__ and list individual namespaces
+# we don't need istio and observability for aqua and appdynamics
+__all_ns__:
+  # - ns_kube_node_lease
+  # - ns_kube_system
+  # - ns_public
+  # # Only built-in namespace var that we include is the 'default'
+  # - ns_default
+  # # Aqua namespace
+  # - aqua_ns_cfg
+  # - ns_kubernetes_dashboard
+  - ns_msi_acrpull_system
+  - ns_pep_eiap_ops_admin
+  # - ns_monitoring
+  # - ns_pep_eiap_global_infra
+  # # NOTE: required only for Beats related deployment
+  # # # ECK - operator -- default namespace
+  # # - ns_elastic_system
+  # # This namespace should be used Beats deployment NON-ECK managed
+  # - ns_pep_eiap_elastic_client_01
+  # - ns_jaeger_operator
+  # # istio install
+  # - ns_istio_operator
+  # # where control plane main will be installed
+  # - ns_istio_system
+  # - ns_pep_eiap_istio_config
+
+# TODO: we need to define instance_namespace_vars and must have 1 element
+instance_namespace_vars:
+  - ns_pep_eiap_global_devsecops_preprod

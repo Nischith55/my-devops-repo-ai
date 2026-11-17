@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argo-rollouts
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for argo-rollouts 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: test    
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: 'test-*'    
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

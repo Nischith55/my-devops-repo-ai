@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aiforbi-amesam-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aiforbi-amesam-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/aiforbi-amesamt-uae-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-uaemt-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aiforbi-amesam-prod-admin
+        description: Admin privileges to aiforbi-amesam-prod
+        policies:
+        - p, proj:aiforbi-amesam-prod:aiforbi-amesam-prod-admin, applications, *, aiforbi-amesam-prod/*, allow
+        - p, proj:aiforbi-amesam-prod:aiforbi-amesam-prod-admin, repositories, *, aiforbi-amesam-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aiforbi-amesam-prod-user
+        description: Read-only privileges to aiforbi-amesam-prod
+        policies:
+        - p, proj:aiforbi-amesam-prod:aiforbi-amesam-prod-user, applications, get, aiforbi-amesam-prod/*, allow
+        - p, proj:aiforbi-amesam-prod:aiforbi-amesam-prod-user, applications, sync, aiforbi-amesam-prod/*, allow
+        - p, proj:aiforbi-amesam-prod:aiforbi-amesam-prod-user, repositories, get, aiforbi-amesam-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.AI4BIPBF.users"
+        - "Team.Support.EIAP.READ"
+    

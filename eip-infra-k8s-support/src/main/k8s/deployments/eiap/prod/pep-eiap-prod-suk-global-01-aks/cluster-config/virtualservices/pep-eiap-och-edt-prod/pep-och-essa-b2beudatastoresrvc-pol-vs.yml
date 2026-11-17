@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-och-essa-b2beudatastoresrvc-pol
+  name: pep-och-essa-b2beudatastoresrvc-pol-vs
+  namespace: pep-eiap-och-edt-prod
+spec:
+  gateways:
+  - pep-eiap-och-edt-prod/pep-eiap-och-edt-prod-cv-gw
+  hosts:
+  - pep-och-essa-b2beudatastoresrvc-pol.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    route:
+    - destination:
+        host: pep-och-essa-b2beudatastoresrvc-pol.pep-eiap-och-edt-prod.svc.cluster.local
+        port:
+          number: 8080

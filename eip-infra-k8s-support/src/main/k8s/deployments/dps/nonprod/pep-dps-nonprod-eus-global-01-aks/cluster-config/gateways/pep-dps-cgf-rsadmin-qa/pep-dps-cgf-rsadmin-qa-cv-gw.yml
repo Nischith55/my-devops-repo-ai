@@ -1,0 +1,90 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-rsadmin-qa-cv-gw
+  namespace: pep-dps-cgf-rsadmin-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-rsadmin-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-rsadmin-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-rsadmin-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - receipt-scanning-admin-service.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui-argocd.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-rsadmin-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-rsadmin-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - receipt-scanning-admin-service.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui-argocd.pep-dps-nonprod-eus-global-01-aks.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - receipt-scanning-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - receiptscanning-admin.qa.mypepsico.com
+    name: pep-dps-cgf-rsadmin-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-rsadmin-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - receiptscanning-admin.qa.mypepsico.com
+    name: pep-dps-cgf-receiptscanning-admin-qa-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-receiptscanning-admin-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-receiptscanning-admin-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-infratools-springcloudk8s-rb
+  namespace: arize-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-infratools-springcloudk8s-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: arize-operator-sa
+  namespace: arize-operator

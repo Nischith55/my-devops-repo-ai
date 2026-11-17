@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-pgt-preprod
+  labels:
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    project: pgt
+    sector: pfna
+    team: pfna-pgt

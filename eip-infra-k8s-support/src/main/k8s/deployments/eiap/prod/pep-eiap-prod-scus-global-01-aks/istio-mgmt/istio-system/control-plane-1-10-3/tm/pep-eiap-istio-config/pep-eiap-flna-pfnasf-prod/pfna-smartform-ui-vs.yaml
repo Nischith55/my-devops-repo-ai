@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pfna-smartform-ui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pfna-smartform-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - pfna-smartform.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pfna-smartform-ui.pep-eiap-flna-pfnasf-prod.svc.cluster.local
+        port:
+          number: 3000

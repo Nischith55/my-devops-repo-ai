@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: access-bridge-gwc-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for access-bridge-gwc-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/access-bridge-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-europe-accessbr-dev
+      - name: pep-eiap-nonprod-gwc-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: access-bridge-gwc-dev-admin
+        description: Admin privileges to access-bridge-gwc-dev
+        policies:
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-admin, applications, *, access-bridge-gwc-dev/*, allow
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-admin, repositories, *, access-bridge-gwc-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: access-bridge-gwc-dev-user
+        description: Read-only privileges to access-bridge-gwc-dev
+        policies:
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-user, applications, get, access-bridge-gwc-dev/*, allow
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-user, applications, sync, access-bridge-gwc-dev/*, allow
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-user, repositories, get, access-bridge-gwc-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:access-bridge-gwc-dev:access-bridge-gwc-dev-user, applications, action/apps/Deployment/restart, access-bridge-gwc-dev/*, allow
+        groups:
+        - "Team.Support.EUROPE.NonProd.accessbr"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-dss-fmcs-cep
+  name: pep-dss-fmcs-cep-vs
+  namespace: pep-dps-cgf-fmcs-prod
+spec:
+  gateways:
+  - pep-dps-cgf-fmcs-prod/pep-dps-cgf-fmcs-prod-cv-gw
+  hosts:
+  - pep-dss-fmcs-cep.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dss-fmcs-cep.pep-dps-cgf-fmcs-prod.svc.cluster.local
+        port:
+          number: 80

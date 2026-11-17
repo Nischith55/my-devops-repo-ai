@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: d99c04b9-5fc6-48c7-91b5-db8a9981f8ba
+  name: pep-cmp-cmp-testqjfr-dev-sa
+  namespace: pep-cmp-cmp-testqjfr-dev

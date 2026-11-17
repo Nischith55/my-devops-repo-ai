@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-df-pfna-order-processing-api
+  name: pep-eip-df-pfna-order-processing-api-vs
+  namespace: pep-eiap-cgf-scaop-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-scaop-dev/pep-eiap-cgf-scaop-dev-cv-gw
+  hosts:
+  - pep-eip-df-pfna-order-processing-api.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-eiap-df-pfna-order-processing-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://chat.pepsico-staging.onereach.ai
+      - exact: https://apim-na.dev.mypepsico.com/it/scas/v1/orders/
+      - exact: https://api-na.dev.mypepsico.com/it/scas/v1/orders/
+      exposeHeaders:
+      - x-total-count
+      - x-source
+    match:
+    - uri:
+        prefix: /orders
+    route:
+    - destination:
+        host: pep-eip-df-pfna-order-processing-api.pep-eiap-cgf-scaop-dev.svc.cluster.local
+        port:
+          number: 80

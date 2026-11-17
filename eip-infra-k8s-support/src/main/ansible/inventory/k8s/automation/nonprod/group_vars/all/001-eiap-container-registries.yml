@@ -1,0 +1,7 @@
+######### Added recently nonprod--automation #########
+
+---
+# EIAP Container Registries
+# The following would need to set for each environment.          
+eiap_env_common_acr: "{{ eiap_nonprod_common_acr}}"          
+######### Added recently nonprod--automation #########

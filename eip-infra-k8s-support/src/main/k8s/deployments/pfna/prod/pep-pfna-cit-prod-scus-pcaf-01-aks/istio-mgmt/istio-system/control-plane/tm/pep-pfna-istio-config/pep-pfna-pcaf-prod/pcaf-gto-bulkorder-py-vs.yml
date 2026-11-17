@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-gto-bulkorder-py-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-gto-bulkorder-py.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pfna/gto/gobulk/v1
+    route:
+    - destination:
+        host: pcaf-gto-bulkorder-py.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080

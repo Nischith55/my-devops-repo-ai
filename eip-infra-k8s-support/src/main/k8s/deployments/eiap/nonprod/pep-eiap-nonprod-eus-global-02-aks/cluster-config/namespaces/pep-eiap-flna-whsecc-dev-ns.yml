@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-whsecc-dev
+  labels:
+    env-nonprod: "true"
+    project: whsecc
+    sector: flna
+    team: flna-whsecc
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pwm-pickworkmanagernon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: c9de00bddb3e8c10c2b5f381399619ca
+    pep-cmdb-app-service-id: 9ba0a13047e6151052293238436d430d
+    pep-environment: Development
+    

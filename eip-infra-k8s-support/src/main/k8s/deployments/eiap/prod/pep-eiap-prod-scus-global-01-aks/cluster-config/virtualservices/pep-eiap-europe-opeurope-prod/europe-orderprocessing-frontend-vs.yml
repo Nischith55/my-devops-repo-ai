@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: europe-orderprocessing-frontend
+  name: europe-orderprocessing-frontend-vs
+  namespace: pep-eiap-europe-opeurope-prod
+spec:
+  gateways:
+  - pep-eiap-europe-opeurope-prod/pep-eiap-europe-opeurope-prod-cv-gw
+  hosts:
+  - europe-orderprocessing-frontend.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - opeur.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: europe-orderprocessing-frontend.pep-eiap-europe-opeurope-prod.svc.cluster.local
+        port:
+          number: 8080

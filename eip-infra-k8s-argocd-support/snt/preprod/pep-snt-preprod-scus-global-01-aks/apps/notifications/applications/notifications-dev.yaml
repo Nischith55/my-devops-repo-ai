@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: notifications-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argo-configs
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+    targetRevision: develop
+  - repoURL: pepnonprodsntacr.azurecr.io/helm
+    targetRevision: 0.2.2
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: notifications-dev
+      valueFiles:
+      - $values/dev/pep-snt-nonprod-eus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepnonprodsntacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.1.29
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-snt-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'notifications-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/notifications-argocd-configs
+              repoName: notifications-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications: 
+              teamsChannel: argo-notification

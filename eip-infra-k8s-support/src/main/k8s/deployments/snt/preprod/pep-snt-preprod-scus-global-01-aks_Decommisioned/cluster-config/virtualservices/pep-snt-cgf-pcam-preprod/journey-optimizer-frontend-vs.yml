@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"journey-optimizer-frontend-vs","namespace":"pep-snt-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["journey-optimizer-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com","journey-optimizer.preprod.mypepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"journey-optimizer-frontend.pep-snt-cgf-pcam-preprod.svc.cluster.local","port":{"number":3000}}}]}]}}
+  labels:
+    app: pep-pcam-frontend
+  name: journey-optimizer-frontend-vs
+  namespace: pep-snt-cgf-pcam-preprod
+spec:
+  gateways:
+  - pep-snt-cgf-pcam-preprod/pep-snt-cgf-pcam-preprod-cv-gw
+  hosts:
+  - journey-optimizer-frontend.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - journey-optimizer.preprod.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: journey-optimizer-frontend.pep-snt-cgf-pcam-preprod.svc.cluster.local
+        port:
+          number: 3000

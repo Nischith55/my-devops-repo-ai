@@ -1,0 +1,21 @@
+---
+# ##
+# 05/2021
+# - Global Variable Naming Convention
+#   [<resc_name>_<resc_abbrev>_cfg].replace('-', '_')
+#     - resc_name: name of resource with '-' replaced with underscore
+#     - resc_abbrev: see the 00-k8s-api-spec key
+# ##
+
+pep_eiap_devsecops_rb_cfg:
+  name: pep-eiap-devsecops-rb
+  roleRef:
+    name: &role_ref_name001 pep-eiap-devsecops-clusterrole
+    kind: &role_ref_kind001 ClusterRole
+    apiGroup: rbac.authorization.k8s.io
+
+  # TODO: Below is deprecated, please remove after migration to new model
+  kind: RoleBinding
+  role: *role_ref_name001 
+  role_kind: *role_ref_kind001
+

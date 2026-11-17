@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_test_test_dev:
+  
+  name: pep-pfna-test-test-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: test-test
+    sector: test
+    project: test
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalcartsamericasnon-prod
+    pep-cmdb-app-service-id: "b57263dd4751d61c2d960d05f16d43dd"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-test-test-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['test_test'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-test-test-dev-sa-token
+    namespace: pep-pfna-test-test-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-test-test-dev-sa"

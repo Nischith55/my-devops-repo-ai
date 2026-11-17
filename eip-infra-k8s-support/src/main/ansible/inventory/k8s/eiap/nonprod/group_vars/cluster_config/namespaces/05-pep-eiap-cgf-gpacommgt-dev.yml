@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_cgf_gpacommgt_dev:
+  
+  name: pep-eiap-cgf-gpacommgt-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-gpacommgt
+    sector: cgf
+    project: gpacommgt
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-gpacommgt-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_gpacommgt'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"

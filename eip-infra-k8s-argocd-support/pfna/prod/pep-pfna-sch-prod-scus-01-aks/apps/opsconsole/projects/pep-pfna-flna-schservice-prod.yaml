@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: opsconsole-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app   
+spec:
+  description: Project for opsconsole-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+  - peppfnaschprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-flna-schservice-prod
+    server: https://kubernetes.default.svc 
+  - name: pep-pfna-sch-prod-scus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc 
+  roles:
+  - name: opsconsole-prod-admin
+    description: Admin privileges to opsconsole-prod
+    policies:
+    - p, proj:opsconsole-prod:opsconsole-prod-admin, applications, *, opsconsole-prod/*, allow
+    - p, proj:opsconsole-prod:opsconsole-prod-admin, repositories, *, opsconsole-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+ 
+  - name: opsconsole-prod-user
+    description: Read-only privileges to opsconsole-prod
+    policies:
+    - p, proj:opsconsole-prod:opsconsole-prod-user, applications, get, opsconsole-prod/*, allow
+    - p, proj:opsconsole-prod:opsconsole-prod-user, applications, sync, opsconsole-prod/*, allow
+    - p, proj:opsconsole-prod:opsconsole-prod-user, repositories, get, opsconsole-prod/*, allow
+    - p, proj:opsconsole-prod:opsconsole-prod-user, applications, action/apps/Deployment/restart, opsconsole-prod/*, allow
+    groups:
+    - "Team.Support.PFNA.SCH.Reader"
+    - "Team.Support.EIAP.READ"

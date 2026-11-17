@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: nginx-vs
+  namespace: default
+spec:
+  gateways:
+  - default/default-cv-gw
+  hosts:
+  - nginx1.infra.gw01.aks02.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: nginx.default.svc.cluster.local
+        port:
+          number: 80

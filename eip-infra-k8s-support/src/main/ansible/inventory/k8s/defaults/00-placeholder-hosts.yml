@@ -1,0 +1,4 @@
+---
+# placeholder inventory file to mute warning, delete this file when real
+# hosts are placed in the folder
+all: {}

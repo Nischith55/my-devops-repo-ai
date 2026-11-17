@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eip-hhnext-filestore-vs
+  namespace: pep-eiap-flna-hhnext-preprod
+spec:
+  gateways:
+  - pep-eiap-flna-hhnext-preprod/pep-eiap-flna-hhnext-preprod-cv-gw
+  hosts:
+  - pep-eip-hhnext-filestore.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /azureblob/
+    route:
+    - destination:
+        host: filestore.pep-eiap-flna-hhnext-preprod.svc.cluster.local
+        port:
+          number: 80

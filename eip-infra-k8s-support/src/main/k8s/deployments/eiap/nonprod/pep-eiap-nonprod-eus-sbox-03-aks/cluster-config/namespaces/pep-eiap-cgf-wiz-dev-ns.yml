@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: bff568b3474eea50fbe192e2846d4350
+    pep-cmdb-bus-app-id: 48cc0b674760b9501253efdc416d43ac
+    pep-environment: Development
+    project: wiz
+    sector: cgf
+    servicename_aks: wiznon-prod
+    team: cgf-wiz
+  name: pep-eiap-cgf-wiz-dev

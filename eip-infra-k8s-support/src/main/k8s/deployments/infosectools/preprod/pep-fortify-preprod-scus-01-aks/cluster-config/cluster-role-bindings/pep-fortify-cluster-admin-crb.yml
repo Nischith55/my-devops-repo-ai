@@ -1,0 +1,36 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-07-15 10:02:38
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-fortify-cluster-admin-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.K8S.Admin
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.Support.EIAP.Admins
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-fortify-ops-admin
+    name: pep-fortify-ops-admin-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 788b1aee-1901-42ae-ac14-c242cbd89cc7
+    name: mramkish@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # 3803c79f-6f0b-4744-8ca8-dedff915ebac
+    name: sdeepika@pepsico.com
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-infosectools-fortify-preprod
+    name: pep-infosectools-fortify-preprod-sa

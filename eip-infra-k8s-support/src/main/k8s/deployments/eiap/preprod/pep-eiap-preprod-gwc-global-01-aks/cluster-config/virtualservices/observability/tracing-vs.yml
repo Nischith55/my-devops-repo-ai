@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: jaeger
+  name: tracing-vs
+  namespace: observability
+spec:
+  gateways:
+  - observability/observability-cv-gw
+  hosts:
+  - pep-eiap-jaegertracing.global.gw01.aks01.gwc.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    name: tracing-v1-route
+    route:
+    - destination:
+        host: jaeger-backend-query.observability.svc.cluster.local
+        port:
+          number: 16686

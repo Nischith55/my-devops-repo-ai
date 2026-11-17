@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-eqplus-fulfillment-kdco-vs
+  namespace: pep-pfna-pcaf-preprod
+  labels:
+      app: pcaf-eqplus-fulfillment
+spec:
+  hosts:
+  - pcaf-eqplus-fulfillment.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-eqplus-fulfillment.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 80
+  

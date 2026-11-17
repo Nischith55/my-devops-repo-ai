@@ -1,0 +1,8 @@
+####### BEGIN Added recently --pep-eiap-nonprod-eus-iot-06-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_eiap_pfna_xcontamination_dev
+
+####### END Added recently --pep-eiap-nonprod-eus-iot-06-aks######

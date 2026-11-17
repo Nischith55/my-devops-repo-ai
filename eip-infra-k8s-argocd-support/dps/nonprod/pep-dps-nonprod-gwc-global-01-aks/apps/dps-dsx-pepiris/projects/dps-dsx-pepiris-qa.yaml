@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dps-dsx-pepiris-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for dps-dsx-pepiris-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pepiris-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-optmereu-qa
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dps-dsx-pepiris-qa-admin
+    description: Admin privileges to dps-dsx-pepiris-qa
+    policies:
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-admin, applications, *, dps-dsx-pepiris-qa/*, allow
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-admin, applications, get, argocd/*, allow
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-admin, repositories, *, dps-dsx-pepiris-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dps-dsx-pepiris-qa-user
+    description: Read-only privileges to dps-dsx-pepiris-qa
+    policies:
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-user, applications, get, dps-dsx-pepiris-qa/*, allow
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-user, applications, sync, dps-dsx-pepiris-qa/*, allow
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-user, repositories, get, dps-dsx-pepiris-qa/*, allow
+    - p, proj:dps-dsx-pepiris-qa:dps-dsx-pepiris-qa-user, applications, action/apps/Deployment/restart, dps-dsx-pepiris-qa/*, allow
+    groups:
+    - "Team.App.DSX.OptimalMerchandizing.Admins"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

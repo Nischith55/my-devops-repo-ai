@@ -1,0 +1,47 @@
+---
+# ##
+# Additional directory paths there are based on certain variables that are
+# defined.
+# ##
+
+cluster_name: "{{ cluster_name_ovrd | default(inventory_hostname) }}"
+
+# variable where all cluster-configs deployment manifests go
+cluster_config_deploy_base_dir: |-
+  {{ 
+    ((k8s_deployments_base_dir, dept, env, cluster_name, 'cluster-config') 
+    | path_join) | expanduser | expandvars | realpath
+  }}
+# secrets should never be checked in!! for target
+cluster_config_secrets_deploy_base_dir: |-
+  {{ 
+    ((k8s_deployments_base_dir, dept, env, cluster_name, 'cluster-config', 'service-accounts') 
+    | path_join) | expandvars | expanduser | realpath
+  }}
+# variable where all istio configs deployment manifests go
+istio_mgmt_deploy_base_dir: |-
+  {{ 
+    ((k8s_deployments_base_dir, dept, env, cluster_name, 'istio-management') 
+    | path_join) | expandvars | expanduser | realpath
+  }}
+# variable where all add-ons deployment manifests go
+add_ons_deploy_base_dir: |-
+  {{ 
+    ((k8s_deployments_base_dir, dept, env, cluster_name, 'add-ons') 
+    | path_join) | expandvars | expanduser | realpath
+  }}
+
+# variable where all add-ons deployment manifests go
+apps_deploy_base_dir: |-
+  {{ 
+    ((k8s_deployments_base_dir, dept, env, cluster_name, 'apps') 
+    | path_join) | expandvars | expanduser | realpath
+  }}
+
+# host inventory directory
+host_inventory_dir: |-
+  {{ 
+    ((inventory_dir, 'host_vars', cluster_name) | path_join)
+    | expandvars | expanduser | realpath
+  }}
+

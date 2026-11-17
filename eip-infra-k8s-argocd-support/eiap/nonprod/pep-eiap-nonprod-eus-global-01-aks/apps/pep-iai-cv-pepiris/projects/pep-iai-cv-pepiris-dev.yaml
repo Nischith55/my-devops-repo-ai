@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-iai-cv-pepiris-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-iai-cv-pepiris-dev  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs-app
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-global-iai-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pep-iai-cv-pepiris-dev-admin
+        description: Admin privileges to pep-iai-cv-pepiris-dev
+        policies:
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-admin, applications, *, pep-iai-cv-pepiris-dev/*, allow
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-admin, repositories, *, pep-iai-cv-pepiris-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-iai-cv-pepiris-dev-user
+        description: Read-only privileges to pep-iai-cv-pepiris-dev
+        policies:
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-user, applications, get, pep-iai-cv-pepiris-dev/*, allow
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-user, applications, sync, pep-iai-cv-pepiris-dev/*, allow
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-user, repositories, get, pep-iai-cv-pepiris-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pep-iai-cv-pepiris-dev:pep-iai-cv-pepiris-dev-user, applications, action/apps/Deployment/restart, pep-iai-cv-pepiris-dev/*, allow
+        groups:
+        - "Team.Support.PEPIRiS.Devops"
+        - "Team.Support.EIAP.READ"
+    

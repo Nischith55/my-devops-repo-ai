@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: dlops-model-observability
+  name: ai-obs-observability-framework
+  namespace: pep-eiap-cgf-eedlops-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-eedlops-prod/pep-eiap-cgf-eedlops-prod-cv-gw
+  hosts:
+  - ai-obs-observability-framework.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - x-organization
+      - gpid
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      allowOrigins:
+      - exact: https://swaggerhub.mypepsico.com
+      - exact: https://swaggerhub.infratools.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+      - gpid  
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dlops-model-observability.pep-eiap-cgf-eedlops-prod.svc.cluster.local
+        port:
+          number: 8000

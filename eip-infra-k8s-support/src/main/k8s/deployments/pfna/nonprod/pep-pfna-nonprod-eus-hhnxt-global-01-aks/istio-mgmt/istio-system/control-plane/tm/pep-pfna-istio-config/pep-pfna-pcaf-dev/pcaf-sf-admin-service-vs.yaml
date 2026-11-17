@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-sf-admin-service-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pcaf-sf-admin-service.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /sfa-api
+    route:
+    - destination:
+        host: pcaf-sf-admin-service.pep-pfna-pcaf-dev.svc.cluster.local
+        port: 
+          number: 80 

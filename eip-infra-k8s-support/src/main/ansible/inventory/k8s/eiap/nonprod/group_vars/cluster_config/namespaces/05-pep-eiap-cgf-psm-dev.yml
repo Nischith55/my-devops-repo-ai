@@ -1,0 +1,35 @@
+---
+ns_pep_eiap_cgf_psm_dev:
+  
+  name: pep-eiap-cgf-psm-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-psm
+    sector: cgf
+    project: psm
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-psm-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_psm'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-psm-dev-sa-token
+    namespace: pep-eiap-cgf-psm-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-psm-dev-sa"

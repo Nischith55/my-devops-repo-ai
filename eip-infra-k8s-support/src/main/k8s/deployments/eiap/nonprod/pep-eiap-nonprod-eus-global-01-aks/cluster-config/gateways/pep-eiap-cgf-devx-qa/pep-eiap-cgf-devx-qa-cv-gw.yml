@@ -1,0 +1,118 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-devx-qa-cv-gw
+  namespace: pep-eiap-cgf-devx-qa
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-cgf-devx-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-devx-qa-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-devx-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-eiap-cgf-devx-qa-cv.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-devx-daily-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-rbac-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-launchpad-ui-devxqa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-notification-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-ai-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-home-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-cloud-governance-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-devx-qa-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-devx-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - devx.qa.mypepsico.com
+    - pep-eiap-cgf-devx-qa-cv.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-devx-daily-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-rbac-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-launchpad-ui-devxqa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-notification-service-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-ai-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-home-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-cloud-governance-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - devx-cgl.qa.mypepsico.com
+    name: pep-eiap-cgf-devx-qa-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-devx-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - devx.qa.mypepsico.com
+    name: pep-eiap-cgf-devx-qa-cv-gw-https-1-443
+    port:
+      name: https-pep-eiap-cgf-devx-qa-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-cgf-devx-qa-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - devx-cgl.qa.mypepsico.com
+    name: pep-eiap-cgf-devx-qa-cv-gw-4-https-443
+    port:
+      name: pep-eiap-cgf-devx-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: devx-cgl.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

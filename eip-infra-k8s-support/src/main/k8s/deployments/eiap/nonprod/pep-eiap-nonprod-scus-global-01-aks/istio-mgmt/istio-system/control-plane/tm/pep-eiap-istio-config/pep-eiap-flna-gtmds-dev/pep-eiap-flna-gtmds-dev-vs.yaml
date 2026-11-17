@@ -1,0 +1,236 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-flna-gtmds-dev-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-flna-gtmds-dev.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/accountgroup
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-accountgroup-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/stp/admin
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-adminservice-dsld-stp.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/msa/blueprint
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-blueprintservice-dsld-msa.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/chainrestriction
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-chainrestricionservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/chain
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-chainservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/xpc/cmaequipment
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-cmaequipmentservice-dsld-xpc.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/xpc/cma
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-cmaservice-dsld-xpc.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/common
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-commonservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/content
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-contentservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/customersearch
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-customersearchservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/customer
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-customerservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/customer
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-customerservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/employee
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-employeeservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/flavor
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-flavorservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/shared
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-gtmsharedservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/iri
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-iriservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/msa/layout
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-layoutservice-dsld-msa.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/promotionalevent
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-promoeventservice-dsld.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/xpc/report
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-reportservice-dsld-xpc.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/storecheckin
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-storecheckinservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/store
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-storeservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/sfod/training
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-trainingservice-dsld-sfod.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/xpc/user
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-userservice-dsld-xpc.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/txl/vehicle
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-vehicleservice-dsld-txl.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/dsld/txl/workorder
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-workorderservice-dsld-txl.pep-eiap-flna-gtmds-dev.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,214 @@
+githubConfigUrl: "https://github.com/Global-SnT"
+
+githubConfigSecret: arc-github-app
+
+runnerScaleSetName: "dps-nonprod-gwc-global-01-arc"
+runnerGroup: dps-aks-runners-group
+
+minRunners: 0
+maxRunners: 10
+
+controllerServiceAccount:
+  name: pep-dps-buildagent
+  namespace: pep-dps-global-devsecops-dev
+
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "managed-csi"
+    resources:
+      requests:
+        storage: 10Gi
+
+template:
+  spec:
+    serviceAccountName: pep-dps-buildagent
+    securityContext:
+      fsGroup: 1000
+    nodeSelector:
+      kubernetes.io/os: linux
+      balance-group: BuildAgentPools
+    tolerations:
+      - key: "BuildAgentPool"
+        operator: "Exists"
+        effect: "NoSchedule"
+    containers:
+      - name: runner
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/github-runner:20260814.4
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+            value: "false"
+
+          # --- Azure AD service principal (ported from the KEDA ScaledJob) ---
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: AAD-SERVICE-PRINCIPAL-CLIENT-ID
+          - name: AAD_SERVICE_PRINCIPAL_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: AAD-SERVICE-PRINCIPAL-CLIENT-SECRET
+
+          - name: EIAP_SVC_DEVOPS
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: svceipazdevops
+
+          # --- ACR credentials (ported from the KEDA ScaledJob) ---
+          - name: pepeiapnonprodcommonacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodcommonacr-username
+          - name: pepeiapnonprodcommonacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodcommonacr-password
+
+          - name: pepeiapnonprodglobalcommonacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodglobalcommonacr-username
+          - name: pepeiapnonprodglobalcommonacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepeiapnonprodglobalcommonacr-password
+
+          - name: peppfnaschnonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peppfnaschnonprodacr-username
+          - name: peppfnaschnonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peppfnaschnonprodacr-password
+
+          - name: peppfnanonprodhhnextacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peppfnanonprodhhnextacr-username
+          - name: peppfnanonprodhhnextacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peppfnanonprodhhnextacr-password
+
+          - name: osacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: osacr-username
+          - name: osacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: osacr-password
+
+          - name: pepdpsnonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepdpsnonprodacr-username
+          - name: pepdpsnonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepdpsnonprodacr-password
+
+          - name: pepnonprodsntacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepnonprodsntacr-username
+          - name: pepnonprodsntacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepnonprodsntacr-password
+
+          - name: pepsntnonproddsnotesacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepsntnonproddsnotesacr-username
+          - name: pepsntnonproddsnotesacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepsntnonproddsnotesacr-password
+
+          - name: pepcgfschnonprodgwcacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepcgfschnonprodgwcacr-username
+          - name: pepcgfschnonprodgwcacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepcgfschnonprodgwcacr-password
+
+          - name: pepljoygwcnonprodacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepljoygwcnonprodacr-username
+          - name: pepljoygwcnonprodacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: pepljoygwcnonprodacr-password
+
+          - name: peployaltyjoydevacr_username
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peployaltyjoydevacr-username
+          - name: peployaltyjoydevacr_password
+            valueFrom:
+              secretKeyRef:
+                name: pep-dps-svc-global-devsecops-acr-individual-creds
+                key: peployaltyjoydevacr-password
+        volumeMounts:
+          - name: work
+            mountPath: /azp/runners/_work
+          - name: azure-build-scratch
+            mountPath: /mnt/azure
+          - name: acr-secret
+            mountPath: "/home/neipd999/.docker"
+          - name: acr-cred-secret
+            mountPath: "/mnt/acr-creds"
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "4Gi"
+          limits:
+            cpu: "8000m"
+            memory: "16Gi"
+    volumes:
+      - name: azure-build-scratch
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops
+      - name: acr-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: acr-secretproviderclass
+      - name: acr-cred-secret
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: acr-cred-secretproviderclass

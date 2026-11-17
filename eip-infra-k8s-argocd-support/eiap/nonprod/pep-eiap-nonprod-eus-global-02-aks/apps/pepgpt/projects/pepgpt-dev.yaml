@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepgpt-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepgpt-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepgpt-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-pepgptrecon-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-pepgptlite-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-pepgpt-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-pepgptnv-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepgpt-dev-admin
+    description: Admin privileges to pepgpt-dev
+    policies:
+    - p, proj:pepgpt-dev:pepgpt-dev-admin, applications, *, pepgpt-dev/*, allow
+    - p, proj:pepgpt-dev:pepgpt-dev-admin, repositories, *, pepgpt-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepgpt-dev-user
+    description: Read-only privileges to pepgpt-dev
+    policies:
+    - p, proj:pepgpt-dev:pepgpt-dev-user, applications, get, pepgpt-dev/*, allow
+    - p, proj:pepgpt-dev:pepgpt-dev-user, applications, sync, pepgpt-dev/*, allow
+    - p, proj:pepgpt-dev:pepgpt-dev-user, repositories, get, pepgpt-dev/*, allow
+    - p, proj:pepgpt-dev:pepgpt-dev-user, applications, action/apps/Deployment/restart, pepgpt-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.App.Global.ChesterGPT"

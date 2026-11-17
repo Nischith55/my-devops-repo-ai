@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ldapfoldermgmt-ylsw-vs
+  namespace: pep-eiap-global-wsp-prod
+  labels:
+      app: ldapfoldermgmt
+spec:
+  hosts:
+  - pep-eiap-global-wsp-ldapfoldermgmt-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-wsp-prod/pep-eiap-global-wsp-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: ldapfoldermgmt.pep-eiap-global-wsp-prod.svc.cluster.local
+        port:
+          number: 80
+  

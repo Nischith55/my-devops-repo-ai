@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-apigee-global-infra
+    project: infra
+    sector: global
+    servicename_aks: apigee
+    team: global-apigee
+  name: pep-apigee-global-infra

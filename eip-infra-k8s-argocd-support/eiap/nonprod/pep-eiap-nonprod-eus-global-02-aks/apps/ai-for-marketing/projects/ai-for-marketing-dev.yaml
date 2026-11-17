@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: ai-for-marketing-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for ai-for-marketing-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/APAC_CTO_PEPGENX_PLATFORM_CONSUMER_DIGITAL_TWIN/_git/ai-for-marketing-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-cbrain-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: ai-for-marketing-dev-admin
+        description: Admin privileges to ai-for-marketing-dev
+        policies:
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-admin, applications, *, ai-for-marketing-dev/*, allow
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-admin, repositories, *, ai-for-marketing-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: ai-for-marketing-dev-user
+        description: Read-only privileges to ai-for-marketing-dev
+        policies:
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-user, applications, get, ai-for-marketing-dev/*, allow
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-user, applications, sync, ai-for-marketing-dev/*, allow
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-user, repositories, get, ai-for-marketing-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:ai-for-marketing-dev:ai-for-marketing-dev-user, applications, action/apps/Deployment/restart, ai-for-marketing-dev/*, allow
+        groups:
+        - "Team.Support.aisp.ConsumerBrain.Dev.Contributors"
+        - "Team.Support.EIAP.READ"
+    

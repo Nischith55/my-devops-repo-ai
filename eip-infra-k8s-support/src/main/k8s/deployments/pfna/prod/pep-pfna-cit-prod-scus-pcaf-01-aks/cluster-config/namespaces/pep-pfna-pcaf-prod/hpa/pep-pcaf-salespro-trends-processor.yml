@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1  
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pep-pcaf-salespro-trends-processor-hpa  # name of hpa object
+  namespace: pep-pfna-pcaf-prod  # namespace where the hpa is created
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 3  # define min replica count
+  scaleTargetRef:  # define the resource on which HPA should be applied
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pep-pcaf-salespro-trends-processor   # hpa is applied on this deployment
+  targetCPUUtilizationPercentage: 80 # target CPU utilization

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: prod
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-dps-global-devsecops-prod
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    project: infra
+    sector: global
+    servicename_aks: sharedaks-platform
+    team: global-dps
+  name: pep-dps-global-devsecops-prod

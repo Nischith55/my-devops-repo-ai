@@ -1,0 +1,91 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_pepconnnam_prod
+  - ns_pep_eiap_cgf_ainego_prod
+  - ns_pep_eiap_cgf_rndkmfw_prod
+  - ns_pep_eiap_cgf_nvingest_prod
+  - ns_pep_eiap_cgf_temporal_prod
+  - ns_pep_eiap_cgf_crewai_prod
+  - ns_pep_eiap_cgf_llamaparse_prod
+  - ns_pep_eiap_cgf_agfactory_prod
+  - ns_pep_eiap_cgf_pepgafs_prod
+  - ns_pep_eiap_cgf_aibiflna_prod
+  - ns_pep_eiap_cgf_uaemt_prod
+  - ns_pep_eiap_cgf_pepagm_prod
+  - ns_pep_eiap_latam_pickabox_prod
+  - ns_pep_eiap_cgf_spot_prod
+  - ns_pep_eiap_cgf_iamcentral_prod
+  - ns_pep_eiap_cgf_dwd_prod
+  - ns_pep_eiap_cgf_nsgtest_prod
+  - ns_pep_eiap_cgf_ckptgpt_prod
+  - ns_pep_eiap_cgf_pepgpt_prod
+  - ns_pep_eiap_flna_monday_prod
+  - ns_pep_eiap_pbna_senfsv_prod
+  - ns_pep_eiap_cgf_ckms_prod
+  - ns_pep_eiap_pbna_quikpick_prod
+  - ns_pep_eiap_pbna_pbnasckm_prod
+  - ns_pep_eiap_pbna_acpmaysvil_prod
+  - ns_pep_eiap_pbna_acpcollier_prod
+  - ns_pep_eiap_latam_iaipsr_prod
+  - ns_pep_eiap_europe_opeurope_prod
+  - ns_pep_eiap_pbna_acp_prod
+  - ns_pep_eiap_qfna_acp_prod
+  - ns_pep_eiap_cgf_eedlops_prod
+  - ns_pep_eiap_cgf_pepgenx_prod
+  - ns_pep_eiap_cgf_rmispecs_prod
+  - ns_pep_eiap_pbna_savvyform_prod
+  - ns_pep_eiap_cgf_monday_prod
+  - ns_pep_eiap_latam_pepiris_prod
+  - ns_pep_eiap_cgf_psm_prod
+  - ns_pep_eiap_cgf_cpefinops_prod
+  - ns_pep_eiap_cgf_cmebas_prod
+  - ns_pep_eiap_latam_lassot_prod
+  - ns_pep_eiap_pbna_cets_prod
+  - ns_pep_eiap_cgf_pricechan_prod
+  - ns_pep_eiap_amesa_paperless_prod
+  - ns_pep_eiap_cgf_duaas_prod
+  - ns_pep_eiap_cgf_iamservice_prod
+  - ns_pep_eiap_cgf_pogaks_prod
+  - ns_pep_eiap_cgf_snackstou_prod
+  - ns_pep_eiap_amesa_ksaeinvc_prod
+  - ns_pep_eiap_cgf_scards_prod
+  - ns_pep_eiap_cgf_scaop_prod
+  - ns_pep_eiap_cgf_gpacommgt_prod
+  - ns_pep_eiap_cgf_raproc_prod
+  - ns_pep_eiap_latam_idcard_prod
+  - ns_pep_eiap_latam_iaicv_prod
+  - ns_pep_eiap_cgf_labelright_prod
+  - ns_pep_eiap_cgf_gbsreport_prod
+  - ns_pep_eiap_pfna_onepep_prod
+  - ns_pep_eiap_pbna_svtbot_prod
+  - ns_pep_eiap_test_test1_prod
+  # EIAP admin infra ns
+  - ns_pep_eiap_global_infra
+  - ns_pep_eiap_global_wsp_prod
+  - ns_pep_eiap_pfna_e2eorder_prod
+  - ns_pep_eiap_cgf_pdm_prod
+  - ns_pep_eiap_global_eip_prod
+  - ns_pep_eiap_pbna_pwc_prod
+  - ns_pep_eiap_global_eipone_prod
+  - ns_pep_eiap_cgf_btb_prod
+  - ns_pep_eiap_pbna_pog_prod
+  - ns_pep_eiap_global_eiotp_prod
+  - ns_pep_eiap_flna_eiv_prod
+  - ns_pep_eiap_global_hcm_prod
+  - ns_pep_eiap_global_iaicv_plt_prod
+  - ns_pep_eiap_global_iaicv_uc_prod
+  - ns_pep_eiap_global_hrsev_prod
+  - ns_pep_eiap_gbs_hrjepc_prod
+
+  # ECK - operator -- default namespace
+  - ns_elastic_system
+  
+  # ECK managed -- cluster-01
+  - ns_pep_eiap_elastic_cluster_01
+  
+  
+  

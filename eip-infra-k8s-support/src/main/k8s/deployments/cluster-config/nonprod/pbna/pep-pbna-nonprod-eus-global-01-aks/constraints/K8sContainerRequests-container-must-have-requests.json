@@ -1,0 +1,75 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sContainerRequests",
+  "metadata": {
+    "annotations": {},
+    "labels": {
+      "app.kubernetes.io/instance": "opa-constraints-pep-pbna-nonprod-eus-global-01-aks-dev"
+    },
+    "name": "container-must-have-requests"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "cert-manager-system",
+        "reloader",
+        "policy-system",
+        "default",
+        "keda",
+        "local",
+        "gpu-operator",
+        "pep-pbna-ops-admin",
+        "falcon-kac",
+        "falcon-system",
+        "pep-pbna-global-infra-dev",
+        "pep-pbna-istio-config",
+        "pep-pbna-elastic-client-01",
+        "pep-pbna-elastic-client-02",
+        "pep-pbna-elastic-cluster-01",
+        "pep-pbna-elastic-cluster-02",
+        "pep-pbna-elastic-monitor-01",
+        "pep-pbna-global-devsecops-dev"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "scope": "*"
+    },
+    "parameters": {
+      "cpu": "1",
+      "exemptImages": [
+        "cyberark/secrets-provider-for-k8s*",
+        "docker.io/istio/*",
+        "docker.elastic.co/observability/*",
+        "appdynamics/*",
+        "docker.io/appdynamics/*"
+      ],
+      "memory": "2Gi"
+    }
+  }
+}

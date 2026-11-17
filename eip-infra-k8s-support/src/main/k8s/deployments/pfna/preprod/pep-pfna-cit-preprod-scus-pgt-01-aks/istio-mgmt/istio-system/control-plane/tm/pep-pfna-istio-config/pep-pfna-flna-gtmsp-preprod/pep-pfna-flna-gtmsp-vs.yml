@@ -1,0 +1,128 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-flna-gtmsp-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-flna-gtmsp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/admin
+    route:
+    - destination:
+        host: pep-pcaf-api-adminservice-sp-spm.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgtppa/ppaadminmodule
+    route:
+    - destination:
+        host: pep-pcaf-api-adminservice-sp-tgtppa.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/admin
+    route:
+    - destination:
+        host: pep-pcaf-api-adminservice-sp-zfm.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/aopgroupingadjustment
+    route:
+    - destination:
+        host: pep-pcaf-api-aopgroupingadjustmentservice-sp-zfm.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/common
+    route:
+    - destination:
+        host: pep-pcaf-api-commonservice-sp.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/forecast
+    route:
+    - destination:
+        host: pep-pcaf-api-forecastservice-sp-zfm.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/spmclient/plan
+    route:
+    - destination:
+        host: pep-pcaf-api-planningservice-sp-spmclient.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgt/plan
+    route:
+    - destination:
+        host: pep-pcaf-api-plannmoduleservice-sp-tgt.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgtppa/ppaadjustmentmodule
+    route:
+    - destination:
+        host: pep-pcaf-api-ppamoduleservice-sp-tgtppa.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgtppa/ppamodule
+    route:
+    - destination:
+        host: pep-pcaf-api-ppaservice-sp-tgtppa.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80 
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgt/reports
+    route:
+    - destination:
+        host: pep-pcaf-api-reportingservice-sp-tgt.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80  
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/zfm/zoneforecast
+    route:
+    - destination:
+        host: pep-pcaf-api-zoneforecastmodelservice-sp-zfm.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/edw/validation
+    route:
+    - destination:
+        host: pep-pcaf-api-validationservice-edw.pep-pfna-flna-gtmsp-preprod.svc.cluster.local
+        port: 
+          number: 80           

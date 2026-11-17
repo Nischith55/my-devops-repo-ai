@@ -1,0 +1,36 @@
+---
+ns_pep_eiap_cgf_cep_qa:
+  
+  name: pep-eiap-cgf-cep-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-cep
+    sector: cgf
+    project: cep
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-cep-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_cep'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-cep-qa-sa-token
+    namespace: pep-eiap-cgf-cep-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-cep-qa-sa"

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cmp-cmp-ri4anpro1-dev
+  labels:
+    env-nonprod: "true"
+    project: ri4anpro1
+    sector: cmp
+    team: cmp-ri4anpro1
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: cmp
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

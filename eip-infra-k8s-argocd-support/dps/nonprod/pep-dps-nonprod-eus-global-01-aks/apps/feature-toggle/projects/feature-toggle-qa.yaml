@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: feature-toggle-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for feature-toggle-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/feature-toggle-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-sntdps-toggle-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: feature-toggle-qa-admin
+    description: Admin privileges to feature-toggle-qa
+    policies:
+    - p, proj:feature-toggle-qa:feature-toggle-qa-admin, applications, *, feature-toggle-qa/*, allow
+    - p, proj:feature-toggle-qa:feature-toggle-qa-admin, applications, get, argocd/*, allow
+    - p, proj:feature-toggle-qa:feature-toggle-qa-admin, repositories, *, feature-toggle-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: feature-toggle-qa-user
+    description: Read-only privileges to feature-toggle-qa
+    policies:
+    - p, proj:feature-toggle-qa:feature-toggle-qa-user, applications, get, feature-toggle-qa/*, allow
+    - p, proj:feature-toggle-qa:feature-toggle-qa-user, applications, sync, feature-toggle-qa/*, allow
+    - p, proj:feature-toggle-qa:feature-toggle-qa-user, repositories, get, feature-toggle-qa/*, allow
+    - p, proj:feature-toggle-qa:feature-toggle-qa-user, applications, action/apps/Deployment/restart, feature-toggle-qa/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gcrtest-gcrargorepo-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for gcrtest-gcrargorepo-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/gcrtest-gcrargorepo-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: gcrtest-gcrargorepo-dev-admin
+    description: Admin privileges to gcrtest-gcrargorepo-dev
+    policies:
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-admin, applications, *, gcrtest-gcrargorepo-dev/*, allow
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-admin, repositories, *, gcrtest-gcrargorepo-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gcrtest-gcrargorepo-dev-user
+    description: Read-only privileges to gcrtest-gcrargorepo-dev
+    policies:
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-user, applications, get, gcrtest-gcrargorepo-dev/*, allow
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-user, applications, sync, gcrtest-gcrargorepo-dev/*, allow
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-user, repositories, get, gcrtest-gcrargorepo-dev/*, allow
+    - p, proj:gcrtest-gcrargorepo-dev:gcrtest-gcrargorepo-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ"

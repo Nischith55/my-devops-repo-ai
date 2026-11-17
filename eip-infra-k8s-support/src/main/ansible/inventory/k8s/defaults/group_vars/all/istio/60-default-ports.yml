@@ -1,0 +1,22 @@
+---
+# ##
+# Default Enabled Ports for istio ingress gateway.
+# ##
+
+istio_ingress_enabled_ports:
+
+  - name: http-80
+    protocol: http
+    number: 80
+    tls:
+      httpsRedirect: true
+
+  - name: http-443
+    protocol: https
+    number: 443
+    tls: "{{ istio_default_tls_settings }}"
+
+  # http2 cannot have tls settings
+  - name: http2-80
+    protocol: http2
+    number: 80

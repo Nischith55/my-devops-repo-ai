@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: d314bb0d-7a32-4226-879c-ff19715b3c42
+  name: pep-eiap-pfna-eugenie-dev-sa
+  namespace: pep-eiap-pfna-eugenie-dev

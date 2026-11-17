@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-dps-nginx-vs","namespace":"pep-dps-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-dps-nginx-curl.dps.gw01.aks01.sea.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-dps-nginx.pep-dps-global-infra-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+  labels:
+    app: pep-dps-nginx
+  name: pep-dps-nginx-vs
+  namespace: pep-dps-global-infra-prod
+spec:
+  gateways:
+  - pep-dps-global-infra-prod/pep-dps-global-infra-prod-cv-gw
+  hosts:
+  - pep-dps-nginx-curl.dps.gw01.aks01.sea.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dps-nginx.pep-dps-global-infra-prod.svc.cluster.local
+        port:
+          number: 8080

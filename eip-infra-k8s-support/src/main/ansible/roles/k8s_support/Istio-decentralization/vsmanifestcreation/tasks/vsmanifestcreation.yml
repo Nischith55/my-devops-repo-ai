@@ -1,0 +1,253 @@
+- name: set namespace of virtualservice 
+  set_fact:
+    ns_vs: "{{ item.metadata.namespace }}"
+    istio_ns: "pep-{{ department }}-istio-config"
+    vlabels: {}
+    vannotations: {}
+
+- debug: var=ns_vs 
+
+- name: block for istio namespace related virtual services.
+  block:
+  - debug: 
+      msg: "this is inside the istio-config namespace block."
+  - name: set virtualservice facts
+    set_fact:
+      vservice: "{{ item.metadata.name }}"
+      spec: "{{ item.spec }}"
+
+  - name: set labels when defined 
+    set_fact:
+      vlabels: "{{ item.metadata.labels }}"
+    when: item.metadata.labels is defined
+  - name: set labels when not defined 
+    set_fact:
+      vlabels: "{{ vlabels | default({ 'app': 'undefined'})}}"
+    when: item.metadata.labels is not defined
+
+  - name: set annotations when defined 
+    set_fact:
+      vannotations: "{{ item.metadata.annotations }}"
+    when: item.metadata.annotations is defined
+  - name: set annotations when not defined 
+    set_fact:
+      vannotations: "{{ vannotations | default({ 'createdby': 'istio-decentralization'})}}"
+    when: item.metadata.annotations is not defined
+
+  - debug: var=vservice 
+  - name: get namespace  with http
+    set_fact:
+      namespace: "{{ item.spec.http[-1].route[0].destination.host.split('.')[1] }}"
+      service_name: "{{ item.spec.http[-1].route[0].destination.host.split('.')[0] }}"
+    when: item.spec.http is defined
+
+  - name: get namespace  with tls
+    set_fact:
+      namespace: "{{ item.spec.tls[-1].route[0].destination.host.split('.')[1] }}"
+      service_name: "{{ item.spec.tls[-1].route[0].destination.host.split('.')[0] }}"
+    when: item.spec.tls is defined
+  
+  - name: block to check for namespace existence 
+    block:
+    - name: get service details 
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: service
+        name: "{{ service_name }}"
+        namespace: "{{ namespace }}"
+      register: svc_details
+    
+    # - debug: var=svc_details
+
+    - name: get app from selector 
+      set_fact:
+        app_value: "{{ svc_details.resources[0].spec.selector.app }}"
+      when: svc_details.resources[0].spec.selector.app is defined
+    
+    - name: get app from selector 
+      set_fact:
+        app_value: "undefined"
+      when: svc_details.resources[0].spec.selector.app is not defined
+    - debug: var=app_value
+    - name: creating the file 
+      copy:
+        dest: "{{ vservice }}-vs-temp.yml"
+        content: |
+          ---
+          apiVersion: networking.istio.io/v1beta1
+          kind: VirtualService
+          metadata: 
+            name: 
+            namespace:
+            labels:
+            annotations:
+          spec: 
+    - name: read the file content  
+      slurp:
+        src: "{{ vservice }}-vs-temp.yml"
+      register: yml_file_content
+
+    - name: decode the content 
+      set_fact: 
+        decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+    - name: update yml file  content 
+      ansible.utils.update_fact: 
+        updates: 
+          - path: decoded_yml.metadata.name
+            value: "{{ vservice }}"  
+          - path: decoded_yml.metadata.namespace
+            value: "{{ namespace }}"
+          - path: decoded_yml.spec
+            value: "{{ spec }}"
+          - path: decoded_yml.metadata.labels
+            value: "{{ vlabels }}"
+          - path: decoded_yml.metadata.labels.app
+            value: "{{ app_value }}"
+          - path: decoded_yml.metadata.annotations
+            value: "{{ vannotations }}"
+      register: decoded_yml_temp
+      
+    - name: update gateway name
+      ansible.utils.update_fact: 
+        updates: 
+          - path: decoded_yml_temp.decoded_yml.spec.gateways[0]
+            value: "{{ namespace }}/{{ namespace }}-cv-gw"  
+      register: decoded_yml_updated
+      
+    - name: ensures {{ namespace }} directory exists
+      file:
+        path: "{{ mypath }}/Artifacts/vs-manifests/{{ namespace }}"
+        state: directory 
+    - name: write the updated one to the file 
+      copy:
+        content: "{{ decoded_yml_updated.decoded_yml_temp.decoded_yml | to_nice_yaml(indent=2) }}"
+        dest: "{{ mypath }}/Artifacts/vs-manifests/{{ namespace }}/{{ vservice }}.yml"
+
+    - name: print manifest
+      debug:
+        var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/vs-manifests/{{ namespace }}/{{ vservice }}.yml')
+    when: namespace in full_ns_list
+  when: ns_vs == istio_ns
+  # rescue:
+  #   - debug:
+  #       msg: "Failed generating manifest for namespace {{ vservice }}. so skipping it."
+        
+- name: block for namespace related virtual services.
+  block:
+  - debug: 
+      msg: "this is inside the {{ ns_vs }} namespace block."
+  - name: set virtualservice facts
+    set_fact:
+      vservice: "{{ item.metadata.name }}"
+  - debug: var=vservice
+
+  - name: set labels when defined 
+    set_fact:
+      vlabels: "{{ item.metadata.labels }}"
+    when: item.metadata.labels is defined
+  - name: set labels when not defined 
+    set_fact:
+      vlabels: "{{ vlabels | default({ 'app': 'undefined'}) }}"
+    when: item.metadata.labels is not defined
+  
+  - name: set annotations when defined 
+    set_fact:
+      vannotations: "{{ item.metadata.annotations }}"
+    when: item.metadata.annotations is defined
+  - name: set annotations when not defined 
+    set_fact:
+      vannotations: "{{ vannotations | default({ 'createdby': 'istio-decentralization'})}}"
+    when: item.metadata.annotations is not defined
+
+  - name: get service name  with http
+    set_fact:
+      service_name: "{{ item.spec.http[-1].route[0].destination.host.split('.')[0] }}"
+    when: item.spec.http is defined
+
+  - name: get service name  with tls
+    set_fact:
+      service_name: "{{ item.spec.tls[-1].route[0].destination.host.split('.')[0] }}"
+    when: item.spec.tls is defined
+  
+  - name: get service details 
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: service
+      name: "{{ service_name }}"
+      namespace: "{{ ns_vs }}"
+    register: svc_details
+  
+  - debug: var=svc_details
+
+  - name: get app from selector 
+    set_fact:
+      app_value: "{{ svc_details.resources[0].spec.selector.app }}"
+    when: svc_details.resources[0].spec.selector.app is defined
+  
+  - name: get app from selector 
+    set_fact:
+      app_value: "undefined"
+    when: svc_details.resources[0].spec.selector.app is not defined
+  - debug: var=app_value
+  - name: creating the file 
+    copy:
+      dest: "{{ vservice }}-vs-temp.yml"
+      content: |
+        ---
+        apiVersion: networking.istio.io/v1beta1
+        kind: VirtualService
+        metadata: 
+          name:
+          namespace:
+          labels:
+          annotations:
+        spec:
+  - name: read the file content  
+    slurp:
+      src: "{{ vservice }}-vs-temp.yml"
+    register: yml_file_content
+
+  - name: decode the content 
+    set_fact: 
+      decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+  - name: update yml file  content 
+    ansible.utils.update_fact: 
+      updates: 
+        - path: decoded_yml.metadata.name
+          value: "{{ item.metadata.name }}" 
+        - path: decoded_yml.metadata.namespace
+          value: "{{ item.metadata.namespace }}"
+        - path: decoded_yml.spec
+          value: "{{ item.spec }}"
+        - path: decoded_yml.metadata.labels
+          value: "{{ vlabels }}"
+        - path: decoded_yml.metadata.labels.app
+          value: "{{ app_value }}"
+        - path: decoded_yml.metadata.annotations
+          value: "{{ vannotations }}"
+    register: decoded_yml_temp
+  - name: update gateway name
+    ansible.utils.update_fact: 
+      updates: 
+        - path: decoded_yml_temp.decoded_yml.spec.gateways[0]
+          value: "{{ ns_vs }}/{{ ns_vs }}-cv-gw"  
+    register: decoded_yml_updated
+  - name: ensures {{ ns_vs }} directory exists
+    file:
+      path: "{{ mypath }}/Artifacts/vs-manifests/{{ ns_vs }}"
+      state: directory 
+  - name: write the updated one to the file 
+    copy:
+      content: "{{ decoded_yml_updated.decoded_yml_temp.decoded_yml | to_nice_yaml(indent=2) }}"
+      dest: "{{ mypath }}/Artifacts/vs-manifests/{{ ns_vs }}/{{ vservice }}-patch.yml"
+
+  - name: print manifest
+    debug:
+      var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/vs-manifests/{{ ns_vs }}/{{ vservice }}-patch.yml')
+  when: ns_vs != istio_ns
+  # rescue:
+  #   - debug:
+  #       msg: "Failed generating manifest for namespace {{ vservice }}. so skipping it."
+      
+  

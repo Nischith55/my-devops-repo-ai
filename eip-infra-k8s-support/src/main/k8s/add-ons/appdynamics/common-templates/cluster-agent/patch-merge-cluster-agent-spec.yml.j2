@@ -1,0 +1,32 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Patch for ClusterAgent CRD spec. [note: using merge strategy]
+  INPUTS:
+    - params_tmpl:
+        target:
+        merge:
+          spec:
+            nodeSelector:
+            tolerations:
+          ...
+#}
+{% set _p = params_tmpl %}
+{% set _pt = _p['target'] %}
+{% set _pm = _p['merge'] %}
+{% set _pms = _pm['spec'] %}
+---
+# generated file please do not edit
+{# api group could be empty #}
+{% if ((_pt['group'] | default('')) | length) > 0 %}
+apiVersion: {{ _pt['group'] }}/{{ _pt['version'] }}
+{% else %}
+apiVersion: {{ _pt['version'] }}
+{% endif %}
+kind: {{ _pt['kind'] }}
+metadata:
+  name: {{ _pt['name'] }}
+  {% if _pt['namespace'] is defined %}
+  namespace: {{ _pt['namespace'] }}
+  {% endif %}
+spec:
+  {{ _pms | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}

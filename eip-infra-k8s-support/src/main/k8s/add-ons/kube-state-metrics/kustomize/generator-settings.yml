@@ -1,0 +1,115 @@
+---
+# ############################################################
+# This is mainly used to lookup variable names from inventory
+# ############################################################
+
+global_defaults:
+  namespace: monitoring
+  # Available collectors for kube-state-metrics.
+  # By default, all available resources are enabled, comment out to disable.
+  extra_vars:
+    ksm_resources:
+    - certificatesigningrequests
+    - configmaps
+    - cronjobs
+    - daemonsets
+    - deployments
+    - endpoints
+    - horizontalpodautoscalers
+    - ingresses
+    - jobs
+    - leases
+    - limitranges
+    - mutatingwebhookconfigurations
+    - namespaces
+    - networkpolicies
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    - poddisruptionbudgets
+    - pods
+    - replicasets
+    - replicationcontrollers
+    - resourcequotas
+    - secrets
+    - services
+    - statefulsets
+    - storageclasses
+    - validatingwebhookconfigurations
+    - volumeattachments
+    # - verticalpodautoscalers # not a default resource, see also: https://github.com/kubernetes/kube-state-metrics#enabling-verticalpodautoscalers
+    # Comma-separated list of additional Kubernetes label keys that will be used
+    # in the resource's labels metric. By default the metric contains only name
+    # and namespace labels.
+    # To include additional labels, provide a list of resource names in their
+    # plural form and Kubernetes label keys you would like to allow for them
+    # (Example: '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'.
+    # A single '*' can be provided per resource instead to allow any labels,
+    # but that has severe performance implications (Example: '=pods=[*]').
+    ksm_metric_labels_allow_list:
+    - namespaces=[envrionment]
+    - pods=[app,app.kubernetes.io/name,app.kubernetes.io/version]
+
+# IMPORTANT: Order is important, last ones override and list items replaced.
+override_vars:
+# This should be in inventory/default
+- kube_state_metrics_params
+# This should be in inventory/<environment>
+- kube_state_metrics_env_params
+# This should be in inventory/<environment>/host_vars/<cluster_name>
+- kube_state_metrics_host_params
+
+# --
+# Begin list  of instances of this application
+# --
+instances:
+
+- name: &inst_01_vers '2.1.1'
+  version: *inst_01_vers
+  # ##
+  # kustomize configuration
+  #   static: type(list)
+  #   external_commands: type(list)
+  # ##
+  kustomize_conf:
+
+    # ~~~
+    # All resources
+    # ~~~
+    resources:
+      # NOTE: only path resources accepted for static
+      static:
+      # base kustomize directory
+      - 2.1.1/base
+    # ~~~
+    # Image list
+    # ~~~
+    image_items: []
+    # ~~~
+    # All patches
+    # ~~~
+    patch_items:
+    - inline:
+        target:
+          kind: Deployment
+        patch:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            # IMPORTANT: required not used
+            name: not-used
+          spec:
+            template:
+              spec:
+                nodeSelector:
+                  kubernetes.azure.com/mode: system
+                  kubernetes.io/os: linux
+                tolerations:
+                - key: CriticalAddonsOnly
+                  operator: Exists
+                # update ksm containers
+                containers:
+                - name: kube-state-metrics
+                  args:
+                  - "--resources={{ ksm_resources | join(',') }}"
+                  - "--metric-labels-allowlist={{ ksm_metric_labels_allow_list | join(',') }}"

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: default-sa-token  # Naming convention followed is ServiceAccountName-token
+  namespace: pep-fortify-ops-admin      # Namespace where the service account is created
+  annotations:
+    kubernetes.io/service-account.name: "default" # Service Account name to map the token
+type: kubernetes.io/service-account-token  # Secret type should be thispep-latam-opsbridge-ops-admin

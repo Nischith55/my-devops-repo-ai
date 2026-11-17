@@ -1,0 +1,178 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-latam-btboms-qa-cv-gw
+  namespace: pep-dps-latam-btboms-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-latam-btboms-qa.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-latam-btboms-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-latam-btboms-qa-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-auto-order-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-orders-admin-ui-na-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-gt-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-gt-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-ordr-mgmt-na-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-latam-btboms-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-latam-btboms-qa-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - orders-b2b.qa.pepsico.com
+    - b2b-auto-order-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - orders-b2b-co-auto.qa.mypepsico.com
+    - orders-b2b-mx-auto.qa.mypepsico.com
+    - b2b-oms-admin-ui-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-admin-ui-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-orders-admin-ui-na-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - orders-b2b-na-auto.qa.pepsico.com
+    - b2b-oms-admin-ui-gt-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-oms-gt-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-co-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-mx-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-latam-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-checkout-domain-co-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - b2b-ordr-mgmt-na-auto.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-latam-btboms-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - orders-b2b.qa.pepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-latam-btboms-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-co-auto.qa.mypepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-latam-btboms-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-co-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-mx-auto.qa.mypepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-5-https-443
+    port:
+      name: pep-dps-latam-btboms-qa-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-mx-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - orders-b2b-na-auto.qa.pepsico.com
+    name: pep-dps-latam-btboms-qa-cv-gw-6-https-443
+    port:
+      name: pep-dps-latam-btboms-qa-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: orders-b2b-na-auto.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

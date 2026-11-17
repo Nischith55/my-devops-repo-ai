@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/created-by: Prasad_2022-08-29
+    app.kubernetes.io/managed-by: manual
+    crosscharge_aks: crosscharge
+    eck-managed: 'false'
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-infratools-elastic-client-01
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    servicename_aks: infratools
+  name: pep-infratools-elastic-client-01

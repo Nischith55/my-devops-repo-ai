@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 117d51304766151052293238436d4308
+    pep-cmdb-bus-app-id: e95ed977db7740106285d2984b96192e
+    pep-environment: QA
+    project: dtcjoyperf
+    sector: latam
+    servicename_aks: distributororderportalnon-prod
+    team: latam-dtcjoyperf
+  name: pep-eiap-latam-dtcjoyperf-qa

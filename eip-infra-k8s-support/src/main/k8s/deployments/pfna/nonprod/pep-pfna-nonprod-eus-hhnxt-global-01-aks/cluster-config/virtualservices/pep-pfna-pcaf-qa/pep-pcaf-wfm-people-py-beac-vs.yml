@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-wfm-people-py-beac-vs
+  namespace: pep-pfna-pcaf-qa
+  labels:
+      app: pep-pcaf-wfm-people-py
+spec:
+  hosts:
+  - pep-pcaf-wfm-people-py-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-wfm-people-py.pep-pfna-pcaf-qa.svc.cluster.local
+        port:
+          number: 8080
+  

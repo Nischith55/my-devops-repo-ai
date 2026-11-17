@@ -1,0 +1,25 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "VirtualserviceDenyDuplicate",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/VirtualserviceDenyDuplicate:default/virtualservicedenyduplicate"
+    },
+    "name": "virtualservicedenyduplicate"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            "networking.istio.io"
+          ],
+          "kinds": [
+            "VirtualService"
+          ]
+        }
+      ]
+    }
+  }
+}

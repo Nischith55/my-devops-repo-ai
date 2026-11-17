@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pfna-sch-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pfna-sch-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+      - pepcgfschprodsukacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-preprod-suk-01-aks
+        namespace: pep-cgf-test-test-preprod
+      - name: pep-cgf-sch-preprod-suk-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: pfna-sch-preprod-admin
+        description: Admin privileges to pfna-sch-preprod
+        policies:
+        - p, proj:pfna-sch-preprod:pfna-sch-preprod-admin, applications, *, pfna-sch-preprod/*, allow
+        - p, proj:pfna-sch-preprod:pfna-sch-preprod-admin, repositories, *, pfna-sch-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pfna-sch-preprod-user
+        description: Read-only privileges to pfna-sch-preprod
+        policies:
+        - p, proj:pfna-sch-preprod:pfna-sch-preprod-user, applications, get, pfna-sch-preprod/*, allow
+        - p, proj:pfna-sch-preprod:pfna-sch-preprod-user, applications, sync, pfna-sch-preprod/*, allow
+        - p, proj:pfna-sch-preprod:pfna-sch-preprod-user, repositories, get, pfna-sch-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.PFNA.SCH.Contributor"
+    

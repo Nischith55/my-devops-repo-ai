@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cgf-rnd-knowledge-management-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for cgf-rnd-knowledge-management-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_RnD_Knowledge_Management_RAG/_git/pep-cgf-rnd-knowledge-management-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-rndkmfw-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: cgf-rnd-knowledge-management-prod-admin
+        description: Admin privileges to cgf-rnd-knowledge-management-prod
+        policies:
+        - p, proj:cgf-rnd-knowledge-management-prod:cgf-rnd-knowledge-management-prod-admin, applications, *, cgf-rnd-knowledge-management-prod/*, allow
+        - p, proj:cgf-rnd-knowledge-management-prod:cgf-rnd-knowledge-management-prod-admin, repositories, *, cgf-rnd-knowledge-management-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cgf-rnd-knowledge-management-prod-user
+        description: Read-only privileges to cgf-rnd-knowledge-management-prod
+        policies:
+        - p, proj:cgf-rnd-knowledge-management-prod:cgf-rnd-knowledge-management-prod-user, applications, get, cgf-rnd-knowledge-management-prod/*, allow
+        - p, proj:cgf-rnd-knowledge-management-prod:cgf-rnd-knowledge-management-prod-user, applications, sync, cgf-rnd-knowledge-management-prod/*, allow
+        - p, proj:cgf-rnd-knowledge-management-prod:cgf-rnd-knowledge-management-prod-user, repositories, get, cgf-rnd-knowledge-management-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.App.CGFRnD.OilChemistry"
+        - "Team.Support.EIAP.READ"
+    

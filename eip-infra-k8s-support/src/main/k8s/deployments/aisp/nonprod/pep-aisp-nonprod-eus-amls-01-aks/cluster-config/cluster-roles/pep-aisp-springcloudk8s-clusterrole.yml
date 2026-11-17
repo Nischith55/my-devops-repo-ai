@@ -1,0 +1,19 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-aisp-springcloudk8s-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - pods
+    - jobs
+    - cronjobs
+    - endpoints
+    - services
+    verbs:
+    - get
+    - list
+    - watch

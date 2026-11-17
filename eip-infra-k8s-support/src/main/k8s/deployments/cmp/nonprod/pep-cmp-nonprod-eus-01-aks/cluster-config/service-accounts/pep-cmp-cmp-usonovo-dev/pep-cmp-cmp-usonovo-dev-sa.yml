@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c4c0905a-c080-4da0-bdbd-aaf2c304d8b5
+  name: pep-cmp-cmp-usonovo-dev-sa
+  namespace: pep-cmp-cmp-usonovo-dev

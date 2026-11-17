@@ -1,0 +1,575 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-latam-cep-preprod-cv-gw
+  namespace: pep-eiap-latam-cep-preprod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-latam-cep-preprod.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pepcepb05.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb03.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb04.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb07.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb01.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb02.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepcepb06.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ec.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-pe.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-mx-preprod2.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-co-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ar-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-na.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-do-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-pe-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ec-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-na-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-cl-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepcepb05.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.ar.preprod.pepsico.com
+    - pepcepb03.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.br.preprod.pepsico.com
+    - pepcepb04.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.mx.preprod.pepsico.com
+    - pepcepb07.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.cl.preprod.pepsico.com
+    - pepcepb01.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.co.preprod.pepsico.com
+    - pepcepb02.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.cep.do.preprod.pepsico.com
+    - pepcepb06.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin.ws.cep.mx.preprod.pepsico.com
+    - admin-cep-ec.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ec.preprod.pepsico.com
+    - admin-fd.ws.cep.mx.preprod.pepsico.com
+    - admin-cep-mx-preprod2.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-mx-ta.preprod.pepsico.com
+    - admin-cep-co-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-co-ta.preprod.pepsico.com
+    - admin-cep-ar-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ar-ta.preprod.pepsico.com
+    - admin-cep-pe.preprod.pepsico.com
+    - admin-cep-pe.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-na.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-na.preprod.pepsico.com
+    - admin-cep-do-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-do-ta.preprod.pepsico.com
+    - admin-cep-pe-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-pe-ta.preprod.pepsico.com
+    - admin-cep-ec-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-ec-ta.preprod.pepsico.com
+    - admin-cep-na-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-na-ta.preprod.pepsico.com
+    - admin-cep-cl-ta.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - admin-cep-cl-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-latam-cep-preprod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - admin.cep.br.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-1-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-br-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.mx.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-2-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-2-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-mx-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.co.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-3-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-co-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.do.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-4-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-do-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.ws.cep.mx.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-admin-ws-cep-mx-gw-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-admin-ws-cep-mx-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-ws-cep-mx-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.cl.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-admin-cep-cl-gw-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-admin-cep-cl-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-cl-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.ar.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-admin-cep-ar-gw-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-admin-cep-ar-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-ar-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.co.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-5-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-5-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-co-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.mx.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-6-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-6-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-mx-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.do.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-7-https-443
+    port:
+      name: https-pep-eiap-latam-cep-preprod-cv-gw-7-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-cep-do-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-pe.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-13-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-13-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-pe.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-ec.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-ec-cv-gw-14-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-ec-cv-gw-14-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-ec.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-fd.ws.cep.mx.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-15-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-15-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-preprod-admin-fd-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-mx-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-16-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-16-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-mx-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-co-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-17-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-17-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-co-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-ar-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-18-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-18-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-ar-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-na.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-19-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-19-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-na.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-do-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-20-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-20-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-do-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-pe-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-21-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-21-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-pe-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-ec-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-22-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-22-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-ec-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-na-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-23-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-23-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-na-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-cep-cl-ta.preprod.pepsico.com
+    name: pep-eiap-latam-cep-preprod-cv-gw-24-https-443
+    port:
+      name: pep-eiap-latam-cep-preprod-cv-gw-24-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: admin-cep-cl-ta.preprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pfna-pbna-esskjri3st2-dev
+  labels:
+    env-nonprod: "true"
+    project: esskjri3st2
+    sector: pbna
+    team: pbna-esskjri3st2
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: schpesintegratornon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-cmdb-app-service-id: ab4e9fc78c6243d0b54266e74c693ec7
+    pep-environment: Development
+    

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eip-amesa-mdt-converter-service
+  name: pep-eip-amesa-mdt-converter-service-vs
+  namespace: pep-eiap-global-services-dev
+spec:
+  gateways:
+  - pep-eiap-global-services-dev/pep-eiap-global-services-dev-cv-gw
+  hosts:
+  - pep-eip-amesa-mdt-converter-service.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-amesa-mdt-converter-service.pep-eiap-global-services-dev.svc.cluster.local
+        port:
+          number: 80

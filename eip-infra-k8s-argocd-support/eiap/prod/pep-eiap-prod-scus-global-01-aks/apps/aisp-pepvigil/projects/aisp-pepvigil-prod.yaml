@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: aisp-pepvigil-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for aisp-pepvigil-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PEPCTODPCEEDLOPS/_git/pep-aisp-pepvigil-mlworks-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-eedlops-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: aisp-pepvigil-prod-admin
+        description: Admin privileges to aisp-pepvigil-prod
+        policies:
+        - p, proj:aisp-pepvigil-prod:aisp-pepvigil-prod-admin, applications, *, aisp-pepvigil-prod/*, allow
+        - p, proj:aisp-pepvigil-prod:aisp-pepvigil-prod-admin, repositories, *, aisp-pepvigil-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: aisp-pepvigil-prod-user
+        description: Read-only privileges to aisp-pepvigil-prod
+        policies:
+        - p, proj:aisp-pepvigil-prod:aisp-pepvigil-prod-user, applications, get, aisp-pepvigil-prod/*, allow
+        - p, proj:aisp-pepvigil-prod:aisp-pepvigil-prod-user, applications, sync, aisp-pepvigil-prod/*, allow
+        - p, proj:aisp-pepvigil-prod:aisp-pepvigil-prod-user, repositories, get, aisp-pepvigil-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.support.EE.Azure.DLOPS"
+        - "Team.Support.EIAP.READ"
+    

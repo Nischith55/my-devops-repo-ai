@@ -1,0 +1,29 @@
+---
+ns_pep_eiap_flna_ipp_preprod:
+  
+  name: pep-eiap-flna-ipp-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-ipp
+    sector: flna
+    project: ipp
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-flna-ipp-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_ipp'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"

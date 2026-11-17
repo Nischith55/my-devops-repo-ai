@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: admin-portal-frontend-gh-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for admin-portal-frontend-gh-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/test123-team123-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-devx-test-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: admin-portal-frontend-gh-qa-admin
+    description: Admin privileges to admin-portal-frontend-gh-qa
+    policies:
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-admin, applications, *, admin-portal-frontend-gh-qa/*, allow
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-admin, repositories, *, admin-portal-frontend-gh-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: admin-portal-frontend-gh-qa-user
+    description: Read-only privileges to admin-portal-frontend-gh-qa
+    policies:
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-user, applications, get, admin-portal-frontend-gh-qa/*, allow
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-user, applications, sync, admin-portal-frontend-gh-qa/*, allow
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-user, repositories, get, admin-portal-frontend-gh-qa/*, allow
+    - p, proj:admin-portal-frontend-gh-qa:admin-portal-frontend-gh-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

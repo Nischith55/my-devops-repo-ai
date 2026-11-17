@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: iwms-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for SCH   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/IT_Supply_Chain_Data_and_Analytics_Program/_git/pfna-sch-iwms-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm   
+  destinations:  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-iwms-dev  
+    server: https://kubernetes.default.svc  
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+    server: https://kubernetes.default.svc    
+  roles:
+  - name: iwms-dev-admin
+    description: Admin privileges to iwms-dev
+    policies:
+    - p, proj:iwms-dev:iwms-dev-admin, applications, *, iwms-dev/*, allow
+    - p, proj:iwms-dev:iwms-dev-admin, repositories, *, iwms-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.Deployment.Approvers"
+
+  - name: iwms-dev-user
+    description: Read-only privileges to iwms-dev
+    policies:
+    - p, proj:iwms-dev:iwms-dev-user, applications, get, iwms-dev/*, allow
+    - p, proj:iwms-dev:iwms-dev-user, applications, sync, iwms-dev/*, allow
+    - p, proj:iwms-dev:iwms-dev-user, repositories, get, iwms-dev/*, allow
+    - p, proj:iwms-dev:iwms-dev-user, applications, action/apps/Deployment/restart, iwms-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.PFNA.WHAutomation.Developer"
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.PFNA.whseas.Developer"

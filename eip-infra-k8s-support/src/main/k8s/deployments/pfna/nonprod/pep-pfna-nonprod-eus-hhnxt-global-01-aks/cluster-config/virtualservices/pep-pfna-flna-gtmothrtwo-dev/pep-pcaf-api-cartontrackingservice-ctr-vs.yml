@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pcaf-api-cartontrackingservice-ctr
+  name: pep-pcaf-api-cartontrackingservice-ctr-vs
+  namespace: pep-pfna-flna-gtmothrtwo-dev
+spec:
+  gateways:
+  - pep-pfna-flna-gtmothrtwo-dev/pep-pfna-flna-gtmothrtwo-dev-cv-gw
+  hosts:
+  - pep-pcaf-api-cartontrackingservice-ctr.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/ctr/tracking/
+    route:
+    - destination:
+        host: pep-pcaf-api-cartontrackingservice-ctr.pep-pfna-flna-gtmothrtwo-dev.svc.cluster.local
+        port:
+          number: 80

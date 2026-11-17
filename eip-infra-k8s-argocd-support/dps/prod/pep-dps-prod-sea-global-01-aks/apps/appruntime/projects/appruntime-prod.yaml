@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: appruntime-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app     
+spec:
+  description: Project for appruntime-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/appruntime-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-sea-global-01-aks
+    namespace: pep-dps-cgf-apprt-prod
+  - name: pep-dps-prod-sea-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: appruntime-prod-admin
+    description: Admin privileges to appruntime-prod
+    policies:
+    - p, proj:appruntime-prod:appruntime-prod-admin, applications, *, appruntime-prod/*, allow
+    - p, proj:appruntime-prod:appruntime-prod-admin, applications, get, argocd/*, allow
+    - p, proj:appruntime-prod:appruntime-prod-admin, repositories, *, appruntime-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: appruntime-prod-user
+    description: Read-only privileges to appruntime-prod
+    policies:
+    - p, proj:appruntime-prod:appruntime-prod-user, applications, get, appruntime-prod/*, allow
+    - p, proj:appruntime-prod:appruntime-prod-user, applications, sync, appruntime-prod/*, allow
+    - p, proj:appruntime-prod:appruntime-prod-user, repositories, get, appruntime-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"

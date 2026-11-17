@@ -1,0 +1,40 @@
+trigger: none
+
+parameters:
+- name: env
+  displayName: 'env'
+  type: string
+
+- name: cluster
+  displayName: 'cluster'
+  type: string
+
+variables:
+  - group: repo_access_token
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - name: env
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: prod
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+      value: preprod
+    ${{ else }}:
+      value: nonprod
+  - name: env_convert
+    value: $[upper(variables['env'])]
+
+  - name: agent_pool
+    value: pep-eiap-preprod-scus-infra-02-aks-agents
+
+stages:
+  - stage: get_cred
+    displayName: get_cred
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: get_cred
+      displayName: get_cred
+      steps:
+      - template: templates/set_config.yml
+        parameters:
+          cluster: ${{ parameters.cluster }}

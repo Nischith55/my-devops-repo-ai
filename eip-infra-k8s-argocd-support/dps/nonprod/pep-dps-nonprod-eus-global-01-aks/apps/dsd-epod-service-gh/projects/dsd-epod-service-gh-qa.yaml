@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsd-epod-service-gh-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dsd-epod-service-gh-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/test123-team123-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-devx-test-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsd-epod-service-gh-qa-admin
+    description: Admin privileges to dsd-epod-service-gh-qa
+    policies:
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-admin, applications, *, dsd-epod-service-gh-qa/*, allow
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-admin, repositories, *, dsd-epod-service-gh-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dsd-epod-service-gh-qa-user
+    description: Read-only privileges to dsd-epod-service-gh-qa
+    policies:
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-user, applications, get, dsd-epod-service-gh-qa/*, allow
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-user, applications, sync, dsd-epod-service-gh-qa/*, allow
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-user, repositories, get, dsd-epod-service-gh-qa/*, allow
+    - p, proj:dsd-epod-service-gh-qa:dsd-epod-service-gh-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

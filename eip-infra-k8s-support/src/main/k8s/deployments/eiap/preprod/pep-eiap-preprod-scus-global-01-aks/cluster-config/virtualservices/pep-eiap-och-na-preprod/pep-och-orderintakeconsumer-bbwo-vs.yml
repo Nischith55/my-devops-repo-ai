@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-orderintakeconsumer-bbwo-vs
+  namespace: pep-eiap-och-na-preprod
+  labels:
+      app: pep-och-orderintakeconsumer
+spec:
+  hosts:
+  - pep-och-orderintakeconsumer.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-och-na-preprod/pep-eiap-och-na-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /management/
+    route:
+    - destination:
+        host: pep-och-orderintakeconsumer.pep-eiap-och-na-preprod.svc.cluster.local
+        port:
+          number: 80
+  

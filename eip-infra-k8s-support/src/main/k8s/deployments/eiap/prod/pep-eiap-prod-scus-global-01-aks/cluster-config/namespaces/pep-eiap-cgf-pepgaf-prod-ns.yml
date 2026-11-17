@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-pepgaf-prod
+  labels:
+    env-prod: "true"
+    project: pepgaf
+    sector: cgf
+    team: cgf-pepgaf
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: pepgafs
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 85f1022f97c6ea50323778c11153af98
+    pep-cmdb-app-service-id: 74b1de40-273d-46c7-8c52-58c2be39d7c6
+    pep-environment: Production
+    

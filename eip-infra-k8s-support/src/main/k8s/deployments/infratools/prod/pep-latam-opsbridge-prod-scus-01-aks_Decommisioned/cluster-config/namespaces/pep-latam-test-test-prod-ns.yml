@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-latam-test-test-prod
+    project: test
+    sector: test
+    servicename_aks: operation-bridge
+    team: test-test
+  name: pep-latam-test-test-prod

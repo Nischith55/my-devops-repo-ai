@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    kubernetes.io/metadata.name: pep-devserv-ado-aks-dev-controller
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    project: devsecops
+    sector: global
+    servicename_aks: sharedaks
+    team: ado-devsecops
+  name: pep-devserv-ado-aks-dev-controller

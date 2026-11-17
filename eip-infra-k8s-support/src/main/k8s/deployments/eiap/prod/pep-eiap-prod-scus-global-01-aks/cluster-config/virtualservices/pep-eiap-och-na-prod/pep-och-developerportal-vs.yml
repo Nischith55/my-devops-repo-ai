@@ -1,0 +1,45 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-och-developerportal-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-och-developerportal.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Content-Type","Access-Control-Allow-Origin"],"allowMethods":["POST","GET","PUT","DELETE","OPTIONS"],"allowOrigins":[{"exact":"https://pep-och-developerportal-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"},{"exact":"https://pep-och-ops-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"}],"exposeHeaders":["x-total-count"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/v1/api"}},{"ignoreUriCase":true,"uri":{"prefix":"/management"}}],"route":[{"destination":{"host":"pep-och-developerportal.pep-eiap-och-na-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-och-developerportal
+  name: pep-och-developerportal-vs
+  namespace: pep-eiap-och-na-prod
+spec:
+  gateways:
+  - pep-eiap-och-na-prod/pep-eiap-och-na-prod-cv-gw
+  hosts:
+  - pep-och-developerportal.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://pep-och-developerportal-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pep-och-ops-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      exposeHeaders:
+      - x-total-count
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1/api
+    - ignoreUriCase: true
+      uri:
+        prefix: /management
+    route:
+    - destination:
+        host: pep-och-developerportal.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,31 @@
+---
+# generated file please do not edit
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: control-plane-main
+  namespace: istio-system
+spec:
+  tag: !!str 1.7.7
+  components:
+    pilot:
+      k8s:
+        # PEP #
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+          kubernetes.azure.com/mode: system
+        # PEP #
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+
+  values:
+    global:
+      # PEP #
+      defaultNodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system   
+        # PEP #
+      defaultTolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists

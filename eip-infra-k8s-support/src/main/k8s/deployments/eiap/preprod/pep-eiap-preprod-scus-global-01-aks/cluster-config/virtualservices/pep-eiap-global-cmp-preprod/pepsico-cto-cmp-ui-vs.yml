@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pepsico-cto-cmp-ui-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["cmp.preprod.mypepsico.com","pepsico-cto-cmp-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/v1"}}],"route":[{"destination":{"host":"pepsico-cto-cmp-ui-v1.pep-eiap-global-cmp-preprod.svc.cluster.local","port":{"number":80}}}]},{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-cto-cmp-ui.pep-eiap-global-cmp-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pepsico-cto-cmp-ui
+  name: pepsico-cto-cmp-ui-vs
+  namespace: pep-eiap-global-cmp-preprod
+spec:
+  gateways:
+  - pep-eiap-global-cmp-preprod/pep-eiap-global-cmp-preprod-cv-gw
+  hosts:
+  - cmp.preprod.mypepsico.com
+  - pepsico-cto-cmp-ui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /v1
+    route:
+    - destination:
+        host: pepsico-cto-cmp-ui-v1.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-cto-cmp-ui.pep-eiap-global-cmp-preprod.svc.cluster.local
+        port:
+          number: 80

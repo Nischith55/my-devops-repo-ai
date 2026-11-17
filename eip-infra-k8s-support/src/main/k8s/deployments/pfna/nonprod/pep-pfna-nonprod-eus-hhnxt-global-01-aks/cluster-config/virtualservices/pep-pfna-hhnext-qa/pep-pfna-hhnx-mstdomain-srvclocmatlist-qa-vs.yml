@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-hhnx-mstdomain-srvclocmatlist
+  name: pep-pfna-hhnx-mstdomain-srvclocmatlist-qa-vs
+  namespace: pep-pfna-hhnext-qa
+spec:
+  gateways:
+  - pep-pfna-hhnext-qa/pep-pfna-hhnext-qa-cv-gw
+  hosts:
+  - pep-pfna-hhnx-mstdomain-srvclocmatlist-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /replay
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-hhnx-mstdomain-srvclocmatlist.pep-pfna-hhnext-qa.svc.cluster.local
+        port:
+          number: 80

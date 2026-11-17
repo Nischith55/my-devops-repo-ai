@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agro-growers-hub-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for agro-growers-hub-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/agro-growers-hub-web-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-dps-ghub-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: agro-growers-hub-prod-admin
+    description: Admin privileges to agro-growers-hub-prod
+    policies:
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-admin, applications, *, agro-growers-hub-prod/*, allow
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-admin, applications, get, argocd/*, allow
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-admin, repositories, *, agro-growers-hub-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: agro-growers-hub-prod-user
+    description: Read-only privileges to agro-growers-hub-prod
+    policies:
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-user, applications, get, agro-growers-hub-prod/*, allow
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-user, applications, sync, agro-growers-hub-prod/*, allow
+    - p, proj:agro-growers-hub-prod:agro-growers-hub-prod-user, repositories, get, agro-growers-hub-prod/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.GRA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

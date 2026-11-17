@@ -1,0 +1,212 @@
+# Default values for pepsico-eip-latam-customer-ingest.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  nameOverride: "pepsico-app"
+  fullnameOverride: "pepsico-app"
+  namespace: "default"
+  labels: 
+    app: "pepsico-app"
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+
+  secretManagement:
+    enabled: false
+  awsSecretManagement:
+    enabled: false
+    roleArn: ""
+  pvc:
+    enabled: false
+
+  deployment:
+    enabled: true
+
+  service:
+    enabled: true
+  
+  rollout:
+    enabled: false
+    minReadySeconds: 10
+    progressDeadlineSeconds: 600
+    progressDeadlineAbort: true
+    revisionHistoryLimit: 2
+    rollbackWindowRevisions: 2
+    strategy: canary     
+    canary:   
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60      
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+      dynamicStableScale: true    
+    blueGreen:
+      previewReplicaCount: 1     
+      autoPromotionEnabled: true
+      autoPromotionSeconds: 30
+      scaleDownDelaySeconds: 30
+      abortScaleDownDelaySeconds: 30
+
+  statefulset:
+    enabled: false
+    # serviceName defaults to "<fullname>-headless" when not set
+    serviceName: ""
+    podManagementPolicy: OrderedReady
+    revisionHistoryLimit: 10
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        partition: 0
+    # controls whether PVCs created from volumeClaimTemplates are kept or deleted
+    # when the StatefulSet is deleted or scaled down. Defaults to Retain (same as
+    # Kubernetes default behavior) so per-pod data disks are never auto-deleted.
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+    # Per-pod persistent storage. Each entry provisions one volumeClaimTemplate
+    # and is mounted into every container (main + sidecar) at `mountPath`.
+    volumeClaimTemplates: []
+    # - name: data
+    #   mountPath: /data
+    #   accessModes:
+    #     - ReadWriteOnce
+    #   storageClassName: ""
+    #   storageRequest: 1Gi
+    #   labels: {}
+    #   annotations: {}
+
+sidecar:
+  enabled: false
+  probes:
+    enabled: false
+
+  
+          
+experiment:
+    enabled: false
+
+analysisTemplates:
+    enabled: false
+
+cronjob:
+  enabled: false
+  podSecurityContext: 
+    runAsNonRoot: true
+  parallelism:
+    enabled: false
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsUser: 10000
+  
+replicaCount: 1
+
+labels:
+  environment: development
+  app: nginx
+
+#namespace: default
+
+image:
+  repository: nginx
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+configmaps:
+  enabled: false  
+  # name: app-settings   
+  # configurations:
+  # - key1: value1
+  #   key2: value2
+
+  ## to be provided in the helm install command with 
+  ## --set-file app-chart.appdata.config0.
+configmapFromFile:
+  enabled: false
+  # appdata: 
+  #   pepsico-app:     
+  #     configuration: 'https://example1.com'  # path to the file    
+    
+serviceAccount:
+  create: false
+  
+podAnnotations: {}
+
+podSecurityContext: 
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsUser: 10000
+
+initContainers: []
+
+volumes: {}
+
+containerPorts:
+- port: 80
+  name: "app-port"
+
+probes:
+  enabled: false
+
+
+strategy: 
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+  requests:
+    cpu: "1"
+    memory: "1Gi"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+topologySpreadConstraints:
+  enabled: false
+  constraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+    - maxSkew: 1
+      topologyKey: kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+
+analysisTemplates:
+  enabled: false
+
+experiment:
+  enabled: false
+### apm section ####
+
+apm:
+  enabled: false
+### apm section ends ###
+
+### appd section ####
+appD:
+  enabled: false 
+### appd section ends####
+
+hostPID: false
+hostIPC: false
+hostNetwork: false

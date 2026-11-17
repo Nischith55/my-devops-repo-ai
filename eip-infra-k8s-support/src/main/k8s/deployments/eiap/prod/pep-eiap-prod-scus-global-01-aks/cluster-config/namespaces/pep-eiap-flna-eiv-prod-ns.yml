@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-flna-eiv-prod
+    project: eiv
+    sector: flna
+    servicename_aks: eiv
+    team: flna-eiv
+  name: pep-eiap-flna-eiv-prod

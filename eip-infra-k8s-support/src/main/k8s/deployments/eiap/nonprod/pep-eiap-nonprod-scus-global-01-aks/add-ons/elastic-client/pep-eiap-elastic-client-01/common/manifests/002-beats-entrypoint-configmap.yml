@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beats-entrypoint-config
+  namespace: pep-eiap-elastic-client-01
+data:
+
+  entrypoint.sh: |-
+    #!/usr/bin/env bash
+    set -eou pipefail
+    # AGENT_EXE_NAME
+    AGENT_EXE_NAME=${1}
+    EXTRA_ARGS="${@:2}"
+    os_rls_path=/tmp/etc/os-release
+    if [[ -r "${os_rls_path}" ]]; then
+      # export ALL variables
+      set -a
+      source "${os_rls_path}"
+      set +x
+    else
+      echo "WARN: Could not read [${os_rls_path}]"
+    fi
+
+    args="-environment container"
+    echo "Command: [${AGENT_EXE_NAME} ${args} ${EXTRA_ARGS}]"
+
+    exec "${AGENT_EXE_NAME}" ${args} ${EXTRA_ARGS}
+
+

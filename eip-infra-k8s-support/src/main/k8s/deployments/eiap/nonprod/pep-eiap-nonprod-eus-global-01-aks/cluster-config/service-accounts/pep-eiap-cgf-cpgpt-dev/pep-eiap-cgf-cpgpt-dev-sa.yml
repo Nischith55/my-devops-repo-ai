@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-cgf-cpgpt-dev-sa
+  namespace: pep-eiap-cgf-cpgpt-dev

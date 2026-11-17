@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-global-och-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-global-och-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pbna-prod-scus-global-01-aks
+        namespace: pep-pbna-pbna-savvy-prod
+      - name: pep-pbna-prod-scus-global-01-aks
+        namespace: pep-pbna-ops-admin
+      roles:
+      - name: pep-global-och-prod-admin
+        description: Admin privileges to pep-global-och-prod
+        policies:
+        - p, proj:pep-global-och-prod:pep-global-och-prod-admin, applications, *, pep-global-och-prod/*, allow
+        - p, proj:pep-global-och-prod:pep-global-och-prod-admin, repositories, *, pep-global-och-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-global-och-prod-user
+        description: Read-only privileges to pep-global-och-prod
+        policies:
+        - p, proj:pep-global-och-prod:pep-global-och-prod-user, applications, get, pep-global-och-prod/*, allow
+        - p, proj:pep-global-och-prod:pep-global-och-prod-user, applications, sync, pep-global-och-prod/*, allow
+        - p, proj:pep-global-och-prod:pep-global-och-prod-user, repositories, get, pep-global-och-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.OCH.NA.DigitalSales.Developer"
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"

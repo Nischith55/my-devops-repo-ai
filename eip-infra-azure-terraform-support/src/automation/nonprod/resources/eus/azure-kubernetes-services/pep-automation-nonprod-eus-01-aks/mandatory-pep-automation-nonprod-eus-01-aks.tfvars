@@ -1,0 +1,32 @@
+cluster_vnet_snet_resource_group_name   = "pep-network-nonprod-automation-eus-01-rg"
+cluster_location                        = "eastus"
+cluster_vnet_name                       = "pep-paas-automation-nonprod-01-eus-vnet"
+cluster_snet_name                       = "pep-aks-01-subnet"
+managed_identity_name                   = "pep-automation-nonprod-eus-01-aks-01-mi"
+managed_identity_resource_group_name    = "pep-ess-automation-aks-nonprod-eus-01-rg"
+cluster_resource_group_name             = "pep-ess-automation-aks-nonprod-eus-01-rg"
+active_directory_admin_group_object_ids = ["367dfb5d-8aed-4dcf-9366-6024024bfb94"]
+private_dns_zone_id                     = "/subscriptions/463c7676-c9ae-45e7-98c7-cd83065a4fb1/resourceGroups/pep-network-privatednszone-01-rg/providers/Microsoft.Network/privateDnsZones/privatelink.eastus.azmk8s.io"
+kubernetes_version                      = "1.34.7"
+default_node_pool_resource_group        = "pep-automation-nonprod-eus-01-aks-rg"
+cluster_tags = {
+  pep-cmdb-bus-app-id       = "327967b31be36010b050c992604bcbc8"
+  pep-cmdb-bus-app-name     = "EIP AZURE KUBERNETES SERVICE"
+  pep-cmdb-app-service-id   = "ea7967b31be36010b050c992604bcbc1"
+  pep-cmdb-app-service-name = "EIP AZURE KUBERNETES SERVICE PROD"
+  department                = "automation"
+  description               = "Global 01 AKS Cluster"
+  environment               = "nonprod"
+  financialTag              = "H-######"
+  serviceName               = "automation"
+  spn                       = "pep-eiap-nonprod-k8s-sp"
+  crosscharge_aks           = "direct"
+}
+default_node_pool_tags = {
+  department   = "automation"
+  description  = "Global 01 AKS Cluster"
+  environment  = "nonprod"
+  financialTag = "H-######"
+  serviceName  = "automation"
+  spn          = "pep-eiap-nonprod-k8s-sp"
+}

@@ -1,0 +1,17 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pep-pfna-admin-rb
+  namespace: pep-pfna-elastic-cluster-01
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.support.EIAP.SRE.AKS
+    name: 25d7a150-fd6c-4f57-9c27-355b752d6131

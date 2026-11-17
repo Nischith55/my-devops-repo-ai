@@ -1,0 +1,29 @@
+---
+- name: create temp directory
+  file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforns"
+    state: directory
+
+- template:
+    src: namespaces.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforns/{{ namespaces[item] }}.yml"
+  with_items: "{{ namespaces }}"
+
+- name: Create namespaces by reading the definition from a local file
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforns/{{ namespaces[item] }}.yml"
+  register: var_output_namespace
+  with_items: "{{ namespaces }}"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- debug: var=var_output_namespace
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ var['clustername'] }}/cluster-config/namespaces/{{ namespaces[item] }}"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/tempforns/{{ namespaces[item] }}.yml"
+    force: true
+  with_items: "{{ namespaces }}"

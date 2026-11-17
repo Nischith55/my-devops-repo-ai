@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-pfna-onepep-preprod
+    project: onepep
+    sector: pfna
+    servicename_aks: onepepcafservice-na
+    team: pfna-onepep
+  name: pep-eiap-pfna-onepep-preprod

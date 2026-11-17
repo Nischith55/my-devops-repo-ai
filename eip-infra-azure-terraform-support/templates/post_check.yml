@@ -1,0 +1,190 @@
+steps: 
+- task: PythonScript@0
+  displayName: "Extract Azure KV secrets"
+  name: "GetAzureCredentials"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/get_spn.py'
+    arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+  env:
+    PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+    NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+    PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+    NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+    PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+    PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+    PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+    NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+    PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+
+- task: PythonScript@0
+  displayName: "Set Azure credentials"
+  name: "SetAzureCredentials"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_spn.py'
+    arguments: "${{ parameters.service_principal_backend }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: PythonScript@0
+  displayName: "Set Service Principal"
+  name: "SetServicePrincipal"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/templates/scripts/set_config_spn.py'
+    arguments: "${{ parameters.service_principal }}"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+##nonprod #preprod
+- task: DownloadPipelineArtifact@2
+  displayName: 'download terraform plan'
+  condition: and(succeeded(), eq('${{ parameters.inplace }}', true ))
+  inputs:
+    artifactName: 'tfplan'
+    downloadPath: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+
+##nonprod #preprod
+- task: Bash@3
+  displayName: "aks-upgrade-apply"
+  condition: and(succeeded(), eq('${{ parameters.inplace }}', true ))
+  inputs:
+    targetType: 'inline'
+    workingDirectory: '$(Build.SourcesDirectory)/src/${{parameters.Functional_Area}}/${{parameters.env}}/common-tf-config/${{parameters.ResourceType}}'
+    script: |
+      set -e
+      terraform -v
+      echo "Current directory: $(pwd)"
+      echo "${{ parameters.parallelism }}"
+      if [[ "${{parameters.Functional_Area}}" == "pfna" ]] || [[ "${{parameters.Functional_Area}}" == "snt" ]] || [[ "${{parameters.Functional_Area}}" == "infratools" ]] || [[ "${{parameters.Functional_Area}}" == "infosectools" ]] || [[ "${{parameters.Functional_Area}}" == "cmp" ]] || [[ "${{parameters.Functional_Area}}" == "pbna" ]] || [[ "${{parameters.Functional_Area}}" == "dps" ]] || [[ "${{parameters.Functional_Area}}" == "cmptest" ]] || [[ "${{parameters.Functional_Area}}" == "automation" ]] || [[ "${{parameters.Functional_Area}}" == "cgf" ]] || [[ "${{parameters.Functional_Area}}" == "aisp" ]] || [[ "${{parameters.Functional_Area}}" == "pepgenx" ]]; then
+          export TF_VAR_subscription=$(subscription_id_others)
+          echo "subscription set to subscription_id_others"
+      elif ([[ "${{parameters.Region}}" == "suk" ]] || [[ "${{parameters.Region}}" == "ae" ]] || [[ "${{parameters.Region}}" == "gwc" ]]) && ([[ "${{parameters.env}}" == "nonprod" ]] || [[ "${{parameters.env}}" == "preprod" ]]); then
+          export TF_VAR_subscription=$(subscription_id_other_regions)
+          echo "subscription set to subscription_id_other_regions"
+      else
+          export TF_VAR_subscription=$SUBSCRIPTION
+          echo "subscription set to KV subscription"
+      fi
+      export TF_VAR_tenantid=$TENANTID
+      export TF_VAR_clientid=$CLIENTID
+      export TF_VAR_clientsecret=$CLIENTSECRET
+
+      git config --global http.$(terraform_modules_repo).extraheader "AUTHORIZATION: bearer $(System.AccessToken)"
+      if [[ "${{parameters.ResourceType}}" == "azure-kubernetes-services" ]]; then
+          rm kube-configs.tf
+      fi
+      terraform init -backend-config="storage_account_name=$(storage_account_name_for_backend)" \
+                      -backend-config="container_name=$(container_name_for_backend)" \
+                      -backend-config="key=$(key_for_backend)" \
+                      -backend-config="resource_group_name=$(resource_group_name_for_backend)"                     
+      terraform apply -parallelism='${{ parameters.parallelism }}' $(Build.BuildNumber)   
+
+- task: Bash@3
+  displayName: pre-requisite
+  inputs:
+    targetType: 'inline'
+    script: |
+      pip3 install ruamel.yaml
+      ansible --version
+      pip3 install --upgrade ansible
+      ansible --version
+      pip3 install openshift==0.11.0
+      pip3 install kubernetes==28.1.0
+      pip3 install pyyaml
+      pip3 show pyyaml
+      pip3 show openshift
+      pip3 show kubernetes
+      ansible --version
+      ansible-galaxy collection install community.kubernetes -p ~/.ansible/collections
+      ansible-galaxy collection install cloud.common -p ~/.ansible/collections
+
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  inputs:
+    secureFile: 'config'
+
+- task: CopyFiles@2
+  displayName: "Copyitems"
+  inputs:
+    SourceFolder: $(Agent.TempDirectory)
+    Contents: config
+    TargetFolder: $(HOME)
+  
+- task: Bash@3
+  displayName: 'set_context'
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -e
+      echo "$(CLIENTID)"
+      echo "$(CLIENTSECRET)"
+      mkdir $HOME/.kube
+      cp $(Agent.TempDirectory)/config $HOME/.kube/
+      kubectl config use-context ${{ parameters.resource_name }}
+      kubectl config current-context
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: Bash@3
+  displayName: 'sleep 5-mins'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "Entering sleep for 5 minutes"
+      sleep 5m
+      
+- task: Ansible@0
+  displayName: "post_check"
+  name: "post_check"
+  inputs:
+    ansibleInterface: 'agentMachine'
+    playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/ansible/playbooks/post_check.yml'
+    failOnStderr: false
+    args: '-e ''{ "resourcename": "${{ parameters.resource_name }}" , "opt": "${{ parameters.opt }}" , "enable_endpoint": "${{ parameters.enable_endpoint }}" , "curl_pfna": "${{ parameters.curl_pfna }}" ,"working_dir": "$(system.defaultWorkingDirectory)" }'' -v'
+  env:
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+    ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/ansible/roles
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: DownloadPipelineArtifact@2
+  displayName: 'download files'
+  inputs:
+    artifactName: 'drop'
+    downloadPath: '$(system.defaultWorkingDirectory)/pdb' 
+
+- task: Bash@3
+  displayName: 'post-requisites pdb creation'
+  inputs:
+    targetType: 'inline'
+    workingDirectory: $(system.defaultWorkingDirectory)/pdb/${{ parameters.resource_name }}//pre
+    script: |
+      pwd
+      if [[ "${{ parameters.opt }}" == "post" ]]; then
+        ls -lrt pdb_backup_create* | awk '{print$9}' > pdb_creation.txt
+        for i in `cat pdb_creation.txt`;do kubectl create -f "$i";done
+        kubectl get pdb -n default
+      fi
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(CLIENTID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(CLIENTSECRET)
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(system.defaultWorkingDirectory)/k8s_backups'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    ArtifactName: 'drop'
+

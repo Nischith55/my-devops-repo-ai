@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-admineu-qa-cv-web-vs
+  namespace: pep-dps-dps-admineu-qa
+  labels:
+    app: pep-dps-dps-admineu-qa-cv-web
+spec:
+  hosts:
+    - b2b-admin-tool-eu.qa.mypepsico.com
+    - pep-dps-dps-admineu-qa-cv.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-admineu-qa/pep-dps-dps-admineu-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-admineu-qa-cv-web.pep-dps-dps-admineu-qa.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-pepconnect-qa
+    pep-cmdb-app-service-id: d0ec416887e619944751326e0ebb354d
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: QA
+    project: dps-b2b
+    sector: cgf
+    servicename_aks: retail360-aksclusterprod
+    team: cgf-pepconnect
+  name: pep-eiap-cgf-pepconnect-qa

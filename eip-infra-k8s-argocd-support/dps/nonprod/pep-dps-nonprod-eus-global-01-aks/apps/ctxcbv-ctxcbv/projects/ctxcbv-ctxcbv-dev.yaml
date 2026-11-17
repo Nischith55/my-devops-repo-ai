@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ctxcbv-ctxcbv-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for ctxcbv-ctxcbv-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ctxcbv-ctxcbv-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-globalsnt-ctxcbv-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: ctxcbv-ctxcbv-dev-admin
+    description: Admin privileges to ctxcbv-ctxcbv-dev
+    policies:
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-admin, applications, *, ctxcbv-ctxcbv-dev/*, allow
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-admin, repositories, *, ctxcbv-ctxcbv-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: ctxcbv-ctxcbv-dev-user
+    description: Read-only privileges to ctxcbv-ctxcbv-dev
+    policies:
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-user, applications, get, ctxcbv-ctxcbv-dev/*, allow
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-user, applications, sync, ctxcbv-ctxcbv-dev/*, allow
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-user, repositories, get, ctxcbv-ctxcbv-dev/*, allow
+    - p, proj:ctxcbv-ctxcbv-dev:ctxcbv-ctxcbv-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.CTXPTS"
+    - "Team.Support.EIAP.READ"

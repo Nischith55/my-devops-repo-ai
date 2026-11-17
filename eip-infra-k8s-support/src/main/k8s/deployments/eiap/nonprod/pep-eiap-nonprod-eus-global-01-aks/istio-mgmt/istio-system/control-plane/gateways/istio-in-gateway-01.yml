@@ -1,0 +1,1172 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    # - cloud.qa.mypepsico.com
+    - pep-eiap-k8s-dashboard.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pepcom.dev.mypepsico.com
+    #- pep-eip-cmp-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-eip-cmp-vm-provisioning.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    # - mypep.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    # - newshub.dev.mypepsico.com
+    - pep-eiap-cgf-cle-react.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle.dev.mypepsico.com
+    - nextgencle.dev.mypepsico.com
+    - pep-eiap-cgf-nextgen-cle-ui-pre-alpha.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - cle.beta.dev.mypepsico.com
+    - pep-eiap-cgf-cle-ui-rebuild.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - df-fileupload-ui.dev.mypepsico.com
+    - df-fileupload-ui.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - df-fileupload-ui.qa.mypepsico.com
+    - df-fileupload-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: istio-in-gateway-01-dashboard-https-443
+    port:
+      name: https-dashboard-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - "*.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"
+    name: istio-in-gateway-01-wildcard-https-443
+    port:
+      name: https-wcard-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - compass.dev.mypepsico.com #newshub.dev.mypepsico.com
+    name: istio-in-gateway-01-wsp-https-443
+    port:
+      name: https-wsp-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-aks-gw01-cgf-wsp-compass-tls #pep-eiap-nonprod-aks-gw01-cgf-wsp-entrust-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - compass.ite.mypepsico.com
+    name: istio-in-gateway-01-wsp-https-443
+    port:
+      name: https-wsp-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-aks-gw01-cgf-wsp-compass-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - compass.dev.mypepsico.com #newshub.dev.mypepsico.com
+    - sodastreamprofessional.dev.pepsico.com
+    - sodastreamprofessional.qa.pepsico.com
+    - cle-rest-api.dev.intra.pepsico.com
+    - controltower.dev.mypepsico.com
+    - controltower.qa.mypepsico.com
+    - hcm.dev.mypepsico.com
+    - hcm.qa.mypepsico.com
+    - compass.ite.mypepsico.com
+    - people.dev.mypepsico.com
+    - people.ite.mypepsico.com
+    - labelright.ite.mypepsico.com
+    - labelrightglobal.dev.mypepsico.com
+    - pepcommerce-ordermanagement.dev.na.pepsico.com
+    - pepcommerce-ordermanagement.qa.na.pepsico.com
+    - labelrightglobal.qa.mypepsico.com
+    - idcardpmf.qa.intra.pepsico.com
+    - hrjepc.dev.mypepsico.com
+    - amesaeinvoiceksanp.dev.mypepsico.com
+    - dsi.dev.mypepsico.com
+    - dsi.qa.mypepsico.com
+    - admin.d2c.cep.br.qa.pepsico.com
+    - admin.d2c.cep.mx.qa.pepsico.com
+    - paperless.qa.mypepsico.com
+    - cloudonboarding.dev.pepsico.com
+    - admin-latam.d2c.cep.sit.pepsico.com
+    - admin-latam.d2c.cep.dev.pepsico.com
+    - pepcommerce-ordermanagement.dev.na.pepsico.com
+    - admin.cep.mx.qa.pepsico.com
+    - codeone.qa.mypepsico.com
+    - agroppr.dev.pepsico.com
+    - web2.dev.mypepsico.com
+    - eetcgen.dev.mypepsico.com
+    # - swaggerhub.dev.mypepsico.com 
+    - cloud.dev.mypepsico.com
+    - cloud.qa.mypepsico.com
+    - cloud.ite.mypepsico.com
+    - revolutiom-dev.mypepsico.com
+    - revolutiom-qa.mypepsico.com
+    - cvat.dev.mypepsico.com
+    - digispec.dev.pepsico.com
+    - admin.ws.cep.mx.qa.pepsico.com
+    - pepirisportal.dev.mypepsico.com
+    - "*.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"
+    name: istio-in-gateway-01-wildcard-http-80
+    port:
+      name: http-wcard-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - hrjepc.dev.mypepsico.com
+    name: istio-in-gateway-01-hrjepc-https-443
+    port:
+      name: https-hrjepc-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-hrjepc-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - sodastreamprofessional.dev.pepsico.com
+    - sodastreamprofessional.qa.pepsico.com
+    name: istio-in-gateway-01-sodastream-https-443
+    port:
+      name: https-sodastream-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-sodastream-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cle-rest-api.dev.intra.pepsico.com
+    name: istio-in-gateway-01-cle-rest-api-https-443
+    port:
+      name: https-cle-rest-api-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cle-rest-api-gw01-tls-1
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - controltower.dev.mypepsico.com
+    name: istio-in-gateway-01-controltower-https-443
+    port:
+      name: https-controltower-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-controltower-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - controltower.qa.mypepsico.com
+    name: istio-in-gateway-01-controltower-https-443
+    port:
+      name: https-controltower-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-controltower-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    #- hcm.dev.mypepsico.com
+    - hcm.qa.mypepsico.com
+    name: istio-in-gateway-01-hcm-nonprod-https-443
+    port:
+      name: https-hcmdev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-hcm-nonprod-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - hcm.dev.mypepsico.com
+    name: istio-in-gateway-01-hcm-nonprod-https-443
+    port:
+      name: https-hcm-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-hcm-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - people.dev.mypepsico.com
+    name: istio-in-gateway-01-people-dev-https-443
+    port:
+      name: https-people-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-people-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - people.ite.mypepsico.com 
+    name: istio-in-gateway-01-people-ite-https-443
+    port:
+      name: https-people-ite-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-people-ite-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - gdm.dev.mypepsico.com
+    - gdm.ite.mypepsico.com
+    name: istio-in-gateway-01-pdm-nonprod-https-443
+    port:
+      name: https-pdm-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-gdm-ite-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - picasso.dev.intra.pepsico.com
+    name: istio-in-gateway-01-picasso-https-443
+    port:
+      name: https-picasso-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-picasso-gw01-tls 
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - labelright.ite.mypepsico.com
+    name: istio-in-gateway-01-labrgt-https-443
+    port:
+      name: https-labrgt-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-labrgt-ite-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - labelrightglobal.dev.mypepsico.com
+    name: istio-in-gateway-01-labrgtdev-https-443
+    port:
+      name: https-labrgtdev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-labrgt-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepcommerce-ordermanagement.dev.na.pepsico.com
+    name: istio-in-gateway-01-ordermgmt-https-443
+    port:
+      name: https-ordermgmt-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-com-order-mgt-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE      
+  - hosts:
+    - pepcommerce-ordermanagement.qa.na.pepsico.com
+    name: istio-in-gateway-01-ordermgmt-https-443
+    port:
+      name: https-ordermgmt-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-com-ordrmgmt-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - labelrightglobal.qa.mypepsico.com
+    name: istio-in-gateway-01-labrgt-qa-https-443
+    port:
+      name: https-labright-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-labrgt-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - idcardpmf.qa.intra.pepsico.com
+    name: istio-in-gateway-01-idcardpmf-qa-https-443
+    port:
+      name: https-idcardpmf-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-idcardpmf-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE  
+  - hosts:
+    - amesaeinvoiceksanp.dev.mypepsico.com
+    name: istio-in-gateway-01-amesae-qa-https-443
+    port:
+      name: https-amesae-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      # - AES128-GCM-SHA256
+      # - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-amesa-dev-gw01-tls
+      maxProtocolVersion: TLSV1_2
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  # - hosts:
+  #   - dsi.dev.mypepsico.com
+  #   name: istio-in-gateway-01-dsi-dev-https-443
+  #   port:
+  #     name: https-dsi-dev-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     credentialName: pep-eiap-nonprod-eus-dsi-dev-gw01-tls
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2
+  #     mode: SIMPLE  
+  # - hosts:
+  #   - dsi.qa.mypepsico.com
+  #   name: istio-in-gateway-01-admin-d2c-https-443
+  #   port:
+  #     name: https-admin-d2c-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     credentialName: pep-eiap-nonprod-eus-admin-d2c-gw01-tls
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2
+  #     mode: SIMPLE  
+  # - hosts:
+  #   - swaggerhub.dev.mypepsico.com 
+  #   name: istio-in-gateway-01-swaggerhub-https-443
+  #   port:
+  #     name: https-swaggerhub-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     credentialName: pep-eiap-nonprod-eus-swaggerhub-gw01-tls
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2
+  #     mode: SIMPLE  
+  - hosts:
+    - admin.d2c.cep.mx.qa.pepsico.com
+    name: istio-in-gateway-01-admin-d2c-mx-https-443
+    port:
+      name: https-admin-d2c-mx-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-admin-d2c-mx-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE  
+  - hosts:
+    - admin.d2c.cep.br.qa.pepsico.com
+    name: istio-in-gateway-01-admin-d2c-br-https-443
+    port:
+      name: https-admin-d2c-br-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-admin-d2c-br-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE      
+  - hosts:
+    - paperless.qa.mypepsico.com
+    name: istio-in-gateway-01-paperless-https-443
+    port:
+      name: https-paperless-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-paperless-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE   
+  - hosts:
+    - cloudonboarding.dev.pepsico.com
+    name: istio-in-gateway-01-cloudonboarding-dev-https-443
+    port:
+      name: https-cloudonboarding-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cpe-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE   
+  - hosts:
+    - admin-latam.d2c.cep.sit.pepsico.com
+    name: istio-in-gateway-01-admin-latam-https-443
+    port:
+      name: https-admin-latam-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-admin-latam-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE   
+  - hosts:
+    - admin-latam.d2c.cep.dev.pepsico.com
+    name: istio-in-gateway-01-latam-d2c-dev-https-443
+    port:
+      name: https-latam-d2c-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-admin-latam-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - web-1.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-webone-https-443
+    port:
+      name: https-cepstage-webone-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - web-2.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-webtwo-https-443
+    port:
+      name: https-cepstage-webtwo-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - web-3.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-webthree-https-443
+    port:
+      name: https-cepstage-webthree-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-1.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-adminone-https-443
+    port:
+      name: https-cepstage-adminone-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-2.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-admintwo-https-443
+    port:
+      name: https-cepstage-admintwo-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin-3.cep.stage.pepsico.com
+    name: istio-in-gateway-01-cepstage-adminthree-https-443
+    port:
+      name: https-cepstage-adminthree-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cepstage-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepcommerce-ordermanagement.dev.na.pepsico.com 
+    name: istio-in-gateway-01-pepcommerce-ordermanagement-dev-https-443
+    port:
+      name: https-pepcommerce-ordermanagement-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-pepcommerce-ordermanagement-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.cep.mx.qa.pepsico.com 
+    name: admin-cep-mx-qa-https-443
+    port:
+      name: admin-cep-mx-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-admin-latam-cep-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - codeone.qa.mypepsico.com 
+    name: codeone-qa-https-443
+    port:
+      name: codeone-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-codeone-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - agroppr.dev.pepsico.com 
+    name: agroppr-dev-https-443
+    port:
+      name: agroppr-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-agroppr-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - web2.dev.mypepsico.com
+    name: web2-dev-https-443
+    port:
+      name: https-portaldev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-web2-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cloud.dev.mypepsico.com
+    - cloud.qa.mypepsico.com
+    name: cloud-dev-https-443
+    port:
+      name: https-clouddev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-clouddev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - cloud.ite.mypepsico.com
+    name: cloud-ite-https-443
+    port:
+      name: https-cloudite-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cloudite-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - eetcgen.dev.mypepsico.com
+    name: eetcgen-https-443
+    port:
+      name: https-eetcgen-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-eetcgen-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - revolutiom-dev.mypepsico.com
+    name: revolutiom-dev-https-443
+    port:
+      name: https-revolutiom-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-revolutiom-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - revolutiom-qa.mypepsico.com
+    name: revolutiom-qa-https-443
+    port:
+      name: https-revolutiom-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-revolutiom-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  # - hosts:
+  #   - cloud.qa.mypepsico.com
+  #   name: cloud-qa-https-443
+  #   port:
+  #     name: https-cloudqa-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     credentialName: pep-eiap-nonprod-eus-global-cloudqa-gw01-tls
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2
+  #     mode: SIMPLE
+  - hosts:
+    - cvat.dev.mypepsico.com
+    name: cvat-dev-https-443
+    port:
+      name: https-cvat-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-cvat-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - digispec.dev.pepsico.com
+    name: digispec-dev-https-443
+    port:
+      name: https-digispec-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-digispec-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - admin.ws.cep.mx.qa.pepsico.com
+    name: admin-ws-cep-mx-qa-https-443
+    port:
+      name: https-admin-ws-cep-mx-qa-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-admin-ws-cep-mx-qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pepirisportal.dev.mypepsico.com
+    name: pepirisportal-dev-https-443
+    port:
+      name: https-pepirisportal-dev-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-nonprod-eus-global-pepirisportal-dev-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE

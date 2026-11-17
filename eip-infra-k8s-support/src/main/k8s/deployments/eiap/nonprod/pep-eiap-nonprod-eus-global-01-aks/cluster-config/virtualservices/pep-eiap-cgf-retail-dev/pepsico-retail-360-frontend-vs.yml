@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-retail-360-frontend
+  name: pepsico-retail-360-frontend-vs
+  namespace: pep-eiap-cgf-retail-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-retail-dev/pep-eiap-cgf-retail-dev-cv-gw
+  hosts:
+  - pepsico-retail-360-frontend.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-retail-360-frontend.pep-eiap-cgf-retail-dev.svc.cluster.local
+        port:
+          number: 80

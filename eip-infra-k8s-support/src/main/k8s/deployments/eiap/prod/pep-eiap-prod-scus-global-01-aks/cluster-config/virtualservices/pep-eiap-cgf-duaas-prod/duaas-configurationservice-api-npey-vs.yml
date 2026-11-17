@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: duaas-configurationservice-api-npey-vs
+  namespace: pep-eiap-cgf-duaas-prod
+  labels:
+      app: duaas-configurationservice-api
+spec:
+  hosts:
+  - pep-cgf-prod-configurationservice-api.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-duaas-prod/pep-eiap-cgf-duaas-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: duaas-configurationservice-api.pep-eiap-cgf-duaas-prod.svc.cluster.local
+        port:
+          number: 443
+  

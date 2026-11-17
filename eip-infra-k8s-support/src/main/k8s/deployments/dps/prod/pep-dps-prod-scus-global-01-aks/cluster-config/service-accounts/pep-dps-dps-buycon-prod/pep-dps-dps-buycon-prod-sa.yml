@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 1ca97a05-a5b7-4d3e-9d83-82f947eaa901
+  name: pep-dps-dps-buycon-prod-sa
+  namespace: pep-dps-dps-buycon-prod

@@ -1,0 +1,53 @@
+---
+- name: create temp directory for solo istio
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio"
+    state: directory
+
+# CRDS
+- name: create temp directory for solo istio crds
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/crds"
+    state: directory
+
+- template:
+    src: solo-istio-crds.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/crds/helm-values.yaml"
+
+# ISTIOD
+- name: create temp directory for solo istio istiod
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/istiod"
+    state: directory
+
+- template:
+    src: solo-istio-istiod.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/istiod/helm-values.yaml"
+
+# INGRESS GATEWAY
+- name: create temp directory for solo istio ingress gateway
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/ingress-gateway"
+    state: directory
+
+- template:
+    src: solo-istio-ingress-gateway.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/ingress-gateway/helm-values.yaml"
+
+- name: Copy Solo Istio CRDS to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/solo-istio/crds/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/crds/"
+    force: true
+
+- name: Copy Solo Istio Istiod to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/solo-istio/istiod/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/istiod/"
+    force: true
+
+- name: Copy Solo Istio Ingress Gateway to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/solo-istio/ingress-gateway/"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/solo-istio/ingress-gateway/"
+    force: true

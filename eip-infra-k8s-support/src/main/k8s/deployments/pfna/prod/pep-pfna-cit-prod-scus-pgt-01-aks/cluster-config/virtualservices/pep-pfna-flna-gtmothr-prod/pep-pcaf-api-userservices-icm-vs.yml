@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pcaf-api-userservices-icm
+  name: pep-pcaf-api-userservices-icm-vs
+  namespace: pep-pfna-flna-gtmothr-prod
+spec:
+  gateways:
+  - pep-pfna-flna-gtmothr-prod/pep-pfna-flna-gtmothr-prod-cv-gw
+  hosts:
+  - pep-pcaf-api-userservices-icm.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/icm/
+    route:
+    - destination:
+        host: pep-pcaf-api-userservices-icm.pep-pfna-flna-gtmothr-prod.svc.cluster.local
+        port:
+          number: 80

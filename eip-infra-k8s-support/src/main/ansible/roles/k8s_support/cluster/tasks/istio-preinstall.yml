@@ -1,0 +1,30 @@
+---
+
+- name: K8S_CLUSTER_ISTIO_PREINSTALL_BLOCK
+  block:
+
+    - name: K8S_CLUSTER_ISTIO_PREINSTALL_CREATE_NS
+      import_role:
+        name: k8s_support/cluster
+      vars:
+        mode: namespace
+        kctl_action: apply
+
+    - name: K8S_CLUSTER_ISTIO_PREINSTALL_CREATE_GRAFANA_SECRET
+      import_role:
+        name: k8s_support/kubectl
+      vars:
+        mode: execute-template
+        kctl_exec_template_src: |-
+          {{ k8s_sup_cluster_role_path }}/templates/istio/setup-grafana.yml.j2
+
+    - name: K8S_CLUSTER_ISTIO_PREINSTALL_CREATE_KIALI_SECRET
+      import_role:
+        name: k8s_support/kubectl
+      vars:
+        mode: execute-template
+        kctl_exec_template_src: |-
+          {{ k8s_sup_cluster_role_path }}/templates/istio/setup-kiali.yml.j2
+  vars:
+    k8s_ns_name: "{{ k8s_ns_name_ovrd | default('istio-system') }}"
+    kctl_action: apply

@@ -1,0 +1,149 @@
+---
+# ##
+# 05/2021
+# - Global Variable Naming Convention
+#   <resc_name>_<resc_abbrev>_cfg
+#   resc_abbrev: see the 00-k8s-api-spec key
+# ##
+pep_eiap_couchbase_clusterrole_cr_cfg:
+  name: pep-eiap-couchbase-clusterrole
+  kind: ClusterRole
+  alias: pep-eiap-couchbase
+
+  rules:
+    # nodes, namespaces and pv's list and watch 
+    - apiGroups: 
+        - ""
+      resources: 
+        - nodes
+        - namespaces
+        - persistentvolumes
+      verbs: 
+        - list
+        - watch
+
+    # storage class allow list watch
+    - apiGroups: 
+        - "storage.k8s.io"
+      resources: 
+        - storageclasses
+      verbs: 
+        - list
+        - watch
+
+    - apiGroups:
+        -  "couchbase.com"
+      resources:
+        - couchbaseclusters
+      verbs:
+        - get
+        - list
+        - watch
+        - update
+    - apiGroups:
+        -  "couchbase.com"
+      resources:
+        - couchbasebuckets
+        - couchbaseephemeralbuckets
+        - couchbasememcachedbuckets
+        - couchbasereplications
+        - couchbaseusers
+        - couchbasegroups
+        - couchbaseroles
+        - couchbaserolebindings
+        - couchbasebackups
+      verbs:
+        - list
+        - watch
+        - update    
+    - apiGroups:
+        -  ""
+      resources:
+        - couchbasebackuprestores
+      verbs:
+        - list
+        - watch
+        - delete
+    - apiGroups:
+        -  ""
+      resources:
+        - pods
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - delete
+    - apiGroups:
+        -  ""
+      resources:
+        - pods/exec
+      verbs:
+        - create
+    - apiGroups:
+        -  ""
+      resources:
+        - services
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - delete
+    - apiGroups:
+        -  ""
+      resources:
+        - events
+      verbs:
+        - list
+        - create
+        - update
+#    - apiGroups:   # To be granted if needed
+#        -  ""
+#      resources:
+#        - secrets
+#      verbs:
+#        - get
+#        - list
+#        - watch
+    - apiGroups: 
+        - ""
+      resources: 
+        - persistentvolumeclaims
+      verbs: 
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - delete
+    - apiGroups: 
+        - "policy"
+      resources: 
+        - poddisruptionbudgets
+      verbs: 
+        - get
+        - list
+        - watch
+        - create
+        - delete
+    - apiGroups: 
+        - ""
+      resources: 
+        - configmaps
+      verbs: 
+        - get
+        - create
+        - update
+    - apiGroups:
+        - batch
+      resources:
+        - jobs
+        - cronjobs
+      verbs:
+        - list
+        - watch
+        - create
+        - update

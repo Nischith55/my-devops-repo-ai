@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-preprod: 'true'
+    environment: preprod
+    istio-injection: enabled
+    istio.io/rev: preprod-stable
+    pep-cmdb-app-service-id: 1f4542cc97b52d504bb8326e6253af8b
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-environment: Preprod
+    project: schwmi
+    sector: flna
+    servicename_aks: supplychainhub
+    team: flna-schwmi
+  name: pep-pfna-flna-schwmi-preprod

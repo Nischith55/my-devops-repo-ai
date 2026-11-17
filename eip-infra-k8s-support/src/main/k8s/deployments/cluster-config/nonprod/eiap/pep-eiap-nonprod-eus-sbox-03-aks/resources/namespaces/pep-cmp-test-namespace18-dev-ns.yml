@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cmp-test-namespace18-dev
+  labels:
+    env-nonprod: "true"
+    project: namespace18
+    sector: test
+    team: test-namespace18
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: eiap
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"Sidecar","metadata":{"annotations":{},"name":"default","namespace":"pep-cmp-istio-config"},"spec":{"egress":[{"hosts":["./*","istio-system/*"]}]}}
+  name: default
+  namespace: istio-system
+spec:
+  egress:
+  - hosts:
+    - ./*
+    - istio-system/*

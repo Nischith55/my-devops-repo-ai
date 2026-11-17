@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pepgpt-web-app-all-services-qa:networking.istio.io/VirtualService:pep-eiap-cgf-pepgpt-qa/pepgpt-web-app-all-services
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pepgpt-web-app-all-services-qa:networking.istio.io/VirtualService:pep-eiap-cgf-pepgpt-qa/pepgpt-web-app-all-services"},"labels":{"app":"pepgpt-web-app-all-services","app.kubernetes.io/instance":"pepgpt-web-app-all-services","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"pepgpt-web-app-all-services","namespace":"pep-eiap-cgf-pepgpt-qa"},"spec":{"gateways":["pep-eiap-cgf-pepgpt-qa/pep-eiap-cgf-pepgpt-qa-cv-gw"],"hosts":["pepgpt-web-app-all-services-qa.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepgpt-web-app-all-services.pep-eiap-cgf-pepgpt-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: pepgpt-web-app-all-services
+        app.kubernetes.io/instance: pepgpt-web-app-all-services
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: pepgpt-web-app-all-services
+    namespace: pep-eiap-cgf-pepgpt-qa
+spec:
+    gateways:
+    - pep-eiap-cgf-pepgpt-qa/pep-eiap-cgf-pepgpt-qa-cv-gw
+    hosts:
+    - pepgpt-web-app-all-services-qa.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - pepgpt-all-apps.qa.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepgpt-web-app-all-services.pep-eiap-cgf-pepgpt-qa.svc.cluster.local
+                port:
+                    number: 8080

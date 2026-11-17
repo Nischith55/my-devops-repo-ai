@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-runtime-consumer-receipt-ptr
+  name: dtcsrv-joy-runtime-consumer-receipt-ptr-vs
+  namespace: pep-dps-cgf-peployalty-prod
+spec:
+  gateways:
+  - pep-dps-cgf-peployalty-prod/pep-dps-cgf-peployalty-prod-cv-gw
+  hosts:
+  - pep-joy-runtimeconsumerreceiptptr.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-consumer-receipt-ptr.pep-dps-cgf-peployalty-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,13 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-couchbase-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: disabled
+    project: couchbase
+    sector: flna
+    team: flna-couchbase

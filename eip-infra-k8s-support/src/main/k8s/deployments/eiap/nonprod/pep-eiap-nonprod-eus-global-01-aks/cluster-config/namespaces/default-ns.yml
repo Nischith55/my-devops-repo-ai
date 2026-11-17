@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    field.cattle.io/projectId: p-sqn7f
+    istio-injection: enabled
+    kubernetes.io/metadata.name: default
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    servicename_aks: sharedaks
+  name: default

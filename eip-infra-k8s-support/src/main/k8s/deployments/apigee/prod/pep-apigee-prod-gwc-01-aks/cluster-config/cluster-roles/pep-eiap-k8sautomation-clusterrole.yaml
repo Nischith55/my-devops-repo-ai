@@ -1,0 +1,114 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:  
+  name: pep-eiap-k8sautomation-clusterrole
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - namespaces
+  - persistentvolumeclaims
+  - persistentvolumes
+  - pods
+  - pods/status
+  - pods/log
+  - events
+  verbs:
+  - patch
+  - get
+  - list
+  - patch
+- apiGroups:
+  - ''
+  resources:
+  - pods/exec
+  - pods/eviction
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - '*'
+- apiGroups:
+  - ''
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - daemonsets
+  verbs:
+  - get
+  - list
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - deployments/scale
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - batch
+  resources:
+  - cronjob
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ''
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ''
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  - virtualservices
+  - sidecars
+  - destinationrules
+  verbs:
+  - '*'
+- apiGroups:
+  - argoproj.io
+  resources:
+  - appprojects
+  - applications
+  verbs:
+  - '*'

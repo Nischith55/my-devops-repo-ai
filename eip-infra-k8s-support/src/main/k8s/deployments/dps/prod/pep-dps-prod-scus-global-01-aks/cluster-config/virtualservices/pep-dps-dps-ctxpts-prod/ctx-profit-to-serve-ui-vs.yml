@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: ctx-profit-to-serve-ui-prod:networking.istio.io/VirtualService:pep-dps-dps-ctxpts-prod/ctx-profit-to-serve-ui-vs
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"ctx-profit-to-serve-ui-prod:networking.istio.io/VirtualService:pep-dps-dps-ctxpts-prod/ctx-profit-to-serve-ui-vs"},"labels":{"app":"ctx-profit-to-serve-ui","app.kubernetes.io/instance":"ctx-profit-to-serve-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.9"},"name":"ctx-profit-to-serve-ui-vs","namespace":"pep-dps-dps-ctxpts-prod"},"spec":{"gateways":["pep-dps-dps-ctxpts-prod/pep-dps-dps-ctxpts-prod-cv-gw"],"hosts":["pep-dps-dps-ctxpts-prod-cv-web.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"ctx-profit-to-serve-ui.pep-dps-dps-ctxpts-prod.svc.cluster.local","port":{"number":8080},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: ctx-profit-to-serve-ui
+        app.kubernetes.io/instance: ctx-profit-to-serve-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.9
+    name: ctx-profit-to-serve-ui-vs
+    namespace: pep-dps-dps-ctxpts-prod
+spec:
+    gateways:
+    - pep-dps-dps-ctxpts-prod/pep-dps-dps-ctxpts-prod-cv-gw
+    hosts:
+    - pep-dps-dps-ctxpts-prod-cv-web.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: ctx-profit-to-serve-ui.pep-dps-dps-ctxpts-prod.svc.cluster.local
+                port:
+                    number: 8080

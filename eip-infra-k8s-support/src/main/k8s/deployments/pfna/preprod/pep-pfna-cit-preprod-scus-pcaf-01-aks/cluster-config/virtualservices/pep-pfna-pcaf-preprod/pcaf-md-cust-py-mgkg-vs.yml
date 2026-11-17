@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-md-cust-py-mgkg-vs
+  namespace: pep-pfna-pcaf-preprod
+  labels:
+      app: pcaf-md-cust-py
+spec:
+  hosts:
+  - pcaf-md-cust-py-preprod.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-preprod/pep-pfna-pcaf-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-md-cust-py.pep-pfna-pcaf-preprod.svc.cluster.local
+        port:
+          number: 8080
+  

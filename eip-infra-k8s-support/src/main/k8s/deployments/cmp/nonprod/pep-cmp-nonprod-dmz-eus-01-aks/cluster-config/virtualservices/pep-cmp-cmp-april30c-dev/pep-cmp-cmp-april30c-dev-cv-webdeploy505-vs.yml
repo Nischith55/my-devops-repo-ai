@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-april30c-dev-cv-webdeploy505-vs
+  namespace: pep-cmp-cmp-april30c-dev
+  labels:
+      app: pep-cmp-cmp-april30c-dev-cv-webdeploy
+spec:
+  hosts:
+  - pep-cmp-cmp-april30c-dev-cv-webdeploy505-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - pep-cmp-cmp-april30c-dev-cv-webdeploy506-dev.cmpdmz.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-april30c-dev/pep-cmp-cmp-april30c-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-april30c-dev-cv-webdeploy2.pep-cmp-cmp-april30c-dev.svc.cluster.local
+        port:
+          number: 8080
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-cmp-april30c-dev-cv-webdeploy2.pep-cmp-cmp-april30c-dev.svc.cluster.local
+        port:
+          number: 8081
+  

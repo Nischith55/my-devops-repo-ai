@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pcaf-plcysrvr-vs","namespace":"pep-pfna-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pcaf-plcysrvr-genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com","pcaf-plcysrvr.genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pcaf-plcysrvr.pep-pfna-pgt-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pcaf-plcysrvr
+  name: pcaf-plcysrvr-vs
+  namespace: pep-pfna-pgt-preprod
+spec:
+  gateways:
+  - pep-pfna-pgt-preprod/pep-pfna-pgt-preprod-cv-gw
+  hosts:
+  - pcaf-plcysrvr-genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - pcaf-plcysrvr.genp.pfnapgt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-plcysrvr.pep-pfna-pgt-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.preprod.mypepsico.com
+      - exact: https://apim-na.preprod.mypepsico.com
+      - exact: https://pp.uap.pepenv.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Access-Control-Allow-Headers
+      - Access-Control-Allow-Origin
+      - Authorization
+      - Link
+      - Content-Type
+      exposeHeaders:
+      - Authorization
+      - Link
+      - X-Total-Count

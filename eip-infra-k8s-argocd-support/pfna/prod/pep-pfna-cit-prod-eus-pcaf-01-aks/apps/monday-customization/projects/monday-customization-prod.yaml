@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: monday-customization-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for monday-customization-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_IT_Commercialization/_git/pepsico-monday-customization-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+        namespace: test
+      - name: pep-pfna-cit-prod-eus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: monday-customization-prod-admin
+        description: Admin privileges to monday-customization-prod
+        policies:
+        - p, proj:monday-customization-prod:monday-customization-prod-admin, applications, *, monday-customization-prod/*, allow
+        - p, proj:monday-customization-prod:monday-customization-prod-admin, repositories, *, monday-customization-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: monday-customization-prod-user
+        description: Read-only privileges to monday-customization-prod
+        policies:
+        - p, proj:monday-customization-prod:monday-customization-prod-user, applications, get, monday-customization-prod/*, allow
+        - p, proj:monday-customization-prod:monday-customization-prod-user, applications, sync, monday-customization-prod/*, allow
+        - p, proj:monday-customization-prod:monday-customization-prod-user, repositories, get, monday-customization-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.BEDEV"
+    

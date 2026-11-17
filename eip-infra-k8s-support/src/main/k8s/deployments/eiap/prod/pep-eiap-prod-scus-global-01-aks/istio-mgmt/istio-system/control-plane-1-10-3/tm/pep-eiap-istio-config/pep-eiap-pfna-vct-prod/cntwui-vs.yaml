@@ -1,0 +1,22 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cntwui-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - cntwui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - controltower.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: cntwui.pep-eiap-pfna-vct-prod.svc.cluster.local
+        port:
+          number: 80

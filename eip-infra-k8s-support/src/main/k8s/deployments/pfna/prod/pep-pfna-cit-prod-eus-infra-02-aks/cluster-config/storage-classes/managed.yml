@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: managed
+parameters:
+  skuname: Standard_LRS
+  cachingmode: ReadOnly
+  kind: Managed
+  resourceGroup: pep-pfna-cit-prod-eus-k8s-hhnxt-01-rg
+  zoned: 'true'
+provisioner: disk.csi.azure.com
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

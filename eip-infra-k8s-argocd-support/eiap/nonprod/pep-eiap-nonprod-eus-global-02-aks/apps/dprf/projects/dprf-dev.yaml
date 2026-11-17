@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dprf-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dprf-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/LATAM_DPRF_SRE/_git/dprf-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-latam-pepsre-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: dprf-dev-admin
+        description: Admin privileges to dprf-dev
+        policies:
+        - p, proj:dprf-dev:dprf-dev-admin, applications, *, dprf-dev/*, allow
+        - p, proj:dprf-dev:dprf-dev-admin, repositories, *, dprf-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dprf-dev-user
+        description: Read-only privileges to dprf-dev
+        policies:
+        - p, proj:dprf-dev:dprf-dev-user, applications, get, dprf-dev/*, allow
+        - p, proj:dprf-dev:dprf-dev-user, applications, sync, dprf-dev/*, allow
+        - p, proj:dprf-dev:dprf-dev-user, repositories, get, dprf-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dprf-dev:dprf-dev-user, applications, action/apps/Deployment/restart, dprf-dev/*, allow
+        groups:
+        - "Team.Support.LATAM.NonProd.PepSRE"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    control-plane: 'true'
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-h5jcr
+    kubernetes.io/metadata.name: calico-system
+    name: calico-system
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
+    servicename_aks: apigee
+  name: calico-system

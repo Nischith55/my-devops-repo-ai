@@ -1,0 +1,44 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: nvingest-rag-feature
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for nvingest-rag-feature   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-aisp-nvingest-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nvingest
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nim-llm
+      - pepeiapnonprodglobalcommonacr.azurecr.io
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-nvingest-test
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: nvingest-rag-feature-admin
+        description: Admin privileges to nvingest-rag-feature
+        policies:
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-admin, applications, *, nvingest-rag-feature/*, allow
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-admin, repositories, *, nvingest-rag-feature/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: nvingest-rag-feature-user
+        description: Read-only privileges to nvingest-rag-feature
+        policies:
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-user, applications, get, nvingest-rag-feature/*, allow
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-user, applications, sync, nvingest-rag-feature/*, allow
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-user, repositories, get, nvingest-rag-feature/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:nvingest-rag-feature:nvingest-rag-feature-user, applications, action/apps/Deployment/restart, nvingest-rag-feature/*, allow
+        groups:
+        - "Team.Support.CGF.Prod.aidb"
+        - "Team.Support.EIAP.READ"
+    

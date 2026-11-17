@@ -1,0 +1,85 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: iai-promotional-strip-removal-2024-head-bxeo-vs
+  namespace: pep-eiap-latam-iaipsr-prod
+  labels:
+      app: iai-promotional-strip-removal-2024-head
+spec:
+  gateways:
+  - pep-eiap-latam-iaipsr-prod/pep-eiap-latam-iaipsr-prod-cv-gw
+  hosts:
+  - iai-promotional-strip-removal-2024-head.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/process_image
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/fetch_results
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/review_image
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/process_image_test
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/fetch_jsons
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/update_json_hash
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /image_recognition/update_info
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8000                          
+    - match:
+      - ignoreUriCase: true
+        uri:
+          prefix: /
+      route:
+      - destination:
+          host: iai-promotional-strip-removal-2024-head.pep-eiap-latam-iaipsr-prod.svc.cluster.local
+          port:
+            number: 8265

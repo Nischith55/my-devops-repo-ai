@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eip-latam-track-and-trace-error-handler-service
+  name: pep-eip-latam-track-and-trace-error-handler-service-vs
+  namespace: pep-eiap-latam-gtm-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-preprod/pep-eiap-latam-gtm-preprod-cv-gw
+  hosts:
+  - pep-eip-latam-track-and-trace-error-handler-service.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-latam-track-and-trace-error-handler-service.pep-eiap-latam-gtm-preprod.svc.cluster.local
+        port:
+          number: 80

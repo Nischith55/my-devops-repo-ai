@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pythontst-releasetestrepo-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pythontst-releasetestrepo-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/pythontst-releasetestrepo-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/gt-test-1-devx-python/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: pythontst-releasetestrepo-qa-admin
+    description: Admin privileges to pythontst-releasetestrepo-qa
+    policies:
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-admin, applications, *, pythontst-releasetestrepo-qa/*, allow
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-admin, repositories, *, pythontst-releasetestrepo-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: pythontst-releasetestrepo-qa-user
+    description: Read-only privileges to pythontst-releasetestrepo-qa
+    policies:
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-user, applications, get, pythontst-releasetestrepo-qa/*, allow
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-user, applications, sync, pythontst-releasetestrepo-qa/*, allow
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-user, repositories, get, pythontst-releasetestrepo-qa/*, allow
+    - p, proj:pythontst-releasetestrepo-qa:pythontst-releasetestrepo-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

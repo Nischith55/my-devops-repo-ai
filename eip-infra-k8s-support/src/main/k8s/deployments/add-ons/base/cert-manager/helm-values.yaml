@@ -1,0 +1,48 @@
+# jetstack/cert-manager chart values.
+
+# The bootstrapper uses the app key as the release name; keep the standard
+# cert-manager resource names regardless.
+fullnameOverride: cert-manager
+
+crds:
+  enabled: true
+  keep: true
+
+# Keep leader-election Roles in the release namespace instead of kube-system,
+# so the app only needs the cert-manager destination in its AppProject.
+global:
+  leaderElection:
+    namespace: cert-manager
+
+# OPA K8sRequiredResources (deny) needs cpu/memory requests and a memory limit
+# on every pod.
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+startupapicheck:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 64Mi

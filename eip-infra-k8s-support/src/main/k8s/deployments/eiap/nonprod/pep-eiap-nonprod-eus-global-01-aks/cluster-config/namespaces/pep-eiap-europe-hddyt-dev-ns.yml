@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-europe-hddyt-dev
+    project: hddyt
+    sector: europe
+    team: europe-hddyt
+  name: pep-eiap-europe-hddyt-dev

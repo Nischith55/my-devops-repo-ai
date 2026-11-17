@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-flna-whdt-dev
+  labels:
+    env-nonprod: "true"
+    project: whdt
+    sector: flna
+    team: flna-whdt
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: pepsense-platform-flna
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: dfbe083ddb3e8c10c2b5f38139961991
+    pep-cmdb-app-service-id: 790f1d7047a6151052293238436d433a
+    pep-environment: Development
+    

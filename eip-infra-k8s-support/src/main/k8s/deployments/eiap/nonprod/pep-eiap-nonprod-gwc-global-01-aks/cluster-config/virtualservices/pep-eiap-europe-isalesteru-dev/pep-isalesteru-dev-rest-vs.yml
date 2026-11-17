@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-isalesteru-dev-rest
+  name: pep-isalesteru-dev-rest-vs
+  namespace: pep-eiap-europe-isalesteru-dev
+spec:
+  gateways:
+  - pep-eiap-europe-isalesteru-dev/pep-eiap-europe-isalesteru-dev-cv-gw
+  hosts:
+  - pep-isalesteru-dev-rest.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-isalesteru-dev-rest.pep-eiap-europe-isalesteru-dev.svc.cluster.local
+        port:
+          number: 9091

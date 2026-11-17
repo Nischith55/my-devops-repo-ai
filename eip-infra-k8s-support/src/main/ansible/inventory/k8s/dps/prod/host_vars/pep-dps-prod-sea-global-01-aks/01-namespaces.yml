@@ -1,0 +1,12 @@
+####### BEGIN Added recently --pep-dps-prod-sea-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_dps_apac_pepconnind_prod
+  - ns_pep_dps_apac_psd_prod
+  - ns_pep_dps_cgf_apprt_prod
+  - ns_pep_dps_cgf_gscafso_prod
+  - ns_pep_dps_cgf_gpg_prod
+  - ns_pep_dps_cgf_pepconntha_prod
+####### END Added recently --pep-dps-prod-sea-global-01-aks######

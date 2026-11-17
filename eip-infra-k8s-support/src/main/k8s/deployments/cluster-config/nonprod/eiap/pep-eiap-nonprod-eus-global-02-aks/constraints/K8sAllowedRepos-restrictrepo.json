@@ -1,0 +1,92 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/K8sAllowedRepos:default/restrictrepo"
+    },
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "cert-manager-system",
+        "reloader",
+        "policy-system",
+        "default",
+        "keda",
+        "local",
+        "gpu-operator",
+        "nim-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra-dev",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-dev",
+        "pep-eiap-snowdiscovery-nonprod"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "myartifactory.mypepsico.com/",
+        "artifactory.mypepsico.com/",
+        "artifactory.pepsico.pvt/",
+        "pepeiapnonprodcommonacr.azurecr.io/",
+        "docker.io/istio/",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/",
+        "pepeiotpnonprodpriacr.azurecr.io/",
+        "peppbnasckmnonprodeusacr.azurecr.io/",
+        "31c83f7d416d4d5c8c55de68f1a64d6cacr.azurecr.io/",
+        "otel/",
+        "structurizr/onpremises",
+        "ghcr.io/chaos-mesh/",
+        "us-docker.pkg.dev/gloo-mesh/",
+        "gcr.io/google-containers",
+        "rancher/"
+      ]
+    }
+  }
+}

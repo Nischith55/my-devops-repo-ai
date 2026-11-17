@@ -1,0 +1,138 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-pfna-sector-devops-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - nodes
+    - namespaces
+    - persistentvolumes
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
+    verbs:
+    - get
+    - list
+-   apiGroups:
+    - ''
+    resources:
+    - persistentvolumeclaims
+    verbs:
+    - '*'
+-   apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - list
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    verbs:
+    - '*'
+-   apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - podtemplates
+    - pods
+    - pods/attach
+    - pods/binding
+    - pods/eviction
+    - pods/exec
+    - pods/log
+    - pods/portforward
+    - pods/proxy
+    - pods/status
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - services
+    - services/proxy
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    - keda.sh
+    resources:
+    - secrets
+    - triggerauthentications
+    verbs:
+    - create
+    - list
+    - patch
+    - update
+    - watch
+-   apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs:
+    - '*'
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - '*'
+-   apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    - api
+    - autoscaling
+    - batch
+    - networking.istio.io
+    resources:
+    - '*/status'
+    - '*/scale'
+    verbs:
+    - '*'
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - virtualservices
+    - destinationrules
+    verbs:
+    - '*'
+-   apiGroups:
+    - ''
+    resources:
+    - events
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    verbs:
+    - '*'

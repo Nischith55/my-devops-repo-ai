@@ -1,0 +1,727 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+parameters:
+- name: namespace
+  displayName: 'namespace'
+  type: string
+
+- name: env
+  displayName: 'env'
+  type: string
+
+- name: sector
+  displayName: 'sector'
+  type: string
+
+- name: project
+  displayName: 'project'
+  type: string
+
+- name: objectid
+  displayName: 'objectid'
+  type: string
+
+- name: cluster
+  displayName: 'cluster'
+  type: string
+
+- name: department
+  displayName: 'department'
+  type: string
+
+- name: isspringbootapp
+  displayName: 'isspringbootapp'
+  type: string
+
+- name: region
+  displayName: 'region'
+  type: string
+
+- name: team
+  displayName: 'team'
+  type: string
+
+- name: eipenv
+  displayName: 'eipenv'
+  type: string
+
+- name: apiendpoint
+  displayName: 'apiendpoint'
+  type: string
+
+- name: application_service
+  displayName: 'servicename_aks tag'
+  type: string
+
+- name: pep-cmdb-app-service-id
+  displayName: 'app-service-id'
+  type: string 
+
+- name: pep-cmdb-bus-app-id
+  displayName: 'bussiness-app-id'
+  type: string
+
+- name: pep-environment
+  displayName: 'pep-environment'
+  type: string
+  
+variables:
+  - group: repo_access_token
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+#  - name: branch_name
+#    value: feature/namespace_k8s_changes
+  - name: env
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: prod
+    ${{ elseif eq(parameters.env, 'preprod') }}:
+      value: preprod
+    ${{ else }}:
+      value: nonprod
+  - name: client_id
+    ${{ if eq(parameters.eipenv, 'prod') }}:
+      value: $(client_id_prod)
+    ${{ elseif eq(parameters.eipenv, 'preprod') }}:
+      value: $(client_id_preprod)  
+    ${{ else }}:
+      value: $(client_id_nonprod)
+  - name: client_secret
+    ${{ if eq(parameters.eipenv, 'prod') }}:
+      value: $(client_secret_prod)
+    ${{ elseif eq(parameters.eipenv, 'preprod') }}:
+      value: $(client_secret_preprod)  
+    ${{ else }}:
+      value: $(client_secret_nonprod)
+  - name: token_url
+    ${{ if eq(parameters.eipenv, 'prod') }}:
+      value: $(token_url_prod)
+    ${{ else }}:
+      value: $(token_url_nonprod)
+  - name: env_convert
+    value: $[upper(variables['env'])]
+  - name: scope
+    value: EIP_DEV_MDPDevUsers
+  - name: role
+    ${{ if eq(variables.env, 'nonprod') }}:
+      value: pep-${{ parameters.department }}-developer-rb
+    ${{ else }}:
+      value: pep-${{ parameters.department }}-appsupport-rb
+  - name: isspringbootapp
+    ${{ if eq(parameters.isspringbootapp, 'true') }}:
+      value: pep-${{ parameters.department }}-springcloudk8s-rb
+
+  - name: agent_pool
+    ${{ if and(eq(variables.env, 'nonprod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'snt'), eq(parameters.department, 'fortify'), eq(parameters.department, 'cmp'), eq(parameters.department, 'infratools'), eq(parameters.department, 'dps'), eq(parameters.department, 'pepgenx'), eq(parameters.department, 'automation'), eq(parameters.department, 'latam'), eq(parameters.department, 'pbna'), eq(parameters.department, 'cgf'), eq(parameters.department, 'aisp'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'latam'), eq(parameters.department, 'fortify'), eq(parameters.department, 'snt'), eq(parameters.department, 'infratools'), eq(parameters.department, 'cmp'), eq(parameters.department, 'automation'), eq(parameters.department, 'cgf'), eq(parameters.department, 'pbna'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'prod'), or(eq(parameters.department, 'eiap'), eq(parameters.department, 'latam'), eq(parameters.department, 'fortify'), eq(parameters.department, 'cmp'), eq(parameters.department, 'infratools'), eq(parameters.department, 'dps'), eq(parameters.department, 'pepgenx'), eq(parameters.department, 'automation'), eq(parameters.department, 'snt'), eq(parameters.department, 'pbna'), eq(parameters.department, 'cgf'), eq(parameters.department, 'aisp'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'dps')) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'pepgenx')) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(variables.env, 'nonprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-nonprod-eus-hhnxt-global-01-aks-agents
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-preprod-${{ parameters.region }}-pcaf-01-aks-agents
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-prod-${{ parameters.region }}-pcaf-01-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+
+  - name: subscription_id_others
+    ${{ if and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), eq(parameters.department, 'pfna')) }}:
+      value: 498640c4-36eb-4566-b752-ca3d2939c544
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), eq(parameters.department, 'snt')) }}:
+      value: cf488406-af15-4248-898e-11932611df2b
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), eq(parameters.department, 'cmp')) }}:
+      value: dcae03ca-ca66-40ff-a58e-a8585fd62d6d
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), eq(parameters.department, 'pbna')) }}:
+      value: f427a039-5122-4a35-ac4a-c63c96d1acde
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'pfna')) }}:
+      value: 55bde1f0-8591-432c-a37f-5c1bdff8c2f8
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'prod')), eq(parameters.department, 'automation')) }}:
+      value: 34030b4b-d34e-4290-bd1b-a6945f95d9aa
+    ${{ elseif and(eq(variables.env, 'nonprod'), eq(parameters.department, 'aisp')) }}:
+      value: d6a9062c-4c82-4e49-8204-100c57f33583
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'aisp')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'aisp')) }}:
+      value: 06d0e1b4-b6e3-43c3-9f97-29e840d4d893
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), or(eq(parameters.region, 'ae'), eq(parameters.region, 'gwc'), eq(parameters.region, 'suk')), eq(parameters.department, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'eiap')) }}:
+      value: 72d4c1b3-fd6e-432a-b18a-89eec2c10a6b
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'pbna')) }}:
+      value: 5f9ba971-f3d4-4706-8d5c-2aae550f9cb4
+    ${{ elseif and(eq(variables.env, 'preprod'), eq(parameters.department, 'eiap')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(variables.env, 'nonprod'), eq(parameters.department, 'eiap')) }}:
+      value: 154431fe-c911-490e-87a0-c84ced2bee05
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'snt')) }}:
+      value: c02eac0c-ef5a-4dc0-a613-c4be86e092ab
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), or(eq(parameters.department, 'infratools'), eq(parameters.department, 'latam'))) }}:
+      value: 86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc
+    ${{ elseif and(eq(variables.env, 'prod'), or(eq(parameters.department, 'infratools'), eq(parameters.department, 'latam'))) }}:
+      value: 92ddb5ec-2ad5-45f6-b81f-e358d4904d04
+    ${{ elseif and(or(eq(variables.env, 'nonprod'),eq(variables.env, 'preprod')), eq(parameters.department, 'dps')) }}:
+      value: 93c33431-a080-4b4a-a362-3b7c5a36b6dc
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'dps')) }}:
+      value: 4f85ea10-aee0-4b46-82cc-4416208c1485
+    ${{ elseif and(eq(variables.env, 'nonprod'), eq(parameters.department, 'pepgenx')) }}:
+      value: c1eeeb0b-31c1-4cda-b497-3a9c83685dbf
+    ${{ elseif and(or(eq(variables.env, 'preprod'),eq(variables.env, 'prod'),eq(variables.env, 'nonprod')), or(eq(parameters.department, 'infosectools'), eq(parameters.department, 'fortify'))) }}:
+      value: bbfb8d7c-7f66-4690-9a6a-0aec959d9035
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.department, 'cgf')) }}:
+      value: 0c1319a6-1def-4d09-a0ca-46d9b0812fbd
+    ${{ elseif and(eq(variables.env, 'prod'), eq(parameters.department, 'cgf')) }}:
+      value: f479bd9e-6531-43ea-85eb-cc6c21b4957b
+    ${{ else }}:
+      value: using-subscription-id-available-in-keyvault
+    
+
+stages:
+  - stage: namespace_check
+    displayName: namespace_check
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: check_namespace_exists
+      displayName: check_namespace_exists
+      steps:
+      - template: templates/set_config.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - task: Bash@3
+        displayName: 'check_namespace'
+        name: check_namespace
+        inputs:
+          targetType: 'inline'
+          script: |
+            kubectl get ns ${{ parameters.namespace }} --no-headers -o custom-columns=":metadata.name"
+            retVal=`echo $?`
+            echo $retVal
+            if [ $retVal -eq 0 ];then
+              echo "##vso[task.setvariable variable=outputresult;isoutput=true]exists"
+            else
+              echo "##vso[task.setvariable variable=outputresult;isoutput=true]not_found"
+            fi
+        env:
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+      
+      - template: templates/log_failure.yml  # Template reference
+
+    - job: kube_config_creation
+      dependsOn: check_namespace_exists
+      condition: and(succeeded('check_namespace_exists'), eq(dependencies.check_namespace_exists.outputs['check_namespace.outputresult'], 'exists'))  
+      displayName: kube_config_creation
+      steps:
+      - template: templates/kube_config_creation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: rolebinding
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/log_failure.yml  # Template reference
+
+  - stage: get_crosscharge_tag
+    displayName: get_crosscharge_tag
+    dependsOn: namespace_check 
+    condition: and(succeeded(), eq(dependencies.namespace_check.outputs['check_namespace_exists.check_namespace.outputresult'], 'not_found'))
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: crosscharge_aks 
+      displayName: crosscharge_aks 
+      steps:
+      - template: templates/set_config_k8s.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - task: CmdLine@2
+        inputs:
+          script: |
+            . /opt/venv/python310-ansible211/bin/activate
+            pip3 install ruamel.yaml
+            # pip install futures
+            pip install "ansible-core==2.14.6"
+            pip install pyyaml
+            pip3 install openshift
+            pip3 install "cryptography!=40.0.0,!=40.0.1,<42,>=38.0.0"
+            pip3 install "packaging<22.0,>=20.9"
+            pip3 install "portalocker~=1.2"
+            pip install azure
+            pip install kiota-authentication-azure
+            pip install ansible[azure] azure-cli msrest msrestazure azure-identity azure-mgmt-resource azure-mgmt-compute azure-mgmt-network azure-mgmt-storage azure-storage-blob azure-mgmt-containerservice azure-mgmt-keyvault azure-keyvault-secrets azure-mgmt-monitor azure-mgmt-authorization azure-mgmt-automation azure-mgmt-notificationhubs azure-mgmt-eventhub azure-mgmt-eventgrid azure-mgmt-web azure-mgmt-cdn azure-mgmt-dns azure-mgmt-redis azure-mgmt-trafficmanager azure-mgmt-cosmosdb azure-mgmt-policyinsights azure-mgmt-containerregistry azure-mgmt-privatedns azure-mgmt-sql azure-mgmt-datafactory
+            
+        displayName: 'ansible_pre_requisites'
+        name: 'ansible_pre_requisites'
+
+      - task: Bash@3
+        displayName: "set_subscription"    
+        inputs:
+          targetType: 'inline'
+          script: |
+            if [[ "$(subscription_id_others)" == "using-subscription-id-available-in-keyvault" ]]; then
+              echo "subscription set to KV subscription -->> $AZURE_SUBSCRIPTION_ID"
+              echo "##vso[task.setvariable variable=SUBSCRIPTION_ID_CLUSTER]$AZURE_SUBSCRIPTION_ID"
+            else
+              echo "subscription set to subscription_id_others --> $(subscription_id_others) "
+              echo "##vso[task.setvariable variable=SUBSCRIPTION_ID_CLUSTER]$(subscription_id_others)"
+            fi
+      
+      - template: templates/get_crosscharge.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }} 
+
+      - task: Bash@3
+        displayName: 'set_crosscharge'
+        name: set_crosscharge
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "setting crosscharge_aks value "
+            if [ -f crosscharge.txt ]; then
+              if [ -s crosscharge.txt ]; then 
+                echo "File exists and not empty."
+              else 
+                echo "File exists but empty. "
+                exit 1
+              fi 
+            else
+              echo "File doesn't exist. "
+              exit 1
+            fi 
+            input=`cat crosscharge.txt`
+            echo $input
+            echo "##vso[task.setvariable variable=crosscharge_aks;isOutput=true]$input"
+
+      - template: templates/log_failure.yml  # Template reference
+
+  - stage: namespace_provision
+    displayName: namespace_provision
+    dependsOn: 
+      - get_crosscharge_tag
+    condition: succeeded()
+    pool: 
+      name: $(agent_pool)
+    variables: 
+      crosscharge_value: $[ stageDependencies.get_crosscharge_tag.crosscharge_aks.outputs['set_crosscharge.crosscharge_aks'] ]
+    jobs:
+    - job: namespace_manifest_apply
+      displayName: namespace_manifest_apply
+      steps:
+      # - task: Ansible@0
+      #   displayName: "inventorycreation"
+      #   name: inventorycreation
+      #   inputs:
+      #     ansibleInterface: 'agentMachine'
+      #     playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/namespace-inventory-creation.yml'
+      #     args: '-i $(system.defaultWorkingDirectory)/src/main/ansible/inventory/k8s/defaults/ -e ''{ "namespace": "${{ parameters.namespace }}", "env": "${{ parameters.env }}", "sector": "${{ parameters.sector }}", "project": "${{ parameters.project }}", "objectid": "${{ parameters.objectid }}", "cluster": "${{ parameters.cluster }}", "department": "${{ parameters.department }}", "isspringbootapp": "${{ parameters.isspringbootapp }}" ,"mypath": "$(system.DefaultworkingDirectory)", "crosscharge_aks": "$(crosscharge_value)", "servicename_aks": "${{parameters.application_service}}", "pep_cmdb_app_service_id": "${{ parameters[''pep-cmdb-app-service-id''] }}", "pep_environment": "${{ parameters[''pep-environment''] }}", "pep_cmdb_bus_app_id": "${{ parameters[''pep-cmdb-bus-app-id''] }}" }'' -v'
+      #   env:
+      #     ANSIBLE_HOST_KEY_CHECKING: False
+      #     ANSIBLE_LOCALHOST_WARNING: False
+
+      - task: Bash@3
+        displayName: 'inventorycreation'
+        inputs:
+          targetType: 'inline'
+          script: |
+            ansible-playbook -i '$(system.defaultWorkingDirectory)/src/main/ansible/inventory/k8s/defaults/' -e '{"namespace": "${{ parameters.namespace }}", "env": "${{ parameters.env }}", "sector": "${{ parameters.sector }}", "project": "${{ parameters.project }}", "objectid": "${{ parameters.objectid }}", "cluster": "${{ parameters.cluster }}", "department": "${{ parameters.department }}", "isspringbootapp": "${{ parameters.isspringbootapp }}" ,"mypath": "$(system.DefaultworkingDirectory)", "crosscharge_aks": "$(crosscharge_value)", "servicename_aks": "${{parameters.application_service}}", "pep_cmdb_app_service_id": "${{ parameters['pep-cmdb-app-service-id'] }}", "pep_environment": "${{ parameters['pep-environment'] }}", "pep_cmdb_bus_app_id": "${{ parameters['pep-cmdb-bus-app-id'] }}" }'  '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/namespace-inventory-creation.yml' -v
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_LOCALHOST_WARNING: False
+
+      - task: CmdLine@2
+        inputs:
+          script: |
+           . /opt/venv/python38-ansible211/bin/activate  
+            # pip install ansible[Azure]
+            # pip install futures
+            pip install pathlib 
+            ansible-galaxy collection install community.general
+            pip install pyyaml
+            pip install jmespath==0.10.0
+            pip install sh==1.14.2
+            pip install six==1.16.0
+        displayName: 'ansible_pre_requisites'
+        name: 'ansible_pre_requisites'
+
+      - template: templates/set_config.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}      
+      
+      - template: templates/manifest_generation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+                        
+
+      - template: templates/manifest_generation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: rolebinding
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+
+      - template: templates/manifest_generation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: serviceaccount
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/manifest_generation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: secret
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/manifest_apply.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+
+      - template: templates/manifest_apply.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: serviceaccount
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/manifest_apply.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: secret
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/manifest_apply.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: rolebinding
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/kube_config_creation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: rolebinding
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - template: templates/gateway_creation.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: gateway
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          env: ${{ variables.env }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}    
+
+      - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+        - template: templates/git_push.yml
+          parameters:
+            cluster: ${{ parameters.cluster }}
+            env: $(env)
+
+      - template: templates/log_failure.yml  # Template reference
+
+  - stage: rollback_namespace_provision
+    dependsOn: 
+      - namespace_provision
+    condition: failed('namespace_provision')
+    displayName: rollback_namespace_provision
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: namespace_deletion 
+      displayName: namespace_deletion
+      steps:
+      - template: templates/set_config.yml  # Template reference 
+        parameters:
+          cluster: ${{ parameters.cluster }}
+          namespace: ${{ parameters.namespace }}
+          resc_kind: namespace
+          region: ${{ parameters.region }}
+          department: ${{ parameters.department }}
+          isspringbootapp: ${{ parameters.isspringbootapp }}
+
+      - task: Bash@3
+        displayName: 'delete_namespace'
+        name: delete_namespace
+        inputs:
+          targetType: 'inline'
+          script: |
+            resc=`kubectl get all -n ${{ parameters.namespace }}`
+            if [[ $resc -eq '' ]]
+            then
+              kubectl delete ns ${{ parameters.namespace }}
+              retVal=`echo $?`
+              echo $retVal
+              if [ $retVal -eq 0 ];then
+                echo "##vso[task.setvariable variable=outputresult;isoutput=true]deleted_successfully"
+              else
+                echo "##vso[task.setvariable variable=outputresult;isoutput=true]error_deleting_namespace"
+              fi
+            else
+              echo "resources exists in the namespace"
+            fi
+        env:
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+
+      - template: templates/log_failure.yml  # Template reference
+
+  - stage: Invoke_API_OnSuccess
+    dependsOn: namespace_provision
+    condition: succeeded('namespace_provision')
+    displayName: Invoke_API_OnSuccess
+    pool: 
+      #name: $(agent_pool)
+      name: pep-eiap-prod-eus-infra-02-aks-agents
+    variables: 
+        config_content: $[ stageDependencies.namespace_provision.namespace_manifest_apply.outputs['encode.outputresult'] ]
+    jobs:
+    - job: Invoke_API_OnSuccess 
+      displayName: Invoke_API_OnSuccess
+      steps:
+      - task: Bash@3
+        displayName: Onsuccess
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")            
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                                --insecure \
+                                --header 'Content-Type: application/json' \
+                                --header "Authorization: Bearer $token" \
+                                --data-raw '{"runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)","success": "true", "data": { "cluster": "${{ parameters.cluster }}", "namespace": "${{parameters.namespace }}", "env": "${{parameters.env }}", "region": "${{parameters.region }}", "serviceaccount": "${{parameters.namespace }}-sa", "team": "${{parameters.team}}", "kubeconfigfile": "$(config_content)" }}')"
+            echo "response = $output_response"
+      
+
+  - stage: Invoke_API_OnFailure
+    dependsOn:
+      - namespace_check
+      - namespace_provision
+      - rollback_namespace_provision
+      - get_crosscharge_tag
+    condition: or(failed('namespace_check'), failed('get_crosscharge_tag'), failed('rollback_namespace_provision'), failed('namespace_provision'), and(succeeded('namespace_check'), eq(dependencies.namespace_check.outputs['check_namespace_exists.check_namespace.outputresult'], 'exists')))
+    variables:
+      message: $[ stageDependencies.namespace_provision.namespace_manifest_apply.outputs['setOutput.setout'] ]
+      message1: $[ stageDependencies.namespace_check.check_namespace_exists.outputs['setOutput.setout'] ]
+      message2: $[ stageDependencies.namespace_check.kube_config_creation.outputs['setOutput.setout'] ]
+      message3: $[ stageDependencies.rollback_namespace_provision.namespace_deletion.outputs['setOutput.setout'] ]
+      message4: $[ stageDependencies.get_crosscharge_tag.crosscharge_aks.outputs['setOutput.setout'] ] 
+      config_content: $[ stageDependencies.namespace_check.kube_config_creation.outputs['encode.outputresult'] ]
+    displayName: Invoke_API_OnFailure
+    pool: 
+      #name: $(agent_pool)
+      name: pep-eiap-prod-eus-infra-02-aks-agents
+    jobs:
+    - job: api_failure_namespace_provision
+      condition: eq(stageDependencies.namespace_provision.namespace_manifest_apply.result,'Failed')
+      displayName: api_failure_namespace_provision
+      steps:
+      - task: Bash@3
+        displayName: Onnamespaceprovisionfailure
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{ "runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)", "success": "false", "error": { "message": "$(message) task failed in the pipeline" }}')"
+            echo "response = $output_response"
+
+    - job: api_failure_namespace_check
+      condition: eq(stageDependencies.namespace_check.check_namespace_exists.result,'Failed')
+      displayName: api_failure_namespace_check
+      steps:
+      - task: Bash@3
+        displayName: Onnamespacecheckfailure
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{ "runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)", "success": "false", "error": { "message": "$(message1) task failed in the pipeline" }}')"
+            echo "response = $output_response"
+
+    - job: api_failure_namespace_check_kubeconfig
+      condition: eq(stageDependencies.namespace_check.kube_config_creation.result,'Failed')
+      displayName: api_failure_namespace_check_kubeconfig
+      steps:
+      - task: Bash@3
+        displayName: Onnamespacecheckkubeconfigfailure
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{ "runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)", "success": "false", "error": { "message": "$(message2) task failed in the pipeline" }}')"
+            echo "response = $output_response"
+
+    - job: api_failure_namespace_delete
+      condition: eq(stageDependencies.rollback_namespace_provision.namespace_deletion.result,'Failed')
+      displayName: api_failure_namespace_delete
+      steps:
+      - task: Bash@3
+        displayName: Onnamespacedeletefailure
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{ "runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)", "success": "false", "error": { "message": "$(message3) task failed in the pipeline" }}')"
+            echo "response = $output_response"
+    
+    - job: api_failure_get_crosscharge_tag
+      condition: eq(stageDependencies.get_crosscharge_tag.crosscharge_aks.result,'Failed')
+      displayName: api_failure_get_crosscharge_tag
+      steps:
+      - task: Bash@3
+        displayName: Ongetcrosschargetagfailure
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{ "runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)", "success": "false", "error": { "message": "$(message4) task failed in the pipeline" }}')"
+            echo "response = $output_response"
+
+    - job: api_success_namespace_check
+      condition: and(eq(stageDependencies.namespace_check.check_namespace_exists.result,'Succeeded'), eq(stageDependencies.namespace_check.check_namespace_exists.outputs['check_namespace.outputresult'], 'exists'), eq(stageDependencies.namespace_check.kube_config_creation.result,'Succeeded'))
+      displayName: api_success_namespace_check
+      steps:
+      - task: Bash@3
+        displayName: Onchecksuccess
+        inputs:
+          targetType: 'inline'
+          script: |
+            # get the token
+            resp="$(curl -v -X POST \
+            -H "Content-type:application/x-www-form-urlencoded" \
+            "$(token_url)" \
+            -d "grant_type=client_credentials&client_id=$(client_id)&client_secret=$(client_secret)&scope=$(scope)")"
+            echo "Token is ${resp}"
+            token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")      
+            echo "token = $token"
+            output_response="$(curl --location --request PUT '${{ parameters.apiendpoint }}' \
+                               --insecure \
+                               --header 'Content-Type: application/json' \
+                               --header "Authorization: Bearer $token" \
+                               --data-raw '{"runId":"$(Build.BuildId)", "pipelineId":"$(System.DefinitionId)","success": "true", "data": { "cluster": "${{ parameters.cluster }}", "namespace": "${{parameters.namespace }}", "env": "${{parameters.env }}", "region": "${{parameters.region }}", "serviceaccount": "${{parameters.namespace }}-sa", "team": "${{parameters.team}}", "kubeconfigfile": "$(config_content)" }}')"
+            echo "response = $output_response"
+

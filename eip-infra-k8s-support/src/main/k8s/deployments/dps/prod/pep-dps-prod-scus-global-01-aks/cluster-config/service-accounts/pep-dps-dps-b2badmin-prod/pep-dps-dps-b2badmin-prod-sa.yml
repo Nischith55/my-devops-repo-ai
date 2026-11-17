@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: b51ff4cc-a5d0-4cd5-ac94-1ba90cb3a868
+  name: pep-dps-dps-b2badmin-prod-sa
+  namespace: pep-dps-dps-b2badmin-prod

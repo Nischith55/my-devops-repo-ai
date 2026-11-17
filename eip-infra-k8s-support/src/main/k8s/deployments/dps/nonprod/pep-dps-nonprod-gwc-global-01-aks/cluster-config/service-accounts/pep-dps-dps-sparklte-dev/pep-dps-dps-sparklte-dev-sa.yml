@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: a8f234a9-2d38-4b8b-912b-fee051e7af91
+  name: pep-dps-dps-sparklte-dev-sa
+  namespace: pep-dps-dps-sparklte-dev

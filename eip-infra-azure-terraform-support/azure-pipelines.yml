@@ -1,0 +1,685 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+#________________________________________
+resources:
+ repositories: 
+    - repository: terraformmodules
+      type: git
+      name: eip-infra-terraform-modules
+    - repository: eip-infra-azure-terraform-support
+      type: git
+      name: eip-infra-azure-terraform-support
+      ref: main
+
+parameters:
+  - name: Functional_Area
+    displayName: Functional_Area
+    type: string
+    values:
+      - eiap
+      - edap
+      - pfna
+      - snt
+      - cmp
+      - aisp
+      - aisp-sbox
+      - infratools
+      - infosectools
+      - pbna
+      - dps
+      - globalit
+      - cmptest
+      - automation
+      - cgf
+      - pepgenx
+  - name: service_principal
+    displayName: service_principal
+    type: string
+    values:  
+      - NONPROD_K8S_SPN
+      - PREPROD_K8S_SPN
+      - PREPROD_NETWORK_SPN
+      - NONPROD_NETWORK_SPN
+      - NONPROD_PAAS_SPN
+      - PREPROD_PAAS_SPN
+      - PROD_NETWORK_SPN
+      - PROD_PAAS_SPN
+      - PROD_K8S_SPN
+      - pep-eiap-nonprod-k8s-sp
+      - pep-eiap-nonprod-network-sp      
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+      - prod-dr
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+      - na
+      - essa
+      - apac
+  - name: ResourceType
+    displayName: Resource Type
+    type: string
+    values:
+      - managed-identity
+      - storage-account
+      - azure-kubernetes-services
+      - key-vault
+      - key-vault-certificate
+      - acr
+      - evh
+      - evh-cgrp
+      - evhns
+      - evhns-authz
+      - pvtep
+      - asev3
+      - logicapp
+      - ase-plan
+      - federated-credentials
+  - name: ReadMode
+    displayName: ReadMode? Select Yes to view the state file
+    type: string
+    values:
+      - No
+      - Yes 
+
+  - name: ResourceGroupName
+    displayName: ResourceGroupName
+    type: string
+  - name: ResourceName
+    displayName: Resource Name
+    type: string
+    
+  - name: DownloadCertificate
+    displayName: Download Certificate from Secret Files?
+    type: string
+    values:
+      - No
+      - Yes
+
+  - name: CertificateName
+    displayName: Certificate Name (Optional)
+    type: string
+    default: ' '
+
+#---------------------------------------------------------------------------------------------------------------
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: linux_windows_profiles
+  - group: preprod_nonprod_ase_azure_secrets
+
+  - name: nonprod_eus_agents
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  - name: nonprod_scus_agents
+    #value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  - name: preprod_eus_agents
+    value: pep-eiap-preprod-eus-infra-02-aks-agents
+
+  - name: preprod_scus_agents
+    value: pep-eiap-preprod-scus-infra-02-aks-agents
+    #value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    
+
+  - name: prod_eus_agents
+    value: pep-eiap-prod-eus-infra-02-aks-agents
+
+  - name: prod_scus_agents
+    value: pep-eiap-prod-scus-infra-02-aks-agents
+    
+  - name: nonprod_backend_resource_group
+    value: pep-eiap-nonprod-eus-infra-01-rg
+
+  - name: preprod_backend_resource_group
+    value: pep-eiap-preprod-eus-infra-01-rg
+    
+  - name: prod_backend_resource_group
+    value: pep-eiap-prod-eus-infra-01-rg
+
+  - name: nonprod_backend_storage_account
+    value: pe1003auto01tf01sa
+
+  - name: preprod_backend_storage_account
+    value: pe2003auto01tf01sa
+    
+  - name: prod_backend_storage_account
+    value: pe3003auto01tf01sa
+
+  - name: eiap_backend_storage_container
+    value: eiap-storage-container
+
+  - name: edap_backend_storage_container
+    value: edap-storage-container
+    
+  - name: pfna_backend_storage_container
+    value: pfna-storage-container
+
+  - name: snt_backend_storage_container
+    value: snt-storage-container
+    
+  - name: cmp_backend_storage_container
+    value: cmp-storage-container
+
+  - name: infratools_backend_storage_container
+    value: infratools-storage-container
+
+  - name: infosectools_backend_storage_container
+    value: infosectools-storage-container
+
+  - name: pbna_backend_storage_container
+    value: pbna-storage-container  
+
+  - name: dps_backend_storage_container
+    value: dps-storage-container  
+
+  - name: automation_backend_storage_container
+    value: automation-storage-container
+
+  - name: globalit_backend_storage_container
+    value: globalit-storage-container
+
+  - name: cmptest_backend_storage_container
+    value: cmptest-storage-container 
+
+  - name: aisp_backend_storage_container
+    value: aisp-storage-container 
+
+  - name: cgf_backend_storage_container
+    value: eiap-storage-container
+  
+  - name: pepgenx_backend_storage_container
+    value: pepgenx-storage-container
+    
+  - name: approval_ITEIAPAZUREPlatformServices 
+    value: ITEIAPAZUREPlatformServices@pepsico.com
+  - name: approval_ITEIAPCICDSupportServices
+    value: ITEIAPCICDSupportServices@pepsico.com
+  - name: approval_AzureAutomation
+    value: DL-AzureAutomation@pepsico.com
+      
+  # - name: agent_pool
+  #   ${{ if eq(parameters.env, 'nonprod') }}:
+  #     value: $(nonprod_eus_agents)    
+  #   ${{ elseif eq(parameters.env, 'preprod') }}:
+  #    value: $(preprod_eus_agents)    
+  #   ${{ elseif eq(parameters.env, 'prod') }}:
+  #     value: $(prod_eus_agents)  
+  #   ${{ else }}:
+  #     value: $(nonprod_eus_agents)
+
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(nonprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(nonprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(preprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(preprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(prod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(prod_scus_agents) 
+    ${{ elseif and(eq(parameters.env, 'prod-dr'), eq(parameters.Region, 'scus')) }}:
+      value: $(prod_scus_agents)
+    ${{ else }}:
+      value: $(nonprod_eus_agents)
+
+  - name: resource_group_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_resource_group)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_resource_group)
+    ${{ if eq(parameters.env, 'prod-dr') }}:
+      value: $(prod_backend_resource_group)
+    
+
+      
+  - name: storage_account_name_for_backend
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: $(nonprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: $(preprod_backend_storage_account)
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: $(prod_backend_storage_account)
+    ${{ if eq(parameters.env, 'prod-dr') }}:
+      value: $(prod_backend_storage_account)
+ 
+  - name: container_name_for_backend  
+    ${{ if eq(parameters.Functional_Area, 'eiap') }}:
+      value: $(eiap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'edap') }}:
+      value: $(edap_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pfna') }}:
+      value: $(pfna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'snt') }}:
+      value: $(snt_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cmp') }}:
+      value: $(cmp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infratools') }}:
+      value: $(infratools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'infosectools') }}:
+      value: $(infosectools_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pbna') }}:
+      value: $(pbna_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'dps') }}:
+      value: $(dps_backend_storage_container)  
+    ${{ if eq(parameters.Functional_Area, 'automation') }}:
+      value: $(automation_backend_storage_container)  
+    ${{ if eq(parameters.Functional_Area, 'globalit') }}:
+      value: $(globalit_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cmptest') }}:
+      value: $(cmptest_backend_storage_container)    
+    ${{ if eq(parameters.Functional_Area, 'aisp') }}:
+      value: $(aisp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'aisp-sbox') }}:
+      value: $(aisp_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'pepgenx') }}:
+      value: $(pepgenx_backend_storage_container)
+    ${{ if eq(parameters.Functional_Area, 'cgf') }}:
+      value: $(cgf_backend_storage_container)
+  
+  
+  - name: key_for_backend
+    ${{ if and(eq(parameters.ResourceType, 'evh'), eq(parameters.ResourceGroupName, 'pep-eiap-nonprod-scus-k8s-01-rg'), eq(parameters.ResourceName, 'pep-eiap-na-global-infra-aks-diag-01-evh')) }}:
+      value: "${{parameters.ResourceType}}/${{parameters.Region}}/common/$(resource_name_input).tfstate"
+    ${{ else }}:
+      value: "${{parameters.ResourceType}}/${{parameters.Region}}/$(resource_name_input).tfstate" 
+
+  - name: terraform_modules_repo
+    value: "https://PepsiCoIT@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-terraform-modules"  
+   
+
+  - name: resource_name_input
+    value: ${{parameters.ResourceName}}
+
+  - name: backend_spn
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: "NONPROD_NETWORK_SPN"
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: "PREPROD_NETWORK_SPN"  
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: "PROD_NETWORK_SPN"  
+    ${{ if eq(parameters.env, 'prod-dr') }}:
+      value: "PROD_NETWORK_SPN"  
+  
+  
+  - name: subscription_id_others
+    ${{ if and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 498640c4-36eb-4566-b752-ca3d2939c544
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'snt')) }}:
+      value: cf488406-af15-4248-898e-11932611df2b
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cmp')) }}:
+      value: dcae03ca-ca66-40ff-a58e-a8585fd62d6d
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 55bde1f0-8591-432c-a37f-5c1bdff8c2f8
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'snt')) }}:
+      value: c02eac0c-ef5a-4dc0-a613-c4be86e092ab
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 92ddb5ec-2ad5-45f6-b81f-e358d4904d04
+    ${{ elseif and(or(eq(parameters.env, 'preprod'),eq(parameters.env, 'prod'),eq(parameters.env, 'nonprod')), eq(parameters.Functional_Area, 'infosectools')) }}:
+      value: bbfb8d7c-7f66-4690-9a6a-0aec959d9035
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: f427a039-5122-4a35-ac4a-c63c96d1acde
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: 5f9ba971-f3d4-4706-8d5c-2aae550f9cb4  
+    ${{ elseif and(eq(parameters.env, 'prod-dr'), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: 6b53b615-b6a7-47f0-99d9-d9f8a41c0866
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 93c33431-a080-4b4a-a362-3b7c5a36b6dc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 4f85ea10-aee0-4b46-82cc-4416208c1485
+    ${{ elseif and(or(eq(parameters.env, 'preprod'),eq(parameters.env, 'prod'),eq(parameters.env, 'nonprod')), eq(parameters.Functional_Area, 'automation')) }}:
+      value: 34030b4b-d34e-4290-bd1b-a6945f95d9aa
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'globalit')) }}:
+      value: 154431fe-c911-490e-87a0-c84ced2bee05
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'globalit')) }}:
+      value: 72d4c1b3-fd6e-432a-b18a-89eec2c10a6b
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'cmptest')) }}:
+      value: d6451cb5-7d7a-4caf-84e2-5fbaa36c083e  
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: d6a9062c-4c82-4e49-8204-100c57f33583
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'aisp-sbox')) }}:
+      value: 11a82ecc-d5ba-473d-abe2-4b86557c9d55
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 06d0e1b4-b6e3-43c3-9f97-29e840d4d893
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pepgenx')) }}:
+      value: c1eeeb0b-31c1-4cda-b497-3a9c83685dbf
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: 0c1319a6-1def-4d09-a0ca-46d9b0812fbd
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: f479bd9e-6531-43ea-85eb-cc6c21b4957b
+    ${{ else }}:
+      value: Using-subscription-id-available-in-keyvault
+  
+  - name: subscription_id_other_regions
+    ${{ if and(eq(parameters.Region, 'suk'), eq(parameters.Functional_Area, 'eiap'), eq(parameters.ResourceType, 'storage-account'), eq(parameters.env, 'nonprod')) }}:
+      value: 154431fe-c911-490e-87a0-c84ced2bee05
+    ${{ elseif and(eq(parameters.Region, 'suk'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'gwc'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'ae'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ else }}:
+      value: Using-subscription-id-available-in-keyvault
+  
+  #Snyk Scan Path Variables
+  - name : snyk_path
+    ${{ if and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/mi_nonprod/modules/managed_identity
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/mi_preprod/modules/managed_identity  
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/mi_prod/modules/managed_identity
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.env, 'prod-dr')) }}:
+      value: /.terraform/modules/mi_prod-dr/modules/managed_identity
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/sa_nonprod/modules/storage_account  
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/sa_preprod/modules/storage_account   
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/sa_prod/modules/storage_account   
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/aks_np_nonprod/modules/azure_kubernetes_services   
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/aks_np_preprod/modules/azure_kubernetes_services 
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/aks_np_prod/modules/azure_kubernetes_services
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.env, 'prod-dr')) }}:
+      value: /.terraform/modules/aks_np_prod-dr/modules/azure_kubernetes_services 
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/kv_nonprod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/kv_preprod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/kv_prod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/kvc_nonprod/modules/key_vault_certificate
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/kvc_preprod/modules/key_vault_certificate
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/kvc_prod/modules/key_vault_certificate   
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/acr_nonprod/modules/acr
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/acr_preprod/modules/acr
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/acr_prod/modules/acr  
+    ${{ elseif and(eq(parameters.ResourceType, 'evh'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/evh_nonprod/modules/evh
+    ${{ elseif and(eq(parameters.ResourceType, 'evh'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/evh_preprod/modules/evh
+    ${{ elseif and(eq(parameters.ResourceType, 'evh'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/evh_prod/modules/evh  
+    ${{ elseif and(eq(parameters.ResourceType, 'evh-cgrp'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/evh_cg_nonprod/modules/evh_cgrp
+    ${{ elseif and(eq(parameters.ResourceType, 'evh-cgrp'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/evh_cg_preprod/modules/evh_cgrp
+    ${{ elseif and(eq(parameters.ResourceType, 'evh-cgrp'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/evh_cg_prod/modules/evh_cgrp  
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/evhns_nonprod/modules/evhns  
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/evhns_preprod/modules/evhns
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/evhns_prod/modules/evhns
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns-authz'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/evhns_authz_nonprod/modules/evhns_authz
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns-authz'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/evhns_authz_preprod/modules/evhns_authz
+    ${{ elseif and(eq(parameters.ResourceType, 'evhns-authz'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/evhns_authz_prod/modules/evhns_authz  
+    ${{ elseif and(eq(parameters.ResourceType, 'pvtep'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/pvtep_nonprod/modules/private_endpoint
+    ${{ elseif and(eq(parameters.ResourceType, 'pvtep'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/pvtep_preprod/modules/private_endpoint
+    ${{ elseif and(eq(parameters.ResourceType, 'pvtep'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/pvtep_prod/modules/private_endpoint  
+    ${{ elseif and(eq(parameters.ResourceType, 'asev3'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/asev3_nonprod/modules/asev3 
+    ${{ elseif and(eq(parameters.ResourceType, 'asev3'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/asev3_preprod/modules/asev3
+    ${{ elseif and(eq(parameters.ResourceType, 'asev3'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/asev3_prod/modules/asev3  
+    ${{ elseif and(eq(parameters.ResourceType, 'logicapp'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/logicapp_nonprod/modules/logicapp
+    ${{ elseif and(eq(parameters.ResourceType, 'logicapp'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/logicapp_preprod/modules/logicapp  
+    ${{ elseif and(eq(parameters.ResourceType, 'logicapp'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/logicapp_prod/modules/logicapp   
+    ${{ elseif and(eq(parameters.ResourceType, 'ase-plan'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/ase_plan_nonprod/modules/ase_plan
+    ${{ elseif and(eq(parameters.ResourceType, 'ase-plan'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/ase_plan_preprod/modules/ase_plan
+    ${{ elseif and(eq(parameters.ResourceType, 'ase-plan'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/ase_plan_prod/modules/ase_plan
+    ${{ elseif and(eq(parameters.ResourceType, 'federated-credentials'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/fc_nonprod/modules/mi_federated_credentials
+    ${{ elseif and(eq(parameters.ResourceType, 'federated-credentials'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/fc_preprod/modules/mi_federated_credentials  
+    ${{ elseif and(eq(parameters.ResourceType, 'federated-credentials'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/fc_prod/modules/mi_federated_credentials  
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/mi_nonprod/modules/managed_identity
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/mi_preprod/modules/managed_identity  
+    ${{ elseif and(eq(parameters.ResourceType, 'managed-identity'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/mi_prod/modules/managed_identity
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/sa_nonprod/modules/storage_account  
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/sa_preprod/modules/storage_account   
+    ${{ elseif and(eq(parameters.ResourceType, 'storage-account'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/sa_prod/modules/storage_account
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/aks_np_nonprod/modules/azure_kubernetes_services   
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/aks_np_preprod/modules/azure_kubernetes_services 
+    ${{ elseif and(eq(parameters.ResourceType, 'azure-kubernetes-services'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/aks_np_prod/modules/azure_kubernetes_services
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/kv_nonprod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/kv_preprod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/kv_prod/modules/key_vault
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/acr_nonprod/modules/acr
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/acr_preprod/modules/acr
+    ${{ elseif and(eq(parameters.ResourceType, 'acr'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/acr_prod/modules/acr
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'nonprod')) }}:
+      value: /.terraform/modules/kvc_nonprod/modules/key_vault_certificate
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'preprod')) }}:
+      value: /.terraform/modules/kvc_preprod/modules/key_vault_certificate
+    ${{ elseif and(eq(parameters.ResourceType, 'key-vault-certificate'), eq(parameters.Functional_Area, 'cgf'), eq(parameters.env, 'prod')) }}:
+      value: /.terraform/modules/kvc_prod/modules/key_vault_certificate  
+
+  
+#________________________________________________________________________________________________________________________________________________________________________
+stages:   
+  - stage: display
+    displayName: display-selected-inputs-by-user
+    pool: 
+      name: $(agent_pool)
+    jobs: 
+      - job: display_backend_values
+        continueOnError: false
+        steps:
+        - script: |
+           echo "Checked out branch: $(Build.SourceBranch)"
+           echo "Selected Environment : ${{Parameters.env}}"
+           echo "Selected Resource Type : ${{Parameters.ResourceType}}"
+           echo "Selected Region : ${{Parameters.Region}}"
+           echo "Agent Pool to be used for all stages : ${{variables.agent_pool}}"
+           echo "Backend resource group name : ${{variables.resource_group_name_for_backend}}"
+           echo "Backend storage account : ${{variables.storage_account_name_for_backend}}"
+           echo "Backend container name : ${{variables.container_name_for_backend}}"
+           echo "Backend Key : ${{variables.key_for_backend}}"
+           echo "Name of the targeted resource : ${{variables.resource_name_input}}"
+           echo "Resource Group Name : ${{parameters.ResourceGroupName}}"
+           echo "Selected SPN details : ${{Parameters.service_principal}}"
+           echo "Subscription id for pfna/snt/cmp/infratools/infosectools/pbna/dps/globalit/cmptest/automation/aisp/cgf/pepgenx : ${{variables.subscription_id_others}}"
+           echo "Subscription id for EIAP suk/ae/gwc regions : ${{variables.subscription_id_other_regions}}"
+           echo "Read Mode : ${{Parameters.ReadMode}}"
+           echo "Download Certificate from Secret Files : ${{Parameters.DownloadCertificate}}"
+           echo "Secret File Name : ${{Parameters.CertificateName}}"  
+           terraform -v       
+          
+#__________________________________________________________________________________________
+  - stage: check_for_config
+    displayName: manual_check_for_selected_parameters
+    dependsOn: display
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: approval
+      pool: server
+      timeoutInMinutes: 5
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 6
+        inputs:
+          instructions: 'validate the selected parameters before proceeding'
+#__________________________________________________________________________________________
+  - stage: init_validate
+    displayName: terraform-init-validate
+    dependsOn: check_for_config
+    pool: 
+      name: $(agent_pool)  
+    jobs:
+    - template: templates/terraform_init_validate.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{parameters.env}}
+        Region: ${{parameters.Region }}
+        ResourceType: ${{parameters.ResourceType}}  
+        service_principal: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        ReadMode: ${{parameters.ReadMode}}    
+#__________________________________________________________________________________________
+  - stage: plan
+    displayName: terraform-plan
+    dependsOn: init_validate
+    condition: and(succeeded(), eq('${{ parameters.ReadMode }}', 'No'))
+    pool: 
+      name: $(agent_pool)  
+    jobs:
+    - template: templates/terraform_plan.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{parameters.env}}
+        Region: ${{parameters.Region }}
+        ResourceType: ${{parameters.ResourceType}}  
+        service_principal: ${{parameters.service_principal}}
+        service_principal_backend: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        ResourceGroupName: ${{parameters.ResourceGroupName}}
+        DownloadCertificate: ${{parameters.DownloadCertificate}}
+        CertificateName: ${{parameters.CertificateName}}
+#_____________________________________________________________________________________________________
+  # - stage: snyk_scan
+  #   displayName: snyk-scan
+  #   dependsOn: plan
+  #   condition: and(succeeded('plan'), eq('${{ parameters.ReadMode }}', 'No'))
+  #   pool: 
+  #     name: $(agent_pool) 
+  #   jobs:
+  #   - template: templates/snyk_scan.yml
+  #     parameters:
+  #       Functional_Area: ${{parameters.Functional_Area}}
+  #       env: ${{parameters.env}}
+  #       Region: ${{parameters.Region }}
+  #       ResourceType: ${{parameters.ResourceType}}  
+  #       service_principal: ${{variables.backend_spn}}
+  #       resource_name: ${{variables.resource_name_input}}
+  #       snyk_path: ${{variables.snyk_path}}
+      
+#__________________________________________________________________________________________________________________________________
+# approval -
+  - stage: checkforapproval
+    displayName: check-for-approval
+    #dependsOn: snyk_scan
+    dependsOn: plan
+    condition: and(succeeded('plan'), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    #condition: and(succeeded('snyk_scan'), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: approval
+      pool: server
+      timeoutInMinutes: 4320 # job times out in 3 days
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 1440 # task times out in 1 day
+        inputs:
+          notifyUsers: |
+            $(approval_AzureAutomation)
+            $(approval_ITEIAPAZUREPlatformServices)
+            $(approval_ITEIAPCICDSupportServices)
+          instructions: 'Approval required for Terraform Execution'
+#________________________________________________________________________________________________________________________________________________________
+  - stage: apply
+    displayName: terraform-apply
+    dependsOn: checkforapproval
+    condition: and(succeeded('checkforapproval'), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+        name: $(agent_pool)   
+    jobs:
+    - template: templates/terraform_apply.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{ parameters.env }}
+        Region: ${{ parameters.Region }}
+        ResourceType: ${{ parameters.ResourceType }} 
+        service_principal: ${{parameters.service_principal}}
+        service_principal_backend: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        ResourceGroupName: ${{parameters.ResourceGroupName}}
+        DownloadCertificate: ${{parameters.DownloadCertificate}}
+        CertificateName: ${{parameters.CertificateName}}
+#_____________________________________________________________________________________________________________________________________________________________________
+  - stage: kube_configs_extract
+    displayName: extract-admin-and-user-kube-configs
+    condition: and(succeeded(), eq('${{ parameters.ResourceType }}', 'azure-kubernetes-services'), eq(variables['build.sourceBranch'], 'refs/heads/main'))
+    pool: 
+        name: $(agent_pool)
+    jobs:
+    - template: templates/extract_kube_configs.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{ parameters.env }}
+        Region: ${{ parameters.Region }}
+        ResourceType: ${{ parameters.ResourceType }} 
+        service_principal: ${{parameters.service_principal}}
+        service_principal_backend: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        ResourceGroupName: ${{parameters.ResourceGroupName}}
+#_____________________________________________________________________________________________________________________________________________________________________
+

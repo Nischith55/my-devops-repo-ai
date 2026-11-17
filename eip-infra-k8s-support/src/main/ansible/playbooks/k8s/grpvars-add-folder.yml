@@ -1,0 +1,168 @@
+---
+- hosts: localhost
+  vars:
+    myvars: "{{ agent_working_dir }}/src/main/ansible/inventory/k8s"
+    list_one: 
+      - nonprod
+      - preprod
+      - prod
+    objs:
+      - { key1: 00-env.yml, key2: "{{list_one}}" }
+      - { key1: 001-eiap-container-registries.yml, key2: "{{list_one}}" }
+      - { key1: 24-ssh-settings.yml, key2: "{{list_one}}" }          
+           
+  tasks:
+    - name: foldercreation
+      file:
+        path: "{{myvars}}/{{ item }}"
+        state: directory
+      with_items:
+        - "{{ department }}"
+      register: output  
+
+    - name: touchf
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item }}"
+        state: touch
+      with_items:
+        - "15-subjects.yml"
+      when: output.changed        
+     
+    - name: subfolder_all
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/all"
+        state: directory
+      with_items:  
+        - "{{list_one}}"
+      when: output.changed
+
+    - name: touchfilesinall
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item.1 }}/group_vars/all/{{ item.0.key1 }}"
+        state: touch
+      with_subelements:
+        - "{{ objs }}"
+        - key2 
+      when: output.changed  
+
+    - name: subfolder_clustconfig
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/cluster_config/namespaces"
+        state: directory
+      with_items:  
+        - "{{list_one}}"
+      when: output.changed  
+         
+    - name: touchfilesclusterconfig
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/cluster_config/namespaces/test.yml"
+        state: touch
+      with_items:
+        - "{{list_one}}"
+      when: output.changed  
+
+    - name: touchfilesinventory
+      file:
+        path: "{{myvars}}/{{ department }}/{{ item }}/{{ department }}-k8s-{{item}}-inventory.yml"
+        state: touch
+      with_items:
+        - "{{list_one}}"
+      when: output.changed    
+   
+    - name: blockinfile-00-env
+      blockinfile:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/all/00-env.yml"
+        marker: "######### Added recently {{item }}--{{department}} #########"
+        block: |
+          ---
+          # Common for a particular environment
+
+          env_ovrd: {{item}}
+          dept_ovrd: {{department}}  
+      with_items:
+        - "{{list_one}}"
+      when: output.changed   
+
+             
+    - name: blockinfile-container-eiap
+      blockinfile:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/all/001-eiap-container-registries.yml"
+        marker: "######### Added recently {{item }}--{{department}} #########"
+        block: |
+          {% raw %}
+          ---
+          # EIAP Container Registries
+          # The following would need to set for each environment.          
+          eiap_env_common_acr: "{{ eiap_{% endraw %}{{item}}_common_acr}}"          
+      with_items:
+        - "{{list_one}}"         
+      when: output.changed        
+     
+
+    - name: blockinfile-ssh-settings
+      blockinfile:
+        path: "{{myvars}}/{{ department }}/{{ item }}/group_vars/all/24-ssh-settings.yml"
+        marker: "######### Added recently {{item }}--{{department}} #########"
+        block: |
+          {% raw %}
+          ---
+          #
+          # ENV specific ssh settings
+          #
+          # NOTE: private_key_file for {{item}} id_rsa_aks_{{item}}    
+          aks_ssh_private_key_file: |-
+            {{ 
+              ((aks_ssh_private_key_dir, 'id_rsa_pep_aks_{% endraw %}{{item}}') | path_join)
+            }} 
+      with_items:
+        - "{{list_one}}"  
+      when: output.changed  
+
+    - name: blockinfile-inventory
+      blockinfile:
+        path:  "{{myvars}}/{{ department }}/{{ item }}/{{ department }}-k8s-{{item}}-inventory.yml"
+        marker: ""
+        block: |
+          {% raw %}
+          ---
+          #: ##########################################################################
+          #: K8S Support Master Inventory
+          #: ##########################################################################
+
+          all:
+
+            children:
+
+              # -----------
+              # All AKS Cluster inherit vars from cluster_config
+              # -----------
+              cluster_config:
+                hosts:
+                  # AE
+                  
+                  # EUS
+
+                  # GWC
+
+                  # SCUS
+
+
+              # ----------------------
+              # cluster_node_common
+              # ----------------------
+              cluster_node_common:
+                vars:
+                  ansible_connection: ssh
+                  ansible_user: "{{ aks_ssh_user }}"
+                  ansible_ssh_private_key_file: "{{ aks_ssh_private_key_file }}"
+
+            # ALWAYS local connection
+            vars:
+              ansible_connection: local
+              ansible_python_interpreter: "{{ ansible_playbook_python }}"{% endraw %}
+      with_items:
+        - "{{list_one}}"
+      when: output.changed   
+
+
+

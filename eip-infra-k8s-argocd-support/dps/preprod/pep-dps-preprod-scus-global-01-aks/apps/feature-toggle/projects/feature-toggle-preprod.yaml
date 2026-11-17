@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: feature-toggle-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for feature-toggle-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/feature-toggle-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-toggle-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: feature-toggle-preprod-admin
+    description: Admin privileges to feature-toggle-preprod
+    policies:
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-admin, applications, *, feature-toggle-preprod/*, allow
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-admin, repositories, *, feature-toggle-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: feature-toggle-preprod-user
+    description: Read-only privileges to feature-toggle-preprod
+    policies:
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-user, applications, get, feature-toggle-preprod/*, allow
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-user, applications, sync, feature-toggle-preprod/*, allow
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-user, repositories, get, feature-toggle-preprod/*, allow
+    - p, proj:feature-toggle-preprod:feature-toggle-preprod-user, applications, action/apps/Deployment/restart, feature-toggle-preprod/*, allow
+    groups:
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

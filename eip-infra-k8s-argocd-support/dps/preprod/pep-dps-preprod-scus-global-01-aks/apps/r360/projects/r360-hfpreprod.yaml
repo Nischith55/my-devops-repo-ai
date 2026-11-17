@@ -1,0 +1,44 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: r360-hfpreprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for r360-hfpreprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/r360-argocd-configs
+      - pepdpsprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-preprod-scus-global-01-aks
+        namespace: pep-dps-dps-re360hf-preprod
+      - name: pep-dps-preprod-scus-global-01-aks
+        namespace: pep-dps-ops-admin
+      - name: pep-dps-preprod-scus-global-01-aks
+        namespace: pep-dps-dps-aiq360hf-preprod
+        server: https://kubernetes.default.svc
+      roles:
+      - name: r360-hfpreprod-admin
+        description: Admin privileges to r360-hfpreprod
+        policies:
+        - p, proj:r360-hfpreprod:r360-hfpreprod-admin, applications, *, r360-hfpreprod/*, allow
+        - p, proj:r360-hfpreprod:r360-hfpreprod-admin, repositories, *, r360-hfpreprod/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: r360-hfpreprod-user
+        description: Read-only privileges to r360-hfpreprod
+        policies:
+        - p, proj:r360-hfpreprod:r360-hfpreprod-user, applications, get, r360-hfpreprod/*, allow
+        - p, proj:r360-hfpreprod:r360-hfpreprod-user, applications, sync, r360-hfpreprod/*, allow
+        - p, proj:r360-hfpreprod:r360-hfpreprod-user, repositories, get, r360-hfpreprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:r360-hfpreprod:r360-hfpreprod-user, applications, action/apps/Deployment/restart, r360-hfpreprod/*, allow
+        groups:
+        - "Team.App.SupportDPS.OnePEP.CAF"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.devops"

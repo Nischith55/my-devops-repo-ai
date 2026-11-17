@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fmcs-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for fmcs-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/fmcs-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-fmcs-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: fmcs-dev-admin
+    description: Admin privileges to fmcs-dev
+    policies:
+    - p, proj:fmcs-dev:fmcs-dev-admin, applications, *, fmcs-dev/*, allow
+    - p, proj:fmcs-dev:fmcs-dev-admin, applications, get, argocd/*, allow
+    - p, proj:fmcs-dev:fmcs-dev-admin, repositories, *, fmcs-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: fmcs-dev-user
+    description: Read-only privileges to fmcs-dev
+    policies:
+    - p, proj:fmcs-dev:fmcs-dev-user, applications, get, fmcs-dev/*, allow
+    - p, proj:fmcs-dev:fmcs-dev-user, applications, sync, fmcs-dev/*, allow
+    - p, proj:fmcs-dev:fmcs-dev-user, repositories, get, fmcs-dev/*, allow
+    - p, proj:fmcs-dev:fmcs-dev-user, applications, action/apps/Deployment/restart, fmcs-dev/*, allow
+    groups:
+    - "Team.Support.FirstMile.AppSupport"
+    - "Team.App.SupportDPS.OnePEP.CAF"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"    

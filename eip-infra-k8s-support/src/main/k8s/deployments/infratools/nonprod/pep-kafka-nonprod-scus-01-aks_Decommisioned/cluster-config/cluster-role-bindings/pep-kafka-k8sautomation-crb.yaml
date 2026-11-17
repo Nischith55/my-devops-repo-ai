@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-kafka-k8sautomation-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-kafka-k8sautomation-clusterrole
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-nonprod-k8s-sp
+    name: bbb2f5e3-8297-495c-a66d-ec21d27823ff
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-nonprod-k8s-sp
+    name: c93e3f5f-6cfa-4c4d-820e-ff53b9168f4a

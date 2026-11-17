@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pepsico-cgf-devx-apimarketplace-ui-prod:networking.istio.io/VirtualService:pep-eiap-global-eipone-prod/pepsico-cgf-devx-apimarketplace-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pepsico-cgf-devx-apimarketplace-ui-prod:networking.istio.io/VirtualService:pep-eiap-global-eipone-prod/pepsico-cgf-devx-apimarketplace-ui"},"labels":{"app":"pepsico-cgf-devx-apimarketplace-ui","app.kubernetes.io/instance":"pepsico-cgf-devx-apimarketplace-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","environment":"prod","helm.sh/chart":"platform-chart-1.2.9"},"name":"pepsico-cgf-devx-apimarketplace-ui","namespace":"pep-eiap-global-eipone-prod"},"spec":{"gateways":["pep-eiap-global-eipone-prod/pep-eiap-global-eipone-prod-cv-gw"],"hosts":["pepsico-cgf-devx-apimarketplace-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}},{"headers":null}],"name":null,"route":[{"destination":{"host":"pepsico-cgf-devx-apimarketplace-ui.pep-eiap-global-eipone-prod.svc.cluster.local","port":{"number":80},"subset":null},"weight":null}]}]}}
+
+'
+    labels:
+        app: pepsico-cgf-devx-apimarketplace-ui
+        app.kubernetes.io/instance: pepsico-cgf-devx-apimarketplace-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        environment: prod
+        helm.sh/chart: platform-chart-1.2.9
+    name: pepsico-cgf-devx-apimarketplace-ui
+    namespace: pep-eiap-global-eipone-prod
+spec:
+    gateways:
+    - pep-eiap-global-eipone-prod/pep-eiap-global-eipone-prod-cv-gw
+    hosts:
+    - pepsico-cgf-devx-apimarketplace-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - devx-apimarketplace.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-cgf-devx-apimarketplace-ui.pep-eiap-global-eipone-prod.svc.cluster.local
+                port:
+                    number: 80

@@ -1,0 +1,39 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_pfna_flna_apppbna_dev
+  - ns_pep_pfna_flna_airbyte_dev
+  - ns_pep_pfna_flna_app_qa
+  - ns_pep_pfna_flna_app_dev
+  - ns_pep_pfna_flna_wfm_qa
+  - ns_pep_pfna_flna_wfm_dev
+  - ns_pep_pfna_pfna_pogon_qa
+  - ns_pep_pfna_pbna_walmartdsd_qa
+  - ns_pep_pfna_pbna_walmartdsd_dev
+  - ns_pep_pfna_pfna_pogon_dev
+  - ns_pep_pfna_pfna_walmartdsd_qa
+  - ns_pep_pfna_pfna_walmartdsd_dev
+  - ns_pep_pfna_flna_salesplus_qa
+  - ns_pep_pfna_flna_salesplus_dev
+  - ns_pep_pfna_flna_gtmdsld_qa
+  - ns_pep_pfna_flna_gtmsp_qa
+  - ns_pep_pfna_flna_gtmgro_qa
+  - ns_pep_pfna_flna_gtmothr_qa
+  - ns_pep_pfna_flna_gtmdstwo_dev
+  - ns_pep_pfna_flna_gtmsptwo_dev
+  - ns_pep_pfna_flna_gtmothrtwo_dev
+  - ns_pep_pfna_flna_gtmgrotwo_dev
+  - ns_pep_pfna_flna_auditmonit_dev
+  - ns_pep_pfna_flna_gtmdsld_dev
+  - ns_pep_pfna_flna_forecast_dev
+  - ns_pep_pfna_flna_pcafpgt_qa
+  - ns_pep_pfna_flna_pcaf_qa
+  - ns_pep_pfna_flna_hhnext_qa
+  - ns_pep_pfna_test_test2_dev
+  - ns_pep_pfna_test_test1_dev
+  - ns_pep_pfna_hhnext_dev
+  - ns_pep_pfna_hhnext_qa
+

@@ -1,0 +1,96 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "annotations": {},
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "pep-eiap-global-dev",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlockp",
+        "tigera-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra",
+        "pep-eiap-istio-config",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-prod",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "snyk-monitor",
+        "flagger",
+        "policy-system",
+        "gitops-connector-system",
+        "pep-eiap-gremlin",
+        "internal-services",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "pepeiapprodcommonacr.azurecr.io/",
+        "pepeiapnonprodcommonacr.azurecr.io/",
+        "pepeiapnonprodglobalcommonacr.azurecr.io/",
+        "pepeiapeusnonprodaispacr.azurecr.io/",
+        "docker.io/istio/",
+        "nvcr.io/nvidia",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "nvcr.io/nvidia",
+        "otel/",
+        "rancher/",
+        "docker.io/rancher/",
+        "wiziopublic.azurecr.io/wiz-app/",
+        "wizio.azurecr.io/",
+        "registry.k8s.io/nfd",
+        "vllm/",
+        "mcr.microsoft.com/azuredocs",
+        "mcr.microsoft.com/cbl-mariner",
+        "us-docker.pkg.dev/gloo-mesh/",
+        "nvcr.io/nim/meta",
+        "ghcr.io/huggingface"
+      ]
+    }
+  }
+}

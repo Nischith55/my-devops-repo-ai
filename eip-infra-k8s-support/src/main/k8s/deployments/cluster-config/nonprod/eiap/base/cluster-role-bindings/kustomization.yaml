@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- pep-eiap-cluster-admin-crb.yml
+- pep-eiap-cmponboard-cd-crb.yml
+- pep-eiap-devsecops-cd-crb.yml
+- pep-eiap-elastic-client-01-filebeat.yml
+- pep-eiap-elastic-client-01-heartbeat.yml
+- pep-eiap-elastic-client-01-metricbeat.yml
+- pep-eiap-k8sautomation-crb.yml
+- pep-eiap-servicenow-crb.yml

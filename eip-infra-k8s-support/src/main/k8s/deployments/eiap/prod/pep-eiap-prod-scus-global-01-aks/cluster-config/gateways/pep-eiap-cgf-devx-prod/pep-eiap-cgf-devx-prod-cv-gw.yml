@@ -1,0 +1,112 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-eiap-cgf-devx-prod-cv-gw
+  namespace: pep-eiap-cgf-devx-prod
+spec:
+  selector:
+    istio: pep-eiap-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-eiap-cgf-devx-prod.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-devx-prod-cv-gw-tls-443
+    port:
+      name: https-pep-eiap-cgf-devx-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-eiap-cgf-devx-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-rbac.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-notification-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-home-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-cloud-governance-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-devx-prod-cv-gw-https-443
+    port:
+      name: https-pep-eiap-cgf-devx-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-prod-scus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - devx.mypepsico.com
+    - pep-eiap-cgf-devx-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-rbac.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-notification-service.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepsico-cgf-devx-home-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - devx-cgl.mypepsico.com
+    - pepsico-cgf-devx-cloud-governance-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-eiap-cgf-devx-prod-cv-gw-http-80
+    port:
+      name: http-pep-eiap-cgf-devx-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - devx.mypepsico.com
+    name: pep-eiap-cgf-dvex-prod-cv-gw-https-1-443
+    port:
+      name: https-pep-eiap-cgf-devx-prod-cv-gw-1-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-eiap-cgf-devx-prod-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - devx-cgl.mypepsico.com
+    name: pep-eiap-cgf-devx-prod-cv-gw-4-https-443
+    port:
+      name: pep-eiap-cgf-devx-prod-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: devx-cgl-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

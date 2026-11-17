@@ -1,0 +1,35 @@
+---
+ns_pep_eiap_cgf_duaas_prod:
+  
+  name: pep-eiap-cgf-duaas-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-duaas
+    sector: cgf
+    project: duaas
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-duaas-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_duaas'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-duaas-prod-sa-token
+    namespace: pep-eiap-cgf-duaas-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-duaas-prod-sa"

@@ -1,0 +1,417 @@
+trigger: none
+
+resources:
+ repositories:
+    - repository: eip-infra-azure-terraform-support
+      type: git
+      name: eip-infra-azure-terraform-support
+      ref: main
+
+parameters:
+  - name: Functional_Area
+    displayName: Functional Area
+    type: string
+    values:
+      - eiap
+      - edap
+      - pfna
+      - automation
+      - snt
+      - cmp
+      - aisp
+      - infratools
+      - infosectools
+      - pbna
+      - dps
+      - pepgenx
+      - globalit
+      - cgf
+
+  - name: service_principal
+    displayName: Service Principal
+    type: string
+    values:  
+      - NONPROD_K8S_SPN
+      - PREPROD_K8S_SPN
+      - PROD_K8S_SPN
+
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+      - na
+      - essa
+      - apac
+
+  - name: ResourceType
+    displayName: Resource Type
+    type: string
+    values:
+      - azure-kubernetes-services
+
+  - name: ClusterType
+    displayName: Cluster type
+    type: string
+    values:
+      - global
+      - infra 
+  
+  - name: Schedule
+    displayName: schedule time */15 * * * *
+    type: string
+
+  - name: ResourceGroupName
+    displayName: Resource Group Name
+    type: string
+
+  - name: ResourceName
+    displayName: AKS Cluster Name
+    type: string
+
+  - name: StorageClasses
+    displayName: Storage Classes
+    type: boolean
+    default: 'false'
+
+  - name: GpuOperator
+    displayName: GPU Operator
+    type: boolean
+    default: 'false'
+
+  - name: storageAccount 
+    displayName: Standard Storage Account
+    type: string
+    default: ' '
+
+  - name: premiumstorageaccounts 
+    displayName: Premium Storage Account
+    type: string
+    default: ' '
+
+  - name: GPU_Operator_Helm_Chart_Version
+    displayName: Helm-chart-version-for-GPU-Operator [Required if enabled]
+    type: string
+    default: 'v24.9.1'
+        
+  - name: filename
+    displayName: Cert File Name(.pfx filename)
+    type: string
+  
+  - name: elastichost 
+    displayName: elastichost (Ex:- https://e6219866bfdc4f498cc01c3450d994ab.privatelink.francecentral.azure.elastic-cloud.com:9243)
+    type: string 
+  
+  - name: elastic_public_ip
+    displayName: Elastic Public Endpoint IP
+    type: string
+
+
+####################################################################################################################################################################################################################
+ 
+####################################################################################################################################################################################################################
+
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - group: linux_windows_profiles
+
+  - name: nonprod_eus_agents
+    value: pep-eiap-nonprod-eus-infra-02-aks-agents
+
+  - name: nonprod_scus_agents
+    value: pep-eiap-nonprod-scus-infra-02-aks-agents
+
+  - name: preprod_eus_agents
+    value: pep-eiap-preprod-eus-infra-02-aks-agents
+
+  - name: preprod_scus_agents
+    value: pep-eiap-preprod-scus-infra-02-aks-agents
+
+  - name: prod_eus_agents
+    value: pep-eiap-prod-eus-infra-02-aks-agents
+
+  - name: prod_scus_agents
+    value: pep-eiap-prod-scus-infra-02-aks-agents
+    
+  - name: approval_ITEIAPAZUREPlatformServices 
+    value: ITEIAPAZUREPlatformServices@pepsico.com
+  - name: approval_ITEIAPCICDSupportServices
+    value: ITEIAPCICDSupportServices@pepsico.com
+  - name: approval_AzureAutomation
+    value: DL-AzureAutomation@pepsico.com
+
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(nonprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(nonprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(preprod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(preprod_scus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: $(prod_eus_agents)
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: $(prod_scus_agents) 
+    ${{ else }}:
+      value: $(nonprod_eus_agents)
+
+  - name: terraform_modules_repo
+    value: "https://PepsiCoIT@dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-terraform-modules"  
+   
+
+  - name: resource_name_input
+    value: ${{parameters.ResourceName}}
+
+  - name: secure_access_key_kc
+    ${{ if contains(parameters.ResourceName, 'sbox') }}:
+      value: $(sbox_storage_access_key)
+    ${{ else }}:
+      value: $(storage_access_key)
+  
+  - name: subscription_id_others
+    ${{ if and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 498640c4-36eb-4566-b752-ca3d2939c544
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'prod')), eq(parameters.Functional_Area, 'automation')) }}:
+      value: 34030b4b-d34e-4290-bd1b-a6945f95d9aa
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'snt')) }}:
+      value: cf488406-af15-4248-898e-11932611df2b
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cmp')) }}:
+      value: dcae03ca-ca66-40ff-a58e-a8585fd62d6d
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna')) }}:
+      value: 55bde1f0-8591-432c-a37f-5c1bdff8c2f8
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'snt')) }}:
+      value: c02eac0c-ef5a-4dc0-a613-c4be86e092ab
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 86ddcdc2-9ada-46b9-a53e-dc326f8ecfdc
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'infratools')) }}:
+      value: 92ddb5ec-2ad5-45f6-b81f-e358d4904d04
+    ${{ elseif and(or(eq(parameters.env, 'preprod'),eq(parameters.env, 'prod'),eq(parameters.env, 'nonprod')), eq(parameters.Functional_Area, 'infosectools')) }}:
+      value: bbfb8d7c-7f66-4690-9a6a-0aec959d9035
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: f427a039-5122-4a35-ac4a-c63c96d1acde
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pbna')) }}:
+      value: 5f9ba971-f3d4-4706-8d5c-2aae550f9cb4
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'dps')) }}:
+      value: 93c33431-a080-4b4a-a362-3b7c5a36b6dc
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pepgenx')) }}:
+      value: c1eeeb0b-31c1-4cda-b497-3a9c83685dbf
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: d6a9062c-4c82-4e49-8204-100c57f33583
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'aisp')) }}:
+      value: 06d0e1b4-b6e3-43c3-9f97-29e840d4d893
+    ${{ elseif and(or(eq(parameters.env, 'nonprod'),eq(parameters.env, 'preprod')), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: 0c1319a6-1def-4d09-a0ca-46d9b0812fbd
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'cgf')) }}:
+      value: f479bd9e-6531-43ea-85eb-cc6c21b4957b
+    ${{ else }}:
+      value: Using-subscription-id-available-in-keyvault
+  
+  - name: subscription_id_other_regions
+    ${{ if and(eq(parameters.Region, 'suk'), eq(parameters.Functional_Area, 'eiap'), eq(parameters.ResourceType, 'storage-account'), eq(parameters.env, 'nonprod')) }}:
+      value: 154431fe-c911-490e-87a0-c84ced2bee05
+    ${{ elseif and(eq(parameters.Region, 'suk'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'gwc'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ elseif and(eq(parameters.Region, 'ae'), eq(parameters.Functional_Area, 'eiap'), or(eq(parameters.env, 'nonprod'), eq(parameters.env, 'preprod'))) }}:
+      value: 8a22bd18-1080-472c-a8af-da15be88b076
+    ${{ else }}:
+      value: Using-subscription-id-available-in-keyvault
+
+  - name: currentbranch
+    value: $(Build.SourceBranchName)
+
+  - name: k8s_sp  
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: bbb2f5e3-8297-495c-a66d-ec21d27823ff
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: c93e3f5f-6cfa-4c4d-820e-ff53b9168f4a
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: 60fd3acd-e12c-4a61-b55f-752cb9b28233
+
+
+  - name: devsecops_cd
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: 17e4954c-637f-4c1c-bb3a-ff0a6a69a108
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: 89b32fe8-f980-4857-8c26-37e763ddb047
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: eea00c38-1800-4362-98ea-2e594b4585f5
+
+  - name: cmp
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: 7f6ff09f-c5e7-4555-a897-dac0649b2aaa
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: 8cf61482-31d6-4e96-a7a5-f6528b85abe0
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: 6d01d83f-30c2-45d6-841d-e2530cbb7b03
+
+  - name: eiap_k8s_admin
+    value: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+
+  - name: eiap_admins
+    value: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+
+  - name: acrpullbindingName
+    ${{ if eq(parameters.env, 'nonprod') }}:
+      value: pepeiapnonprodcommonacr
+    ${{ if eq(parameters.env, 'preprod') }}:
+      value: pepeiapprodcommonacr
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: pepeiapprodcommonacr
+
+  - name: infrans
+    ${{if and(eq(parameters.env, 'nonprod'),eq(parameters.ClusterType, 'infra')) }}:
+      value: infra-dev
+    ${{elseif and(eq(parameters.env, 'nonprod'),eq(parameters.ClusterType, 'global')) }}:
+      value: global-dev
+    ${{ elseif and(eq(parameters.env, 'preprod'),eq(parameters.ClusterType, 'infra')) }}:
+      value: infra-preprod
+    ${{ elseif and(eq(parameters.env, 'preprod'),eq(parameters.ClusterType, 'global')) }}:
+      value: global-preprod
+    ${{ elseif and(eq(parameters.env, 'prod'),eq(parameters.ClusterType, 'infra')) }}:
+      value: infra-prod
+    ${{ elseif and(eq(parameters.env, 'prod'),eq(parameters.ClusterType, 'global')) }}:
+      value: global-prod
+
+
+
+####################################################################################################################################################################################################################
+ 
+####################################################################################################################################################################################################################
+
+
+stages:   
+
+  - stage: display
+    displayName: Display-User-Defined-Parameters
+    pool: 
+      name: $(agent_pool)
+    jobs: 
+      - job: Display_User_Inputs
+        displayName: User-selected-parameters
+        continueOnError: false
+        steps:
+        - task: Bash@3
+          displayName: "Display user-selected-parameters"
+          inputs: 
+            targetType: 'inline'
+            script: |    
+              echo "Checked out branch: $(Build.SourceBranch)"
+              echo "Selected Environment : ${{Parameters.env}}"
+              echo "Functional Area : ${{parameters.Functional_Area}}"
+              echo "Selected Region : ${{Parameters.Region}}"
+              echo "Agent Pool to be used for all stages : ${{variables.agent_pool}}"
+              echo "Resource Group Name : ${{parameters.ResourceGroupName}}"
+              echo "AKS Cluster Name :  ${{parameters.ResourceName}}"
+              echo "Storage Account Name:  ${{parameters.storageAccount}}"
+              echo "GPU Operator Helm chart Version:  ${{parameters.GPU_Operator_Helm_Chart_Version}}"
+              
+
+
+####################################################################################################################################################################################################################
+ 
+####################################################################################################################################################################################################################
+  - stage: checkforapproval
+    displayName: Manualcheck-for-selected-parameters
+    dependsOn: display
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - job: approval
+      pool: server
+      timeoutInMinutes: 5 # job times out in 5 min
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 6 # task times out in 6 min
+        inputs:
+          instructions: 'validate the user selected parameters before proceeding'
+
+####################################################################################################################################################################################################################
+ 
+####################################################################################################################################################################################################################
+
+  - stage: kube_configs_extract
+    displayName: Extract-Admin-and-User-Kube-Configs
+    dependsOn: checkforapproval
+    condition: and(succeeded('checkforapproval'), ne(variables['build.sourceBranch'], 'refs/heads/develop'))
+    pool: 
+        name: $(agent_pool)
+    jobs:
+    - template: src/main/ansible/playbooks/k8s/templates/aks-post-provisioning-templates/extract_kube_configs.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{ parameters.env }}
+        Region: ${{ parameters.Region }}
+        ResourceType: ${{ parameters.ResourceType }} 
+        service_principal: ${{parameters.service_principal}}
+        service_principal_backend: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        ResourceGroupName: ${{parameters.ResourceGroupName}}
+
+
+####################################################################################################################################################################################################################
+ 
+####################################################################################################################################################################################################################
+
+
+  - stage: AKS_POST_PROVISIONING
+    displayName: Post-Provisioining
+    dependsOn: kube_configs_extract
+    condition: and(succeeded('kube_configs_extract'), ne(variables['build.sourceBranch'], 'refs/heads/develop'))    
+    pool: 
+      name: $(agent_pool)
+    jobs:
+    - template: src/main/ansible/playbooks/k8s/templates/aks-post-provisioning-templates/AKS_Post_Provisioning.yml
+      parameters:
+        Functional_Area: ${{parameters.Functional_Area}}
+        env: ${{parameters.env}}
+        Region: ${{parameters.Region }}
+        schedule_time: ${{parameters.Schedule}}
+        ResourceType: ${{parameters.ResourceType}}  
+        service_principal: ${{parameters.service_principal}}
+        service_principal_backend: ${{variables.backend_spn}}
+        resource_name: ${{variables.resource_name_input}}
+        currentbranch: ${{variables.currentbranch}}
+        k8s_sp : ${{variables.k8s_sp}}
+        devsecops_cd : ${{variables.devsecops_cd}}
+        cmp: ${{variables.cmp}}
+        eiap_k8s_admin : ${{variables.eiap_k8s_admin}}
+        eiap_admins : ${{variables.eiap_admins}}
+        ResourceName : ${{parameters.ResourceName}}  
+        ResourceGroupName : ${{parameters.ResourceGroupName}}  
+        acrpullbindingName : ${{variables.acrpullbindingName}}
+        infrans: ${{variables.infrans}}
+        storageAccount : ${{parameters.storageAccount}}
+        premiumstorageaccounts : ${{parameters.premiumstorageaccounts}}
+        storageClasses : ${{parameters.StorageClasses }}
+        gpuOperator: ${{parameters.GpuOperator }}
+        gpuversion : ${{parameters. GPU_Operator_Helm_Chart_Version}}
+        filename: ${{parameters.filename}}
+        elastichost: ${{parameters.elastichost}}
+        elastic_public_ip: ${{parameters.elastic_public_ip}}
+        secure_access_key_kc: ${{variables.secure_access_key_kc}}
+        snow_discovery_pwd: $(snow_discovery_pwd)
+
+
+####################################################################################################################################################################################################################
+#----------------------------------------------------------#End of template-------------------------------------------
+####################################################################################################################################################################################################################

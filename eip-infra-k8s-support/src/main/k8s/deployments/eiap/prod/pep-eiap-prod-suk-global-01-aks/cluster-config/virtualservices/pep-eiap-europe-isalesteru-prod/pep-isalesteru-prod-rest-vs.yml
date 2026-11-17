@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-isalesteru-prod-rest-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-isalesteru-prod-rest.global.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-isalesteru-prod-rest.pep-eiap-europe-isalesteru-prod.svc.cluster.local","port":{"number":9091}}}]}]}}
+  labels:
+    app: pep-isalesteru-prod-rest
+  name: pep-isalesteru-prod-rest-vs
+  namespace: pep-eiap-europe-isalesteru-prod
+spec:
+  gateways:
+  - pep-eiap-europe-isalesteru-prod/pep-eiap-europe-isalesteru-prod-cv-gw
+  hosts:
+  - pep-isalesteru-prod-rest.global.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-isalesteru-prod-rest.pep-eiap-europe-isalesteru-prod.svc.cluster.local
+        port:
+          number: 9091

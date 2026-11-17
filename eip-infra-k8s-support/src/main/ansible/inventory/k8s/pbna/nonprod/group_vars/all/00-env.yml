@@ -1,0 +1,7 @@
+######### Added recently nonprod--pbna #########
+---
+# Common for a particular environment
+
+env_ovrd: nonprod
+dept_ovrd: pbna  
+######### Added recently nonprod--pbna #########

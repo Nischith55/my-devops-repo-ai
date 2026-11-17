@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ds-mct-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for ds-mct-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_DS_MCT/_git/mct-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-dps-mct-dev
+  - name: pep-dps-nonprod-gwc-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: ds-mct-dev-admin
+    description: Admin privileges to ds-mct-dev
+    policies:
+    - p, proj:ds-mct-dev:ds-mct-dev-admin, applications, *, ds-mct-dev/*, allow
+    - p, proj:ds-mct-dev:ds-mct-dev-admin, applications, get, argocd/*, allow
+    - p, proj:ds-mct-dev:ds-mct-dev-admin, repositories, *, ds-mct-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: ds-mct-dev-user
+    description: Read-only privileges to ds-mct-dev
+    policies:
+    - p, proj:ds-mct-dev:ds-mct-dev-user, applications, get, ds-mct-dev/*, allow
+    - p, proj:ds-mct-dev:ds-mct-dev-user, applications, sync, ds-mct-dev/*, allow
+    - p, proj:ds-mct-dev:ds-mct-dev-user, repositories, get, ds-mct-dev/*, allow
+    - p, proj:ds-mct-dev:ds-mct-dev-user, applications, action/apps/Deployment/restart, ds-mct-dev/*, allow
+    groups:
+    - "Team.Support.cgf.snt.vcr.NonProd.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

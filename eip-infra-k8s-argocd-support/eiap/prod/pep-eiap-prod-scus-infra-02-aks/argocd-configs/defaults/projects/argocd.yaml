@@ -1,0 +1,82 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for eiap   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepgpt-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - https://dev.azure.com/PepsiCoIT/PBNA_Data_Analytics_and_Digital_Solutions/_git/pbna-supplychain-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/aiforbi-amesamt-uae-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepgafs-argocd-config
+  - https://dev.azure.com/PepsiCoIT/PEPCTODPCEEDLOPS/_git/pep-aisp-pepvigil-mlworks-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-wse-lighthouse-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/spend-wise-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/eu-pgt-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/aisp-genai-mtc-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CTO_AI_Agent_Factory/_git/pep-aisp-agentfactory-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepvision-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/flna-pgt-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/FLNA_PWM/_git/pep-flna-whse-ai-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-aisp-nvingest-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/labelright-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CGF_RnD_Knowledge_Management_RAG/_git/pep-cgf-rnd-knowledge-management-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/GNRM_Analytics_Hub/_git/rgm-gah-wo-dwd-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PEPsense_IoT_Platform/_git/pep-eiotp-cloud-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/IT_Generative_AI_Initiatives/_git/pep-genai-agent-itcontrols-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Potato_Sourcing_Matrix_automation_PSMa/_git/potato-sourcing-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Mosaic_Product_Teams/_git/pep-fpa-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Microservices_Development_Portal/_git/pepsico-eip-eipone-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/ask-ada-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_AI_Negotiations/_git/ai-negotiations-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Projects/_git/pep-global-snt-argocd-config
+  - https://dev.azure.com/PepsiCoIT/AAD/_git/tpo-tft-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CGF_Global_Digital_Agro/_git/aigronomist-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PFNA_Automated_Case_Picking_ACP/_git/PFNA-Automated-Case-Picking-ACP-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Service_Reliability/_git/ops-central-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PBNA_Automated_Case_Picking_ACP/_git/PBNA-SVT-ROBOTICS-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Pepsico_GlobalProcurementAutomation/_git/compass-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iamc-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/gatoradedid-argocd-configs
+  - https://github.com/Global-SnT/dai-pepdoculingo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PepsiCo_CloudMarketPlace/_git/cmp-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Cloud_Platform_Enablement/_git/cpe-automation-argocd-config
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/askea-genai-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PBNA_Commercial-Equipment_Service_and_Vending/_git/pes_sw_argocd_configs
+  - https://dev.azure.com/PepsiCoIT/CGF_BI_Reporting/_git/hr-job-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_PepSRE_Insights/_git/sre-insights-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/LATAM_DPRF_SRE/_git/dprf-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_DigitalServices_WebSolutions/_git/paperlessforms-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/AMESA_APAC_Data_Digital/_git/amesa-apac-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-askcyber-argocd-config
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-och-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/HaloCRM_SAFe/_git/halo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/spendwise-dashboard-api-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/should-cost-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CGF_BI_Reporting/_git/order-processing-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/BI-Reporting/_git/dialogue-with-data-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/GeniusOne/_git/geniusone-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP/_git/eip-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pep-ai-agent-proc-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_Away_From_Home/_git/Global-SnT-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/commercial-brain-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iam-okta-telephony-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iam-okta-argocd-configs
+  destinations:
+  - name: pep-eiap-prod-scus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pbna-ops-admin
+  labels:
+    cluster-name: pep-pbna-prod-eus-global-01-aks
+    pep-cmdb-app-service: EIP-AZURE-KUBERNETES-SERVICE
+    team: eiap-admins
+    istio-injection: disabled

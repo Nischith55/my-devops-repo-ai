@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: bdr-sync-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for bdr-sync-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/bdr-sync-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-bdrtapp-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: bdr-sync-qa-admin
+    description: Admin privileges to bdr-sync-qa
+    policies:
+    - p, proj:bdr-sync-qa:bdr-sync-qa-admin, applications, *, bdr-sync-qa/*, allow
+    - p, proj:bdr-sync-qa:bdr-sync-qa-admin, repositories, *, bdr-sync-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: bdr-sync-qa-user
+    description: Read-only privileges to bdr-sync-qa
+    policies:
+    - p, proj:bdr-sync-qa:bdr-sync-qa-user, applications, get, bdr-sync-qa/*, allow
+    - p, proj:bdr-sync-qa:bdr-sync-qa-user, applications, sync, bdr-sync-qa/*, allow
+    - p, proj:bdr-sync-qa:bdr-sync-qa-user, repositories, get, bdr-sync-qa/*, allow
+    - p, proj:bdr-sync-qa:bdr-sync-qa-user, applications, action/apps/Deployment/restart, bdr-sync-qa/*, allow
+    groups:
+    - "Team.Support.DPS.NonProd.BDRTAPP"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

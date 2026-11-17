@@ -1,0 +1,29 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-cluster-admin-crb
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: 367dfb5d-8aed-4dcf-9366-6024024bfb94
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: fbdad232-1e31-4027-a8e2-4528fbbd01b7
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # ef9601aa-0bef-4cb1-a4a7-fe77169b2f0c
+    name: asowale1@pepsico.com
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # ef9601aa-0bef-4cb1-a4a7-fe77169b2f0c
+    name: sedwin01@pepsico.com
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: pep-eiap-admin-sa
+

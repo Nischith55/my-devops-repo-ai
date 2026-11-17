@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: udf-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for udf-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/udf-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-udfna-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: udf-prod-admin
+    description: Admin privileges to udf-prod
+    policies:
+    - p, proj:udf-prod:udf-prod-admin, applications, *, udf-prod/*, allow
+    - p, proj:udf-prod:udf-prod-admin, repositories, *, udf-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: udf-prod-user
+    description: Read-only privileges to udf-prod
+    policies:
+    - p, proj:udf-prod:udf-prod-user, applications, get, udf-prod/*, allow
+    - p, proj:udf-prod:udf-prod-user, applications, sync, udf-prod/*, allow
+    - p, proj:udf-prod:udf-prod-user, repositories, get, udf-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.DPS.NonProd.UDFNA"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

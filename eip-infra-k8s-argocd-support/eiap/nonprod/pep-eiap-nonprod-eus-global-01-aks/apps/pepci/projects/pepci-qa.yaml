@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepci-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepci-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-cgf-pepci-dev
+  - name: pep-eiap-nonprod-eus-global-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepci-qa-admin
+    description: Admin privileges to pepci-qa
+    policies:
+    - p, proj:pepci-qa:pepci-qa-admin, applications, *, appruntime-dev/*, allow
+    - p, proj:pepci-qa:pepci-qa-admin, repositories, *, appruntime-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepci-qa-user
+    description: Read-only privileges to pepci-qa
+    policies:
+    - p, proj:pepci-qa:pepci-qa-user, applications, get, appruntime-dev/*, allow
+    - p, proj:pepci-qa:pepci-qa-user, applications, sync, appruntime-dev/*, allow
+    - p, proj:pepci-qa:pepci-qa-user, repositories, get, appruntime-dev/*, allow
+    - p, proj:pepci-qa:pepci-qa-user, *, delete, *, deny
+    - p, proj:pepci-qa:pepci-qa-user, applications, action/apps/Deployment/restart, pepci-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.PepCI" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"

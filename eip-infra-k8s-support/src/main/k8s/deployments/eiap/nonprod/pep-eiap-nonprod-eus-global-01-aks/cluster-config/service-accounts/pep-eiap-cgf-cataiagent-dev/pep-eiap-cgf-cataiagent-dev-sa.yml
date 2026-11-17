@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-cgf-cataiagent-dev-sa
+  namespace: pep-eiap-cgf-cataiagent-dev

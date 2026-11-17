@@ -1,0 +1,44 @@
+---
+- name: create temp directory for ksm
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/ksm"
+    state: directory
+
+
+- template:
+    src: kubestatemetrics.j2 # The Jinja2 template file
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/ksm/values.yaml"
+
+
+
+- name: Add stable chart repo
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: "https://prometheus-community.github.io/helm-charts"
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+
+- name: Deploy Kubestatemetrics 
+  kubernetes.core.helm:
+    name: kube-state-metrics
+    chart_ref: prometheus-community/kube-state-metrics
+    chart_version: 5.16.1
+    release_namespace: monitoring
+    values_files:
+      - "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/ksm/values.yaml"
+    state: present
+    binary_path: /opt/helm/helm
+  environment: 
+    K8S_AUTH_KUBECONFIG: /home/neipd999/kubeconfig-admin.kcfg
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/kube-state-metrics/2.7.0/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/ksm/"
+    force: true
+  register: cfss
+

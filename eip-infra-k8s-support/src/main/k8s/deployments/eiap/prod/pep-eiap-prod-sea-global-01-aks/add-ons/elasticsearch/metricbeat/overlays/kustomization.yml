@@ -1,0 +1,32 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-06-02 13:44:54
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: elasticsearch
+resources:
+  - ../../../../../../add-ons/elasticsearch/kustomize/metricbeat/base
+images:
+  - name: docker.elastic.co/beats/metricbeat
+    newName: docker.elastic.co/beats/metricbeat
+    newTag: 7.10.0
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-metricbeat-daemonset-config.yml
+  - patch-metricbeat-daemonset-modules.yml
+  - patch-merge-daemonset.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-daemonset.yml
+    target:
+      group: apps
+      kind: DaemonSet
+      name: metricbeat
+      namespace: kube-system
+      version: v1
+ 
+
+

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    field.cattle.io/projectId: p-hz9bs
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-pfna-flna-whas-prod
+    pep-cmdb-app-service-id: ea7967b31be36010b050c992604bcbc1
+    pep-cmdb-bus-app-id: 327967b31be36010b050c992604bcbc8
+    pep-environment: Production
+    project: whas
+    sector: flna
+    servicename_aks: ics-inventorycontrolsystemprod
+    team: flna-whas
+  name: pep-pfna-flna-whas-prod

@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-loyalty-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for b2b-loyalty-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Web_and_Commerce_Solutions/_git/b2b-pepconnect-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btblylty-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btboms-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btbproduct-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btblylty-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btboms-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btbproduct-qa
+    server: https://kubernetes.default.svc            
+
+  # clusterResourceWhitelist:
+  # - group: '*'
+  #   kind: 'PersistentVolume'
+  roles:
+  - name: b2b-loyalty-qa-admin
+    description: Admin privileges to b2b-loyalty-qa
+    policies:
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-admin, applications, *, b2b-loyalty-qa/*, allow
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-admin, applications, get, argocd/*, allow
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-admin, repositories, *, b2b-loyalty-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: b2b-loyalty-qa-user
+    description: Read-only privileges to b2b-loyalty-qa
+    policies:
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-user, applications, get, b2b-loyalty-qa/*, allow
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-user, applications, sync, b2b-loyalty-qa/*, allow
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-user, repositories, get, b2b-loyalty-qa/*, allow
+    - p, proj:b2b-loyalty-qa:b2b-loyalty-qa-user, applications, action/apps/Deployment/restart, b2b-loyalty-qa/*, allow
+    groups:
+    - "Team.Support.LATAM.NonProd.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "TTeam.Support.CGF.NonProd.devops"

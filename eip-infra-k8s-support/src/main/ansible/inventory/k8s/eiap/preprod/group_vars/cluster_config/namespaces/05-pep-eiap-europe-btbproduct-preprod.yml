@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_europe_btbproduct_preprod:
+  
+  name: pep-eiap-europe-btbproduct-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-btbproduct
+    sector: europe
+    project: btbproduct
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalproductseuropenon-prod
+    pep-cmdb-app-service-id: "bc0cbe1fc3f82e148db69c63e4013192"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-btbproduct-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_btbproduct'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-eiap-europe-btbproduct-preprod-sa-token
+    namespace: pep-eiap-europe-btbproduct-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-europe-btbproduct-preprod-sa"

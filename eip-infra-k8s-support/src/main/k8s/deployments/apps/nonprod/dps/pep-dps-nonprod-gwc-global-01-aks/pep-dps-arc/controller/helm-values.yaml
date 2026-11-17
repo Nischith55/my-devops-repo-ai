@@ -1,0 +1,37 @@
+replicaCount: 1
+
+nodeSelector:
+  kubernetes.azure.com/mode: system
+  kubernetes.io/os: linux
+
+tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+
+image:
+  repository: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/arc/gha-runner-scale-set-controller
+  tag: "0.14.2"
+
+# Run as the existing workload-identity ServiceAccount instead of a chart-generated
+# one. pep-dps-buildagent is the only subject trusted by the federated credential on
+# pep-aisp-nonprod-buildagent-01-mi, so it is what makes the Key Vault mount below
+# authenticate. The chart binds its ClusterRole/Role to this name.
+serviceAccount:
+  create: false
+  name: pep-dps-buildagent
+
+# Mounting the SecretProviderClass is what materialises the arc-github-app Secret
+# that the AutoscalingRunnerSet reads. Without a mounting pod the Secret is garbage
+# collected, so this mount is load-bearing - do not remove it.
+volumes:
+  - name: github-app-secret
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: arc-github-app-spc
+
+volumeMounts:
+  - name: github-app-secret
+    mountPath: /mnt/secrets-store
+    readOnly: true

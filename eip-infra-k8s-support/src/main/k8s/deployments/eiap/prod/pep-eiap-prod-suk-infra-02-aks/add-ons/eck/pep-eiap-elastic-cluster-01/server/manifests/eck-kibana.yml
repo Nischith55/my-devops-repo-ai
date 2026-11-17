@@ -1,0 +1,209 @@
+---
+# Kibana Bits for ECK deployment
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-01
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  version: !!str 7.16.2
+  image: &img_kibana001 docker.elastic.co/kibana/kibana:7.16.2
+  count: 2
+
+  elasticsearchRef:
+    # name of the cluster that this is attached to
+    name: cluster-01
+
+  # ##
+  # secureSettings are all consolidated into 1 secret xpack-generic
+  # - the secret contains all kibana encryption keys
+  # ##
+  secureSettings:
+    - secretName: pep-eiap-prod-suk-infra-02-aks-xpack-generic
+      entries:
+        - key: xpack.security.encryptionKey
+        - key: xpack.encryptedSavedObjects.encryptionKey
+        - key: xpack.reporting.encryptionKey
+
+  # HTTP Layer
+  http:
+    tls:
+      certificate:
+        # make sure this is installed in the namespace
+        secretName: &gw01_secret pep-eiap-prod-suk-infra-02-aks-gw01-generic
+
+  #: Most of the kibana.yaml NOT ALL - read the docs go here
+  config:
+
+    csp:
+      strict: true
+
+    # ES Communications
+    elasticsearch:
+      # This is the default, but shown here for completeness
+      requestHeadersWhitelist:
+        - authorization
+      ssl:
+        certificateAuthorities:
+        - /usr/share/kibana/config/pep/etc/certs/PepsiCoCA01.pem
+        - /usr/share/kibana/config/pep/etc/certs/PepsiCoRootCA.pem
+        verificationMode: certificate
+    logging:
+      json: true
+      timezone: UTC
+      verbose: false
+
+    monitoring:
+      enabled: true
+
+      kibana:
+        collection:
+          enabled: true
+      ui:
+        container:
+          elasticsearch:
+            enabled: true
+
+    server:
+      publicBaseUrl: https://pep-eiap-kibana-01.infra.gw01.aks02.suk.prod.azure.intra.pepsico.com:443
+      # Default 1mb
+      maxPayloadBytes: 104488960
+      ssl:
+        certificateAuthorities:
+        - /usr/share/kibana/config/pep/etc/certs/PepsiCoCA01.pem
+        - /usr/share/kibana/config/pep/etc/certs/PepsiCoRootCA.pem
+        supportedProtocols:
+        - TLSv1.2
+        - TLSv1.3
+    telemetry:
+      # we don't need to send anything to elastic
+      enabled: false
+
+    #: ~~ xpack settings
+    xpack:
+
+      #Webhook Config for alerts
+      actions:
+        allowedHosts: ["wsgna.corp.pep.pvt","planrr.corp.pep.pvt","pepsicopp.service-now.com","pepsico.service-now.com"]
+        rejectUnauthorized: false
+        customHostSettings:
+          - url: https://wsgna.corp.pep.pvt
+            ssl:
+              verificationMode: 'full'
+              certificateAuthoritiesFiles: 
+                - /usr/share/kibana/config/pep/etc/certs/PepsiCoCA01.pem
+                - /usr/share/kibana/config/pep/etc/certs/PepsiCoRootCA.pem        
+      license_management:
+        # let's enabled license mgmt through UI
+        enabled: true
+
+      reporting:
+        enabled: true
+
+      security:
+
+        audit:
+          enabled: true
+
+        authc:
+          providers:
+
+            basic:
+              native1:
+                order: 0
+                description: Administrators only
+
+            saml:
+              pep_prod_saml:
+                order: 2
+                enabled: true
+                realm: pep_prod_saml
+                description: Log in with PROD Credentials
+
+          selector:
+            enabled: true
+
+        loginAssistanceMessage: |
+          EIAP Kibana - Please contact EIAP Admins for assistance
+        loginHelp: |
+          EIAP Kibana - Only TLS1.2 supported
+        # since we are reverse proxying
+        secureCookies: true
+        # session timeouts
+        session:
+          idleTimeout: 8h
+          lifespan: 24h
+
+  podTemplate:
+    spec:
+
+      # ##
+      # IMPORTANT: we will pack kibana on Cooridnator nodes
+      # - setup the antiaffinity for ingest nodes
+      # - setup preferred topology constraints (since we are zoned)
+      # - setup nodeSelector and tolerations
+      # - adjust limits (resource) so we can schedule
+      # ##
+      nodeSelector:
+        balance-group: ESGeneralPurpose01ZonedPools
+
+      tolerations:
+        - key: ESGeneralPurpose01NodeOnlyZone1
+          operator: Exists
+        - key: ESGeneralPurpose01NodeOnlyZone2
+          operator: Exists
+        - key: ESGeneralPurpose01NodeOnlyZone3
+          operator: Exists
+
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        # Hard Constraint
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            common.k8s.elastic.co/type: kibana
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # All volumes
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      volumes:
+        - name: config-projected
+          projected:
+            # 0775 -> 509, 0644 -> 420
+            defaultMode: 420
+            sources:
+            # pep-ca-certs-config
+            - configMap:
+                name: pep-ca-certs-config
+                optional: false
+                items:
+                  - key: PepsiCoCA01.pem
+                    # must be relative
+                    path: etc/certs/PepsiCoCA01.pem
+                  - key: PepsiCoRootCA.pem
+                    # must be relative
+                    path: etc/certs/PepsiCoRootCA.pem
+
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # All containers
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      containers:
+        - name: kibana
+
+          env:
+          - name: NODE_OPTIONS
+            value: "--max-old-space-size=4192"
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: 2000m
+            requests:
+              memory: 3Gi
+              cpu: 1900m
+
+          volumeMounts:
+            - name: config-projected
+              # NOTE: we mount it in well known path for kibana container
+              mountPath: /usr/share/kibana/config/pep
+              readOnly: true

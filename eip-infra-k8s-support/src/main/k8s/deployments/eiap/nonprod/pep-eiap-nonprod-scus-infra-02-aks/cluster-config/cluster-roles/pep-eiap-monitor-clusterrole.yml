@@ -1,0 +1,39 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-monitor-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    - apps
+    - autoscaling
+    - batch
+    - extensions
+    - events.k8s.io
+    resources:
+    - endpoints
+    - daemonsets
+    - deployments
+    - jobs
+    - cronjobs
+    - namespaces
+    - nodes
+    - pods
+    - replicasets
+    - services
+    - statefulsets
+    verbs:
+    - get
+    - list
+    - watch
+-   apiGroups:
+    - networking.k8s.io
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch

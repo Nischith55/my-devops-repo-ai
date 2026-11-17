@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-dpsdsd-dev
+    project: dps-walmart
+    sector: cgf
+    servicename_aks: onepepcafservice-na
+    team: cgf-dpsdsd
+  name: pep-eiap-cgf-dpsdsd-dev

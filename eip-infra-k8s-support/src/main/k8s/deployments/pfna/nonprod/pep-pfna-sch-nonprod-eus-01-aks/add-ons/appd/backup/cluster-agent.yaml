@@ -1,0 +1,100 @@
+apiVersion: cluster.appdynamics.com/v1alpha1
+kind: Clusteragent
+metadata:
+  generation: 2
+  name: k8s-cluster-agent
+  namespace: appdynamics
+spec:
+  account: pepsi-test
+  appName: pep-pfna-sch-nonprod-eus-01-aks-iWMS-NonProd
+  appNameStrategy: manual
+  clusterMetricsSyncInterval: 60
+  containerAppCorrelationMethod: proxy
+  containerBatchSize: 5
+  containerRegistrationInterval: 120
+  controllerUrl: https://pepsi-test.saas.appdynamics.com:443
+  defaultAppName: iWMS_NonProdIWMS (INTELLIGENT WAREHOUSE MANAGEMENT SYSTEM) FLNA
+    NON-PROD
+  defaultEnv: JAVA_TOOL_OPTIONS
+  defaultInstrumentMatchString: .*
+  defaultInstrumentationTech: java
+  eventUploadInterval: 10
+  httpClientTimeout: 30
+  image: docker.io/appdynamics/cluster-agent:24.9.0-638
+  imageInfo:
+    dotnetcore:
+      agentMountPath: /opt/appdynamics
+      alpineInitContainerImage: alpine
+      image: docker.io/appdynamics/dotnet-core-agent:latest
+      imagePullPolicy: IfNotPresent
+    java:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/java-agent:latest
+      imagePullPolicy: IfNotPresent
+    nodejs:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/nodejs-agent:20.8.0-stretch-slimv10
+      imagePullPolicy: IfNotPresent
+  instrumentContainer: first
+  instrumentationMaxPollingAttempts: 10
+  instrumentationMethod: None
+  instrumentationNsStatusPollingIntervalMinutes: 5
+  instrumentationRules:
+  - capabilities: {}
+    env: JAVA_TOOL_OPTIONS
+    imageInfo:
+      agentMountPath: /opt/appdynamics
+      image: docker.io/appdynamics/java-agent:24.8.1
+      imagePullPolicy: Always
+    instrumentContainer: first
+    language: java
+    matchString: pep-pfna-flna-iwms-dev-api-change-feed-processor|pep-pfna-flna-iwms-dev-api-core-docks|pep-pfna-flna-iwms-dev-api-core-inventory|pep-pfna-flna-iwms-dev-api-core-picking|pep-pfna-flna-iwms-dev-api-core-production-transfer|pep-pfna-flna-iwms-dev-api-core-shift-summary|pep-pfna-flna-iwms-dev-api-core-yards|pep-pfna-flna-iwms-dev-api-dispatches|pep-pfna-flna-iwms-dev-api-home|pep-pfna-flna-iwms-dev-api-kpi|pep-pfna-flna-iwms-dev-api-load-status|pep-pfna-flna-iwms-dev-api-location|pep-pfna-flna-iwms-dev-api-picking|pep-pfna-flna-iwms-dev-api-shipping|pep-pfna-flna-iwms-dev-api-tripplan|pep-pfna-flna-iwms-dev-ui|pep-pfna-flna-iwms-qa-api|pep-pfna-flna-iwms-qa-api-core-inventory|pep-pfna-flna-iwms-qa-api-core-production-transfer|pep-pfna-flna-iwms-qa-api-core-shift-summary|pep-pfna-flna-iwms-qa-api-dispatches|pep-pfna-flna-iwms-qa-api-home|pep-pfna-flna-iwms-qa-api-kpi|pep-pfna-flna-iwms-qa-api-load-status|pep-pfna-flna-iwms-qa-api-location|pep-pfna-flna-iwms-qa-api-picking|pep-pfna-flna-iwms-qa-api-shipping|pep-pfna-flna-iwms-qa-api-tripplan|pep-pfna-flna-iwms-qa-ui
+    netvizInfo:
+      bciEnabled: true
+      port: 3892
+    seLinuxOptions: {}
+    seccompProfile: {}
+    windowsOptions: {}
+  logFileBackups: 3
+  logFileSizeMb: 5
+  logLevel: INFO
+  maxPodLogsTailLinesCount: 500
+  maxPodsToRegisterCount: 750
+  metadataServerPort: 9090
+  metadataSyncInterval: 60
+  metricUploadRetryCount: 3
+  metricUploadRetryIntervalMilliSeconds: 5
+  metricsSyncInterval: 30
+  netvizInfo:
+    bciEnabled: true
+    port: 3892
+  nsToInstrumentRegex: pep-pfna-flna-iwms-dev
+  nsToMonitorRegex: pep-pfna-flna-iwms-dev
+  numberOfTaskWorkers: 5
+  podBatchSize: 6
+  podFilter: {}
+  resources:
+    limits:
+      cpu: 512m
+      memory: 512Mi
+    requests:
+      cpu: 512m
+      memory: 512Mi
+  resourcesToInstrument:
+  - Deployment
+  - StatefulSet
+  securityContext:
+    capabilities: {}
+    seLinuxOptions: {}
+    seccompProfile: {}
+    windowsOptions: {}
+  serviceAccountName: appdynamics-cluster-agent
+  stdoutLogging: "true"
+  tierNameStrategy: manual
+status:
+  lastUpdateTime: "2024-11-05T06:17:21Z"
+  state:
+    logLevel: ""
+    logLines: 0
+    metricsSyncInterval: 0
+    snapshotSyncInterval: 0

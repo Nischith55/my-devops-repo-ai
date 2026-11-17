@@ -1,0 +1,14 @@
+---
+# Generated File do not edit manually -- try to regenerate  
+# Ansible managed: modified on 2022-02-15 14:49:26
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-global-eiotp-preprod
+  labels:
+    env-preprod: 'true'
+    environment: preprod
+    istio.io/rev: preprod-stable
+    project: eiotp
+    sector: global
+    team: global-eiotp

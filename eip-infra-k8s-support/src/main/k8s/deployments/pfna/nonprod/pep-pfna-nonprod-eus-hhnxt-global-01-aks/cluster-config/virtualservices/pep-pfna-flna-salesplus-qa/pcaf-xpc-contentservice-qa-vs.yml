@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pcaf-xpc-contentservice
+  name: pcaf-xpc-contentservice-qa-vs
+  namespace: pep-pfna-flna-salesplus-qa
+spec:
+  gateways:
+  - pep-pfna-flna-salesplus-qa/pep-pfna-flna-salesplus-qa-cv-gw
+  hosts:
+  - pcaf-xpc-contentservice-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-xpc-contentservice.pep-pfna-flna-salesplus-qa.svc.cluster.local
+        port:
+          number: 80

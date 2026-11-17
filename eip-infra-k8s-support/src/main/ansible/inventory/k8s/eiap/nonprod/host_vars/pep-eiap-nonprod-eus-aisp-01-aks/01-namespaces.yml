@@ -1,0 +1,23 @@
+####### BEGIN Added recently --pep-eiap-nonprod-eus-aisp-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_eiap_cgf_edocs_dev
+  - ns_pep_eiap_cgf_edocs_qa
+  - ns_pep_eiap_cgf_pepsar_qa
+  - ns_pep_eiap_cgf_hcmfar_qa
+  - ns_pep_eiap_cgf_fss_qa
+  - ns_pep_eiap_cgf_ecm_qa
+  - ns_pep_eiap_cgf_fss_dev
+  - ns_pep_eiap_cgf_ecm_dev
+  - ns_pep_eiap_cgf_hcmfar_dev
+  - ns_pep_eiap_cgf_pepsar_dev
+  - ns_pep_eiap_test_test1_dev
+  - ns_pep_eiap_cgf_cavo_dev
+  - ns_pep_eiap_cgf_pepgenx_qa
+  - ns_pep_eiap_cgf_pepgenx_dev
+  - ns_pep_eiap_cgf_ckptgpt_qa
+  - ns_pep_eiap_cgf_ckptgpt_dev
+  - ns_pep_eiap_test_test_dev
+####### END Added recently --pep-eiap-nonprod-eus-aisp-01-aks######

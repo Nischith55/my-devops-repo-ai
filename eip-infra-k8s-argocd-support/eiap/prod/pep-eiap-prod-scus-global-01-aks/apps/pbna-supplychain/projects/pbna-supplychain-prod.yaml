@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pbna-supplychain-prod
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pbna-supplychain-prod
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/PBNA_Data_Analytics_and_Digital_Solutions/_git/pbna-supplychain-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-pbna-sckm2-prod
+    server: https://kubernetes.default.svc
+  - name: pep-eiap-prod-scus-global-01-aks
+    namespace: pep-eiap-ops-admin
+    server: https://kubernetes.default.svc
+  roles:
+  - name: pbna-supplychain-prod-admin
+    description: Admin privileges to pbna-supplychain-prod
+    policies:
+    - p, proj:pbna-supplychain-prod:pbna-supplychain-prod-admin, applications, *, pbna-supplychain-prod/*, allow
+    - p, proj:pbna-supplychain-prod:pbna-supplychain-prod-admin, repositories, *, pbna-supplychain-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pbna-supplychain-prod-user
+    description: Read-only privileges to pbna-supplychain-prod
+    policies:
+    - p, proj:pbna-supplychain-prod:pbna-supplychain-prod-user, applications, get, pbna-supplychain-prod/*, allow
+    - p, proj:pbna-supplychain-prod:pbna-supplychain-prod-user, applications, sync, pbna-supplychain-prod/*, allow
+    - p, proj:pbna-supplychain-prod:pbna-supplychain-prod-user, repositories, get, pbna-supplychain-prod/*, allow # This line will be replaced by the pipeline script
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.PBNA.Prod.SCKM2"

@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cicdmaturity-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: cicdmaturity-dev  
+  syncPolicy:    
+    # automated:
+    #   prune: false
+    #   selfHeal: true
+    #   allowEmpty: false
+  destination:
+    namespace: pep-snt-cgf-cicd-dev
+    name: pep-eiap-nonprod-eus-sbox-03-aks
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+    targetRevision: bootstrapper-app
+  - repoURL: https://myartifactory.mypepsico.com/artifactory/eiapplatform-helm-prod-virtual
+    targetRevision: 0.1.2
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: cicdmaturity-dev
+      valueFiles:
+      - $values/apps/dev/argo-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:  
+            enabled: false       
+            repo: pepdpsnonprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.1.29
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-eiap-ops-admin
+                  jobServiceAccount: pep-eiap-devsecops-cd-sa
+          spec:
+            project: 'cicdmaturity-dev' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pep-eiap-cicdmaturity-argocd-configs
+              repoName: pep-eiap-cicdmaturity-argocd-configs
+              targetRevision: bootstrapper-app
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications: 
+              notifyEmail: prasanti.kadiyala@pepsico.com  
+              teamsChannel: myteams
+    

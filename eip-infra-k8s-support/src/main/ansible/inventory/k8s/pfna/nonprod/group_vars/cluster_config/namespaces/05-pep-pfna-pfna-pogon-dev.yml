@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_pfna_pogon_dev:
+  
+  name: pep-pfna-pfna-pogon-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pfna-pogon
+    sector: pfna
+    project: pogon
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: pfnastoreperfectprogram-spp
+    pep-cmdb-app-service-id: "2fb55bb4c3214ad06e47f145df013167"
+    pep-cmdb-bus-app-id: "80eaf289c372f9d4b74985359901310a"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-pfna-pfna-pogon-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pfna_pogon'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-pfna-pogon-dev-sa-token
+    namespace: pep-pfna-pfna-pogon-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-pfna-pogon-dev-sa"

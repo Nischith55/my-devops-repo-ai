@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    labels:
+        app: pepsico-pepconnect-b2bweb-mexico
+    name: pepsico-pepconnect-b2bweb-mexico-qa-vs
+    namespace: pep-dps-cgf-pepconnmex-qa
+spec:
+    gateways:
+    - pep-dps-cgf-pepconnmex-qa/pep-dps-cgf-pepconnmex-qa-cv-gw
+    hosts:
+    - pepsico-pepconnect-b2bweb-mexico-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - delamanomayoreo.qa.pepsico.com
+    - pepsiconnect.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-pepconnect-b2bweb-mexico.pep-dps-cgf-pepconnmex-qa.svc.cluster.local
+                port:
+                    number: 80

@@ -1,0 +1,83 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-flna-gro-dev-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-flna-gro-dev.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/assortment
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-assortmentservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/demand
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-demandservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/geography
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-geographyservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/planogram
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-planogramservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/cycle
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-cycleservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/management
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-managementservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/space
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-spaceservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/v1/pog/gro/util
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pep-pcaf-api-utilservice-gro-pog.pep-eiap-flna-gro-dev.svc.cluster.local
+        port:
+          number: 80

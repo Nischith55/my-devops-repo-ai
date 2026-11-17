@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 6f6188c8-1354-48ee-90cd-86b218053d5f
+  name: pep-dps-dps-agdvops-dev-sa
+  namespace: pep-dps-dps-agdvops-dev

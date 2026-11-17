@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-cep-prod
+    project: cep
+    sector: global
+    servicename_aks: dop
+    team: global-cep
+  name: pep-eiap-global-cep-prod

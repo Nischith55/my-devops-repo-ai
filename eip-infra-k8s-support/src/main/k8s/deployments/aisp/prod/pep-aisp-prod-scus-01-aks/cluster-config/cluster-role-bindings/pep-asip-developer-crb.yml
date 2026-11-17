@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-asip-developer-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-asip-developer-clusterrole
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    # Team.App.DPS.DevOps.Prod
+    name: f2208576-2872-4151-aa1d-8479c0e0e8f2
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-prod-devsecops-spn
+    name: eea00c38-1800-4362-98ea-2e594b4585f5

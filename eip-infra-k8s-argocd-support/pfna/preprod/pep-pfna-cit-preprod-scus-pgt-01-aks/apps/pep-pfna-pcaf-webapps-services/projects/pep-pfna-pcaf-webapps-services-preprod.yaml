@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-pcaf-webapps-services-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-pcaf-webapps-services-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pcaf-webapps-services-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-pgt-preprod
+  - name: pep-pfna-cit-preprod-scus-pgt-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-pcaf-webapps-services-preprod-admin
+    description: Admin privileges to pep-pfna-pcaf-webapps-services-preprod
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-admin, applications, *, pep-pfna-pcaf-webapps-services-preprod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-admin, repositories, *, pep-pfna-pcaf-webapps-services-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-pcaf-webapps-services-preprod-user
+    description: Read-only privileges to pep-pfna-pcaf-webapps-services-preprod
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-user, applications, get, pep-pfna-pcaf-webapps-services-preprod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-user, applications, sync, pep-pfna-pcaf-webapps-services-preprod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-user, repositories, get, pep-pfna-pcaf-webapps-services-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pep-pfna-pcaf-webapps-services-preprod:pep-pfna-pcaf-webapps-services-preprod-user, applications, action/apps/Deployment/restart, pep-pfna-pcaf-webapps-services-preprod/*, allow
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.PFNA.RG.AKS.PREPROD.Reader"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"

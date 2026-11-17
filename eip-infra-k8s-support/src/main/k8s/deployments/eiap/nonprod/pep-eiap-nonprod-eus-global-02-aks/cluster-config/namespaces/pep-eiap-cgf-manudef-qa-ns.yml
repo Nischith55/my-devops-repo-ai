@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-cgf-manudef-qa
+  labels:
+    env-nonprod: "true"
+    project: manudef
+    sector: cgf
+    team: cgf-manudef
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: globalperformancesystem-gps
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: ab030495974221506d7470121153afdb
+    pep-cmdb-app-service-id: a7030495974221506d7470121153aff0
+    pep-environment: QA
+    

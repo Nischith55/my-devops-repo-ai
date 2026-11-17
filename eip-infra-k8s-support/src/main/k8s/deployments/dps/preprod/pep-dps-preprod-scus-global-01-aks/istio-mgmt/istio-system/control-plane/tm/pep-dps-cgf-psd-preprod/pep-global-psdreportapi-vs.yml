@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-global-psdreportapi-vs
+  namespace: pep-dps-cgf-psd-preprod
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-global-psdreportapi.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprtpre-report-api
+    route:
+    - destination:
+        host: pep-global-psdreportapi.pep-dps-cgf-psd-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:   
+      allowOrigins:
+      - exact: https://success.preprod.mypepsico.com
+      - exact: https://pep-psd-ui.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+      - exact: https://apim-latam.preprod.mypepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - x-operation-name
+      - x-operation-type
+      exposeHeaders:
+      - x-total-count
+      

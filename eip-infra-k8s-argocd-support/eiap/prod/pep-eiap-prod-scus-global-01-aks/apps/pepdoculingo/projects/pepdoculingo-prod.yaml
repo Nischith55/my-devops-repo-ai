@@ -1,0 +1,40 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepdoculingo-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepdoculingo-prod   
+      sourceRepos:
+      - https://github.com/Global-SnT/dai-pepdoculingo-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-cgf-duaas-prod
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepdoculingo-prod-admin
+        description: Admin privileges to pepdoculingo-prod
+        policies:
+        - p, proj:pepdoculingo-prod:pepdoculingo-prod-admin, applications, *, pepdoculingo-prod/*, allow
+        - p, proj:pepdoculingo-prod:pepdoculingo-prod-admin, repositories, *, pepdoculingo-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepdoculingo-prod-user
+        description: Read-only privileges to pepdoculingo-prod
+        policies:
+        - p, proj:pepdoculingo-prod:pepdoculingo-prod-user, applications, get, pepdoculingo-prod/*, allow
+        - p, proj:pepdoculingo-prod:pepdoculingo-prod-user, applications, sync, pepdoculingo-prod/*, allow
+        - p, proj:pepdoculingo-prod:pepdoculingo-prod-user, repositories, get, pepdoculingo-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.IACOE.Admins"
+        - "Team.Support.EIAP.READ"
+    

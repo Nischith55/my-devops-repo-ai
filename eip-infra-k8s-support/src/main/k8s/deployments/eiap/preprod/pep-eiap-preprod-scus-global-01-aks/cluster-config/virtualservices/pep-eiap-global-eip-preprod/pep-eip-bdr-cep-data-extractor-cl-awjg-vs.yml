@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eip-bdr-cep-data-extractor-cl-awjg-vs
+  namespace: pep-eiap-global-eip-preprod
+  labels:
+      app: pep-eip-bdr-cep-data-extractor-cl
+spec:
+  hosts:
+  - pep-eip-bdr-cep-data-extractor-cl-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-eip-preprod/pep-eiap-global-eip-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eip-bdr-cep-data-extractor-cl.pep-eiap-global-eip-preprod.svc.cluster.local
+        port:
+          number: 80
+  

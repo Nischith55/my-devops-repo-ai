@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepsci-02-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepsci-02-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-pepci-qa
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepsci-02-qa-admin
+        description: Admin privileges to pepsci-02-qa
+        policies:
+        - p, proj:pepsci-02-qa:pepsci-02-qa-admin, applications, *, pepsci-02-qa/*, allow
+        - p, proj:pepsci-02-qa:pepsci-02-qa-admin, repositories, *, pepsci-02-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepsci-02-qa-user
+        description: Read-only privileges to pepsci-02-qa
+        policies:
+        - p, proj:pepsci-02-qa:pepsci-02-qa-user, applications, get, pepsci-02-qa/*, allow
+        - p, proj:pepsci-02-qa:pepsci-02-qa-user, applications, sync, pepsci-02-qa/*, allow
+        - p, proj:pepsci-02-qa:pepsci-02-qa-user, repositories, get, pepsci-02-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepsci-02-qa:pepsci-02-qa-user, applications, action/apps/Deployment/restart, pepsci-02-qa/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.PepCI"
+        - "Team.Support.EIAP.READ"
+    

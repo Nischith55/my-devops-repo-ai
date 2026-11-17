@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: order-processing-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for order-processing-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CGF_BI_Reporting/_git/order-processing-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-europe-opeurope-prod
+        server: https://kubernetes.default.svc
+      - name: pep-eiap-prod-scus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: order-processing-prod-admin
+        description: Admin privileges to order-processing-prod
+        policies:
+        - p, proj:order-processing-prod:order-processing-prod-admin, applications, *, order-processing-prod/*, allow
+        - p, proj:order-processing-prod:order-processing-prod-admin, repositories, *, order-processing-prod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: order-processing-prod-user
+        description: Read-only privileges to order-processing-prod
+        policies:
+        - p, proj:order-processing-prod:order-processing-prod-user, applications, get, order-processing-prod/*, allow
+        - p, proj:order-processing-prod:order-processing-prod-user, applications, sync, order-processing-prod/*, allow
+        - p, proj:order-processing-prod:order-processing-prod-user, repositories, get, order-processing-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.IAI.PWC.Azure.Dev"
+        - "Team.Support.EIAP.READ"
+    

@@ -1,0 +1,50 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Template for Kind: ClusterRoleBinding or RoleBinding
+  INPUTS:
+    params_tmpl:
+      name:
+      kind:
+      role_kind
+  NOTES:
+    - if there is a use case to FORCE a generation add a comment tag with
+      {{ lookup('pipe','date \"+%Y-%m-%d %H:%M:%S %Z\"') }}
+#}
+---
+# Generated File do not edit manually
+# {{ ansible_managed }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ params_tmpl['kind'] }}
+metadata:
+  name: {{ params_tmpl['name'] }}
+  {% if params_tmpl['namespace'] is defined %}
+  namespace: {{ params_tmpl['namespace'] }}
+  {% endif %}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ params_tmpl['role_kind'] }}
+  name: {{ params_tmpl['role'] }}
+{# 
+  Begin Subjects Generation 
+#}
+{% if params_tmpl['subjects'] is defined %}
+subjects:
+  {% for subject in params_tmpl['subjects'] %}
+  {% if subject['kind'] == 'ServiceAccount' %}
+  - apiGroup: ""
+  {% else %}
+  - apiGroup: rbac.authorization.k8s.io
+  {% endif %}
+    {% for key, value in subject.iteritems() %}
+    {% if key in ['kind', 'namespace', 'name'] %}
+    {#
+        Print out the alias as a comment for the name key
+    #}
+    {% if subject['alias'] is defined and key == 'name' %}
+    # {{ subject['alias'] }}
+    {% endif %}
+    {{ key }}: {{ value }}
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pcaf-eiap-shp-sfproxy-v2-qa-dr
+  namespace: pep-pfna-hhnext-qa
+spec:
+  host: pcaf-eiap-shp-sfproxy-v2.pep-pfna-hhnext-qa.svc.cluster.local
+  trafficPolicy:
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutive5xxErrors: 20
+      interval: 1m

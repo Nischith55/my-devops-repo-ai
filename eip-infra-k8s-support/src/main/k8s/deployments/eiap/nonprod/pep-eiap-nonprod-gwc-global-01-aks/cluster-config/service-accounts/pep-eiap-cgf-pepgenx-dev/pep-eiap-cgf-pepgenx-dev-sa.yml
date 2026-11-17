@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-cgf-pepgenx-dev-sa
+  namespace: pep-eiap-cgf-pepgenx-dev

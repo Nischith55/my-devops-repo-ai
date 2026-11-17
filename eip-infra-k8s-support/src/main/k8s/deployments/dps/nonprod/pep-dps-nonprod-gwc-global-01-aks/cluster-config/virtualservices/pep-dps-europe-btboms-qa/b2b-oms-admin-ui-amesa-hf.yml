@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: b2b-oms-admin-ui-amesa-hf-qa:networking.istio.io/VirtualService:pep-dps-europe-btboms-qa/b2b-oms-admin-ui-amesa-hf
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"b2b-oms-admin-ui-amesa-hf-qa:networking.istio.io/VirtualService:pep-dps-europe-btboms-qa/b2b-oms-admin-ui-amesa-hf"},"labels":{"app":"b2b-oms-admin-ui-amesa-hf","app.kubernetes.io/instance":"b2b-oms-admin-ui-amesa-hf","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"b2b-oms-admin-ui-amesa-hf","namespace":"pep-dps-europe-btboms-qa"},"spec":{"gateways":["pep-dps-europe-btboms-qa/pep-dps-europe-btboms-qa-cv-gw"],"hosts":["b2b-oms-admin-ui-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com","oms-b2b-eu.qa.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"b2b-oms-admin-ui-amesa-hf.pep-dps-europe-btboms-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: b2b-oms-admin-ui-amesa-hf
+        app.kubernetes.io/instance: b2b-oms-admin-ui-amesa-hf
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: b2b-oms-admin-ui-amesa-hf
+    namespace: pep-dps-europe-btboms-qa
+spec:
+    gateways:
+    - pep-dps-europe-btboms-qa/pep-dps-europe-btboms-qa-cv-gw
+    hosts:
+    - b2b-oms-admin-ui-amesa-hf.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+    - oms-b2b-eu.qa.pepsico.com
+    - orders-b2b-am-hf.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: b2b-oms-admin-ui-amesa-hf.pep-dps-europe-btboms-qa.svc.cluster.local
+                port:
+                    number: 8080

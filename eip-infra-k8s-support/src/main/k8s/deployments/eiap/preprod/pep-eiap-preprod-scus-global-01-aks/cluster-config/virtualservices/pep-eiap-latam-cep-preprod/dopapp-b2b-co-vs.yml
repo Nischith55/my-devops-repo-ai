@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"dopapp-b2b-co-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pepcepb01.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com","admin.cep.co.preprod.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"dopapp-b2b-co.pep-eiap-latam-cep-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: dopapp-b2b-co
+  name: dopapp-b2b-co-vs
+  namespace: pep-eiap-latam-cep-preprod
+spec:
+  gateways:
+  - pep-eiap-latam-cep-preprod/pep-eiap-latam-cep-preprod-cv-gw
+  hosts:
+  - pepcepb01.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - admin.cep.co.preprod.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dopapp-b2b-co.pep-eiap-latam-cep-preprod.svc.cluster.local
+        port:
+          number: 80

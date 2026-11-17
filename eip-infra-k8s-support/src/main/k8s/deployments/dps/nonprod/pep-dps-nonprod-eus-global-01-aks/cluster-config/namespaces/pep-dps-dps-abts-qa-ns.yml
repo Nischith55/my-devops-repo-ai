@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-abts-qa
+  labels:
+    env-nonprod: "true"
+    project: abts
+    sector: dps
+    team: dps-abts
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: abtshoppernanon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 41f219211b658dd004a96465ec4bcb58
+    pep-cmdb-app-service-id: eadc07dec38b96502fdb37bf050131d4
+    pep-environment: QA
+    

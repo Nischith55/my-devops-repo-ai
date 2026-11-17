@@ -1,0 +1,204 @@
+---
+# ##
+# This is the values to helm3 dry run to generate a base prometheus manifest
+# NOTE: even though we can generate a lot of stuff we will skip it and only
+# worry about the server installation.
+# ##
+
+alertmanager:
+  enabled: false
+# ##
+# Uncomment if alertmanager is enabled.
+# alertmanagerFiles:
+#   alertmanager.yml: ""
+# ##
+
+# Disable configmap reload
+configmapReload:
+  prometheus:
+    enabled: false
+
+  # ##
+  # Uncomment next 2 lines if alertmanager is enabled.
+  # alertmanager:
+  #   enabled: false
+
+# We have our own kube-state-metrics install
+kubeStateMetrics:
+  enabled: false
+
+# disable node exporter
+nodeExporter:
+  enabled: false
+
+# disable push gateway
+pushgateway:
+  enabled: false
+
+# ##
+# We do want the server!!, check the values.yaml to see what needs to change
+# ##
+
+server:
+  enabled: true
+
+  #PEP# override the name -- since it prepends RELEASE-NAME
+  fullnameOverride: prometheus
+
+  # extraArgs:
+  #   storage.local.retention: 720h
+  extraFlags:
+    - web.enable-lifecycle
+    # ## web.enable-admin-api flag controls access to the administrative HTTP 
+    # ## API which includes functionality such as
+    # ## deleting time series. This is disabled by default.
+    # - web.enable-admin-api
+    ##
+    ## storage.tsdb.no-lockfile flag controls BD locking, safe in k8s
+    - storage.tsdb.no-lockfile
+    ##
+    ## storage.tsdb.wal-compression flag enables compression of the write-ahead log (WAL)
+    - storage.tsdb.wal-compression
+
+  # disable prometheus ingress
+  ingress:
+    enabled: false
+
+  persistentVolume:
+    ## If true, Prometheus server will create/use a Persistent Volume Claim
+    ## If false, use emptyDir
+    ##
+    enabled: true
+
+    ## Prometheus server data Persistent Volume access modes
+    ## Must match those of existing PV or dynamic provisioner
+    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    accessModes:
+      - ReadWriteOnce
+
+    ## Prometheus server data Persistent Volume annotations
+    ##
+    annotations: {}
+
+    ## Prometheus server data Persistent Volume existing claim name
+    ## Requires server.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    existingClaim: ""
+
+    ## Prometheus server data Persistent Volume mount root path
+    ##
+    mountPath: /data
+
+    ## Prometheus server data Persistent Volume size
+    ##
+    size: 8Gi
+
+    ## Prometheus server data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    #storageClass: "-"
+
+    ## Prometheus server data Persistent Volume Binding Mode
+    ## If defined, volumeBindingMode: <volumeBindingMode>
+    ## If undefined (the default) or set to null, no volumeBindingMode spec is
+    ##   set, choosing the default mode.
+    ##
+    # volumeBindingMode: ""
+
+    ## Subdirectory of Prometheus server data Persistent Volume to mount
+    ## Useful if the volume's root directory is not empty
+    ##
+    subPath: ""
+
+  emptyDir:
+    ## Prometheus server emptyDir volume size limit
+    ##
+    sizeLimit: ""
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
+  podDisruptionBudget:
+    # PEP enabled
+    enabled: true
+    maxUnavailable: 1
+
+  ## Annotations to be added to Prometheus server pods
+  ##
+  podAnnotations: {}
+    # iam.amazonaws.com/role: prometheus
+
+  ## Labels to be added to Prometheus server pods
+  ##
+  podLabels: {}
+
+  statefulSet:
+    ## If true, use a statefulset instead of a deployment for pod management.
+    ## This allows to scale replicas to more than 1 pod
+    ##
+    enabled: true
+
+  ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
+  ##
+  replicaCount: 2
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  ## Prometheus server readiness and liveness probe initial delay and timeout
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  ##
+  readinessProbeInitialDelay: 30
+  readinessProbePeriodSeconds: 5
+  readinessProbeTimeout: 4
+  readinessProbeFailureThreshold: 3
+  readinessProbeSuccessThreshold: 1
+  livenessProbeInitialDelay: 30
+  livenessProbePeriodSeconds: 15
+  livenessProbeTimeout: 10
+  livenessProbeFailureThreshold: 3
+  livenessProbeSuccessThreshold: 1
+
+  # ## Vertical Pod Autoscaler config
+  # ## Ref: https://github.com/kubernetes/autoscaler/tree/master/vertical-pod-autoscaler
+  # verticalAutoscaler:
+  #   ## If true a VPA object will be created for the controller (either StatefulSet or Deployemnt, based on above configs)
+  #   enabled: true
+  #   # updateMode: "Auto"
+  #   # containerPolicies:
+  #   # - containerName: 'prometheus-server'
+
+  ## Security context to be added to server pods
+  ##
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true
+    runAsGroup: 65534
+    fsGroup: 65534
+
+  service:
+    ## If using a statefulSet (statefulSet.enabled=true), configure the
+    ## service to connect to a specific replica to have a consistent view
+    ## of the data.
+    statefulsetReplica:
+      enabled: true
+      replica: 0
+
+# ##
+# ServerFiles - no need for this.
+# ##
+# serverFiles:
+#   alerts: {}
+#   prometheus.yml: {}
+#   rules: {}
+

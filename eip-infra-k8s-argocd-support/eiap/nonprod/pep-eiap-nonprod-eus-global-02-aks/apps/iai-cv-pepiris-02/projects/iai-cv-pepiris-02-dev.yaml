@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iai-cv-pepiris-02-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iai-cv-pepiris-02-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-pepiris01-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: iai-cv-pepiris-02-dev-admin
+        description: Admin privileges to iai-cv-pepiris-02-dev
+        policies:
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-admin, applications, *, iai-cv-pepiris-02-dev/*, allow
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-admin, repositories, *, iai-cv-pepiris-02-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iai-cv-pepiris-02-dev-user
+        description: Read-only privileges to iai-cv-pepiris-02-dev
+        policies:
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-user, applications, get, iai-cv-pepiris-02-dev/*, allow
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-user, applications, sync, iai-cv-pepiris-02-dev/*, allow
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-user, repositories, get, iai-cv-pepiris-02-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:iai-cv-pepiris-02-dev:iai-cv-pepiris-02-dev-user, applications, action/apps/Deployment/restart, iai-cv-pepiris-02-dev/*, allow
+        groups:
+        - "Team.Support.IACOE.MLOPS.NPRDCNTB"
+        - "Team.Support.EIAP.READ"
+    

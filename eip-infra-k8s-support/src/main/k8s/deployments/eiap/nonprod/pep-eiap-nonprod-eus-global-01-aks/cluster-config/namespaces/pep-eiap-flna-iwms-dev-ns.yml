@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 4701e53447e6151052293238436d4316
+    pep-cmdb-bus-app-id: a0ee40fddb3e8c10c2b5f381399619cd
+    pep-environment: Development
+    project: iwms
+    sector: flna
+    servicename_aks: supplychaindatawarehousenon-prod
+    team: flna-iwms
+  name: pep-eiap-flna-iwms-dev

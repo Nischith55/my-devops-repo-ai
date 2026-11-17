@@ -1,0 +1,30 @@
+---
+- name: creates temp directory
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/prometheus"
+    state: directory
+
+- name: Copy prometheus file
+  copy:
+    src: "{{ source_directory }}/src/main/k8s/deployments/pfna/nonprod/pep-pfna-nonprod-eus-hhnxt-global-01-aks/add-ons/prometheus/server/manifests/prometheus-server.yml"
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/prometheus"
+    remote_src : yes
+  register: prometheus
+
+
+- name: prometheus-server
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/prometheus/prometheus-server.yml"
+  register: init3
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"
+
+
+- name: Copy files to repo
+  copy:
+    dest: "/azp/agent/_work/1/s/src/tmp1/src/main/k8s/deployments/{{ functionalarea }}/{{ env }}/{{ resourcename }}/add-ons/prometheus/server/manifests"
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/prometheus/"
+    force: true
+  register: cfss

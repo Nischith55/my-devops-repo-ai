@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-buycon-prod
+  labels:
+    env-prod: "true"
+    project: buycon
+    sector: dps
+    team: dps-buycon
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: buyers-console-dps
+    istio.io/rev: prod-stable
+    environment: prod
+    pep-cmdb-bus-app-id: 0937c000836556181c98d8426daad3ac
+    pep-cmdb-app-service-id: 15370400836556181c98d8426daad385
+    pep-environment: Production
+    

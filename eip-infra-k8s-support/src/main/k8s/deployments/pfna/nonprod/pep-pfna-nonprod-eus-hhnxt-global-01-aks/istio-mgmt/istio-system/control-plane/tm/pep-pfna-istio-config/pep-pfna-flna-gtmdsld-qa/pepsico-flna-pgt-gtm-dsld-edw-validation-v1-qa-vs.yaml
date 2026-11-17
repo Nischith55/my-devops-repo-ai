@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-flna-pgt-gtm-dsld-edw-validation-v1-qa-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-flna-pgt-gtm-dsld-edw-validation-v1-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/dsld/edw/validation
+    route:
+    - destination:
+        host: pepsico-flna-pgt-gtm-dsld-edw-validation-v1.pep-pfna-flna-gtmdsld-qa.svc.cluster.local
+        port:
+          number: 80

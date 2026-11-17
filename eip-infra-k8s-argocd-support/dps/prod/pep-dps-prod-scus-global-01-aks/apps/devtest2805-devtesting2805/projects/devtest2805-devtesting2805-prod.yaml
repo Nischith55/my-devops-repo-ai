@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devtest2805-devtesting2805-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devtest2805-devtesting2805-prod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/devtest2805-devtesting2805-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-devx-test-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: devtest2805-devtesting2805-prod-admin
+    description: Admin privileges to devtest2805-devtesting2805-prod
+    policies:
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-admin, applications, *, devtest2805-devtesting2805-prod/*, allow
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-admin, repositories, *, devtest2805-devtesting2805-prod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: devtest2805-devtesting2805-prod-user
+    description: Read-only privileges to devtest2805-devtesting2805-prod
+    policies:
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-user, applications, get, devtest2805-devtesting2805-prod/*, allow
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-user, applications, sync, devtest2805-devtesting2805-prod/*, allow
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-user, repositories, get, devtest2805-devtesting2805-prod/*, allow
+    - p, proj:devtest2805-devtesting2805-prod:devtest2805-devtesting2805-prod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.READ"

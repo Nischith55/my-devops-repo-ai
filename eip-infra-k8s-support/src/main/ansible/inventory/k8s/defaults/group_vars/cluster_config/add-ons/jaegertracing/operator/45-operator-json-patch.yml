@@ -1,0 +1,22 @@
+---
+# ##
+# IMPORTANT:
+# - make sure the original manifest has the same order and index if list
+#   type.
+# ##
+
+__es_generic_secret_name: &sec001 |-
+  {{ elasticsearch_generic_secrets[0]['secret_name'] }}
+
+jt_operator_deployment_json_patch:
+
+  # Remove any walue from WATCH_NAMESPACE (as we are clusterwide)
+  - op: remove
+    path: /spec/template/spec/containers/0/env/0/valueFrom
+
+  # LOG_LEVEL
+  - op: add
+    path: /spec/template/spec/containers/0/env/-
+    value:
+      name: LOG-LEVEL
+      value: "{{ jt_log_level | default('info') }}"

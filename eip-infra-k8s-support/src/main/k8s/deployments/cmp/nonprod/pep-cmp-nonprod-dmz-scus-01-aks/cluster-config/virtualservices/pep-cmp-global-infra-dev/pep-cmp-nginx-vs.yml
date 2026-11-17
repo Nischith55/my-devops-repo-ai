@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-cmp-nginx-vs","namespace":"pep-cmp-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-cmp-nginx.cmpdmz.gw01.aks01.scus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-cmp-nginx.pep-cmp-global-infra-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+  name: pep-cmp-nginx-vs
+  namespace: pep-cmp-global-infra-dev
+spec:
+  gateways:
+  - pep-cmp-global-infra-dev/pep-cmp-global-infra-dev-cv-gw
+  hosts:
+  - pep-cmp-nginx.cmpdmz.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-nginx.pep-cmp-global-infra-dev.svc.cluster.local
+        port:
+          number: 8080

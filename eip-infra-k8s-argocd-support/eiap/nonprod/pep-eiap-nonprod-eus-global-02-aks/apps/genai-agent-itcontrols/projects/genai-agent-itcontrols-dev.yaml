@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: genai-agent-itcontrols-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for genai-agent-itcontrols-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/IT_Generative_AI_Initiatives/_git/pep-genai-agent-itcontrols-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-shrdagntai-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: genai-agent-itcontrols-dev-admin
+        description: Admin privileges to genai-agent-itcontrols-dev
+        policies:
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-admin, applications, *, genai-agent-itcontrols-dev/*, allow
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-admin, repositories, *, genai-agent-itcontrols-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: genai-agent-itcontrols-dev-user
+        description: Read-only privileges to genai-agent-itcontrols-dev
+        policies:
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-user, applications, get, genai-agent-itcontrols-dev/*, allow
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-user, applications, sync, genai-agent-itcontrols-dev/*, allow
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-user, repositories, get, genai-agent-itcontrols-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:genai-agent-itcontrols-dev:genai-agent-itcontrols-dev-user, applications, action/apps/Deployment/restart, genai-agent-itcontrols-dev/*, allow
+        groups:
+        - "Team.App.Snowcontrols.auditors"
+        - "Team.Support.EIAP.READ"
+    

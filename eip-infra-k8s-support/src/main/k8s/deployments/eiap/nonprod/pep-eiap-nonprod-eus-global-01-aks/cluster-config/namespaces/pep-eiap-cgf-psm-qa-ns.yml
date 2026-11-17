@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-psm-qa
+    pep-cmdb-app-service-id: 1f2faa648366355060121920ceaad37b
+    pep-cmdb-bus-app-id: df2faa648366355060121920ceaad34c
+    pep-environment: QA
+    project: psm
+    sector: cgf
+    servicename_aks: potatosourcingmatrix-psm
+    team: cgf-psm
+  name: pep-eiap-cgf-psm-qa

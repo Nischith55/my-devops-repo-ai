@@ -1,0 +1,41 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace pep-eiap-flna-gtmothr-dev
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_flna_gtmothr_dev:
+  
+  name: pep-eiap-flna-gtmothr-dev
+
+  # ALL label values MUST be string, quote native yaml types
+  labels:
+    team: flna-gtmothr
+    sector: flna
+    project: gtmothr
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # should have springcloudk8s role 
+    - name: pep-eiap-flna-gtmothr-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_gtm'] }}"

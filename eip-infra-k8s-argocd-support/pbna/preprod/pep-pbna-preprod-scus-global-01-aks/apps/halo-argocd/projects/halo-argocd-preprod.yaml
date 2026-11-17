@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: halo-argocd-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for halo-argocd-preprod  
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/HaloCRM_SAFe/_git/halo-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace: pep-pbna-pbna-savvy-preprod
+      - name: pep-pbna-preprod-scus-global-01-aks
+        namespace: pep-pbna-ops-admin
+      roles:
+      - name: halo-argocd-preprod-admin
+        description: Admin privileges to halo-argocd-preprod
+        policies:
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-admin, applications, *, halo-argocd-preprod/*, allow
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-admin, repositories, *, halo-argocd-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: halo-argocd-preprod-user
+        description: Read-only privileges to halo-argocd-preprod
+        policies:
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-user, applications, get, halo-argocd-preprod/*, allow
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-user, applications, sync, halo-argocd-preprod/*, allow
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-user, repositories, get, halo-argocd-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:halo-argocd-preprod:halo-argocd-preprod-user, applications, action/apps/Deployment/restart, halo-argocd-preprod/*, allow
+        groups:
+        - "Team.Support.OCH.NA.DigitalSales.Developer"
+        - "Team.Support.EIAP.READ"
+    

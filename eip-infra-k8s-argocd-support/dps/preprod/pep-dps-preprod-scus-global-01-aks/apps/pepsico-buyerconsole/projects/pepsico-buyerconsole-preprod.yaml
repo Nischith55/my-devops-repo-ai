@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-buyerconsole-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepsico-buyerconsole-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Procurement/_git/pepsico-buyerconsole-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-buycon-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-buyerconsole-preprod-admin
+    description: Admin privileges to pepsico-buyerconsole-preprod
+    policies:
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-admin, applications, *, pepsico-buyerconsole-preprod/*, allow
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-admin, repositories, *, pepsico-buyerconsole-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-buyerconsole-preprod-user
+    description: Read-only privileges to pepsico-buyerconsole-preprod
+    policies:
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-user, applications, get, pepsico-buyerconsole-preprod/*, allow
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-user, applications, sync, pepsico-buyerconsole-preprod/*, allow
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-user, repositories, get, pepsico-buyerconsole-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:pepsico-buyerconsole-preprod:pepsico-buyerconsole-preprod-user, applications, action/apps/Deployment/restart, pepsico-buyerconsole-preprod/*, allow
+
+    groups:
+    - "Team.Support.DPS.NonProd.BUYCON"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

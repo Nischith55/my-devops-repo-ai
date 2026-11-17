@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: node001-testingaugus2026new-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for node001-testingaugus2026new-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/node001-testingaugus2026new-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/pep/cmp/pep-cgf-devx-helloworld-react18-vite-frontend-service/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-test-test-qa
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: node001-testingaugus2026new-qa-admin
+    description: Admin privileges to node001-testingaugus2026new-qa
+    policies:
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-admin, applications, *, node001-testingaugus2026new-qa/*, allow
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-admin, repositories, *, node001-testingaugus2026new-qa/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: node001-testingaugus2026new-qa-user
+    description: Read-only privileges to node001-testingaugus2026new-qa
+    policies:
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-user, applications, get, node001-testingaugus2026new-qa/*, allow
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-user, applications, sync, node001-testingaugus2026new-qa/*, allow
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-user, repositories, get, node001-testingaugus2026new-qa/*, allow
+    - p, proj:node001-testingaugus2026new-qa:node001-testingaugus2026new-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

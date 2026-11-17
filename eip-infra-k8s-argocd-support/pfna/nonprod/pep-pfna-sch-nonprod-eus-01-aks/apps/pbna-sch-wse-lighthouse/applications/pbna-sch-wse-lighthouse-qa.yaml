@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pbna-sch-wse-lighthouse-qa-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-sch-wse-lighthouse-argocd-configs
+    targetRevision: develop
+  - repoURL: peppfnaschnonprodacr.azurecr.io/helm
+    targetRevision: 0.2.4
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: pbna-sch-wse-lighthouse-qa
+      valueFiles:
+      - $values/qa/pep-pfna-sch-nonprod-eus-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: qa
+          helm:  
+            enabled: false       
+            repo: peppfnaschnonprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-pfna-sch-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'pbna-sch-wse-lighthouse-qa' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT2/PBNA_WSE_LIGHTHOUSE/_git/pbna-sch-wse-lighthouse-argocd-configs
+              repoName: pbna-sch-wse-lighthouse-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: argo-notifications

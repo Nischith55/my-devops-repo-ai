@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-flna-iwms-dev-api-core-picking
+  name: pep-pfna-flna-iwms-dev-api-core-picking-vs
+  namespace: pep-pfna-flna-iwms-dev
+spec:
+  gateways:
+  - pep-pfna-flna-iwms-dev/pep-pfna-flna-iwms-dev-cv-gw
+  hosts:
+  - pep-pfna-flna-iwms-dev-api-core-picking.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pfna-flna-iwms-dev-api-core-picking.pep-pfna-flna-iwms-dev.svc.cluster.local
+        port:
+          number: 8080

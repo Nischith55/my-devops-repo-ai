@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-flna-eiv-inventory-batch-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - "pepsico-flna-eiv-inventory-batch.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com"
+  http:
+  - match:
+    - uri:
+        prefix: /flna/eiv/v1
+      ignoreUriCase: true
+    route:
+    - destination:
+        host: pepsico-flna-eiv-inventory-batch.pep-eiap-flna-eiv-dev.svc.cluster.local
+        port:
+          number: 80

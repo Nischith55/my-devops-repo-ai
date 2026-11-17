@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-elastic-01-vs
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  gateways:
+  - pep-eiap-elastic-cluster-01/pep-eiap-elastic-cluster-01-cv-gw
+  hosts:
+  - pep-eiap-elastic-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+  - pep-eiap-elastic-01-admin.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - pep-eiap-elastic-01.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+      - pep-eiap-elastic-01-admin.infra.gw01.aks02.scus.nonprod.azure.intra.pepsico.com
+    route:
+    - destination:
+        host: pep-eiap-elastic-01.pep-eiap-elastic-cluster-01.svc.cluster.local
+        port:
+          number: 9200
+      weight: 100

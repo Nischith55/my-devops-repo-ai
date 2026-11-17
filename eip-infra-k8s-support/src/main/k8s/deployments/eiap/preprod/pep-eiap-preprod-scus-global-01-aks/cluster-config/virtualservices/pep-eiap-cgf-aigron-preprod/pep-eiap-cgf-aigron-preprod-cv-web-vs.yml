@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-aigron-preprod-cv-web-vs
+  namespace: pep-eiap-cgf-aigron-preprod
+  labels:
+    app: pep-eiap-cgf-aigron-preprod-cv-web
+spec:
+  hosts:
+    - aigronomist.preprod.mypepsico.com
+    - pep-eiap-cgf-aigron-preprod-cv.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-aigron-preprod/pep-eiap-cgf-aigron-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-aigron-preprod-cv-web.pep-eiap-cgf-aigron-preprod.svc.cluster.local
+        port:
+          number: 80

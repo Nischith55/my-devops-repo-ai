@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pgt-incidentiq-chatbot-py-undh-vs
+  namespace: pep-pfna-pcaf-qa
+  labels:
+      app: pep-pgt-incidentiq-chatbot-py
+spec:
+  hosts:
+  - pep-pfna-nonprod-eus-hhnxt-global-01-aks.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-qa/pep-pfna-pcaf-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pgt-incidentiq-chatbot-py.pep-pfna-pcaf-qa.svc.cluster.local
+        port:
+          number: 80
+  

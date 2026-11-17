@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: csext-dcs-pg-hcmfar-vs
+  namespace: pep-eiap-cgf-hcmfar-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-hcmfar-dev/pep-eiap-cgf-hcmfar-dev-cv-gw
+  hosts:
+  - pep-hcmfar-dev-csext-dcs-pg.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 1891
+    route:
+    - destination:
+        host: csext-dcs-pg.pep-eiap-cgf-hcmfar-dev.svc.cluster.local
+        port:
+          number: 1891

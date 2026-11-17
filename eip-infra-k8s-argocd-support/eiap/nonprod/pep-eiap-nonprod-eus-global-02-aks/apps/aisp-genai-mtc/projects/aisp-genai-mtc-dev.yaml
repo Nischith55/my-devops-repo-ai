@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: aisp-genai-mtc-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for aisp-genai-mtc-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/aisp-genai-mtc-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-cgf-mtc-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: aisp-genai-mtc-dev-admin
+    description: Admin privileges to aisp-genai-mtc-dev
+    policies:
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-admin, applications, *, aisp-genai-mtc-dev/*, allow
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-admin, repositories, *, aisp-genai-mtc-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: aisp-genai-mtc-dev-user
+    description: Read-only privileges to aisp-genai-mtc-dev
+    policies:
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-user, applications, get, aisp-genai-mtc-dev/*, allow
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-user, applications, sync, aisp-genai-mtc-dev/*, allow
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-user, repositories, get, aisp-genai-mtc-dev/*, allow
+    - p, proj:aisp-genai-mtc-dev:aisp-genai-mtc-dev-user, applications, action/apps/Deployment/restart, aisp-genai-mtc-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.MTCDEV"
+    - "Team.Support.EIAP.READ"

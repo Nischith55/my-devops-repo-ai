@@ -1,0 +1,27 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: istio-system
+resources:
+  - ../../../../../../add-ons/istio/kustomize/control-plane-main/base
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-merge-node-selection.yml
+  - patch-merge-mesh-config.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-ingress-gateways.yml
+    target:
+      group: install.istio.io
+      kind: IstioOperator
+      name: control-plane-main
+      namespace: istio-system
+      version: v1alpha1
+ 
+
+

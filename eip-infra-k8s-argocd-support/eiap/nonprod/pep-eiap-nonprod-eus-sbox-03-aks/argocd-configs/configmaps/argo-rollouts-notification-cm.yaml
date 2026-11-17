@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argo-rollouts-notification-configmap
+data:
+  trigger.argo-tr-notify-teams: |
+    - send: [argo-rollouts-paused] 
+  template.argo-rollouts-paused: |
+    teams:
+      facts: |
+        [{
+          "name": "Rollout",
+          "value": "{{ .rollout.metadata.name}}"
+        },
+        {
+          "name": "Strategy",
+          "value": "{{if .rollout.spec.strategy.blueGreen}}BlueGreen{{end}}{{if .rollout.spec.strategy.canary}}Canary{{end}}"
+        },
+        {{range $index, $c := .rollout.spec.template.spec.containers}}
+              {{if not $index}},{{end}}
+              {{if $index}},{{end}}
+              {
+                "title": "{{$c.name}}",
+                "value": "{{$c.image}}",
+                "short": true
+              }
+            {{end}}
+            ]
+          }]
+      potentialAction: |-
+        [{
+          "@type":"OpenUri",
+          "name":"Operation Application",
+          "targets":[{
+            "os":"default",
+            "uri":"{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          }]
+        },
+        {
+          "@type":"OpenUri",
+          "name":"Open Repository",
+          "targets":[{
+            "os":"default",
+            "uri":"{{(index .app.spec.sources 0).repoURL | call .repo.RepoURLToHTTPS}}"
+          }]
+        }]
+      title: Rollout {{ .rollout.metadata.name}} is paused and need ur action to resume.
+      text: Application {{.app.metadata.name}} has been suspended.
+      summary: "Rollout {{ .rollout.metadata.name}} is paused"

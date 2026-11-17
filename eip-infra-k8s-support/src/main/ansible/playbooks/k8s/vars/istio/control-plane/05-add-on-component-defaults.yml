@@ -1,0 +1,35 @@
+---
+# ##
+# Defaults for add-on components -- NOTE: from 1.8 this will be removed
+# do not use this anymore
+# ##
+
+
+__icp_grafana_spec:
+
+  enabled: false
+
+__icp_kiali_spec:
+
+  enabled: false
+
+__icp_prometheus_spec:
+
+  enabled: false
+
+__icp_tracing_spec:
+
+  enabled: false
+
+# defaults
+__icp_spec_add_on_components:
+
+  # grafana
+  grafana: "{{ icp_grafana_spec | default(__icp_grafana_spec) }}"
+
+
+  kiali: "{{ icp_kiali_spec | default(__icp_kiali_spec) }}"
+
+  prometheus: "{{ icp_prometheus_spec | default(__icp_prometheus_spec) }}"
+  
+  tracing: "{{ icp_tracing_spec | default(__icp_tracing_spec) }}"

@@ -1,0 +1,82 @@
+---
+- set_fact:
+    vs_list: {}
+### create a folder to store generated gateway manifest files
+- name: Creates directory to store outputs
+  ansible.builtin.file:
+    path: "{{ mypath }}/Artifacts/curl-outputs/"
+    state: directory
+- name: Get list of all virtual services
+  kubernetes.core.k8s_info:
+    api_version: networking.istio.io/v1beta1
+    kind: VirtualService 
+  register: virtualservices
+
+
+- name: get host details 
+  set_fact:
+    vs_list: "{{ vs_list | combine({ item.spec.hosts[0]: item.spec.http[0].match[0].uri.prefix | default('/') })}}"  
+  with_items: "{{ virtualservices.resources }}"
+  no_log: True
+- debug: var=vs_list
+
+
+# - name: artifact
+#   copy:
+#     content: "{{ vs_list | to_yaml }}"
+#     dest: "{{ mypath }}/Artifacts/curl-outputs/{{ cluster_name }}-curl-vslist.txt"
+
+- name: checking connectivity to virtual service
+  ansible.builtin.uri:
+    url: "https://{{ item.key }}{{ item.value }}"
+    validate_certs: false
+  delegate_to: localhost
+  register: curlloop
+  with_items: "{{ vs_list | dict2items }}"
+  ignore_errors: true
+  no_log: True
+# - debug: var=curlloop
+
+- name: Combine stdout_lines and cmd for each item uri
+  set_fact:
+    combined_output: "{{ curlloop.results | json_query('[].{status: status, url: url}') }}"
+
+# - name: execute curl command for all hosts 
+#   command: "curl -kis https://{{ item.key }}{{ item.value }}"
+#   register: curlloop
+#   async: 1
+#   poll: 1
+#   ignore_errors: true
+#   with_items: "{{ vs_list | dict2items }}"
+
+
+# - name: Combine stdout_lines and cmd for each item curl
+#   set_fact:
+#     combined_output: "{{ curlloop.results | json_query('[].{status: stdout_lines[0], url: cmd[2]}') }}"
+
+- name: artifact
+  copy:
+    content: "{{ combined_output | to_yaml }}"
+    dest: "{{ mypath }}/Artifacts/curl-outputs/{{ cluster_name }}-curl-precheck.txt"
+
+
+### counting no.of manifests generated for each service type.
+- find:
+    path: "{{ mypath }}/Artifacts/gw-manifests/"
+    recurse: yes
+  register: gw_files
+- find:
+    path: "{{ mypath }}/Artifacts/vs-manifests/"
+    recurse: yes
+  register: vs_files
+- find:
+    path: "{{ mypath }}/Artifacts/dr-manifests/"
+    recurse: yes
+  register: dr_files 
+- set_fact:
+    gw_count: "{{ gw_files.files | length }}"
+    vs_count: "{{ vs_files.files | length }}"
+    dr_count: "{{ dr_files.files | length }}"
+- debug: 
+    msg: "Gateway manifests {{ gw_count }}, VS manifests {{ vs_count }} and DR manifests {{ dr_count }}"
+

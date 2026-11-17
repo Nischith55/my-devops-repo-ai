@@ -1,0 +1,29 @@
+---
+- name: check the current-context
+  shell: kubectl delete ns {{ namespace }}
+  register: output
+  ignore_errors: true
+
+# - name: remove the block in subject.yml file
+#   blockinfile:
+#     path: "{{ mypath }}/src/main/ansible/inventory/k8s/defaults/group_vars/cluster_config/15-subjects.yml"
+#     insertafter: "k8s_sup_subjects:"
+#     marker: "#{mark} {{ sector }}_{{ project }}"
+#     state: absent
+#     block: |2
+#         {{ sector }}_{{ project }}:
+#           name: {{ objectid }}
+#           kind: Group
+#           apiGroup: rbac.authorization.k8s.io
+
+
+# - file: 
+#     path: '{{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/group_vars/cluster_config/namespaces/05-{{ namespace }}.yml'
+#     state: absent
+
+# - name: delete the {{ namespace }} in namespace.yml file
+#   lineinfile:
+#     dest: '{{ mypath }}/src/main/ansible/inventory/k8s/{{ department }}/{{ myenv }}/host_vars/{{ cluster }}/01-namespaces.yml'
+#     line: "  - ns_pep_{{ department }}_{{ sector }}_{{ project }}_{{ env }}"
+#     state: absent
+#   register: output

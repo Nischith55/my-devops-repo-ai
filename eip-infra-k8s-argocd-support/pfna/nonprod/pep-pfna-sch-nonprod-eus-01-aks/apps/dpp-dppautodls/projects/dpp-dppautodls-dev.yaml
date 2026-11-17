@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dpp-dppautodls-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for dpp-dppautodls-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT2/CGF_Auto_DLS/_git/dpp-dppautodls-argocd-configs
+  - peppfnaschnonprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-flna-dppinteg-dev
+  - name: pep-pfna-sch-nonprod-eus-01-aks
+    namespace: pep-pfna-sch-ops-admin
+  roles:
+  - name: dpp-dppautodls-dev-admin
+    description: Admin privileges to dpp-dppautodls-dev
+    policies:
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-admin, applications, *, dpp-dppautodls-dev/*, allow
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-admin, repositories, *, dpp-dppautodls-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: dpp-dppautodls-dev-user
+    description: Read-only privileges to dpp-dppautodls-dev
+    policies:
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-user, applications, get, dpp-dppautodls-dev/*, allow
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-user, applications, sync, dpp-dppautodls-dev/*, allow
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-user, repositories, get, dpp-dppautodls-dev/*, allow
+    - p, proj:dpp-dppautodls-dev:dpp-dppautodls-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.PFNA.SCH.AKS.Reader"
+    - "Team.Support.EIAP.READ"

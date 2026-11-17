@@ -1,0 +1,29 @@
+#jinja2: lstrip_blocks: "True"
+{# 
+  inputs:
+    - k8s_role: rolename
+    - k8s_subjects: list of subjects
+#}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ k8s_role }}-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ k8s_role }}
+subjects:
+{% if k8s_subjects is defined %}
+subjects:
+  {% for subject in k8s_subjects %}
+  {% if subject['kind'] == 'ServiceAccount' %}
+  - apiGroup: ""
+  {% else %}
+  - apiGroup: rbac.authorization.k8s.io
+  {% endif %}
+    {% for key, value in subject.iteritems() %}
+    {{ key }}: {{ value }}
+    {% endfor %}
+  {% endfor %}
+{% endif %}

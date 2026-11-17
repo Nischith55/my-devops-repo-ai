@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"
+  namespace: "pep-pfna-pfna-mfgpropl-dev"
+  labels:
+    app: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"
+spec:
+  progressDeadlineSeconds: 3600
+  selector:
+    matchLabels:
+      app: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"
+    spec:
+      serviceAccountName: "pep-pfna-pfna-mfgpropl-dev-sa"
+      automountServiceAccountToken: true
+      containers:
+      - name: hello-world-cmp-deploy
+        image: "peppfnaschnonprodacr.azurecr.io/pep/cto/cmp/pepsico-cto-cmp-helloworld-webapp:20231024.26"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 10000
+        ports:
+        - containerPort: 8080
+        livenessProbe:                             # section for liveness probe
+          httpGet:  
+            path: /healthcheck        # http path for liveness probe
+            port: 8080                         # app port/name where the probing should be done
+          initialDelaySeconds: 30                 # initial delay period before probes kicks in
+          periodSeconds: 5                         # frequency of probe
+        readinessProbe:                            # section for readiness probe
+          httpGet:  
+            path: /healthcheck       # http path for readiness probe
+            port: 8080                
+          initialDelaySeconds: 30  
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"
+  namespace: "pep-pfna-pfna-mfgpropl-dev"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: "pep-pfna-pfna-mfgpropl-dev-cv-webdeploy"

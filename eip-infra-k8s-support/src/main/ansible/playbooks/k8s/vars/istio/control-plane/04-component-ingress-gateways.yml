@@ -1,0 +1,24 @@
+---
+# ingress gateways -- NOTE this is a list
+
+
+# - ALWAYS disable the builtin ingress gateway, we use custom
+__icp_spec_component_igwy_disable_builtin:
+
+  # Make sure the name is consistent with future versions
+  name: istio-ingressgateway
+
+  enabled: false
+
+# ##
+# Always select starting with cluster_name
+# TODO: add control plane name too!
+# ##
+__igw_prefix: "{{ cluster_name | replace('-', '_') }}"
+__icp_spec_component_igwy_params: |-
+  {{
+    q('vars', *q('varnames', 
+                  '^__icp.+_igwy_disable_builtin$',
+                  '^' + __igw_prefix + '_.+_ingress_gw$')
+      )
+  }}

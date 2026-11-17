@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-cmp-cmp-sigdev-dev
+  labels:
+    env-nonprod: "true"
+    project: sigdev
+    sector: cmp
+    team: cmp-sigdev
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: cmp
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    

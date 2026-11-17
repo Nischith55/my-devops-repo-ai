@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pcaf-customer-kpi-api-python-mviz-vs
+  namespace: pep-pfna-pcaf-prod
+  labels:
+      app: pep-pcaf-customer-kpi-api-python
+spec:
+  hosts:
+  - pep-pcaf-customer-kpi-api-python.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pcaf-prod/pep-pfna-pcaf-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-customer-kpi-api-python.pep-pfna-pcaf-prod.svc.cluster.local
+        port:
+          number: 8080
+  

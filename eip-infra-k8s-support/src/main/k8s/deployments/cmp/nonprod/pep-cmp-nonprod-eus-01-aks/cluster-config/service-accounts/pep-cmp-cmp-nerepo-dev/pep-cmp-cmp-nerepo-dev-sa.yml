@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: e12b2189-5647-4191-b3a6-cd08a850bce1
+  name: pep-cmp-cmp-nerepo-dev-sa
+  namespace: pep-cmp-cmp-nerepo-dev

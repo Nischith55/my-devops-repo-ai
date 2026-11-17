@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"chefgpt","app.kubernetes.io/instance":"chefgpt-dev","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"chefgpt","namespace":"pep-eiap-cgf-dseagntdev-dev"},"spec":{"gateways":["pep-eiap-cgf-dseagntdev-dev/pep-eiap-cgf-dseagntdev-dev-cv-gw"],"hosts":["chefgpt.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"chefgpt.pep-eiap-cgf-dseagntdev-dev.svc.cluster.local","port":{"number":8000}}}]}]}}
+
+'
+    labels:
+        app: chefgpt
+        app.kubernetes.io/instance: chefgpt-dev
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: chefgpt
+    namespace: pep-eiap-cgf-dseagntdev-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-dseagntdev-dev/pep-eiap-cgf-dseagntdev-dev-cv-gw
+    hosts:
+    - chefgpt.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: chefgpt.pep-eiap-cgf-dseagntdev-dev.svc.cluster.local
+                port:
+                    number: 8000

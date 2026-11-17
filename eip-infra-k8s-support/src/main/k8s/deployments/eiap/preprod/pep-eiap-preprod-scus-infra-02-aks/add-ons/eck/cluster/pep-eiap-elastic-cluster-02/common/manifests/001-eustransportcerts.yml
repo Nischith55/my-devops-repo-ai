@@ -1,0 +1,31 @@
+# ##
+# Only Pepsico Root CA certs all
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eus-remote-certs-config
+  namespace: pep-eiap-elastic-cluster-02
+data:
+  eusremote.ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDVTCCAj2gAwIBAgIQcf34xZX9ypGfvG4SZppnoDANBgkqhkiG9w0BAQsFADA0
+    MRMwEQYDVQQLEwpjbHVzdGVyLTAyMR0wGwYDVQQDExRjbHVzdGVyLTAyLXRyYW5z
+    cG9ydDAgFw0yMjA0MjUxNzE1NTdaGA8yMDYyMDQxNTE3MjU1N1owNDETMBEGA1UE
+    CxMKY2x1c3Rlci0wMjEdMBsGA1UEAxMUY2x1c3Rlci0wMi10cmFuc3BvcnQwggEi
+    MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCuLqYJIY8G4OTIZ+51jnoeBnes
+    NP0pcZaif2jW0gylvINEhnQnCyqpTVnFn2dRHwLV2ARajCBl8jUN2hNE6HwMtT2x
+    VQPKyG8i0cJmIdVCQPGJtmzk2QfwGQqk+Xy/afbf8vwQmKQCZ5DHLdnDOJBeNNNd
+    Vy6soqmeGsiSP+5dWgx8xYw11iUfwgWGR/lUu42YhI5Qnkd1YgQZrgvDBi3f5ocU
+    YGO8fgP2EMWyqdE6GeVJQ0BflH0wlk3DpmzkvqqfXsTjxzg/2nuo4xYpB7nhjiyg
+    lxaKZuP112Xd4zS668+Rlvshjn9RVVUkwtn45csA+d3BXREpFf80Isbw1CezAgMB
+    AAGjYTBfMA4GA1UdDwEB/wQEAwIChDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYB
+    BQUHAwIwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUXNytyV224pVFtCixXvRo
+    nsSdBPIwDQYJKoZIhvcNAQELBQADggEBACeQzlp8WkKY/qiP5sWW6xq0Hi+TEBs1
+    a9qKx9dS0HsViP8G2J56EM8AlgoRHmlXkGNXnpKuxoimBpBQuxvB50BzsUL636d4
+    aGvEmPhh5z6Q1EHTHNAO/0pkpnWhR2aYT/8fpAWiGummzp+2ctYonnmVdsxsvLTl
+    0bxJhTguHH+vOUgY3x6Ae1yhoP8hs6Uo8uz3jooHxlKYFjhMf5GlBazuCAYd78kD
+    pWfYtp3j4Jo+Caa7IjKyMy7tZTa5gZDMYE3R++GTd/APvTSgYwsn+LOnZZ7YjILm
+    mtnZvwr5BMP8autiJvjXTM4iYaipCS7+pof2PNarL2xChNw/puMR0qU=
+    -----END CERTIFICATE-----

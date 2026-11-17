@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pepsico-pgt-och-hhnx-sales-web-app-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pepsico-pgt-och-hhnx-sales-web-app.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pgt-och-hhnx-sales-web-app.pep-eiap-flna-pgt-dev.svc.cluster.local
+        port:
+          number: 80

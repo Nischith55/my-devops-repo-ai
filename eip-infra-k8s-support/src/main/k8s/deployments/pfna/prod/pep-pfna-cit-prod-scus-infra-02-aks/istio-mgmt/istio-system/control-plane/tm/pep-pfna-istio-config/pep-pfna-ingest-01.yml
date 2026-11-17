@@ -1,0 +1,24 @@
+---
+# IMPORTANT:
+# - please create the k8s services pep-eiap-ingest-01
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-pfna-ingest-01
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-pfna-ingest-01.pfnainfra.gw01.aks02.scus.prod.azure.intra.pepsico.com
+  tls:
+    - match:
+      - port: 443
+        sniHosts:
+          - pep-pfna-ingest-01.pfnainfra.gw01.aks02.scus.prod.azure.intra.pepsico.com
+      route:
+        - destination:
+            host: pep-pfna-ingest-01.pep-pfna-elastic-cluster-01.svc.cluster.local
+            port:
+              number: 9200
+          weight: 100

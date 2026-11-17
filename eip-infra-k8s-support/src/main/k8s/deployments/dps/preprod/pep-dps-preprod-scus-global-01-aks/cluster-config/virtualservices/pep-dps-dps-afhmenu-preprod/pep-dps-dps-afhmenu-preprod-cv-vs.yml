@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-dps-dps-afhmenu-preprod-cv-vs","namespace":"pep-dps-dps-afhmenu-preprod"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-dps-dps-afhmenu-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"afh-menupro-ui.pep-dps-dps-afhmenu-preprod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: afh-menupro-ui
+  name: pep-dps-dps-afhmenu-preprod-cv-vs
+  namespace: pep-dps-dps-afhmenu-preprod
+spec:
+  gateways:
+  - pep-dps-dps-afhmenu-preprod/pep-dps-dps-afhmenu-preprod-cv-gw
+  hosts:
+  - pep-dps-dps-afhmenu-preprod-cv.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: afh-menupro-ui.pep-dps-dps-afhmenu-preprod.svc.cluster.local
+        port:
+          number: 80

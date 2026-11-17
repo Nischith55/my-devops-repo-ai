@@ -1,0 +1,39 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: cgftest-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      description: Project for cgftest-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/PFNA_SupplyChainHub/_git/pfna-sch-argocd-configs
+      - peppfnaschprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-prod-suk-01-aks
+        namespace: pep-cgf-test-test-prod
+      - name: pep-cgf-sch-prod-suk-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: cgftest-dev-admin
+        description: Admin privileges to cgftest-dev
+        policies:
+        - p, proj:cgftest-dev:cgftest-dev-admin, applications, *, cgftest-dev/*, allow
+        - p, proj:cgftest-dev:cgftest-dev-admin, repositories, *, cgftest-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: cgftest-dev-user
+        description: Read-only privileges to cgftest-dev
+        policies:
+        - p, proj:cgftest-dev:cgftest-dev-user, applications, get, cgftest-dev/*, allow
+        - p, proj:cgftest-dev:cgftest-dev-user, applications, sync, cgftest-dev/*, allow
+        - p, proj:cgftest-dev:cgftest-dev-user, repositories, get, cgftest-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:cgftest-dev:cgftest-dev-user, applications, action/apps/Deployment/restart, cgftest-dev/*, allow
+        groups:
+        - "Team.Support.PFNA.SCH.Reader"
+        - "Team.Support.EIAP.READ"
+    

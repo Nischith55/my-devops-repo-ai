@@ -1,0 +1,44 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sReplicaLimits",
+  "metadata": {
+    "annotations": {},
+    "name": "replicalimit"
+  },
+  "spec": {
+    "enforcementAction": "deny",
+    "match": {
+      "excludedNamespaces": [
+        "pep-eiap-latam-gtm-prod",
+        "pep-eiap-pfna-ipp-prod",
+        "pep-eiap-cgf-labelright-prod",
+        "gatekeeper-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "kinds": [
+            "Deployment"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "ranges": [
+        {
+          "max_replicas": 15,
+          "min_replicas": 0
+        }
+      ]
+    }
+  }
+}

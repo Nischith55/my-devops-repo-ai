@@ -1,0 +1,17 @@
+---
+# generated file please do not edit
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 2
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

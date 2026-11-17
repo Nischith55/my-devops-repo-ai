@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devxtestingdevsecops-jan2026devxtesting-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devxtestingdevsecops-jan2026devxtesting-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/devxtestingdevsecops-jan2026devxtesting-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-devx-test-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: devxtestingdevsecops-jan2026devxtesting-preprod-admin
+    description: Admin privileges to devxtestingdevsecops-jan2026devxtesting-preprod
+    policies:
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-admin, applications, *, devxtestingdevsecops-jan2026devxtesting-preprod/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-admin, repositories, *, devxtestingdevsecops-jan2026devxtesting-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: devxtestingdevsecops-jan2026devxtesting-preprod-user
+    description: Read-only privileges to devxtestingdevsecops-jan2026devxtesting-preprod
+    policies:
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-user, applications, get, devxtestingdevsecops-jan2026devxtesting-preprod/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-user, applications, sync, devxtestingdevsecops-jan2026devxtesting-preprod/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-user, repositories, get, devxtestingdevsecops-jan2026devxtesting-preprod/*, allow
+    - p, proj:devxtestingdevsecops-jan2026devxtesting-preprod:devxtestingdevsecops-jan2026devxtesting-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

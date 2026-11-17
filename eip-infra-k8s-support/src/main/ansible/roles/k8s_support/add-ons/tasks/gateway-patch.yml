@@ -1,0 +1,17 @@
+---
+# creating template files in the temp directory
+- name: create temp directory gateway patch
+  ansible.builtin.file:
+    path: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway-patch"
+    state: directory
+- template: 
+    src: gw-push-cronjob.j2
+    dest: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway-patch/gateway-patch.yaml"
+- name: apply kubernetes cmd
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ source_directory }}/src/main/ansible/playbooks/k8s/aks-post-provisioning/gateway-patch/gateway-patch.yaml"
+  environment: 
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ resourcename }}"

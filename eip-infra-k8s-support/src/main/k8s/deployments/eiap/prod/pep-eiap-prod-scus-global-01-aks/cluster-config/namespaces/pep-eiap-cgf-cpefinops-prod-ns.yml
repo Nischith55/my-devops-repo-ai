@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    kubernetes.io/metadata.name: pep-eiap-cgf-cpefinops-prod
+    project: cpefinops
+    sector: cgf
+    servicename_aks: azurecloudonboarding
+    team: cgf-cpefinops
+  name: pep-eiap-cgf-cpefinops-prod

@@ -1,0 +1,8 @@
+REVISION TAG         ISTIO-OPERATOR-CR                          PROFILE REQD-COMPONENTS
+default  <no-tag>    istio-system/control-plane-main            default base
+                                                                        istiod
+                                                                        ingress:pep-eiap-ingress-gw01
+                                                                        ingress:pep-eiap-ingress-gw02
+1-10-3   prod-stable istio-system/control-plane-1-10-3-gateways empty   ingress:pep-eiap-ingress-gw01
+                     istio-system/control-plane-1-10-3-minimal  minimal base
+                                                                        istiod

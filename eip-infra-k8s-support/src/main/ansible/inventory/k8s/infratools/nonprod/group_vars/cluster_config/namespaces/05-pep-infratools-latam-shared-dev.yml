@@ -1,0 +1,35 @@
+---
+ns_pep_infratools_latam_shared_dev:
+  
+  name: pep-infratools-latam-shared-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-shared
+    sector: latam
+    project: shared
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-infratools-latam-shared-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-infratools-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-infratools-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_shared'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-infratools-latam-shared-dev-sa-token
+    namespace: pep-infratools-latam-shared-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-infratools-latam-shared-dev-sa"

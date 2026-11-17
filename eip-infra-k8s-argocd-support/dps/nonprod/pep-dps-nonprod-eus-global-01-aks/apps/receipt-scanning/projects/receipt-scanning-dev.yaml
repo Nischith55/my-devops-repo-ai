@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: receipt-scanning-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for receipt-scanning-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/receipt-scanning-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsadmin-dev
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsmaster-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsruleng-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-extractor-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsproduct-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsvalidati-dev
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rsrewards-dev
+    server: https://kubernetes.default.svc
+    
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-rstemporal-dev
+    server: https://kubernetes.default.svc
+
+  roles:
+  - name: receipt-scanning-dev-admin
+    description: Admin privileges to receipt-scanning-dev
+    policies:
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-admin, applications, *, receipt-scanning-dev/*, allow
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-admin, applications, get, argocd/*, allow
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-admin, repositories, *, receipt-scanning-dev/*, allow
+    groups:    
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.Deployment.Approvers"
+  - name: receipt-scanning-dev-user
+    description: Read-only privileges to receipt-scanning-dev
+    policies:
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-user, applications, get, receipt-scanning-dev/*, allow
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-user, applications, sync, receipt-scanning-dev/*, allow
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-user, repositories, get, receipt-scanning-dev/*, allow
+    - p, proj:receipt-scanning-dev:receipt-scanning-dev-user, applications, action/apps/Deployment/restart, receipt-scanning-dev/*, allow
+    groups:
+    - "Team.App.DPS.DSSRS.admin"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.Deployment.Approvers"
+    - "Team.Support.CGF.NonProd.devops"

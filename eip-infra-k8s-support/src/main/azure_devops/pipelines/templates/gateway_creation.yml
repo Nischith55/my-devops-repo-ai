@@ -1,0 +1,44 @@
+steps:
+- task: CmdLine@2
+  inputs:
+    script: |
+      set -e
+      # . /opt/venv/python38-ansible211/bin/activate
+      # pip3 install ruamel.yaml
+      # ansible-playbook --version
+      # pip install ansible[Azure]
+      # pip install ansible-core
+      # pip install futures
+      # pip show pyyaml
+      # pip3 install openshift
+      pip3 install ruamel.yaml
+      ansible --version
+      pip3 install --upgrade ansible
+      ansible --version
+      pip3 install openshift==0.11.0
+      pip3 install kubernetes==28.1.0
+      pip3 install pyyaml
+      pip3 show pyyaml
+      pip3 show openshift
+      pip3 show kubernetes
+      pip3 install pyOpenSSL
+      ansible --version
+
+- task: Bash@3
+  displayName: 'gateway_creation'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # . /opt/venv/python38-ansible211/bin/activate
+      ansible-playbook --version
+      ansible-galaxy collection install community.kubernetes -p ~/.ansible/collections/
+      ansible-galaxy collection install community.general -p ~/.ansible/collections/
+      ansible-playbook -e '{"cluster": "${{ parameters.cluster }}", "namespace": "${{ parameters.namespace }}", "department": "${{ parameters.department }}", "region": "${{ parameters.region }}", "env": "${{ parameters.env }}"}'  src/main/ansible/playbooks/k8s/istio-gateway-creation.yml
+  env:
+    script_dir: $(system.defaultWorkingDirectory) 
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+    AAD_SERVICE_PRINCIPAL_SUBSCRIPTION_ID: $(SUBSCRIPTION_ID_CLUSTER)
+    AAD_SERVICE_PRINCIPAL_TENANT_ID: $(AZURE_TENANT)

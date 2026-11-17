@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: admin-portal-iam-ms-vs
+  namespace: pep-snt-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - admin-portal-iam-ms.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  - admin-portal.preprod.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: admin-portal-iam-ms.pep-snt-cgf-adportal-preprod.svc.cluster.local
+        port:
+          number: 8080
+
+      

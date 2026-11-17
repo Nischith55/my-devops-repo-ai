@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: r360-caf-nginx-fuzd-vs
+  namespace: pep-dps-dps-r360prod-prod
+  labels:
+      app: r360-caf-nginx
+spec:
+  hosts:
+  - pep-sntdps-prod-r360-caf-nginx.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  - eur360assets.pepsico.com
+  gateways:
+  - pep-dps-dps-r360prod-prod/pep-dps-dps-r360prod-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: r360-caf-nginx.pep-dps-dps-r360prod-prod.svc.cluster.local
+        port:
+          number: 8080
+  

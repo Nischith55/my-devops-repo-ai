@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: pepgpt-web-app
+        meta.helm.sh/release-namespace: pep-eiap-cgf-pepgpt-dev
+    labels:
+        app: pepgpt-web-app
+        app.kubernetes.io/instance: pepgpt-web-app
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250121.1'
+        cluster-name: pep-eiap-nonprod-eus-global-02-aks
+        environment: dev
+        helm.sh/chart: platform-chart-1.0.2
+        namespace: pep-eiap-cgf-pepgpt-dev
+    name: pepgpt-web-app
+    namespace: pep-eiap-cgf-pepgpt-dev
+spec:
+    gateways:
+    - pep-eiap-cgf-pepgpt-dev/pep-eiap-cgf-pepgpt-dev-cv-gw
+    hosts:
+    - pepgpt-web-app.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+    - pepgpt.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepgpt-web-app.pep-eiap-cgf-pepgpt-dev.svc.cluster.local
+                port:
+                    number: 8080

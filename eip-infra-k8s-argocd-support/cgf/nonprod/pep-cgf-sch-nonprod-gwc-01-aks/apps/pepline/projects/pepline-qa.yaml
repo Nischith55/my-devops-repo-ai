@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepline-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepline-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/Global_SnT_PEPLINE/_git/pep-europe-pepline-argocd-configs
+      - pepcgfschnonprodgwcacr.azurecr.io/helm
+      destinations:
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-cgf-pepln-qa
+      - name: pep-cgf-sch-nonprod-gwc-01-aks
+        namespace: pep-cgf-ops-admin
+      roles:
+      - name: pepline-qa-admin
+        description: Admin privileges to pepline-qa
+        policies:
+        - p, proj:pepline-qa:pepline-qa-admin, applications, *, pepline-qa/*, allow
+        - p, proj:pepline-qa:pepline-qa-admin, repositories, *, pepline-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.CGF.NonProd.devops"
+
+      - name: pepline-qa-user
+        description: Read-only privileges to pepline-qa
+        policies:
+        - p, proj:pepline-qa:pepline-qa-user, applications, get, pepline-qa/*, allow
+        - p, proj:pepline-qa:pepline-qa-user, applications, sync, pepline-qa/*, allow
+        - p, proj:pepline-qa:pepline-qa-user, repositories, get, pepline-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:pepline-qa:pepline-qa-user, applications, action/apps/Deployment/restart, pepline-qa/*, allow
+        groups:
+        - "Team.App.CGF.NonProd.pepln"
+        - "Team.Support.EIAP.READ"
+    

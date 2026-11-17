@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: undefined
+  name: pep-iam-sso-ssportal-ui-vs
+  namespace: pep-eiap-cgf-iamservice-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-iamservice-prod/pep-eiap-cgf-iamservice-prod-cv-gw
+  hosts:
+  - pep-iam-sso-ssportal-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iam-sso-ssportal-ui.pep-eiap-cgf-iamservice-prod.svc.cluster.local
+        port:
+          number: 80

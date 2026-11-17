@@ -1,0 +1,205 @@
+global:
+# fullnameoverride sets the name of the deployment and service and prefix of other k8s objects
+  fullnameOverride: "pep-eip-pbna-savvy-cronjobtest" 
+# targetted namespace to which the chart objects get deployed
+  namespace: test 
+# deployment - configuration to toggle the creation of deployment  
+  deployment:
+ # enabled - default value is true and creates deployment
+ # when turned off, turns off the creation of VS,DR,PDB and HPA
+    enabled: false
+# service - configuration to toggle the creation of service  
+  service:
+  # enabled - default value is true and creates service
+    enabled: false
+
+# Application chart - overrides to create and manage deployment, service and configmaps
+app-chart:
+# CronJob Configuration
+  cronjob:
+  # enabled - default value is false, set it to true to create cronjob
+    enabled: true
+    labels:
+      app: pep-eip-appsflyer-inappevents-job
+    # cronjob to schedule {MM HH DD MM WKD -- Minutes, Hour, Day, Month, Weekday (eg. Sun, Mon)}
+    schedule: "*/4 * * * *"
+    # concurrencyPolicy- help avoiding job execution overlap
+    concurrencyPolicy: Forbid
+    # Limit the time for which a Job can continue to run - 230s corresponds to the limit for Azure Function time trigger execution
+    activeDeadlineSeconds: 3600
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 2
+    startingDeadlineSeconds: 300
+    suspend: false
+    backoffLimit: 
+    # Policy to restart the deployment
+    restartPolicy: Never
+    # image section - mentioning the image to use by the deployment   
+    image: 
+    # repository to use - NonProd ACR in lower and Prod ACR in higher env   
+      repository: myartifactory.mypepsico.com/enterprisesolutions_eip_docker_local/pep/eip/pbna/halo/pep-eip-pbna-scronjobtest
+    # image tag to use
+      tag: "20230621.12"
+      pullPolicy: IfNotPresent
+    # image pull secret to be used to pull the image from image repository
+    imagePullSecrets:
+      - name: "pep-eiap-pbna-halo-dev-cronjobtest" 
+  # image section ends
+    # resource section - to specify limits and requests
+    resources: 
+      # limits - the maximum amount of resource to be used by the container
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      # requests - the minimum amount of resource required for the container
+      requests:
+        cpu: "2"
+        memory: "1400Mi"
+    # resurce section ends
+    # Pass arguments starts
+    args:
+      - /bin/sh
+      - -c
+      - > 
+        date +%s > /tmp/start_time;
+        echo "start time";
+        cat /tmp/start_time;            
+        cd /etc/ssl/certs;
+        openssl s_client -showcerts -servername  pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com -connect pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com:443 > cacert.pem;
+        chmod 775 cacert.pem;
+        get_date=$(date -d "yesterday" '+%Y-%m-%d');
+        echo "fetching inappevents data for date: $get_date";
+        result=$(curl --cacert cacert.pem -m 600 -s  -w "%{http_code}" "https://pep-eip-cdp-appsflyer-data-extractor.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com/appsflyer/inappevents?fromDate=${get_date}&toDate=${get_date}&type=organicios,nonorganicios,organicandroid,nonorganicandroid" -s -o /dev/nv/null); 
+        echo "status code: $result";
+    # Pass arguments ends
+    # Pass command starts
+    command:
+      - /bin/sh
+      - -c
+      - date; echo Hello from the Kubernetes cluster 
+    # Pass command ends
+    # tolerations starts
+    tolerations:
+    - key: "BuildAgentPool"
+      operator: "Exists"
+      effect: "NoSchedule"
+    # tolerations ends
+    # liveness and readiness probes configuration - supports both http probe and command probe
+    probes:
+    # enabled - default value is false, set it to true to add the probes configuration to the deployment
+      enabled: true
+      # liveness probe to be included under liveness section
+      liveness:
+        # http probes require path and port configuration
+        path: /actuator/health/liveness
+        # name of the port (matching to the contianer ports configuration) to be used for probes
+        port: app-port
+        # wait period in sec, before the performing the first liveness probe 
+        initialDelaySeconds: 120
+        # interval with which the probes are performed
+        periodSeconds: 5
+        # Number of seconds after which the probe times out
+        timeoutSeconds: 15
+        # success threshold
+        successThreshold: 1
+        # failure threshold
+        failureThreshold: 1
+      # readiness probe to be included under readiness section
+      readiness:
+        # command to execute for the probe
+        command: 
+          - cat
+          - /tmp/healthy
+        # wait period in sec, before the performing the first liveness probe 
+        initialDelaySeconds: 120
+        # interval with which the probes are performed
+        periodSeconds: 5
+        # Number of seconds after which the probe times out
+        timeoutSeconds: 15
+        # success threshold
+        successThreshold: 1
+        # failure threshold
+        failureThreshold: 1
+      # startup probe (optional) to be included under startup section - only rendered when this section is present.
+      # it delays the liveness and readiness checks until the application has finished starting up.
+      startup:
+        # http probes require path and port configuration; alternatively use a command probe (see readiness above)
+        path: /actuator/health/liveness
+        # name of the port (matching the container ports configuration) to be used for probes
+        port: app-port
+        # wait period in sec, before performing the first startup probe
+        initialDelaySeconds: 10
+        # interval with which the probes are performed
+        periodSeconds: 10
+        # Number of seconds after which the probe times out
+        timeoutSeconds: 15
+        # success threshold
+        successThreshold: 1
+        # failure threshold - the app has (failureThreshold * periodSeconds) to finish starting up
+        failureThreshold: 30
+      # liveness, readiness and startup probe section ends
+    env:
+    # name of the env variable
+    - name: APP_CONFIGURATION_ENDPOINT
+    # value to be assigned 
+      value: APP_CONFIGURATION_ENDPOINT_VALUE
+
+  # ENV Section
+  # ENV from Secrets - to be used for setting env from couple of keys from multiple secrets
+    envFromSecrets:
+    # name of the env variable
+    - name: TERADATA_USER
+    # secret to refer to extract the value and set to env variable
+      secret: 
+      # name of the secret
+        name: pep-eip-pbna-savvy-customer-secret
+      # key in the secret to refer, whose value is extracted and assigned to env variable
+        key: TERADATA_USER
+    # name of the env variable
+    - name: TERADATA_PASSWORD
+    #  secret to refer to extract the value and set to env variable
+      secret: 
+      # name of the secret
+        name: pep-eip-pbna-savvy-customer-secret
+      # key in the secret to refer, whose value is extracted and assigned to env variable
+        key: TERADATA_PASSWORD
+
+  # ENV from Secret Ref - to be used when all the keys in a secret are to be created as env variables
+    envFromSecretRef:
+    # secret reference to extract all the keys and values and set as env variables in the container
+    - secretRef:
+      # name of the secret
+        name:  test-secret
+    # secret reference to extract all the keys and values and set as env variables in the container
+    - secretRef: 
+      # name of the secret
+        name: test-secret2
+
+  # ENV from Configmap Ref - to be used when all the keys in a configmap are to be created as env variables
+    envFromConfigMapRef:
+    # configmap reference to extract all the keys and values and set as env variables in the container
+    - configMapRef:
+      # name of the configmap
+        name: pepsico-test-configmap    
+    
+    # list of any volumes to mount on the cronjob
+    volumes:
+    # name of the volume
+    - name: testvolume1
+     # path to mount on the container
+      mountPath: /addVol/test1.yaml
+    # subpath - to facilitate multiple mounts on same path
+      subPath: test1.yaml
+    # readonly set to true if we want the mout to be readonly
+      readOnly: true
+    # source of the volume - configmap / secret etc
+      type:
+      # source of the volume and settings
+        configMap: 
+      # name of the source of volume
+          name: application-configmap
+        # items to mount
+          items:
+          - key: application.yml
+            path: test1.yaml
+#CronJob Configuration section ends

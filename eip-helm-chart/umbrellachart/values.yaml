@@ -1,0 +1,11 @@
+# Default values for umbrellachart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  nameOverride: "" 
+  
+app-chart:
+  enabled: true  
+
+platform-chart:
+  enabled: true

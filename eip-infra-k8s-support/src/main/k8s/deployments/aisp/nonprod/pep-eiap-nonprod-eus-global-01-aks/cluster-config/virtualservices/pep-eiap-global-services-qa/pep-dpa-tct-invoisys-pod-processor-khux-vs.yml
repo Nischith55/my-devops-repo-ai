@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dpa-tct-invoisys-pod-processor-khux-vs
+  namespace: pep-eiap-global-services-qa
+  labels:
+      app: pep-dpa-tct-invoisys-pod-processor
+spec:
+  hosts:
+  - pep-dpa-tct-invoisys-pod-processor-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-services-qa/pep-eiap-global-services-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-dpa-tct-invoisys-pod-processor.pep-eiap-global-services-qa.svc.cluster.local
+        port:
+          number: 80
+  

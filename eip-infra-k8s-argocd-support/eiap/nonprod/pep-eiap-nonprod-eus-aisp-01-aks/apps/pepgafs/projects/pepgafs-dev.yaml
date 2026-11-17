@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepgafs-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pepgafs-dev
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepgafs-argocd-config
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-aisp-01-aks
+    namespace: pep-eiap-cgf-pepgafs-dev
+  - name: pep-eiap-nonprod-eus-aisp-01-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pepgafs-dev-admin
+    description: Admin privileges to pepgafs-dev
+    policies:
+    - p, proj:pepgafs-dev:pepgafs-dev-admin, applications, *, pepgafs-dev/*, allow
+    - p, proj:pepgafs-dev:pepgafs-dev-admin, repositories, *, pepgafs-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepgafs-dev-user
+    description: Read-only privileges to pepgafs-dev
+    policies:
+    - p, proj:pepgafs-dev:pepgafs-dev-user, applications, get, pepgafs-dev/*, allow
+    - p, proj:pepgafs-dev:pepgafs-dev-user, applications, sync, pepgafs-dev/*, allow
+    - p, proj:pepgafs-dev:pepgafs-dev-user, repositories, get, pepgafs-dev/*, allow
+    - p, proj:pepgafs-dev:pepgafs-dev-user, applications, action/apps/Deployment/restart, pepgafs-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.PepGAFS"

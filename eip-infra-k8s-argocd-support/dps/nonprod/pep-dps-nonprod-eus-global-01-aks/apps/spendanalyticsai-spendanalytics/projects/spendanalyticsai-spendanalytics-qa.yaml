@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: spendanalyticsai-spendanalytics-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for spendanalyticsai-spendanalytics-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_SnT_Procurement/_git/spendanalyticsai-spendanalytics-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-dps-buycon-qa
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: spendanalyticsai-spendanalytics-qa-admin
+    description: Admin privileges to spendanalyticsai-spendanalytics-qa
+    policies:
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-admin, applications, *, spendanalyticsai-spendanalytics-qa/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-admin, repositories, *, spendanalyticsai-spendanalytics-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: spendanalyticsai-spendanalytics-qa-user
+    description: Read-only privileges to spendanalyticsai-spendanalytics-qa
+    policies:
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-user, applications, get, spendanalyticsai-spendanalytics-qa/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-user, applications, sync, spendanalyticsai-spendanalytics-qa/*, allow
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-user, repositories, get, spendanalyticsai-spendanalytics-qa/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:spendanalyticsai-spendanalytics-qa:spendanalyticsai-spendanalytics-qa-user, applications, action/apps/Deployment/restart, spendanalyticsai-spendanalytics-qa/*, allow
+
+    groups:
+    - "Team.Support.DPS.NonProd.BUYCON"
+    - "Team.Support.EIAP.READ"

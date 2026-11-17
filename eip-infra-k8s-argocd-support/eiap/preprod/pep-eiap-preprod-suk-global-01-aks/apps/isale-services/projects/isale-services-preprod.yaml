@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: isale-services-preprod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for isale-services-preprod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/EUROPE_iSales_Replatforming/_git/isale-services-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-preprod-suk-global-01-aks
+        namespace: pep-eiap-europe-isalspre-preprod
+      - name: pep-eiap-preprod-suk-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: isale-services-preprod-admin
+        description: Admin privileges to isale-services-preprod
+        policies:
+        - p, proj:isale-services-preprod:isale-services-preprod-admin, applications, *, isale-services-preprod/*, allow
+        - p, proj:isale-services-preprod:isale-services-preprod-admin, repositories, *, isale-services-preprod/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: isale-services-preprod-user
+        description: Read-only privileges to isale-services-preprod
+        policies:
+        - p, proj:isale-services-preprod:isale-services-preprod-user, applications, get, isale-services-preprod/*, allow
+        - p, proj:isale-services-preprod:isale-services-preprod-user, applications, sync, isale-services-preprod/*, allow
+        - p, proj:isale-services-preprod:isale-services-preprod-user, repositories, get, isale-services-preprod/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:isale-services-preprod:isale-services-preprod-user, applications, action/apps/Deployment/restart, isale-services-preprod/*, allow
+        groups:
+        - "Team.support.iSales.AKS"
+        - "Team.Support.EIAP.READ"
+    

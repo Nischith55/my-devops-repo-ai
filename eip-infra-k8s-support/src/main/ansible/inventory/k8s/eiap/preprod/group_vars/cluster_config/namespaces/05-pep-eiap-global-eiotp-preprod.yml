@@ -1,0 +1,37 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace GLOBAL EIOTP
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa, prod or preprod etc}
+
+ns_pep_eiap_global_eiotp_preprod:
+  
+  name: pep-eiap-global-eiotp-preprod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: global-eiotp
+    sector: global
+    project: eiotp
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['global_eiotp_pepsns'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-eiap-global-eiotp-preprod-sa

@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test001-testpyaug20226-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for test001-testpyaug20226-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test001-testpyaug20226-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/pep/cmp/gt-test-1-devx-python/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: test001-testpyaug20226-dev-admin
+    description: Admin privileges to test001-testpyaug20226-dev
+    policies:
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-admin, applications, *, test001-testpyaug20226-dev/*, allow
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-admin, repositories, *, test001-testpyaug20226-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: test001-testpyaug20226-dev-user
+    description: Read-only privileges to test001-testpyaug20226-dev
+    policies:
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-user, applications, get, test001-testpyaug20226-dev/*, allow
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-user, applications, sync, test001-testpyaug20226-dev/*, allow
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-user, repositories, get, test001-testpyaug20226-dev/*, allow
+    - p, proj:test001-testpyaug20226-dev:test001-testpyaug20226-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

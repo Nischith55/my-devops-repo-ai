@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dtv-tpo-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for dtv-tpo-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dtv-tpo-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-dtvtpopp-preprod
+    server: https://kubernetes.default.svc
+    
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dtv-tpo-preprod-admin
+    description: Admin privileges to dtv-tpo-preprod
+    policies:
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-admin, applications, *, dtv-tpo-preprod/*, allow
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-admin, repositories, *, dtv-tpo-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dtv-tpo-preprod-user
+    description: Read-only privileges to dtv-tpo-preprod
+    policies:
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-user, applications, get, dtv-tpo-preprod/*, allow
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-user, applications, sync, dtv-tpo-preprod/*, allow
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-user, repositories, get, dtv-tpo-preprod/*, allow
+    - p, proj:dtv-tpo-preprod:dtv-tpo-preprod-user, applications, action/apps/Deployment/restart, dtv-tpo-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.DPS.NonProd.dtvtpo"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-runtime-loyalty-engine-leaderboards-ptr-rcbc-vs
+  namespace: pep-dps-cgf-peployalty-prod
+  labels:
+      app: dtcsrv-joy-runtime-loyalty-engine-leaderboards-ptr
+spec:
+  hosts:
+  - pep-joy-runtimeloyaltyengineleaderboards.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-cgf-peployalty-prod/pep-dps-cgf-peployalty-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-loyalty-engine-leaderboards-ptr.pep-dps-cgf-peployalty-prod.svc.cluster.local
+        port:
+          number: 80
+  

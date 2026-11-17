@@ -1,0 +1,11 @@
+---
+
+# INFO is always get
+- name: K8S_CLUSTER_INFO_ACTION
+  import_role:
+    name: k8s_support/kubectl
+  vars:
+    mode: execute
+    #kctl_action always get
+    kctl_action: get
+    #kctl_action_args required

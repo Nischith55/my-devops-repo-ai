@@ -1,0 +1,37 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace CGF BTB
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_cgf_btb_preprod:
+  
+  name: pep-eiap-cgf-btb-preprod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-btb
+    sector: cgf
+    project: btb
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_btb'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-eiap-cgf-btb-preprod-sa

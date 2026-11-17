@@ -1,0 +1,14 @@
+####### BEGIN Added recently --pep-pbna-nonprod-eus-global-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_pbna_cgf_spot_dev
+  - ns_pep_pbna_pbna_senfsv_qa
+  - ns_pep_pbna_pbna_saavy_qa
+  - ns_pep_pbna_pbna_savvy_dev
+  - ns_pep_pbna_pbna_savvy_qa
+  - ns_pep_pbna_pbna_savvyform_dev
+  - ns_pep_pbna_pbna_pepcommerc_dev
+  - ns_pep_pbna_test_test_qa
+####### END Added recently --pep-pbna-nonprod-eus-global-01-aks######

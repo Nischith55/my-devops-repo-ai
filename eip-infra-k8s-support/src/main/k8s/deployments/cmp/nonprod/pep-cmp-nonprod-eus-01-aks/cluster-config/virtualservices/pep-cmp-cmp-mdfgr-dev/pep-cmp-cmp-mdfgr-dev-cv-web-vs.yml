@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-mdfgr-dev-cv-web-vs
+  namespace: pep-cmp-cmp-mdfgr-dev
+  labels:
+    app: pep-cmp-cmp-mdfgr-dev-cv-web
+spec:
+  hosts:
+    - sha.dev.mypepsico.com
+    - pep-cmp-cmp-mdfgr-dev-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-mdfgr-dev/pep-cmp-cmp-mdfgr-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cmp-cmp-mdfgr-dev-cv-web.pep-cmp-cmp-mdfgr-dev.svc.cluster.local
+        port:
+          number: 80

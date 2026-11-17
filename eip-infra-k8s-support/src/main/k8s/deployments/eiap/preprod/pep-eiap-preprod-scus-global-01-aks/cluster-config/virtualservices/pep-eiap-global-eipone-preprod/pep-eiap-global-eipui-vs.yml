@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-eiap-global-eipui
+  name: pep-eiap-global-eipui-vs
+  namespace: pep-eiap-global-eipone-preprod
+spec:
+  gateways:
+  - pep-eiap-global-eipone-preprod/pep-eiap-global-eipone-preprod-cv-gw
+  hosts:
+  - pep-eiap-global-eipui.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-global-eipui.pep-eiap-global-eipone-preprod.svc.cluster.local
+        port:
+          number: 80

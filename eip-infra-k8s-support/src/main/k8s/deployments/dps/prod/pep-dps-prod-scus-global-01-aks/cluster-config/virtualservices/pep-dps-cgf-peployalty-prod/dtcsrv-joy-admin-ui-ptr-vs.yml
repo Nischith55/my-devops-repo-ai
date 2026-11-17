@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: dtcsrv-joy-admin-ui-ptr
+  name: dtcsrv-joy-admin-ui-ptr-vs
+  namespace: pep-dps-cgf-peployalty-prod
+spec:
+  gateways:
+  - pep-dps-cgf-peployalty-prod/pep-dps-cgf-peployalty-prod-cv-gw
+  hosts:
+  - pep-joy-adminuiptr.dps.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - admin.d2c.pepl.na.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-admin-ui-ptr.pep-dps-cgf-peployalty-prod.svc.cluster.local
+        port:
+          number: 80

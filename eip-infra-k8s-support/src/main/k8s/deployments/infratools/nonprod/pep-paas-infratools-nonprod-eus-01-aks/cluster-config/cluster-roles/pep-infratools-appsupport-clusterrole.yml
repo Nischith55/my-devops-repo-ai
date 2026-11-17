@@ -1,0 +1,133 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-infratools-appsupport-clusterrole
+rules: 
+-   apiGroups:
+    - ''
+    resources:
+    - configmaps
+    - events
+    - persistentvolumeclaims
+    - pods
+    - pods/log
+    - pods/portforward
+    - pods/status
+    - endpoints
+    - services
+    - secrets
+    verbs:
+    - list
+    - get
+    - watch
+-   apiGroups:
+    - ''
+    resources:
+    - persistentvolumes
+    - secrets
+    verbs:
+    - list
+-   apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pod
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - list
+    - get
+-   apiGroups:
+    - msi-acrpull.microsoft.com
+    resources:
+    - acrpullbindings
+    verbs:
+    - list
+    - get
+- apiGroups:
+  - kustomize.toolkit.fluxcd.io
+  resources:
+  - kustomizations
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - helm.toolkit.fluxcd.io
+  resources:
+  - helmreleases
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - source.toolkit.fluxcd.io
+  resources:
+  - buckets
+  - helmcharts
+  - gitrepositories
+  - helmrepositories
+  - ocirepositories
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - flagger.app
+  resources:
+  - canaries
+  - metrictemplates
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - pac.weave.works
+  resources:
+  - policies
+  verbs:
+  - get
+  - list
+  - patch
+- apiGroups:
+  - gitops.weave.works/v1alpha1
+  resources:
+  - gitopsclusters
+  verbs:
+  - get
+  - list
+  - watch
+-   apiGroups:
+    - networking.istio.io
+    resources:
+    - virtualservices
+    - gateways
+    - destinationrules
+    verbs:
+    - list
+    - get

@@ -1,0 +1,251 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-apigee-devsecops-cd-clusterrole
+rules: 
+# Core resources
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+    - secrets
+    - serviceaccounts
+    - podtemplates
+    - pods
+    - pods/status
+    - pods/log
+    - services
+    - services/proxy
+    - endpoints
+    - events
+    - persistentvolumes
+    - persistentvolumeclaims
+    - nodes
+    - nodes/status
+  verbs:
+    - "*"
+
+# Apps
+- apiGroups:
+    - apps
+  resources:
+    - deployments
+    - replicasets
+    - statefulsets
+  verbs:
+    - "*"
+
+# Batch
+- apiGroups:
+    - batch
+  resources:
+    - jobs
+    - cronjobs
+  verbs:
+    - "*"
+
+# Policy
+- apiGroups:
+    - policy
+  resources:
+    - poddisruptionbudgets
+  verbs:
+    - "*"
+
+# Autoscaling
+- apiGroups:
+    - autoscaling
+  resources:
+    - horizontalpodautoscalers
+  verbs:
+    - "*"
+
+# Gatekeeper
+- apiGroups:
+    - constraints.gatekeeper.sh
+  resources:
+    - "*"
+  verbs:
+    - get
+    - list
+    - watch
+
+# Istio
+- apiGroups:
+    - networking.istio.io
+  resources:
+    - gateways
+    - virtualservices
+    - destinationrules
+  verbs:
+    - "*"
+
+# Networking + Secrets Store CSI
+- apiGroups:
+    - networking.k8s.io
+    - secrets-store.csi.x-k8s.io
+  resources:
+    - ingresses
+    - networkpolicies
+    - secretproviderclasses
+  verbs:
+    - "*"
+
+# Storage
+- apiGroups:
+    - storage.k8s.io
+  resources:
+    - storageclasses
+  verbs:
+    - "*"
+
+# Ray
+- apiGroups:
+    - ray.io
+  resources:
+    - rayjobs
+  verbs:
+    - "*"
+
+# Apigee
+- apiGroups:
+    - apigee.cloud.google.com
+  resources:
+    - apigeeenvironments
+  verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+
+# Coordination
+- apiGroups:
+    - coordination.k8s.io
+  resources:
+    - leases
+  verbs:
+    - get
+    - list
+    - watch
+
+# RBAC
+- apiGroups:
+    - rbac.authorization.k8s.io
+  resources:
+    - roles
+    - rolebindings
+    - clusterroles
+    - clusterrolebindings
+  verbs:
+    - get
+    - list
+    - watch
+
+# Cert Manager
+- apiGroups:
+    - cert-manager.io
+  resources:
+    - certificates
+    - certificaterequests
+    - issuers
+    - clusterissuers
+  verbs:
+    - get
+    - list
+    - watch
+
+# Admission Webhooks
+- apiGroups:
+    - admissionregistration.k8s.io
+  resources:
+    - validatingwebhookconfigurations
+    - mutatingwebhookconfigurations
+  verbs:
+    - get
+    - list
+    - watch
+
+# Scheduling
+- apiGroups:
+    - scheduling.k8s.io
+  resources:
+    - priorityclasses
+  verbs:
+    - get
+    - list
+    - watch
+
+# CRDs
+- apiGroups:
+    - apiextensions.k8s.io
+  resources:
+    - customresourcedefinitions
+  verbs:
+    - get
+    - list
+    - watch
+
+# Volume Snapshots
+- apiGroups:
+    - snapshot.storage.k8s.io
+  resources:
+    - volumesnapshotclasses
+    - volumesnapshotcontents
+    - volumesnapshots
+  verbs:
+    - get
+    - list
+    - watch
+
+# Core API (cluster-scoped + namespaced)
+- apiGroups:
+    - ""
+  resources:
+    - namespaces
+    - replicationcontrollers
+  verbs:
+    - get
+    - list
+    - watch
+
+# Metrics API
+- apiGroups:
+    - metrics.k8s.io
+  resources:
+    - nodes
+    - pods
+  verbs:
+    - get
+    - list
+    - watch
+
+# Apps API
+- apiGroups:
+    - apps
+  resources:
+    - daemonsets
+    - controllerrevisions
+  verbs:
+    - get
+    - list
+    - watch
+
+# Apigee API
+- apiGroups:
+    - apigee.cloud.google.com
+  resources:
+    - apigeeorganizations
+    - apigeedeployments
+    - apigeedatastores
+    - apigeeredis
+    - apigeeroutes
+    - apigeerouteconfigs
+    - apigeetelemetries
+    - apigeeissues
+    - secretrotations
+  verbs:
+    - get
+    - list
+    - watch

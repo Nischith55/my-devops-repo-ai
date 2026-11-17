@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: customer-communication-tool-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for customer-communication-tool-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/customer-communication-tool-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-suk-global-01-aks
+    namespace: pep-dps-cgf-cct-preprod
+  - name: pep-dps-preprod-suk-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: customer-communication-tool-preprod-admin
+    description: Admin privileges to customer-communication-tool-preprod
+    policies:
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-admin, applications, *, customer-communication-tool-preprod/*, allow
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-admin, repositories, *, customer-communication-tool-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: customer-communication-tool-preprod-user
+    description: Read-only privileges to customer-communication-tool-preprod
+    policies:
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-user, applications, get, customer-communication-tool-preprod/*, allow
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-user, applications, sync, customer-communication-tool-preprod/*, allow
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-user, repositories, get, customer-communication-tool-preprod/*, allow
+    - p, proj:customer-communication-tool-preprod:customer-communication-tool-preprod-user, applications, action/apps/Deployment/restart, customer-communication-tool-preprod/*, allow
+    groups:
+    - "Team.Support.ST.PAM.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

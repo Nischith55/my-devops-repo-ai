@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-iam-sso-services
+  name: pep-iam-sso-services-qa-vs
+  namespace: pep-eiap-cgf-iamservice-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-iamservice-qa/pep-eiap-cgf-iamservice-qa-cv-gw
+  hosts:
+  - pep-iam-sso-services-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-iam-sso-services.pep-eiap-cgf-iamservice-qa.svc.cluster.local
+        port:
+          number: 80

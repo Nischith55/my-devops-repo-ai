@@ -1,0 +1,129 @@
+---
+# pep-eiap-nginx :: default (aka no component as such)
+# ABBREVIATIONS:
+#  _msi_d_ -> msi_acrpull_default
+
+_msi_d_name: default
+
+_msi_d_img_name: |-
+  {{ msi_acrpull_default_image_name | default('mcr.microsoft.com/aks/msi-acrpull') }}
+
+_msi_d_img_tag: |-
+  {{ msi_acrpull_default_image_tag | default('v0.1.0-alpha') }}
+
+# where the overlays dir is for kustomize build e.g.
+_msi_d_dest_root_dir: |-
+  {{ (msi_acrpull_deploy_app_root_dir, _msi_d_name) | path_join }}
+
+# if using Kustomize the manifest build output directory
+_msi_d_manifests_dest_dir: |-
+  {{ (_msi_d_dest_root_dir, 'manifests') | path_join }}
+
+# general template out directory and kustomize build-in dir
+_msi_d_overlays_dest_dir: |-
+  {{ (_msi_d_dest_root_dir, 'overlays') | path_join }}
+
+# The actual manifest filename (whether not generated from kustomize)
+_msi_d_manifest_path: |-
+  {{ (_msi_d_manifests_dest_dir, 
+      msi_acrpull_app_name + '-' + _msi_d_name + '.yml') | path_join 
+  }}
+
+# can be shared
+_msi_d_kustomize_resource_base_dir: |-
+  {{ (msi_acrpull_source_app_root_dir, 'kustomize', _msi_d_name, 'base') 
+      | path_join 
+  }}
+
+# -- meta parameters
+_msi_d_meta_params:
+
+  # component name
+  name: "{{ _msi_d_name }}"
+
+  # app name
+  app_name: "{{ msi_acrpull_app_name }}"
+
+  # namespace where installed
+  namespace: "{{ msi_acrpull_target_namespace }}"
+
+
+# -- build parameters
+
+_msi_d_build_params:
+
+  # the following build map is REQUIRED if kustomization is enabled.
+  manifest:
+    input_dir: "{{ _msi_d_overlays_dest_dir }}"
+    output_path: "{{ _msi_d_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_msi_d_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+
+    # override namespace
+    namespace:  "{{ _msi_d_meta_params['namespace'] }}"
+    
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _msi_d_kustomize_resource_base_dir 
+            | relpath(_msi_d_manifests_dest_dir) 
+        }}
+
+    # # Images
+    # images:
+    #   - name: mcr.microsoft.com/aks/msi-acrpull:v0.1.0-alpha
+    #     newName: "{{ _msi_d_img_name }}"
+    #     newTag: "{{ _msi_d_img_tag }}"
+
+  # no patches currently
+  patches:
+    # patch both strategic merge and json6902
+    - name: patch-server-deploy
+      # strategic merge
+      template_merge_src: "{{ kct_template_spec_merge_src }}"
+      template_merge_dest: |-
+        {{ 
+          (_msi_d_overlays_dest_dir, 'patch-merge-deployment.yml') | path_join
+        }}
+      target: 
+        group: apps
+        version: v1
+        kind: Deployment
+        name: msi-acrpull-controller-manager
+        namespace: "{{ msi_acrpull_src_namespace }}"
+
+      # this is the merge patch.
+      merge:
+        spec:
+          # override replicas
+          replicas: |-
+            {{ msi_acrpull_repliacs | default('2') | int }}
+          template:
+            spec:
+              # set node selector and tolerations
+              nodeSelector: "{{ system_np_node_selector }}"
+              # override all tolerations since it's a list
+              tolerations: "{{ system_np_tolerations }}"
+      # # deployment json patch
+      # template_json_src: "{{ kct_json6902_patch_src }}"
+      # template_json_dest: |-
+      #   {{ (_msi_d_overlays_dest_dir,
+      #        'patch-json-msi-acrpull.yml') | path_join }}
+      # # any json patches (we use statefulset patch)
+      # json6902:
+
+# ##
+# Make the final settings
+# ##
+msi_acrpull_default_component_setting: |-
+  {{
+    _msi_d_meta_params
+    |
+    combine(_msi_d_build_params, recursive=True)
+  }}
+

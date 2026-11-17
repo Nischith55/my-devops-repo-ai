@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: bf61f84b-ab16-413d-a0f6-7b538da6d048
+  name: pep-dps-dps-paywise-dev-sa
+  namespace: pep-dps-dps-paywise-dev

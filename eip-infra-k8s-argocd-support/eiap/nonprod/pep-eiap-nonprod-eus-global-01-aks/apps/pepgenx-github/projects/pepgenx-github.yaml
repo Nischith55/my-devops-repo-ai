@@ -1,0 +1,45 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pepgenx-github-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pepgenx-github-dev  
+      sourceRepos:
+      - https://github.com/PepsiCo-AISP/dai-aisp-pepgenx-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      - pepeiapnonprodglobalcommonacr.azurecr.io/pep/eiap/lyzr/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-devxaicp-dev
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: pepgenx-github-dev-admin
+        description: Admin privileges to pepgenx-github-dev
+        policies:
+        - p, proj:pepgenx-github-dev:pepgenx-github-dev-admin, applications, *, pepgenx-github-dev/*, allow
+        - p, proj:pepgenx-github-dev:pepgenx-github-dev-admin, repositories, *, pepgenx-github-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pepgenx-github-dev-user
+        description: Read-only privileges to pepgenx-github-dev
+        policies:
+        - p, proj:pepgenx-github-dev:pepgenx-github-dev-user, applications, get, pepgenx-github-dev/*, allow
+        - p, proj:pepgenx-github-dev:pepgenx-github-dev-user, applications, sync, pepgenx-github-dev/*, allow
+        - p, proj:pepgenx-github-dev:pepgenx-github-dev-user, repositories, get, pepgenx-github-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dai-aisp-pepgenx-argocd-dev:dai-aisp-pepgenx-argocd-dev-user, applications, action/apps/Deployment/restart, dai-aisp-pepgenx-argocd-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.EEGenAI"
+        - "Team.Support.EIAP.READ"
+        - "Team.support.EE.Azure.DLOPS"
+        - "Team.Support.DWD.Users"

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 74249273-5547-42e8-8947-33307f134ee2
+  name: pep-cmp-cmp-cvdemp31-dev-sa
+  namespace: pep-cmp-cmp-cvdemp31-dev

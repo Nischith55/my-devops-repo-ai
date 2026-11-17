@@ -1,0 +1,8 @@
+---
+- name: Version Automation
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Version updation
+      import_role:
+        name: version_update

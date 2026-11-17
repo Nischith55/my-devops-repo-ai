@@ -1,0 +1,175 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-pepconnect-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for b2b-pepconnect-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btbcarts-prod
+    server: https://kubernetes.default.svc
+    
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btbproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-bfflylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-bffmerch-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-bffckout-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btbpromo-prod
+    server: https://kubernetes.default.svc  
+
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtbcart-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtbprom-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtborch-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtbprof-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-globtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btbprofile-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-bffprofile-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-europe-btblylty-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-europe-btboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-europe-btbproduct-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-btblylty-prod
+    server: https://kubernetes.default.svc    
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtbprom-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtbprof-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-latam-nabtbcarts-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtbloy-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtboms-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtbprod-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtbprom-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtbprof-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-nabtbcarts-prod
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-btbabtest-prod
+    server: https://kubernetes.default.svc
+    
+  roles:
+  - name: b2b-pepconnect-prod-admin
+    description: Admin privileges to b2b-pepconnect-prod
+    policies:
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-admin, applications, *, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-admin, applications, get, argocd/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-admin, repositories, *, b2b-pepconnect-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Role.App.B2BArgo.PepsiConnect.Admin"
+
+  - name: b2b-pepconnect-prod-user
+    description: Read-only privileges to b2b-pepconnect-prod
+    policies:
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, applications, get, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, applications, sync, b2b-pepconnect-prod/*, allow
+    - p, proj:b2b-pepconnect-prod:b2b-pepconnect-prod-user, repositories, get, b2b-pepconnect-prod/*, allow
+    groups:
+    - "Team.Support.LATAM.NonProd.B2BOps"
+    - "Team.Support.LATAM.Prod.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

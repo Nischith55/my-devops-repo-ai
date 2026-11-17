@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: 1995-na-sc-spotfreight-webappfrontend
+        meta.helm.sh/release-namespace: pep-pbna-cgf-spot-dev
+    labels:
+        app: spotfreight-webappfrontend
+        app.kubernetes.io/instance: 1995-na-sc-spotfreight-webappfrontend
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20241212.3'
+        environment: dev
+        helm.sh/chart: platform-chart-1.0.2
+    name: spotfreight-webappfrontend
+    namespace: pep-pbna-cgf-spot-dev
+spec:
+    gateways:
+    - pep-pbna-cgf-spot-dev/pep-pbna-cgf-spot-dev-cv-gw
+    hosts:
+    - spotfreight-webappfrontend.pbna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ptsorderportal.dev.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: spotfreight-webappfrontend.pep-pbna-cgf-spot-dev.svc.cluster.local
+                port:
+                    number: 8080

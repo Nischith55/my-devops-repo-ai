@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-och-na-prod
+  labels:
+    env-preprod: 'true'
+    environment: prod
+    project: na
+    sector: och
+    team: och-na
+    istio-injection: enabled

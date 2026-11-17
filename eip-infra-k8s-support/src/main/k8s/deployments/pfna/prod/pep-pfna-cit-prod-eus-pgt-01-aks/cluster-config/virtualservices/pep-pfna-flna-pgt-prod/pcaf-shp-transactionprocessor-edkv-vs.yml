@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-transactionprocessor-edkv-vs
+  namespace: pep-pfna-flna-pgt-prod
+  labels:
+      app: pcaf-shp-transactionprocessor
+spec:
+  hosts:
+  - pcaf-shp-transactionprocessor.pfnapgt.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-pgt-prod/pep-pfna-flna-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-transactionprocessor.pep-pfna-flna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+  

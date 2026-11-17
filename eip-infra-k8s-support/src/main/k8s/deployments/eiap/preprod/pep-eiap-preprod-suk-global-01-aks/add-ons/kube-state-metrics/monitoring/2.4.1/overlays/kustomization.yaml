@@ -1,0 +1,29 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+images: []
+kind: Kustomization
+namespace: monitoring
+patches:
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: not-used
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - --resources=certificatesigningrequests,configmaps,cronjobs,daemonsets,deployments,endpoints,horizontalpodautoscalers,ingresses,jobs,leases,limitranges,mutatingwebhookconfigurations,namespaces,networkpolicies,nodes,persistentvolumeclaims,persistentvolumes,poddisruptionbudgets,pods,replicasets,replicationcontrollers,resourcequotas,secrets,services,statefulsets,storageclasses,validatingwebhookconfigurations,volumeattachments
+            - --metric-labels-allowlist=namespaces=[envrionment],pods=[app,app.kubernetes.io/name,app.kubernetes.io/version]
+            name: kube-state-metrics
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+  target:
+    kind: Deployment
+resources:
+- ../../../../../../../../../add-ons/kube-state-metrics/kustomize/2.4.1/base

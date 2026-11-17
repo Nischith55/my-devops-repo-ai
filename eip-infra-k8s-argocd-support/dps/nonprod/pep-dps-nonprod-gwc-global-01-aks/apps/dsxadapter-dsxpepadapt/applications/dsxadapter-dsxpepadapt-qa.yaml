@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dsxadapter-dsxpepadapt-qa-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+    targetRevision: develop
+  - repoURL: pepdpsnonprodacr.azurecr.io/helm
+    targetRevision: 0.2.6
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: dsxadapter-dsxpepadapt-qa
+      valueFiles:
+      - $values/qa/pep-dps-nonprod-gwc-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: qa
+          helm:  
+            enabled: false       
+            repo: pepdpsnonprodacr.azurecr.io/helm
+            chart: umbrellachart
+            revision: 2.2.2
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-dps-ops-admin
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: 'dsxadapter-dsxpepadapt-qa' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsxadapter-dsxpepadapt-argocd-configs
+              repoName: dsxadapter-dsxpepadapt-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              teamsChannel: DL-DSXPepsicoAdapter-NonProdAlerts@pepsico.com

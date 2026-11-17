@@ -1,0 +1,23 @@
+---
+# ##
+# 05/2021
+# - Global Variable Naming Convention
+#   <resc_name>_<resc_abbrev>_cfg
+#   resc_abbrev: see the 00-k8s-api-spec key
+# ##
+pep_eiap_springcloudk8s_clusterrole_cr_cfg:
+  name: pep-eiap-springcloudk8s-clusterrole
+  kind: ClusterRole
+  alias: pep-eiap-springcloudk8s
+
+  rules:
+    # pods, configmaps - get, list and watch 
+    - apiGroups: 
+        - ""
+      resources: 
+        - configmaps
+        - pods
+      verbs: 
+        - get
+        - list
+        - watch

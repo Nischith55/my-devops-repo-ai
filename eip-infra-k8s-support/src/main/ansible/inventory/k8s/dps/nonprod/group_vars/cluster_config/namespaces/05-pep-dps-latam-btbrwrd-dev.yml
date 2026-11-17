@@ -1,0 +1,40 @@
+---
+ns_pep_dps_latam_btbrwrd_dev:
+  
+  name: pep-dps-latam-btbrwrd-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-btbrwrd
+    sector: latam
+    project: btbrwrd
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalloyaltyamericasnon-prod
+    pep-cmdb-app-service-id: "9dfb9fdd47d9961c2d960d05f16d43c7"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-latam-btbrwrd-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_btbrwrd'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-latam-btbrwrd-dev-sa-token
+    namespace: pep-dps-latam-btbrwrd-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-latam-btbrwrd-dev-sa"

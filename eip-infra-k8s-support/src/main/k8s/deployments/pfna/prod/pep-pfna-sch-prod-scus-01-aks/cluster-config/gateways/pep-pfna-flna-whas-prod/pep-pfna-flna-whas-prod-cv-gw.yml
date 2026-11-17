@@ -1,0 +1,134 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-pfna-flna-whas-prod-cv-gw
+  namespace: pep-pfna-flna-whas-prod
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-pfna-flna-whas-prod.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-whas-prod-cv-gw-tls-443
+    port:
+      name: https-pep-pfna-flna-whas-prod-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - pep-pfna-whse-ges-autoscheduler-api-dev.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-whorch-dev.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-cache-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-rose-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-approvedactions-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-reports-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-overrides-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-whas-prod.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-dsc-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-pgt-as-prod-sched-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-aber-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-apprvdactions-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-klng-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-char-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-autoscheduler-pre-stagging-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ics-as-pre-stagging-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-autoscheduler-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-cuca-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-topk-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-faye-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-camb-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-ges-wynright-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-as-daily-dock-plan-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-receipt-type-override-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-shipment-type-override-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-shipment-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-receipt-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-trailer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-rw-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-shipment-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-receipt-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-alloc-area-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-trailer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-cache-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-production-schedule-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-iwms-integration-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-rw-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-whas-prod-cv-gw-https-443
+    port:
+      name: https-pep-pfna-flna-whas-prod-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-prod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - pep-pfna-whse-ges-autoscheduler-api-dev.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-flna-whorch-dev.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-cache-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-rose-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-approvedactions-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-reports-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-overrides-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-flna-whas-prod.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-dsc-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-pgt-as-prod-sched-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-aber-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-apprvdactions-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-klng-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-char-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-autoscheduler-pre-stagging-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ics-as-pre-stagging-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-autoscheduler-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-cuca-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-topk-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-faye-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-autoscheduler-wcs-camb-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-ges-wynright-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-as-daily-dock-plan-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-receipt-type-override-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-shipment-type-override-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-shipment-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-receipt-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-trailer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-ges-rw-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-shipment-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-receipt-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-alloc-area-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-core-trailer-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-cache-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-rw-production-schedule-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-as-iwms-integration-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pep-pfna-whse-core-rw-api.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    name: pep-pfna-flna-whas-prod-cv-gw-http-80
+    port:
+      name: http-pep-pfna-flna-whas-prod-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+

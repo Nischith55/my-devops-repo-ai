@@ -1,0 +1,68 @@
+#jinja2: lstrip_blocks: "True"
+{# 
+  INPUTS:
+    params_tmpl:
+      name:
+
+  IMPORTANT:
+    - we use if/endif because we cannot update some storage class params
+      they are immutable
+#}
+{% set _p = params_tmpl %}
+{% set _pp = _p['parameters'] %}
+{% set _pm = _p['metadata'] %}
+{% set _pma = _pm['annotations'] | default({}) %}
+{% set _pml = _pml['labels'] | default({}) %}
+---
+# Generated -- please do not edit manually
+# {{ ansible_managed }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ _p['name'] }}
+{% if _pma | length > 0 %}
+  annotations:
+    {{ _pma | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+{% endif %}
+{% if _pml | length > 0 %}
+  labels:
+    kubernetes.io/cluster-service: "true"
+    {{ _pml | to_nice_yaml(indent=2, width=1337) | trim | indent(4) }}
+{% endif %}
+
+{% if _p['provisioner'] is defined %}
+# a) need for dynamic provision
+provisioner: {{ _p['provisioner'] | default('kubernetes.io/azure-disk') }}
+{% endif %}
+
+{% if _p['reclaimPolicy'] is defined %}
+reclaimPolicy: {{ _p['reclaimPolicy'] }}
+{% endif %}
+
+{% if _p['volumeBindingMode'] is defined %}
+volumeBindingMode: {{ _p['volumeBindingMode'] }}
+{% endif %}
+
+{% if _p['allowVolumeExpansion'] is defined %}
+allowVolumeExpansion: {{ _p['allowVolumeExpansion'] }}
+{% endif %}
+
+{% if _p['mountOptions'] is defined and (_p['mountOptions'] | length) > 0 %}
+mountOptions:
+  {{ _p['mountOptions'] | to_nice_yaml(indent=2, width=1337) 
+    | trim | indent(2) }}
+{% endif %}
+
+{% if (_pp | length) > 0 %}
+# c) need for dynamic provision
+parameters:
+  {{ _pp | to_nice_yaml(indent=2, width=1337) | trim | indent(2) }}
+{% endif %}
+
+{% if _p['allowed_topologies'] is defined and (_p['allowed_topologies'] | length) > 0 %}
+# Only if zoned is true
+allowedTopologies:
+  {{ _p['allowed_topologies'] | to_nice_yaml(indent=2, width=1337) 
+    | trim | indent(2) }}
+{% endif %}
+

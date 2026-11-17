@@ -1,0 +1,80 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "annotations": {},
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "pep-dps-ops-admin",
+        "pep-dps-infra-preprod",
+        "pep-dps-istio-config",
+        "pep-dps-elastic-client-01",
+        "pep-dps-global-devsecops-preprod",
+        "snyk-monitor",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "flagger",
+        "policy-system",
+        "argocd",
+        "gitops-connector-system"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "myartifactory.mypepsico.com/",
+        "artifactory.mypepsico.com/",
+        "artifactory.pepsico.pvt/",
+        "pepeiapprodcommonacr.azurecr.io/",
+        "docker.io/istio/",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "wiziopublic.azurecr.io/wiz-app/",
+        "wizio.azurecr.io/",
+        "ghcr.io/chaos-mesh/",
+        "gcr.io/google-containers",
+        "us-docker.pkg.dev/gloo-mesh"
+      ]
+    }
+  }
+}

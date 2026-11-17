@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pbna-vms365-qa
+  labels:
+    env-nonprod: "true"
+    project: vms365
+    sector: pbna
+    team: pbna-vms365
+    istio-injection: enabled
+    crosscharge_aks: crosscharge
+    servicename_aks: vms-retail365-pbna
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: f96e2b218336f5581b1d34b5eeaad364
+    pep-cmdb-app-service-id: 8629499ac36ec694297e85359901312c
+    pep-environment: QA
+    

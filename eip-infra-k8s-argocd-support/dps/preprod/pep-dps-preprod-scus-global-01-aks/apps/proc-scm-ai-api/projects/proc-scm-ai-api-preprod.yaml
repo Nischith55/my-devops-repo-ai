@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: proc-scm-ai-api-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for proc-scm-ai-api-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/proc-scm-ai-api-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-dps-dtvscm-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: proc-scm-ai-api-preprod-admin
+    description: Admin privileges to proc-scm-ai-api-preprod
+    policies:
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-admin, applications, *, proc-scm-ai-api-preprod/*, allow
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-admin, repositories, *, proc-scm-ai-api-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: proc-scm-ai-api-preprod-user
+    description: Read-only privileges to proc-scm-ai-api-preprod
+    policies:
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-user, applications, get, proc-scm-ai-api-preprod/*, allow
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-user, applications, sync, proc-scm-ai-api-preprod/*, allow
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-user, repositories, get, proc-scm-ai-api-preprod/*, allow
+     # This line will be replaced by the pipeline script
+    - p, proj:proc-scm-ai-api-preprod:proc-scm-ai-api-preprod-user, applications, action/apps/Deployment/restart, proc-scm-ai-api-preprod/*, allow
+
+    groups:
+    - "Team.Support.CGF.NonProd.dtvscm"
+    - "Team.Support.EIAP.READ"

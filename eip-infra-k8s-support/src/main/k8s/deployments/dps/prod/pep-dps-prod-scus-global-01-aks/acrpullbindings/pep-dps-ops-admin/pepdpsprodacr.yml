@@ -1,0 +1,11 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  # note: secret has automatic suffix
+  name: pepdpsprodacr
+  namespace: pep-dps-ops-admin
+spec:
+  acrServer: pepdpsprodacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/4f85ea10-aee0-4b46-82cc-4416208c1485/resourceGroups/pep-dps-prod-scus-global-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-dps-prod-scus-global-01-aks-agentpool
+  

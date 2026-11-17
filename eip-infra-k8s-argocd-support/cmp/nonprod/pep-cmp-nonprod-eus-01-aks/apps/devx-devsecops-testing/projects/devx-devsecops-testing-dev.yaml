@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devx-devsecops-testing-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for devx-devsecops-testing-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/devx-devsecops-testing-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: devx-devsecops-testing-dev-admin
+    description: Admin privileges to devx-devsecops-testing-dev
+    policies:
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-admin, applications, *, devx-devsecops-testing-dev/*, allow
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-admin, repositories, *, devx-devsecops-testing-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: devx-devsecops-testing-dev-user
+    description: Read-only privileges to devx-devsecops-testing-dev
+    policies:
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-user, applications, get, devx-devsecops-testing-dev/*, allow
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-user, applications, sync, devx-devsecops-testing-dev/*, allow
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-user, repositories, get, devx-devsecops-testing-dev/*, allow
+    - p, proj:devx-devsecops-testing-dev:devx-devsecops-testing-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

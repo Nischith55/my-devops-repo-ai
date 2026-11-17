@@ -1,0 +1,117 @@
+---
+# component: appdynamics-cluster-agent
+# ABBREVIATIONS:
+#   - _appd_ca: appd_cluster_agent
+# OVERRIDES:
+# - appd_ca_merge_spec_patch: full override of the merge patch params
+# ##
+
+# Must match [add-ons|apps]/<app_name>/<this_name>
+appd_ca_name: cluster-agent
+
+# default image tag..NOTE: custom build
+appd_ca_tag: |-
+  {{ appd_ca_tag_ovrd | default('ubuntu-18.04-20.5.0.1218') }}
+
+# metadata/name in source manifest..
+_appd_ca_src_name: appdynamics-cluster-agent
+
+# ##
+# component meta information
+# ##
+appd_ca_meta:
+  # component_name
+  name: "{{ appd_ca_name }}"
+  # namespace where this component is installed.
+  namespace: "{{ appd_namespace }}"
+
+# ##
+# All generation setting.
+# ##
+
+# -- Input directories
+# we use <component> specific templates, specify the directories here.
+
+_appd_ca_common_templates_dir: |-
+  {{ (appd_source_app_root_dir, 'common-templates', appd_ca_name) 
+      | path_join }}
+_appd_ca_source_kustomize_dir: |-
+  {{ (appd_source_app_root_dir, 'kustomize', appd_ca_name) | path_join }}
+# base directory where we have the original manifests
+_appd_ca_kustomize_resource_base_dir: |-
+  {{ (appd_source_app_root_dir, _appd_ca_source_kustomize_dir, 'base') | path_join }}
+
+# -- Output directories
+
+# root directory for any outputs for this component
+_appd_ca_dest_root_dir: |-
+  {{ (appd_deploy_app_root_dir, appd_ca_name) | path_join }}
+# general template out directory and kustomize build-in dir
+_appd_ca_overlays_dest_dir: |-
+  {{ (_appd_ca_dest_root_dir, 'overlays') | path_join }}
+# final location of the manifest
+_appd_ca_manifests_dest_dir: |-
+  {{ (_appd_ca_dest_root_dir, 'manifests') | path_join }}
+# The actual manifest filename
+_appd_ca_manifest_path: |-
+  {{ (_appd_ca_manifests_dest_dir, _appd_ca_src_name + '.yml') 
+      | path_join 
+  }}
+
+# re-usable patch target
+__aca_target:
+  #: this is a custom operator CRD -- CHANGE
+  group: appdynamics.com
+  version: v1alpha1
+  kind: Clusteragent
+  name: "{{ _appd_ca_src_name }}"
+  namespace: appdynamics
+
+# convenient variables
+__aca_pmerge01_fn__: patch-merge-cluster-agent-spec.yml
+__aca_pmerge01_tmpl_fn__: "{{ __aca_pmerge01_fn__ + '.j2' }}"
+
+# control plane main build params
+_appd_ca_build_params:
+
+  # Final location of the manifest file.
+  manifest:
+    input_dir: "{{ _appd_ca_overlays_dest_dir }}"
+    output_path: "{{ _appd_ca_manifest_path }}"
+
+  # for generating the kustomization.yml file
+  kustomization:
+
+    template_kust_src: "{{ kct_kustomization_src }}"
+    template_kust_dest: "{{ (_appd_ca_overlays_dest_dir, 'kustomization.yml') | path_join }}"
+    # any resources to add to kustomization overlay - we have a base
+    # this has to be relative dir
+    resources:
+      - |-
+        {{ _appd_ca_kustomize_resource_base_dir 
+            | relpath(_appd_ca_manifests_dest_dir) 
+        }}
+
+  patches:
+
+    # merge patch
+    - name: patch-merge-cluster-agent-spec
+      # we are using templates from <app>/common-templates/<component>
+      template_merge_src: |-
+        {{ (_appd_ca_common_templates_dir, __aca_pmerge01_tmpl_fn__) | path_join }}
+      template_merge_dest: |-
+        {{ (_appd_ca_overlays_dest_dir, __aca_pmerge01_fn__) | path_join }}
+      target: "{{ __aca_target }}"
+      merge: |-
+        {{ appd_ca_merge_spec_patch | default(_aca_merge_spec_patch) }}
+
+# ##
+# Make the final settings - must end with component_setting
+# ##
+appd_cluster_agent_component_setting: |-
+  {{
+    appd_ca_meta
+    |
+    combine(_appd_ca_build_params, recursive=True)
+  }}
+

@@ -1,0 +1,399 @@
+apiVersion: v1
+data:
+  exec.enabled: "true"
+  url: https://argocd.apigee.gw01.aks01.scus.preprod.azure.intra.pepsico.com # Replace with the external base URL of your Argo CD
+  dex.config: |
+    connectors:
+    - type: microsoft
+      id: microsoft
+      name: Microsoft
+      config:
+        clientID: 1e5a5d2c-a9d4-42dc-93ca-c15462dad122
+        clientSecret: $oidc.azure.clientSecret
+        redirectURI: https://argocd.apigee.gw01.aks01.scus.preprod.azure.intra.pepsico.com/api/dex/callback
+        tenant: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+        emailToLowercase: true
+        scopes:
+         - profile
+         - email
+         - openid  
+  globalProjects: |-
+    - labelSelector:
+        matchExpressions:
+          - key: argocd.argoproj.io/project-inherit
+            operator: In
+            values:
+              - global-app
+      projectName: global-app
+    - labelSelector:
+        matchExpressions:
+          - key: argocd.argoproj.io/project-inherit
+            operator: In
+            values:
+              - global-platform
+      projectName: global-platform
+
+  # ---------------------------------------------------------------------------
+  # Apigee Hybrid: custom health check for all apigee.cloud.google.com kinds
+  # ---------------------------------------------------------------------------
+  # Wildcards are only supported inside the resource.customizations map key
+  # (ConfigMap key names cannot contain "*")
+  resource.customizations: |
+    apigee.cloud.google.com/*:
+      health.lua: |
+        -- Only base + table libs are available (no useOpenLibs), so no string.* calls.
+        -- State values are matched as-is; lowercase and Capitalized forms are listed.
+        local hs = {}
+
+        local healthyStates = {
+          running = true, Running = true, ready = true, Ready = true,
+          complete = true, Complete = true, completed = true, Completed = true,
+          succeeded = true, Succeeded = true, success = true, Success = true,
+          active = true, Active = true, done = true, Done = true
+        }
+        local progressingStates = {
+          creating = true, Creating = true, updating = true, Updating = true,
+          releasing = true, Releasing = true, pending = true, Pending = true,
+          provisioning = true, Provisioning = true, rolling = true, Rolling = true,
+          ["in progress"] = true, ["In Progress"] = true, inprogress = true,
+          InProgress = true, in_progress = true, started = true, Started = true,
+          deleting = true, Deleting = true
+        }
+        local degradedStates = {
+          erroring = true, Erroring = true, error = true, Error = true,
+          failed = true, Failed = true, failure = true, Failure = true,
+          unhealthy = true, Unhealthy = true
+        }
+
+        local function statusMessage(o)
+          if o.status == nil then return "" end
+          if o.status.message ~= nil then return tostring(o.status.message) end
+          if o.status.reason ~= nil then return tostring(o.status.reason) end
+          if o.status.conditions ~= nil then
+            for _, c in ipairs(o.status.conditions) do
+              if c.message ~= nil and c.message ~= "" then return tostring(c.message) end
+            end
+          end
+          return ""
+        end
+
+        -- ApigeeIssue objects are raised by the operator to report problems
+        if obj.kind == "ApigeeIssue" then
+          hs.status = "Degraded"
+          local msg = statusMessage(obj)
+          if msg == "" and obj.spec ~= nil then
+            msg = tostring(obj.spec.description or obj.spec.reason or obj.spec.details or "")
+          end
+          hs.message = "ApigeeIssue reported: " .. msg
+          return hs
+        end
+
+        -- Config-only kinds that may never receive a status block
+        if obj.status == nil then
+          if obj.kind == "ApigeeRouteConfig" then
+            hs.status = "Healthy"
+            hs.message = "Config resource, no status reported"
+          else
+            hs.status = "Progressing"
+            hs.message = "Waiting for status from apigee-controller"
+          end
+          return hs
+        end
+
+        -- Operator hasn't reconciled the latest spec yet
+        if obj.status.observedGeneration ~= nil and obj.metadata.generation ~= nil
+           and obj.status.observedGeneration < obj.metadata.generation then
+          hs.status = "Progressing"
+          hs.message = "Waiting for controller to observe generation " .. tostring(obj.metadata.generation)
+          return hs
+        end
+
+        local state = obj.status.state
+        if state ~= nil then
+          local s = tostring(state)
+          local msg = statusMessage(obj)
+          local suffix = ""
+          if msg ~= "" then suffix = ": " .. msg end
+
+          if healthyStates[s] then
+            hs.status = "Healthy"
+          elseif progressingStates[s] then
+            hs.status = "Progressing"
+          elseif degradedStates[s] then
+            hs.status = "Degraded"
+          else
+            hs.status = "Unknown"
+          end
+          hs.message = tostring(obj.kind) .. " state is '" .. s .. "'" .. suffix
+          return hs
+        end
+
+        -- Fallback: standard conditions
+        if obj.status.conditions ~= nil then
+          for _, c in ipairs(obj.status.conditions) do
+            if c.type == "Ready" or c.type == "Available" then
+              if c.status == "True" then
+                hs.status = "Healthy"
+              elseif c.status == "False" then
+                hs.status = "Degraded"
+              else
+                hs.status = "Progressing"
+              end
+              hs.message = tostring(c.message or c.reason or "")
+              return hs
+            end
+          end
+        end
+
+        hs.status = "Progressing"
+        hs.message = "No recognizable state in status"
+        return hs
+
+  # ---------------------------------------------------------------------------
+  # App-of-apps: let parent apps wait for child Application health in sync waves
+  # (Argo CD does not assess Application health by default)
+  # ---------------------------------------------------------------------------
+  # useOpenLibs needed for timestamp parsing in the Application health check only
+  resource.customizations.useOpenLibs.argoproj.io_Application: "true"
+  resource.customizations.health.argoproj.io_Application: |
+    -- Parent app-of-apps waits on child Applications during sync waves.
+    -- Needs useOpenLibs (string.match for timestamps; os.time/os.date).
+    local GRACE_SECONDS = 90
+    hs = {}
+    hs.status = "Progressing"
+    hs.message = ""
+
+    local function parseUtc(ts)
+      if ts == nil then return nil end
+      local y, mo, d, h, mi, s = string.match(ts, "^(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)")
+      if y == nil then return nil end
+      return os.time({ year = tonumber(y), month = tonumber(mo), day = tonumber(d),
+                       hour = tonumber(h), min = tonumber(mi), sec = tonumber(s) })
+    end
+
+    if obj.status == nil or obj.status.health == nil then
+      hs.message = "Waiting for child application status"
+      return hs
+    end
+
+    -- 1. Child's own sync still running: its resources may not be updated yet
+    local op = obj.status.operationState
+    if op ~= nil and op.phase == "Running" then
+      hs.message = "Child sync operation is running"
+      return hs
+    end
+
+    -- 2. Grace period after the child's sync, so controllers (e.g. Apigee) can
+    --    move their CRs to releasing/updating before the parent reads health
+    if op ~= nil and op.finishedAt ~= nil then
+      local finished = parseUtc(op.finishedAt)
+      local nowUtc = os.time(os.date("!*t"))   -- both sides interpreted the same way, so TZ-safe
+      if finished ~= nil and os.difftime(nowUtc, finished) < GRACE_SECONDS then
+        hs.message = "Child sync finished " .. tostring(os.difftime(nowUtc, finished)) ..
+                     "s ago, waiting " .. GRACE_SECONDS .. "s for resources to report status"
+        return hs
+      end
+    end
+
+    -- 3. Otherwise report the child's own health
+    hs.status = obj.status.health.status
+    if obj.status.health.message ~= nil then
+      hs.message = obj.status.health.message
+    end
+    return hs
+
+  # ---------------------------------------------------------------------------
+  # Ignore caBundle injected by cert-manager cainjector (apigee-operator webhooks)
+  # to avoid permanent OutOfSync
+  # ---------------------------------------------------------------------------
+  resource.customizations.ignoreDifferences.admissionregistration.k8s.io_MutatingWebhookConfiguration: |
+    jqPathExpressions:
+    - '.webhooks[]?.clientConfig.caBundle'
+  resource.customizations.ignoreDifferences.admissionregistration.k8s.io_ValidatingWebhookConfiguration: |
+    jqPathExpressions:
+    - '.webhooks[]?.clientConfig.caBundle'
+  resource.customizations.ignoreDifferences.apiextensions.k8s.io_CustomResourceDefinition: |
+    jqPathExpressions:
+    - '.spec.conversion.webhook.clientConfig.caBundle'
+  resource.inclusions: |
+    - apiGroups:
+      - ''
+      kinds: 
+      - ConfigMap
+      - PersistentVolume
+      - PersistentVolumeClaim
+      - Secret
+      - Service
+      - ServiceAccount
+      - Pod
+      - Namespace
+      clusters:
+      - "*"    
+    - apiGroups:
+      - apiextensions.k8s.io
+      kinds: 
+      - CustomResourceDefinition     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - cert-manager.io 
+      kinds: 
+      - "*" 
+      clusters:
+      - "*"
+    - apiGroups:
+      - snapshot.storage.k8s.io
+      kinds:
+      - VolumeSnapshotClass
+      clusters:
+      - "*"
+    - apiGroups:
+      - apigee.cloud.google.com 
+      kinds: 
+      - "*" 
+      clusters:
+      - "*"
+    - apiGroups:
+      - networking.k8s.io
+      kinds:
+      - NetworkPolicy
+      clusters:
+      - "*"  
+    - apiGroups:
+      - networking.istio.io
+      kinds:
+      - DestinationRule
+      - VirtualService
+      - Gateway
+      clusters:
+      - "*"
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
+      - DaemonSet
+      - ReplicaSet
+      - StatefulSet
+      clusters:
+      - "*"
+    - apiGroups:
+      - batch
+      kinds:
+      - CronJob
+      - Job
+      clusters:
+      - "*"
+    - apiGroups:
+      - autoscaling
+      kinds:
+      - HorizontalPodAutoscaler
+      clusters:
+      - "*"
+    - apiGroups:
+      - policy
+      kinds:
+      - PodDisruptionBudget
+      clusters:
+      - "*"
+    - apiGroups:
+      - secrets-store.csi.x-k8s.io
+      kinds:
+      - SecretProviderClass
+      - SecretProviderClassPodStatus
+      clusters:
+      - "*"  
+    - apiGroups:
+      - storage.k8s.io
+      kinds:
+      - StorageClass
+      clusters:
+      - "*"    
+    - apiGroups:
+      - argoproj.io
+      kinds:
+      - Application
+      - ApplicationSet
+      - AppProject  
+      - Rollout
+      - Rollout/scale
+      - Rollout/status
+      - Experiment
+      - AnalysisTemplate
+      - ClusterAnalysisTemplate
+      - analysisrun
+      clusters:
+      - "*"  
+    - apiGroups:
+      - rbac.authorization.k8s.io
+      kinds: 
+      - ClusterRole
+      - ClusterRoleBinding
+      - Role
+      - RoleBinding      
+      clusters:
+      - "*"  
+    - apiGroups:
+      - networking.istio.io
+      kinds: 
+      - Sidecar     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - msi-acrpull.microsoft.com
+      kinds: 
+      - AcrPullBinding     
+      clusters:
+      - "*" 
+    - apiGroups:
+      - ''
+      kinds: 
+      - ResourceQuota    
+      clusters:
+      - "*" 
+    - apiGroups:
+      - admissionregistration.k8s.io
+      kinds: 
+      - MutatingWebhookConfiguration 
+      - ValidatingWebhookConfiguration
+      clusters:
+      - "*" 
+    - apiGroups:
+      - templates.gatekeeper.sh 
+      kinds: 
+      - ConstraintTemplate 
+      clusters:
+      - "*" 
+    - apiGroups:
+      - config.gatekeeper.sh
+      kinds: 
+      - Config 
+      clusters:
+      - "*" 
+    - apiGroups:
+      - constraints.gatekeeper.sh
+      kinds: 
+      - ContainerDenyEmptyDirNoSizeLimit
+      - K8sAllowedRepos
+      - K8sBlockLoadBalancer
+      - K8sBlockNodePort
+      - K8sContainerLimits
+      - K8sContainerRequests
+      - K8sDisallowedTags
+      - K8sHorizontalPodAutoscaler
+      - K8sPSPAllowPrivilegeEscalationContainer
+      - K8sPSPPrivilegedContainer
+      - K8sPodDisruptionBudget
+      - K8sReplicaLimits
+      - K8sRequiredProbes
+      - K8sRequiredResources
+      - VerifyDeprecatedAPI
+      - VirtualserviceDenyDuplicate
+      clusters:
+      - "*"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd 
+  name: argocd-cm
+  namespace: argocd 

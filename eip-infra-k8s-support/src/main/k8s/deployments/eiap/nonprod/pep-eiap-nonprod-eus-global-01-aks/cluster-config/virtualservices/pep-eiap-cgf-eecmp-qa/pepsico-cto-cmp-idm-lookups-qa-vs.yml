@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:27:38Z"
+  generation: 1
+  name: pepsico-cto-cmp-idm-lookups-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638228988"
+  uid: 52451b21-1ce8-462c-9769-bfab3e12a3e0
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-idm-lookups-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/idm/lookups
+    route:
+    - destination:
+        host: pepsico-cto-cmp-idm-lookups.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

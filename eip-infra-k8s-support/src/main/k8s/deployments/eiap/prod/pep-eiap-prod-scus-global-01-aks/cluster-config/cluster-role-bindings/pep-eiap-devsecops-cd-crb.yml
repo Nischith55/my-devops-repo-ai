@@ -1,0 +1,24 @@
+---
+# Generated File do not edit manually
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-devsecops-cd-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-devsecops-cd-clusterrole
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: pep-eiap-devsecops-cd-sa
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-prod-devsecops-spn
+    name: eea00c38-1800-4362-98ea-2e594b4585f5
+  - apiGroup: ""
+    kind: ServiceAccount
+    namespace: pep-eiap-ops-admin
+    name: gw-update-sa

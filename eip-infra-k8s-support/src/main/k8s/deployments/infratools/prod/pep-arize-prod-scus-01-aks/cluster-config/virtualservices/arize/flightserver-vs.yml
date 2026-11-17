@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: flightserver
+  name: flightserver-vs
+  namespace: arize
+spec:
+  gateways:
+  - arize/arize-cv-gw
+  hosts:
+  - flightserver.arize.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: flightserver.arize.svc.cluster.local
+        port:
+          number: 443

@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: b2b-pepconnect-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for b2b-pepconnect-qa   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btbcarts-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btbproduct-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btboms-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-bffckout-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-bffmerch-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-bfflylty-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btbpromo-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btbprofile-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btblylty-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btboms-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-europe-btbproduct-qa
+    server: https://kubernetes.default.svc
+
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-latam-btblylty-qa
+    server: https://kubernetes.default.svc
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-btbabtest-qa
+    server: https://kubernetes.default.svc
+  roles:
+  - name: b2b-pepconnect-qa-admin
+    description: Admin privileges to b2b-pepconnect-qa
+    policies:
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-admin, applications, *, b2b-pepconnect-qa/*, allow
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-admin, applications, get, argocd/*, allow
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-admin, repositories, *, b2b-pepconnect-qa/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Role.App.B2BArgo.PepsiConnect.Admin"
+
+  - name: b2b-pepconnect-qa-user
+    description: Read-only privileges to b2b-pepconnect-qa
+    policies:
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-user, applications, get, b2b-pepconnect-qa/*, allow
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-user, applications, sync, b2b-pepconnect-qa/*, allow
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-user, repositories, get, b2b-pepconnect-qa/*, allow
+    - p, proj:b2b-pepconnect-qa:b2b-pepconnect-qa-user, applications, action/apps/Deployment/restart, b2b-pepconnect-qa/*, allow
+    groups:
+    - "Team.Support.LATAM.NonProd.B2BOps"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.App.B2BPortal.PepsiConnect.Admin"

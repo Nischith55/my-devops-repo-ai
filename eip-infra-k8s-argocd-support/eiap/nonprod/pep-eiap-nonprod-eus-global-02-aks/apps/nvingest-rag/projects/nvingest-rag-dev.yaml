@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: nvingest-rag-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for nvingest-rag-dev   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-aisp-nvingest-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nvingest
+      - pepeiapnonprodglobalcommonacr.azurecr.io/nim-llm
+      - pepeiapnonprodglobalcommonacr.azurecr.io
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-cgf-nvingest-dev
+      - name: pep-eiap-nonprod-eus-global-02-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: nvingest-rag-dev-admin
+        description: Admin privileges to nvingest-rag-dev
+        policies:
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-admin, applications, *, nvingest-rag-dev/*, allow
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-admin, repositories, *, nvingest-rag-dev/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: nvingest-rag-dev-user
+        description: Read-only privileges to nvingest-rag-dev
+        policies:
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-user, applications, get, nvingest-rag-dev/*, allow
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-user, applications, sync, nvingest-rag-dev/*, allow
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-user, repositories, get, nvingest-rag-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:nvingest-rag-dev:nvingest-rag-dev-user, applications, action/apps/Deployment/restart, nvingest-rag-dev/*, allow
+        groups:
+        - "Team.Support.CGF.Prod.aidb"
+        - "Team.Support.EIAP.READ"
+    

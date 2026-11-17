@@ -1,0 +1,126 @@
+---
+# ##
+# This is the yaml file config for metricbeat.yml that uses leader election
+# so only 1 daemonset runs
+# CHANGES:
+# - kube-state-metrics url
+# - enabled k8s events
+# - output -- disable ssl verification
+# ##
+
+# this whole thing goes as a string with
+es_metricbeat_yml_value_config_map:
+  # ##
+  # Copied from original manifest
+  # ##
+  metricbeat.config.modules:
+    # Mounted `metricbeat-daemonset-modules` configmap:
+    path: ${path.config}/modules.d/*.yml
+    # Reload module configs as they change:
+    reload.enabled: false
+
+  # Autodiscover allows you to detect changes in the system and spawn new
+  # modules as they happen.
+
+  metricbeat.autodiscover:
+    providers:
+      - type: kubernetes
+        scope: cluster
+        node: ${NODE_NAME}
+        unique: true
+        templates:
+          - config:
+
+            # State metrics from kube-state-metrics service
+            - module: kubernetes
+              hosts:
+                - "{{ kube_state_metrics_url }}"
+              period: 10s
+              add_metadata: true
+              metricsets:
+                - state_node
+                - state_deployment
+                - state_daemonset
+                - state_replicaset
+                - state_pod
+                - state_container
+                - state_cronjob
+                - state_resourcequota
+                - state_statefulset
+                # ADDED
+                - state_service
+                - state_persistentvolume
+                - state_persistentvolumeclaim
+                - state_storageclass
+
+            # Kubernetes API server
+            - module: kubernetes
+              metricsets:
+                - apiserver
+              hosts: 
+                - https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              ssl.certificate_authorities:
+                - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              period: 30s
+            # Uncomment this to get k8s events:
+            - module: kubernetes
+              metricsets:
+               - event
+      # To enable hints based autodiscover uncomment this:
+      #- type: kubernetes
+      #  node: ${NODE_NAME}
+      #  hints.enabled: true
+
+  processors:
+    - add_cloud_metadata: ~
+
+  cloud.id: ${ELASTIC_CLOUD_ID}
+  cloud.auth: ${ELASTIC_CLOUD_AUTH}
+
+  # ##
+  # Configure ES destination
+  # ##
+  output.elasticsearch:
+    hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+    ssl:
+      certificate_authorities: ${PEP_CA_CERT_CHAIN}
+    # index: if set must setup template.name and template.pattern
+    index: |-
+      aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-%{+yyyy.MM.dd}
+
+  # disable ILM? - we have to set the templates
+  setup.ilm:
+    enabled: false
+  setup.template:
+    # false means we have to load manually.
+    enabled: true
+    # default: legacy, other values: component, index
+    #DO NOT USE#type: index
+    # name of the template
+    name: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}
+    # pattern
+    pattern: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-*
+    # default: false, but ES doc does not recommend to true, if more than one
+    # instance of metricbeat is started?
+    overwrite: false
+    settings:
+      index:
+        number_of_shards: 2
+        number_of_replicas: 1
+        # number_of_shards x 2 x 3 (allows split by 2 and then 3, etc..)
+        number_of_routing_shards: 64
+
+    # ======================= Dashboards ===============================
+    # These settings control loading the sample dashboards to the Kibana
+    # index. Loading the dashboards are disabled by default and can be enabled
+    # either by setting the options here, or by using the `-setup` CLI flag or
+    # the `setup` command.
+    setup.dashboards:
+      # this has to be done in the kibana server
+      enabled: false
+      # setup index pattern for this cluster
+      index: aks-metricbeat-${K8S_CLUSTER_NAME}-*
+

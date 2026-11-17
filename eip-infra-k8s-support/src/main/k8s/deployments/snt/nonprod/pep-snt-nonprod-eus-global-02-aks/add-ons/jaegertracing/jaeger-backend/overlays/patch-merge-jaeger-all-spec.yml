@@ -1,0 +1,66 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-04-07 16:49:59
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-backend
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: beta.kubernetes.io/os
+            operator: In
+            values:
+            - linux
+          - key: kubernetes.azure.com/mode
+            operator: In
+            values:
+            - system
+  agent:
+    autoscale: true
+    image: jaegertracing/jaeger-agent:1.21.0
+    maxReplicas: 10
+    minReplicas: 2
+    options:
+      log-level: info
+  collector:
+    autoscale: true
+    image: jaegertracing/jaeger-collector:1.21.0
+    maxReplicas: 10
+    minReplicas: 2
+    options:
+      log-level: info
+  query:
+    autoscale: true
+    image: jaegertracing/jaeger-query:1.21.0
+    maxReplicas: 10
+    minReplicas: 2
+    options:
+      log-level: info
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    volumeMounts:
+    - mountPath: /es/certificates/
+      name: certificates
+      readOnly: true
+    volumes:
+    - name: certificates
+      secret:
+        secretName: pepsico-ca-chain
+  storage:
+    options:
+      memory:
+        max-traces: 100000
+    type: memory
+  strategy: allInOne
+  tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists

@@ -1,0 +1,116 @@
+# This is an auto-generated file. DO NOT EDIT
+apiVersion: v1
+data:
+  service.teams: |
+    recipientUrls:
+      argo-notification: $argo-notification-url
+      argocd-test: $argocd-test-url       
+  service.email: |
+    host: mail.pepsico.pvt 
+    port: 25
+    from: pepeiapnotification@pepsico.com
+    html: true
+  service.webhook.ado: |
+    url: https://dev.azure.com
+    headers:
+    - name: Content-Type
+      value: application/json
+    basicAuth:
+      username: $adouser
+      password: $adopat
+  template.analysis-run-error: |
+    message: Rollout {{.rollout.metadata.name}}'s analysis run is in error state.
+    email:
+      subject: Rollout {{.rollout.metadata.name}}'s analysis run is in error state.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}}'s analysis run is in error state.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.analysis-run-failed: |
+    message: Rollout {{.rollout.metadata.name}}'s analysis run failed.
+    email:
+      subject: Rollout {{.rollout.metadata.name}}'s analysis run failed.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}}'s analysis run has failed.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.analysis-run-running: |
+    message: Rollout {{.rollout.metadata.name}}'s analysis run is running.
+    email:
+      subject: Rollout {{.rollout.metadata.name}}'s analysis run is running.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}}'s analysis run is running.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.rollout-aborted: |
+    message: Rollout {{.rollout.metadata.name}} has been aborted.
+    email:
+      subject: Rollout {{.rollout.metadata.name}} has been aborted.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}} has been aborted.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is: {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.rollout-completed: |
+    message: Rollout {{.rollout.metadata.name}} has been completed.
+    email:
+      subject: Rollout {{.rollout.metadata.name}} has been completed.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}} has been successfully completed.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.rollout-paused: |
+    message: Rollout {{.rollout.metadata.name}} has been paused.
+    email:
+      subject: Rollout {{.rollout.metadata.name}} has been paused.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}} has been paused.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.rollout-step-completed: |
+    message: Rollout {{.rollout.metadata.name}} step number {{ add .rollout.status.currentStepIndex 1}}/{{len .rollout.spec.strategy.canary.steps}} has been completed.
+    email:
+      subject: Rollout {{.rollout.metadata.name}} step number {{ add .rollout.status.currentStepIndex 1}}/{{len .rollout.spec.strategy.canary.steps}} has been completed.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}} step number {{ add .rollout.status.currentStepIndex 1}}/{{len .rollout.spec.strategy.canary.steps}} has been completed.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.rollout-updated: |
+    message: Rollout {{.rollout.metadata.name}} has been updated.
+    email:
+      subject: Rollout {{.rollout.metadata.name}} has been updated.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}} has been updated.</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  template.scaling-replicaset: |
+    message: Scaling Rollout {{.rollout.metadata.name}}'s replicaset to {{.rollout.spec.replicas}}.
+    email:
+      subject: Scaling Rollout {{.rollout.metadata.name}}'s replicaset to {{.rollout.spec.replicas}}.
+      body: |
+        <p>Rollout {{.rollout.metadata.name}}'s replicaset is being scaled</p>
+        <p>View details in <a href="https://argocd.dps.sea.nonprod.intra.pepsico.com/applications/{{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}">ArgoCD UI</a>.</p>
+        <p>Application Name is  {{- if (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id") -}}{{ index (splitList ":" (index (default (dict) .rollout.metadata.annotations) "argocd.argoproj.io/tracking-id")) 0 }}{{- else -}}{{ .rollout.metadata.name }}{{- end -}}.</p>
+  trigger.on-analysis-run-error: |
+    - send: [analysis-run-error]
+  trigger.on-analysis-run-failed: |
+    - send: [analysis-run-failed]
+  trigger.on-analysis-run-running: |
+    - send: [analysis-run-running]
+  trigger.on-rollout-aborted: |
+    - when: "rollout.status.phase == 'Degraded'"
+      oncePer: "rollout.status?.currentPodHash == nil ? \"\" : rollout.status.currentPodHash"
+      send: [rollout-aborted]
+  trigger.on-rollout-completed: |
+    - when: "rollout.status.phase == 'Healthy'"
+      oncePer: "rollout.status?.currentPodHash == nil ? \"\" : rollout.status.currentPodHash"
+      send: [rollout-completed]
+  trigger.on-rollout-paused: |
+    - when: "rollout.status.phase == 'Paused'"
+      oncePer: "rollout.status?.currentPodHash == nil ? \"\" : rollout.status.currentPodHash"
+      send: [rollout-paused]
+  context: |
+    argocdUrl: https://argocd.dps.sea.nonprod.intra.pepsico.com/
+kind: ConfigMap
+metadata:
+  name: argo-rollouts-notification-configmap
+  namespace: argo-rollouts

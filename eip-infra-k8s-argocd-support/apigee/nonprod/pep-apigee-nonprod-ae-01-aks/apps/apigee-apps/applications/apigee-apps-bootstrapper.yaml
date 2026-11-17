@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apigee-nonprod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd    
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+    targetRevision: main
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.6
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: apigee-apps
+      valueFiles:
+      - $values/nonprod/pep-apigee-nonprod-ae-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          helm:  
+            enabled: false       
+            repo: us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+            values: ""             
+          spec:
+            project: 'apigee-apps' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+              repoName: eiapapigee
+              targetRevision: main
+            sync:
+              prune: true 
+            notifications:  
+              teamsChannel: argo-notification

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-pepconnect-b2bweb-turkey
+  name: pepsico-pepconnect-b2bweb-turkey-qa-vs
+  namespace: pep-eiap-cgf-pepconntur-qa
+spec:
+  gateways:
+  - pep-eiap-cgf-pepconntur-qa/pep-eiap-cgf-pepconntur-qa-cv-gw
+  hosts:
+  - pepsico-pepconnect-b2bweb-turkey-qa.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - dukkan-senin.qa.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-pepconnect-b2bweb-turkey.pep-eiap-cgf-pepconntur-qa.svc.cluster.local
+        port:
+          number: 80

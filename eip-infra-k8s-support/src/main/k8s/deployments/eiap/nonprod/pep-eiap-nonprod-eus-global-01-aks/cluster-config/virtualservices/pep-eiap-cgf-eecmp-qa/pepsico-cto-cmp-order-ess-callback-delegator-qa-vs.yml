@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  creationTimestamp: "2024-06-28T11:30:41Z"
+  generation: 1
+  name: pepsico-cto-cmp-order-ess-callback-delegator-qa-vs
+  namespace: pep-eiap-cgf-eecmp-qa
+  resourceVersion: "1638233534"
+  uid: 28be5608-9368-49e0-8984-1c5d26efa700
+spec:
+  gateways:
+  - pep-eiap-cgf-eecmp-qa/pep-eiap-cgf-eecmp-qa-cv-gw
+  hosts:
+  - pepsico-cto-cmp-order-ess-callback-delegator-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /cmp/api/order/ansible
+    route:
+    - destination:
+        host: pepsico-cto-cmp-order-ess-callback-delegator.pep-eiap-cgf-eecmp-qa.svc.cluster.local
+        port:
+          number: 80

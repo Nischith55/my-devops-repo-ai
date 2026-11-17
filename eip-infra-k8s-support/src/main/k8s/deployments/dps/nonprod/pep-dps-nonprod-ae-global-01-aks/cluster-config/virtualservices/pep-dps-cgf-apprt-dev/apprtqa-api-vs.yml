@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: apprtqa-api
+  name: apprtqa-api-vs
+  namespace: pep-dps-cgf-apprt-dev
+spec:
+  gateways:
+  - pep-dps-cgf-apprt-dev/pep-dps-cgf-apprt-dev-cv-gw
+  hosts:
+  - apprtqa-api.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprtqa-api
+    route:
+    - destination:
+        host: apprtqa-api.pep-dps-cgf-apprt-dev.svc.cluster.local
+        port:
+          number: 80

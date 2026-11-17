@@ -1,0 +1,40 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: receipt-scanning-service-ituh-vs
+  namespace: pep-dps-dps-rsmain1-qa
+  labels:
+      app: receipt-scanning-service
+spec:
+  hosts:
+  - pep-dps-qa-receipt-scanning-service.dps.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-rsmain1-qa/pep-dps-dps-rsmain1-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: receipt-scanning-service.pep-dps-dps-rsmain1-qa.svc.cluster.local
+        port:
+          number: 8080
+    corsPolicy:
+      allowOrigins:
+      - exact: https://receiptscanning.qa.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Access-Control-Allow-Origin
+      - Authorization
+      exposeHeaders:
+      - Authorization
+       
+  

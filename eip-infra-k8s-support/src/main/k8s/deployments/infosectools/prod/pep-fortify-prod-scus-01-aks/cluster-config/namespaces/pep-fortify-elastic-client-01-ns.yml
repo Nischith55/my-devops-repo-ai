@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    eck-managed: 'false'
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-fortify-elastic-client-01
+    servicename_aks: fortify
+  name: pep-fortify-elastic-client-01

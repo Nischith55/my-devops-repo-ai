@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: dsd-epod-service-gh-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for dsd-epod-service-gh-dev   
+      sourceRepos:
+      - https://github.com/09476547_pepsico/dsd-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-cgf-dsd-dev
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: dsd-epod-service-gh-dev-admin
+        description: Admin privileges to dsd-epod-service-gh-dev
+        policies:
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-admin, applications, *, dsd-epod-service-gh-dev/*, allow
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-admin, repositories, *, dsd-epod-service-gh-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: dsd-epod-service-gh-dev-user
+        description: Read-only privileges to dsd-epod-service-gh-dev
+        policies:
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-user, applications, get, dsd-epod-service-gh-dev/*, allow
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-user, applications, sync, dsd-epod-service-gh-dev/*, allow
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-user, repositories, get, dsd-epod-service-gh-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:dsd-epod-service-gh-dev:dsd-epod-service-gh-dev-user, applications, action/apps/Deployment/restart, dsd-epod-service-gh-dev/*, allow
+        groups:
+        - "Team.App.DPS.DSD.nonprod.admin"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.devops"

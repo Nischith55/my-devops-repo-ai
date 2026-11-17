@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: flna-pgt-whse-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app      
+spec:
+  description: Project for flna-pgt-whse-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/FLNA_PWM/_git/pep-flna-whsecc-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-flna-whsecc-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: flna-pgt-whse-dev-admin
+    description: Admin privileges to flna-pgt-whse-dev
+    policies:
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-admin, applications, *, flna-pgt-whse-dev/*, allow
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-admin, repositories, *, flna-pgt-whse-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: flna-pgt-whse-dev-user
+    description: Read-only privileges to flna-pgt-whse-dev
+    policies:
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-user, applications, get, flna-pgt-whse-dev/*, allow
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-user, applications, sync, flna-pgt-whse-dev/*, allow
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-user, repositories, get, flna-pgt-whse-dev/*, allow
+    - p, proj:flna-pgt-whse-dev:flna-pgt-whse-dev-user, applications, action/apps/Deployment/restart, flna-pgt-whse-dev/*, allow
+    groups:
+    - "Team.Support.FLNA.NonProd.WHSECC"
+    - "Team.Support.EIAP.READ"

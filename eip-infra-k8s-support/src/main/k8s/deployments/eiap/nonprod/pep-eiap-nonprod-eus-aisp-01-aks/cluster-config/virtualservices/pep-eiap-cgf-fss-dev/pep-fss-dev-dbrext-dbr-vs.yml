@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: pep-fss-dev-dbrext-dbr-vs
+  namespace: pep-eiap-cgf-fss-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-fss-dev/pep-eiap-cgf-fss-dev-cv-gw
+  hosts:
+  - pep-fss-dev-dbrext-dbr.aisp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  tcp:
+  - match:
+      - port: 1491
+    route:
+    - destination:
+        host: dbrext-dbr.pep-eiap-cgf-fss-dev.svc.cluster.local
+        port:
+          number: 1491

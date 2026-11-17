@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-cmp-apac-akstd-dev-sa
+  namespace: pep-cmp-apac-akstd-dev

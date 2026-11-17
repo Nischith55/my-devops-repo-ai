@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-preprod: 'true'
+    environment: prod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-och-na-prod
+    project: na
+    sector: och
+    servicename_aks: och
+    team: och-na
+  name: pep-eiap-och-na-prod

@@ -1,0 +1,8 @@
+####### BEGIN Added recently --pep-infratools-prod-eus-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_infratools_cgf_hyp_prod
+  - ns_pep_infratools_test_test_prod
+####### END Added recently --pep-infratools-prod-eus-01-aks######

@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: admin-portal-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for admin-portal-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-portal-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-cgf-adportal-preprod
+  - server: https://kubernetes.default.svc
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: admin-portal-preprod-admin
+    description: Admin privileges to admin-portal-preprod
+    policies:
+    - p, proj:admin-portal-preprod:admin-portal-preprod-admin, applications, *, admin-portal-preprod/*, allow
+    - p, proj:admin-portal-preprod:admin-portal-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:admin-portal-preprod:admin-portal-preprod-admin, repositories, *, admin-portal-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: admin-portal-preprod-user
+    description: Read-only privileges to admin-portal-preprod
+    policies:
+    - p, proj:admin-portal-preprod:admin-portal-preprod-user, applications, get, admin-portal-preprod/*, allow
+    - p, proj:admin-portal-preprod:admin-portal-preprod-user, applications, sync, admin-portal-preprod/*, allow
+    - p, proj:admin-portal-preprod:admin-portal-preprod-user, repositories, get, admin-portal-preprod/*, allow
+    - p, proj:admin-portal-preprod:admin-portal-preprod-user, applications, action/apps/Deployment/restart, admin-portal-preprod/*, allow
+    groups:
+    - "Team.Support.ST.AdminPortal.AppSupport"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

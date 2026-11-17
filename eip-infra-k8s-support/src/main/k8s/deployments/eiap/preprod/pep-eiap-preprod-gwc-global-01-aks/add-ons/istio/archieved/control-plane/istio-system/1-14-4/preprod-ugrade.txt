@@ -1,0 +1,65 @@
+NAMESPACE                  NAME                                                     READY   STATUS             RESTARTS         AGE
+calico-system              calico-kube-controllers-86dd9984fb-2ljgt                 1/1     Running            0                55d
+calico-system              calico-node-7zblc                                        1/1     Running            0                55d
+calico-system              calico-node-c2m54                                        1/1     Running            0                55d
+calico-system              calico-node-rs9qr                                        1/1     Running            0                55d
+calico-system              calico-node-s7fw9                                        1/1     Running            0                55d
+calico-system              calico-typha-c78dfcd6-89t5r                              1/1     Running            0                55d
+calico-system              calico-typha-c78dfcd6-bwdh8                              1/1     Running            0                55d
+istio-operator             istio-operator-1-12-4-7565fb765c-b5skr                   1/1     Running            0                68d
+istio-operator             istio-operator-1-12-4-7565fb765c-bb2t9                   1/1     Running            9 (47h ago)      68d
+istio-operator             istio-operator-1-12-4-7565fb765c-prqph                   1/1     Running            5 (17d ago)      68d
+istio-system               istio-cni-node-c6mcw                                     1/1     Running            0                68d
+istio-system               istio-cni-node-hmxhq                                     1/1     Running            0                68d
+istio-system               istio-cni-node-tn8qt                                     1/1     Running            0                68d
+istio-system               istio-cni-node-wdw4d                                     1/1     Running            0                68d
+istio-system               istiod-1-12-4-f7f669878-5ktk5                            1/1     Running            0                68d
+istio-system               istiod-1-12-4-f7f669878-d4l6t                            1/1     Running            0                68d
+istio-system               istiod-1-12-4-f7f669878-fd7fq                            1/1     Running            0                68d
+istio-system               pep-eiap-ingress-gw01-54fb686b96-b7xk8                   1/1     Running            0                68d
+istio-system               pep-eiap-ingress-gw01-54fb686b96-n2s5w                   1/1     Running            0                68d
+istio-system               pep-eiap-ingress-gw01-54fb686b96-x9vlk                   1/1     Running            0                68d
+kube-system                cloud-node-manager-2926g                                 1/1     Running            0                68d
+kube-system                cloud-node-manager-2tmpv                                 1/1     Running            0                68d
+kube-system                cloud-node-manager-7fnqf                                 1/1     Running            0                68d
+kube-system                cloud-node-manager-tmxzq                                 1/1     Running            0                68d
+kube-system                coredns-57dd64d696-9pbdg                                 1/1     Running            0                12d
+kube-system                coredns-57dd64d696-qtphm                                 1/1     Running            0                3d1h
+kube-system                coredns-autoscaler-549489f84f-6sr46                      1/1     Running            0                12d
+kube-system                csi-azuredisk-node-4jnnr                                 3/3     Running            0                3d11h
+kube-system                csi-azuredisk-node-k8dj2                                 3/3     Running            0                3d11h
+kube-system                csi-azuredisk-node-pggd4                                 3/3     Running            0                3d11h
+kube-system                csi-azuredisk-node-vwpr6                                 3/3     Running            0                3d11h
+kube-system                csi-azurefile-node-7qj7l                                 3/3     Running            0                32d
+kube-system                csi-azurefile-node-mzpmt                                 3/3     Running            0                32d
+kube-system                csi-azurefile-node-rt8dd                                 3/3     Running            0                32d
+kube-system                csi-azurefile-node-t89kx                                 3/3     Running            0                32d
+kube-system                konnectivity-agent-64f9d5f749-hhggs                      1/1     Running            0                12d
+kube-system                konnectivity-agent-64f9d5f749-pqkh2                      1/1     Running            0                3d1h
+kube-system                kube-proxy-2jzcp                                         1/1     Running            0                23d
+kube-system                kube-proxy-qx542                                         1/1     Running            0                23d
+kube-system                kube-proxy-w8p4s                                         1/1     Running            0                23d
+kube-system                kube-proxy-xm2jp                                         1/1     Running            0                23d
+kube-system                metrics-server-85bb67db6-dxp4j                           1/1     Running            0                3d1h
+monitoring                 kube-state-metrics-86476c6fdc-hff75                      1/1     Running            0                68d
+msi-acrpull-system         msi-acrpull-controller-manager-7dd88c878c-5d4b7          2/2     Running            0                68d
+msi-acrpull-system         msi-acrpull-controller-manager-7dd88c878c-h72md          2/2     Running            6 (8d ago)       68d
+observability              jaeger-backend-6575c86b66-4rc4k                          1/1     Running            0                68d
+observability              jaeger-operator-855f676474-lkrpg                         2/2     Running            22 (2d15h ago)   68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-595bffffbb-9l7mb   1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-595bffffbb-dn2tw   1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-595bffffbb-dpd4r   1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-595bffffbb-kspbv   1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-b54f7c5db-k4rtb    1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-b54f7c5db-pscpx    1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-common-data-services-b54f7c5db-r2hm5    1/2     ImagePullBackOff   0                68d
+pep-eiap-cgf-cle-preprod   pep-eiap-cgf-cle-rest-services-788c8b7fc4-f99ck          2/2     Running            0                5d10h
+pep-eiap-ops-admin         pep-eiap-aks-init-25lfm                                  1/1     Running            0                68d
+pep-eiap-ops-admin         pep-eiap-aks-init-5r5cr                                  1/1     Running            0                68d
+pep-eiap-ops-admin         pep-eiap-aks-init-6vwj9                                  1/1     Running            0                68d
+pep-eiap-ops-admin         pep-eiap-aks-init-8bpwv                                  1/1     Running            0                68d
+tigera-operator            tigera-operator-8456976f56-h26rf                         1/1     Running            19 (5h53m ago)   55d
+twistlockpp                twistlock-defender-ds-jzs78                              1/1     Running            0                35d
+twistlockpp                twistlock-defender-ds-l7l44                              1/1     Running            0                35d
+twistlockpp                twistlock-defender-ds-lzckk                              1/1     Running            0                35d
+twistlockpp                twistlock-defender-ds-mdcm8                              1/1     Running            0                35d

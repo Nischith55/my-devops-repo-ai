@@ -1,0 +1,79 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-daemonset-config
+  namespace: kube-system
+data:
+  metricbeat.yml: |
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    metricbeat.autodiscover:
+      providers:
+      - node: ${NODE_NAME}
+        scope: cluster
+        templates:
+        - config:
+          - add_metadata: true
+            hosts:
+            - kube-state-metrics.monitoring:8080
+            metricsets:
+            - state_node
+            - state_deployment
+            - state_daemonset
+            - state_replicaset
+            - state_pod
+            - state_container
+            - state_cronjob
+            - state_resourcequota
+            - state_statefulset
+            - state_service
+            - state_persistentvolume
+            - state_persistentvolumeclaim
+            - state_storageclass
+            module: kubernetes
+            period: 10s
+          - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            hosts:
+            - https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}
+            metricsets:
+            - apiserver
+            module: kubernetes
+            period: 30s
+            ssl.certificate_authorities:
+            - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          - metricsets:
+            - event
+            module: kubernetes
+        type: kubernetes
+        unique: true
+    metricbeat.config.modules:
+      path: ${path.config}/modules.d/*.yml
+      reload.enabled: false
+    output.elasticsearch:
+      hosts:
+      - ${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}
+      index: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-%{+yyyy.MM.dd}
+      password: ${ELASTICSEARCH_PASSWORD}
+      ssl:
+        certificate_authorities: ${PEP_CA_CERT_CHAIN}
+      username: ${ELASTICSEARCH_USERNAME}
+    processors:
+    - add_cloud_metadata: null
+    setup.ilm:
+      enabled: false
+    setup.template:
+      enabled: true
+      name: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}
+      overwrite: false
+      pattern: aks-metricbeat-${K8S_CLUSTER_NAME}-%{[agent.version]}-*
+      settings:
+        index:
+          number_of_replicas: 1
+          number_of_routing_shards: 64
+          number_of_shards: 8
+      setup.dashboards:
+        enabled: false
+        index: aks-metricbeat-${K8S_CLUSTER_NAME}-*

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    labels:
+        app: pepsico-pepconnect-b2bweb-northamerica
+    name: pepsico-pepconnect-b2bweb-northamerica-fkoq-vs
+    namespace: pep-dps-cgf-pepconnnam-preprod
+spec:
+    gateways:
+    - pep-dps-cgf-pepconnnam-preprod/pep-dps-cgf-pepconnnam-preprod-cv-gw
+    hosts:
+    - pep-dps-preprod-pepsiconnectonena.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - pepsicopro.preprod.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-pepconnect-b2bweb-northamerica.pep-dps-cgf-pepconnnam-preprod.svc.cluster.local
+                port:
+                    number: 80

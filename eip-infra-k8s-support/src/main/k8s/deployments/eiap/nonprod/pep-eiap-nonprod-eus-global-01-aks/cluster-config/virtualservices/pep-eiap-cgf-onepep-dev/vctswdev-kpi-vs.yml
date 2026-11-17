@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: vctswdev-kpi
+  name: vctswdev-kpi-vs
+  namespace: pep-eiap-cgf-onepep-dev
+spec:
+  gateways:
+  - pep-eiap-cgf-onepep-dev/pep-eiap-cgf-onepep-dev-cv-gw
+  hosts:
+  - vctswdev-kpi.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/vctswdev-kpi
+    route:
+    - destination:
+        host: vctswdev-kpi.pep-eiap-cgf-onepep-dev.svc.cluster.local
+        port:
+          number: 80

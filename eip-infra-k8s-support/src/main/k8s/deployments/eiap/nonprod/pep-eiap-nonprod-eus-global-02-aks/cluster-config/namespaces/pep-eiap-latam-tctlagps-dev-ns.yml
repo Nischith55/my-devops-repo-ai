@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-latam-tctlagps-dev
+  labels:
+    env-nonprod: "true"
+    project: tctlagps
+    sector: latam
+    team: latam-tctlagps
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: middlemilecommunicationshub-nonprod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-cmdb-app-service-id: e0127024831e16986a4357d0deaad308
+    pep-environment: Development
+    

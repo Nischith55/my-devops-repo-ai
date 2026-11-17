@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pep-pcaf-api-ppaservice-sp-tgtppa
+  name: pep-pcaf-api-ppaservice-sp-tgtppa-vs
+  namespace: pep-pfna-flna-gtmsp-prod
+spec:
+  gateways:
+  - pep-pfna-flna-gtmsp-prod/pep-pfna-flna-gtmsp-prod-cv-gw
+  hosts:
+  - pep-pcaf-api-ppaservice-sp-tgtppa.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/sp/tgtppa/ppamodule
+    route:
+    - destination:
+        host: pep-pcaf-api-ppaservice-sp-tgtppa.pep-pfna-flna-gtmsp-prod.svc.cluster.local
+        port:
+          number: 80

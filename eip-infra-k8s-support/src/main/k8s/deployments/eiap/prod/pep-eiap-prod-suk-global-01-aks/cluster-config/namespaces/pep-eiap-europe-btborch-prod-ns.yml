@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    pep-cmdb-app-service-id: 30863b3a47c16610f0228251516d43b8
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Production
+    project: btborch
+    sector: europe
+    servicename_aks: b2bpepsiconnectportalorchestratoreuropeprod
+    team: europe-btborch
+  name: pep-eiap-europe-btborch-prod

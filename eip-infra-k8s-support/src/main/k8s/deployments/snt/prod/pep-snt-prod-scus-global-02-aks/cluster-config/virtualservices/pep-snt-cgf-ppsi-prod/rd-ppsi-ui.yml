@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: rd-ppsi-ui-prod:networking.istio.io/VirtualService:pep-snt-cgf-ppsi-prod/rd-ppsi-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"rd-ppsi-ui-prod:networking.istio.io/VirtualService:pep-snt-cgf-ppsi-prod/rd-ppsi-ui"},"labels":{"app":"rd-ppsi-ui","app.kubernetes.io/instance":"rd-ppsi-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.2.0"},"name":"rd-ppsi-ui","namespace":"pep-snt-cgf-ppsi-prod"},"spec":{"gateways":["pep-snt-cgf-ppsi-prod/pep-snt-cgf-ppsi-prod-cv-gw"],"hosts":["rd-ppsi-ui.snt.gw01.aks02.scus.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"rd-ppsi-ui.pep-snt-cgf-ppsi-prod.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: rd-ppsi-ui
+        app.kubernetes.io/instance: rd-ppsi-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.2.0
+    name: rd-ppsi-ui
+    namespace: pep-snt-cgf-ppsi-prod
+spec:
+    gateways:
+    - pep-snt-cgf-ppsi-prod/pep-snt-cgf-ppsi-prod-cv-gw
+    hosts:
+    - rd-ppsi-ui.snt.gw01.aks02.scus.prod.azure.intra.pepsico.com
+    - ppsi.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: rd-ppsi-ui.pep-snt-cgf-ppsi-prod.svc.cluster.local
+                port:
+                    number: 8080

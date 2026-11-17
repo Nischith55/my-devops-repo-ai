@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cmpaug21-testtemp-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for cmpaug21-testtemp-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/cmpaug21-testtemp-argocd-configs
+  - pepeiapnonprodglobalcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: cmpaug21-testtemp-dev-admin
+    description: Admin privileges to cmpaug21-testtemp-dev
+    policies:
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-admin, applications, *, cmpaug21-testtemp-dev/*, allow
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-admin, repositories, *, cmpaug21-testtemp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: cmpaug21-testtemp-dev-user
+    description: Read-only privileges to cmpaug21-testtemp-dev
+    policies:
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-user, applications, get, cmpaug21-testtemp-dev/*, allow
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-user, applications, sync, cmpaug21-testtemp-dev/*, allow
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-user, repositories, get, cmpaug21-testtemp-dev/*, allow
+    - p, proj:cmpaug21-testtemp-dev:cmpaug21-testtemp-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

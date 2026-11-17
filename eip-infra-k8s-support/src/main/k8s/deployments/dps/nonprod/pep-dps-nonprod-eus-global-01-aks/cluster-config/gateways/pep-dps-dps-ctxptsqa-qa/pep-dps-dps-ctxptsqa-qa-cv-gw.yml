@@ -1,0 +1,112 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-dps-ctxptsqa-qa-cv-gw
+  namespace: pep-dps-dps-ctxptsqa-qa
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-dps-ctxptsqa-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-ctxptsqa-qa-cv-gw-tls-443
+    port:
+      name: https-pep-dps-dps-ctxptsqa-qa-cv-gw-tls-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-dps-ctxptsqa-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ctx-profit-serve-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-dps-ctxptsqa-qa-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-qa-ctx-profit-to-serve-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ctx-auth-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-ctxptsqa-qa-cv-gw-https-443
+    port:
+      name: https-pep-dps-dps-ctxptsqa-qa-cv-gw-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-dps-ctxptsqa-qa-80.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ctx-profit-serve-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-dps-ctxptsqa-qa-cv.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-qa-ctx-profit-to-serve-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - ctx-pts.qa.mypepsico.com
+    - ctx.qa.mypepsico.com
+    - ctx-auth-api-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-dps-ctxptsqa-qa-cv-gw-http-80
+    port:
+      name: http-pep-dps-dps-ctxptsqa-qa-cv-gw-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - ctx-pts.qa.mypepsico.com
+    name: pep-dps-dps-ctxptsqa-qa-cv-gw-3-https-443
+    port:
+      name: pep-dps-dps-ctxptsqa-qa-cv-gw-3-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: ctx-pts.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - ctx.qa.mypepsico.com
+    name: pep-dps-dps-ctxptsqa-qa-cv-gw-4-https-443
+    port:
+      name: pep-dps-dps-ctxptsqa-qa-cv-gw-4-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: ctx.qa-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+

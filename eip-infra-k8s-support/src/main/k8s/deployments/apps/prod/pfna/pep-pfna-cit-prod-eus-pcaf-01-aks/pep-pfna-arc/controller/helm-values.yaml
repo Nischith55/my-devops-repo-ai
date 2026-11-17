@@ -1,0 +1,9 @@
+replicaCount: 1
+
+nodeSelector:
+  kubernetes.azure.com/mode: system
+  kubernetes.io/os: linux
+
+tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists

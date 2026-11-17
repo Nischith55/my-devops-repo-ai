@@ -1,0 +1,2 @@
+---
+istioctl_cmd: "{{ istioctl_cmd_ovrd | default('istioctl') }}"

@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-ochbireportauth-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-ochbireportauth.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pep-och-ochbireportauth.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80  
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-falloutmanagement.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pep-och-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.na.pepsico.com
+      - exact: https://pep-och-ui.pbna.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - PATCH
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      exposeHeaders:
+      - x-total-count  

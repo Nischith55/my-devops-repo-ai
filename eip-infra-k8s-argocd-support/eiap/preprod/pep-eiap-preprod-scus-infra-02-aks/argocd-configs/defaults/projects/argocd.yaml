@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-platform
+spec:
+  description: Default project for eiap   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/pepci-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  - pepeiapprodcommonacr.azurecr.io/helm
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-infra-k8s-argocd-support
+  - https://dev.azure.com/PepsiCoIT/OmniChannelEcommerceHub/_git/pep-global-och-argocd-config
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/admin-dashboard-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/CTO_AI_Agent_Factory/_git/pep-aisp-agentfactory-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CGF_Global_Digital_Agro/_git/aigronomist-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/CTO_PEPGENX_PLATFORM/_git/pep-asip-pepgenx-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Microservices_Development_Portal/_git/pepsico-eip-eipone-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PEPsense_IoT_Platform/_git/pep-eiotp-cloud-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Pepsico_GlobalProcurementAutomation/_git/compass-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/Identity_and_Access_Management%20(IAM)/_git/pep-iamc-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/Global_SnT_AI_Negotiations/_git/ai-negotiations-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/HaloCRM_SAFe/_git/halo-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-och-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/PBNA_Commercial-Equipment_Service_and_Vending/_git/pes_sw_argocd_configs
+  - https://dev.azure.com/PepsiCoIT/EIP-Services/_git/eip-services-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIP/_git/eip-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/GeniusOne/_git/geniusone-argocd-configs
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepiris-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+  - https://dev.azure.com/PepsiCoIT2/PBNA_PES_Request_To_Serve/_git/pbna-pes-request-to-serve-configs
+  destinations:
+  - name: pep-eiap-preprod-scus-infra-02-aks
+    namespace: argocd
+    server: https://kubernetes.default.svc

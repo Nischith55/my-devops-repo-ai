@@ -1,0 +1,60 @@
+global:
+  spec:
+    destination:
+      clusterName: pep-pfna-cit-prod-eus-pcaf-01-aks
+
+argoCDApplications:
+  nginx-pep-pfna-cit-prod-eus-pcaf-01-aks:  
+    enabled: true
+    namespace: pep-pfna-global-infra
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/pep-pfna-global-infra_NGINX
+
+  # ARC apps are disabled until the manual setup.sh install is validated and the
+  # AppProject governing apps/** allows the arc-systems +
+  # pep-pfna-global-devsecops-prod destinations and the Artifactory helm repo.
+  arc-controller-pep-pfna-cit-prod-eus-pcaf-01-aks:
+    enabled: false
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set-controller
+    revision: 0.14.2
+    namespace: arc-systems
+    path: src/main/k8s/deployments/apps/prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/pep-pfna-arc/controller
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-runner-set-pep-pfna-cit-prod-eus-pcaf-01-aks:
+    enabled: false
+    autoSync: true
+    helm: true
+    recursive: false
+    chart: gha-runner-scale-set
+    revision: 0.14.2
+    namespace: pep-pfna-global-devsecops-prod
+    path: src/main/k8s/deployments/apps/prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/pep-pfna-arc/runner-set
+    syncOptions:
+      - CreateNamespace=true
+
+  arc-image-prepull-pep-pfna-cit-prod-eus-pcaf-01-aks:
+    enabled: false
+    autoSync: true
+    helm: false
+    recursive: false
+    namespace: pep-pfna-global-devsecops-prod
+    path: src/main/k8s/deployments/apps/prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/pep-pfna-arc/prepull
+    syncOptions:
+      - CreateNamespace=true
+
+  # arc-kaniko-rbac-pep-pfna-cit-prod-eus-pcaf-01-aks:
+  #   enabled: true
+  #   autoSync: true
+  #   helm: false
+  #   recursive: false
+  #   namespace: pep-pfna-global-devsecops-prod
+  #   path: src/main/k8s/deployments/apps/prod/pfna/pep-pfna-cit-prod-eus-pcaf-01-aks/pep-pfna-arc/kaniko-rbac
+  #   syncOptions:
+  #     - CreateNamespace=true

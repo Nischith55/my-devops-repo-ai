@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pep-eiap-k8sautomation-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pep-eiap-k8sautomation-clusterrole
+subjects:  
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    # pep-eiap-prod-k8s-sp
+    name: 60fd3acd-e12c-4a61-b55f-752cb9b28233

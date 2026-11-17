@@ -1,0 +1,42 @@
+steps:
+- task: Bash@3
+  name: "git_push"
+  displayName: 'git_push'
+  inputs:
+    targetType: 'inline'
+    script: |
+      git branch
+      git checkout -b $(Build.SourceBranchName)
+      echo "deleting .pyc files if any."
+      find $(system.defaultWorkingDirectory)/src/ -type f -name '*.pyc' -exec rm -f '{}' \;
+      git add .
+      git commit -m "added the generated manifest file"
+      git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+      git config --global user.email "$(svcuser_automation)@pepsico.com"
+      git config --global user.name "$(svcuser_automation)"
+      git status
+      git add .
+      git commit -m "added the generated manifest file"
+      git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+      outpval=`echo $?`
+      echo $outpval
+      if [ $outpval -eq 0 ];then
+        echo 'whoami'        
+      else
+        git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+        for i in $(git diff --name-only --diff-filter=U --relative)
+        do
+          echo $i
+          git show :1:$i > ./tmp.common
+          git show :2:$i > ./tmp.ours
+          git show :3:$i > ./tmp.theirs
+          git merge-file --union -p ./tmp.ours ./tmp.common ./tmp.theirs > "$(system.defaultWorkingDirectory)/$i"
+          git add "$(system.defaultWorkingDirectory)/$i"
+          rm ./tmp.common
+          rm ./tmp.ours
+          rm ./tmp.theirs        
+        done 
+        git commit -m "resolve conflicts"
+        git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+        git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+      fi

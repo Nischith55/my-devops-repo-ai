@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-eiap-pbna-pog-webapp
+  name: pep-eiap-pbna-pog-webapp-qa-vs
+  namespace: pep-eiap-pbna-pog-qa
+spec:
+  gateways:
+  - pep-eiap-pbna-pog-qa/pep-eiap-pbna-pog-qa-cv-gw
+  hosts:
+  - pep-eiap-pbna-pog-webapp-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-pbna-pog-webapp.pep-eiap-pbna-pog-qa.svc.cluster.local

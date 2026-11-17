@@ -1,0 +1,16 @@
+---
+# generated file please do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appdynamics-operator
+  namespace: appdynamics
+spec:
+  template:
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+        kubernetes.azure.com/mode: system
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists

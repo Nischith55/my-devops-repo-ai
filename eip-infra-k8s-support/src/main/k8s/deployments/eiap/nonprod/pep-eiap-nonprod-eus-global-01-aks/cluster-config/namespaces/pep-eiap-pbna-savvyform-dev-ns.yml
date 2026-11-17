@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-eiap-pbna-savvyform-dev
+    pep-cmdb-app-service-id: c57bc2b41bcbf014666ea607ec4bcb09
+    pep-cmdb-bus-app-id: 6f3ba19d1b7228105f7bcbf2604bcb76
+    pep-environment: Development
+    project: savvyform
+    sector: pbna
+    servicename_aks: savvypbnanonprod
+    team: pbna-savvyform
+  name: pep-eiap-pbna-savvyform-dev

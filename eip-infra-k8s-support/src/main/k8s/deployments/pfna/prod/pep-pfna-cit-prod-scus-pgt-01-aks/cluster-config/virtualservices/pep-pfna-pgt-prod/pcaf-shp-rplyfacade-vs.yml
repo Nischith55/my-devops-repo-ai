@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-shp-rplyfacade
+  name: pcaf-shp-rplyfacade-vs
+  namespace: pep-pfna-pgt-prod
+spec:
+  gateways:
+  - pep-pfna-pgt-prod/pep-pfna-pgt-prod-cv-gw
+  hosts:
+  - pcaf-shp-rplyfacade.pfnapgt.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-rplyfacade.pep-pfna-pgt-prod.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 841e42b8c3ba46d8b7498535990131f7
+    pep-cmdb-bus-app-id: 7f0e42b8c3ba46d8b74985359901310f
+    pep-environment: Development
+    project: askada
+    sector: cgf
+    servicename_aks: daipepgenx
+    team: cgf-askada
+  name: pep-eiap-cgf-askada-dev

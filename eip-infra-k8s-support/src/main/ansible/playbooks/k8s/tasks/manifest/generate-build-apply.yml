@@ -1,0 +1,49 @@
+---
+# ##
+# All-in-One task to generate, kustomize build and kubectl apply
+# CONVENTION:
+# - internal variables start with __.
+# - abbreviation: pgba -> params_generate_build_apply
+# ##
+
+
+- name: GENERATE_BUILD_APPLY_BLOCK
+  block:
+
+    - name: PRINT_PARAMS
+      debug:
+        msg: |
+          __pgba_params:
+            {{ __pgba_params | to_nice_yaml(indent=2, width=1337) 
+                | trim | indent(2) }}
+
+
+    - name: GENERATE_OVERLAYS_FROM_TEMPLATE_IF_REQUIRED
+      include_tasks:
+        file: tasks/kustomize/generate-and-build.yml
+      vars:
+        params_kust_gen_build:
+          params: "{{ __pgba_params }}"
+      when: (__pgba_params['kustomization'] is defined)
+
+    - name: DO_KUBECTL_APPLY
+      include_role:
+        name: k8s_support/kubectl
+        tasks_from: execute
+      vars:
+        kube_context: "{{ __kube_context }}"
+        kctl_action: apply
+        kctl_action_args: "-f {{ __manifest_path }}"
+      # option to skip
+      when: (not (skip_kctl | default('false') | bool))
+
+  # block vars
+  vars:
+    __int_generate_tmpl_task_file: tasks/core/generate-file-from-template.yml
+    __pgba: "{{ params_generate_build_apply }}"
+    __pgba_params: "{{ __pgba['params'] }}"
+    __kube_context: "{{ __pgba['kube_context'] }}"
+    # manifest file path
+    __manifest_path: |-
+      {{ __pgba_params['manifest']['output_path'] }}
+

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: cep-proxysql-mx-tqmp-vs
+  namespace: pep-eiap-global-cep-prod
+  labels:
+      app: cep-proxysql-mx
+spec:
+  hosts:
+  - pepcepproxy01.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-global-cep-prod/pep-eiap-global-cep-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api
+    route:
+    - destination:
+        host: cep-proxysql-mx.pep-eiap-global-cep-prod.svc.cluster.local
+        port:
+          number: 3000
+  

@@ -1,0 +1,11 @@
+toolkit:
+  enabled: false
+
+driver:
+  enabled: false
+  
+node_taints:
+  - nvidia.com/gpu=Exists:NoSchedule
+
+operator:
+  runtimeClass: nvidia-container-runtime

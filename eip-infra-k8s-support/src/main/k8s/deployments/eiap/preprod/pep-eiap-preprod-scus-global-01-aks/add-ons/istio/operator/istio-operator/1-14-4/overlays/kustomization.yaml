@@ -1,0 +1,52 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+images: []
+kind: Kustomization
+namespace: istio-operator
+patches:
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      # NOTE: if used in patches, then name is not required but element must be
+      # present
+      name: not-used
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          name: istio-operator-1-12-4
+      template:
+        metadata:
+          labels:
+            name: istio-operator-1-12-4
+        spec:
+          nodeSelector:
+            kubernetes.azure.com/mode: system
+            kubernetes.io/os: linux
+          tolerations:
+            - key: CriticalAddonsOnly
+              operator: Exists
+          topologySpreadConstraints:
+            - labelSelector:
+                matchLabels:
+                  name: istio-operator-1-14-4
+              maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+          containers:
+            - env:
+              - name: WATCH_NAMESPACE
+                value: istio-system
+              name: istio-operator
+        # end: template/spec
+      # end: template
+  target:
+    kind: Deployment
+resources:
+- 00-istio-operator-1-14-4-clusterrole.yml
+- 00-istio-operator-1-14-4-clusterrolebinding.yml
+- 00-istio-operator-1-14-4-deployment.yml
+- 00-istio-operator-1-14-4-service.yml
+- 00-istio-operator-1-14-4-serviceaccount.yml
+- 00-istiooperators.install.istio.io-customresourcedefinition.yml

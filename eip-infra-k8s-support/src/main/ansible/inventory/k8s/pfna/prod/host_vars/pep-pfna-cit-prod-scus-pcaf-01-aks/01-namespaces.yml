@@ -1,0 +1,16 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_pfna_flna_app_prod
+  - ns_pep_pfna_flna_wfm_prod
+  - ns_pep_pfna_pfna_pogon_prod
+  - ns_pep_pfna_pbna_walmartdsd_prod
+  - ns_pep_pfna_pfna_walmartdsd_prod
+  - ns_pep_pfna_pfna_ast_prod
+  - ns_pep_pfna_pfna_pfnali_prod
+  - ns_pep_pfna_flna_salesplus_prod
+
+

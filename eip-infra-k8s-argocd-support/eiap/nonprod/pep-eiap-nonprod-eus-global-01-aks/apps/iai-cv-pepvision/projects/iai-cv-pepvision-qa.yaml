@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: iai-cv-pepvision-qa
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for iai-cv-pepvision-qa   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/iai-cv-pepvision-argocd-configs
+      - pepeiapnonprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-cgf-iaicv-qa
+      - name: pep-eiap-nonprod-eus-global-01-aks
+        namespace: pep-eiap-ops-admin
+      roles:
+      - name: iai-cv-pepvision-qa-admin
+        description: Admin privileges to iai-cv-pepvision-qa
+        policies:
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-admin, applications, *, iai-cv-pepvision-qa/*, allow
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-admin, repositories, *, iai-cv-pepvision-qa/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: iai-cv-pepvision-qa-user
+        description: Read-only privileges to iai-cv-pepvision-qa
+        policies:
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-user, applications, get, iai-cv-pepvision-qa/*, allow
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-user, applications, sync, iai-cv-pepvision-qa/*, allow
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-user, repositories, get, iai-cv-pepvision-qa/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:iai-cv-pepvision-qa:iai-cv-pepvision-qa-user, applications, action/apps/Deployment/restart, iai-cv-pepvision-qa/*, allow
+        groups:
+        - "Team.Support.IACOE.MLOPS.NPRDCNTB"
+        - "Team.Support.EIAP.READ"
+    

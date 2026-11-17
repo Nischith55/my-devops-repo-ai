@@ -1,0 +1,40 @@
+---
+ns_pep_dps_cgf_dsxadaptor_dev:
+  
+  name: pep-dps-cgf-dsxadaptor-dev
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-dsxadaptor
+    sector: cgf
+    project: dsxadaptor
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: dsx_adapter_non-prod
+    pep-cmdb-app-service-id: "c051c257c3487e50476a900f050131eb"
+    pep-cmdb-bus-app-id: "f0624479c3cc7e107e0cfbdf050131fd"
+    pep-environment: "Development"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  service_accounts:
+    - name: pep-dps-cgf-dsxadaptor-dev-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_dsxadaptor'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-dps-cgf-dsxadaptor-dev-sa-token
+    namespace: pep-dps-cgf-dsxadaptor-dev
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-cgf-dsxadaptor-dev-sa"

@@ -1,0 +1,7 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-dps-cgf-btbabtest-qa-sa
+  namespace: pep-dps-cgf-btbabtest-qa

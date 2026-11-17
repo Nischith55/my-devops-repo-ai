@@ -1,0 +1,35 @@
+---
+ns_pep_snt_cgf_toggle_prod:
+  
+  name: pep-snt-cgf-toggle-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-toggle
+    sector: cgf
+    project: toggle
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-snt-cgf-toggle-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-snt-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-snt-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_toggle'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-snt-cgf-toggle-prod-sa-token
+    namespace: pep-snt-cgf-toggle-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-snt-cgf-toggle-prod-sa"

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 624f8c0a-392d-41b1-81e7-19999663c1c9
+  name: pep-pfna-flna-schrts-dev-sa
+  namespace: pep-pfna-flna-schrts-dev

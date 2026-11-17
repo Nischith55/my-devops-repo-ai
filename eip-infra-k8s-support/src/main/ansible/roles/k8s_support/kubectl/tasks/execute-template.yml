@@ -1,0 +1,52 @@
+---
+- name: KCTL_EXEC_TEMPLATE_BLOCK
+  block:
+
+    - name: KCTL_EXEC_TEMPLATE_TEMPFILE  ({{ ansible_play_name }})
+      tempfile:
+        state: file
+        prefix: "{{ inventory_hostname }}"
+      register: kctl_exec_tmp_file
+
+    - name: KCTL_EXEC_TEMPLATE_TEMPFILE_MSG ({{ ansible_play_name }})
+      debug:
+        msg: "Created tmpfile : {{ kctl_exec_tmp_file.path }}"
+
+    - name: |-
+        KCTL_EXEC_TEMPLATE_CREATE_FILE ({{ ansible_play_name }})
+      template:
+        src: "{{ kctl_exec_template_src }}"
+        dest: "{{ kctl_exec_tmp_file.path }}"
+
+    - name: |-
+        KCTL_EXEC_TEMPLATE_PRINT_TEMPLATE ({{ ansible_play_name }})
+      vars:
+        kctl_exec_tmp_file_contents: |-
+          {{ lookup('file', kctl_exec_tmp_file.path) }}
+      debug:
+        msg: "{{ kctl_exec_tmp_file_contents }}"
+      when: (print_template | default('true') | bool)
+
+    - name: |-
+        KCTL_EXEC_TEMPLATE_KCTL_APPLY ({{ ansible_play_name }})
+      include_role:
+        name: k8s_support/kubectl
+      vars:
+        mode: execute
+        kctl_action_args: " -f {{ kctl_exec_tmp_file.path }}"
+      when: >-
+        (kctl_exec_tmp_file.path is defined)
+        and
+        (not (kctl_action_skip | default('false') | bool))
+
+  always:
+    - name: |-
+        KCTL_EXEC_TEMPLATE_REMOVE_TEMP_FILE ({{ kctl_exec_tmp_file.path }})
+      file:
+        state: absent
+        path: "{{ kctl_exec_tmp_file.path }}"
+      register: kctl_exec_rm_tmp_file_result
+      when: >-
+        (not (kctl_exec_keep_tmp_file | default('false') | bool) )
+  # always delegate to controller
+  delegate_to: localhost

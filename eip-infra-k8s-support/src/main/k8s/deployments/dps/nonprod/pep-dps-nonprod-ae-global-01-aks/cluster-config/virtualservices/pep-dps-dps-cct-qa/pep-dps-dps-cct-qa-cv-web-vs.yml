@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-dps-dps-cct-qa-cv-web-vs
+  namespace: pep-dps-dps-cct-qa
+  labels:
+    app: pep-dps-dps-cct-qa-cv-web
+spec:
+  hosts:
+    - cct-apac.qa.mypepsico.com
+    - pep-dps-dps-cct-qa-cv.dps.gw01.aks01.ae.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-dps-cct-qa/pep-dps-dps-cct-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-dps-dps-cct-qa-cv-web.pep-dps-dps-cct-qa.svc.cluster.local
+        port:
+          number: 80

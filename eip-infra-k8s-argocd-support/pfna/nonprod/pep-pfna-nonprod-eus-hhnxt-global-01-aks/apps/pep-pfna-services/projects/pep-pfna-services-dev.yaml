@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-services-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pep-pfna-services-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-services-argocd-configs
+  - peppfnanonprodhhnextacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pcaf-dev
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-ops-admin
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-flna-salesplus-dev
+  - name: pep-pfna-nonprod-eus-hhnxt-global-01-aks
+    namespace: pep-pfna-pgt-dev
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: 'PersistentVolume'
+  roles:
+  - name: pep-pfna-services-dev-admin
+    description: Admin privileges to pep-pfna-services-dev
+    policies:
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-admin, applications, *, pep-pfna-services-dev/*, allow
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-admin, repositories, *, pep-pfna-services-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-services-dev-user
+    description: Read-only privileges to pep-pfna-services-dev
+    policies:
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-user, applications, get, pep-pfna-services-dev/*, allow
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-user, applications, sync, pep-pfna-services-dev/*, allow
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-user, repositories, get, pep-pfna-services-dev/*, allow
+    - p, proj:pep-pfna-services-dev:pep-pfna-services-dev-user, applications, action/apps/Deployment/restart, pep-pfna-services-dev/*, allow
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.PFNA.RG.AKS.NONPROD.Contributor"
+    - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,40 @@
+---
+ns_pep_dps_europe_pepconnind_preprod:
+  
+  name: pep-dps-europe-pepconnind-preprod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-pepconnind
+    sector: europe
+    project: pepconnind
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: distributororderportalnon-prod
+    pep-cmdb-app-service-id: "117d51304766151052293238436d4308"
+    pep-cmdb-bus-app-id: "e95ed977db7740106285d2984b96192e"
+    pep-environment: "Preprod"
+    istio.io/rev: preprod-stable
+    environment: preprod
+    env-preprod: "true"
+
+  service_accounts:
+    - name: pep-dps-europe-pepconnind-preprod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_pepconnind'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-europe-pepconnind-preprod-sa-token
+    namespace: pep-dps-europe-pepconnind-preprod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-europe-pepconnind-preprod-sa"

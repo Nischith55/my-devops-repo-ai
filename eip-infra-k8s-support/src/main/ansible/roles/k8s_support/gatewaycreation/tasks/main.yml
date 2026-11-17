@@ -1,0 +1,28 @@
+- set_fact:
+    aks_type: "aks{{ cluster.split('-')[-2] }}"
+
+- name: generate manifest
+  ansible.builtin.template:
+    src: gateway.j2
+    dest: "/tmp/{{ namespace }}-cv-gw.yml"
+
+- name: Create a Gateway by reading the definition from a local file if not present in namespace
+  kubernetes.core.k8s:
+    state: present
+    src: "/tmp/{{ namespace }}-cv-gw.yml"
+  register: output_Gateway      
+
+# - name: Create a Gateway by reading the definition from a local file if not present in namespace
+#   ansible.builtin.shell: kubectl apply -f "/tmp/{{ namespace }}-cv-gw.yml"
+#   register: output_Gateway 
+  
+- name: Creating directory for uploading files into git repo
+  ansible.builtin.file:
+    path: "{{ script_dir }}/src/main/k8s/deployments/{{ department }}/{{ env }}/{{ cluster }}/cluster-config/gateways/{{ namespace }}/"
+    state: directory
+    
+- name: Copy folders of gateway
+  ansible.builtin.copy:
+    dest: "{{ script_dir }}/src/main/k8s/deployments/{{ department }}/{{ env }}/{{ cluster }}/cluster-config/gateways/{{ namespace }}/"
+    src: "/tmp/{{ namespace }}-cv-gw.yml"
+ 

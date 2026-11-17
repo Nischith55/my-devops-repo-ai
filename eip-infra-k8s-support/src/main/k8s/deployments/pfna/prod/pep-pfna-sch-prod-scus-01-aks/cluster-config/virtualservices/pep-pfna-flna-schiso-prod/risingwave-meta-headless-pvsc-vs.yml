@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: risingwave-meta-headless-pvsc-vs
+  namespace: pep-pfna-flna-schiso-prod
+  labels:
+      app: undefined
+spec:
+  hosts:
+  - risingwave-meta-headless.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-schiso-prod/pep-pfna-flna-schiso-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: risingwave-meta-headless.pep-pfna-flna-schiso-prod.svc.cluster.local
+        port:
+          number: 5691
+  

@@ -1,0 +1,40 @@
+---
+ns_pep_pfna_pbna_walmartdsd_qa:
+  
+  name: pep-pfna-pbna-walmartdsd-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-walmartdsd
+    sector: pbna
+    project: walmartdsd
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: directtostoredeliveryvisibility
+    pep-cmdb-app-service-id: "d09ba07987d8b9d04f62fe28dabb3527"
+    pep-cmdb-bus-app-id: "d49b607987d8b9d04f62fe28dabb35d4"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-pfna-pbna-walmartdsd-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_walmartdsd'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pfna-pbna-walmartdsd-qa-sa-token
+    namespace: pep-pfna-pbna-walmartdsd-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-pbna-walmartdsd-qa-sa"

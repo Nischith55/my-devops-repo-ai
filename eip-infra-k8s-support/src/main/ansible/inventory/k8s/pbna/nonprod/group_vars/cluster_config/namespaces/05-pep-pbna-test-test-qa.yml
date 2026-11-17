@@ -1,0 +1,35 @@
+---
+ns_pep_pbna_test_test_qa:
+  
+  name: pep-pbna-test-test-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: test-test
+    sector: test
+    project: test
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-pbna-test-test-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pbna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pbna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['test_test'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pbna-test-test-qa-sa-token
+    namespace: pep-pbna-test-test-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-pbna-test-test-qa-sa"

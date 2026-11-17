@@ -1,0 +1,41 @@
+---
+# ##
+# istio post control plane management activities.
+#
+# Settings for install itio SHARED Gateway objects post control plane install.
+# IMPORTANT:
+# - This is tied to a control plane. component_name must be set to the
+#   control plane this is targeted to
+# ##
+
+# VARNAME: <control_plane_name|replace('-', '_')>_istio_gateways_params
+# ALWAYS start with control plane name with '-' replaced with '_'
+# IMPORTANT:
+# - In Istio the port name MUST always start with http, https, tls, tcp,
+#   tls, see the docs..
+# -  The protocol exposed on the port. MUST BE one of 
+#      http|https|grpc|http2|mongo|tcp|tls. TLS implies the connection will be
+#      routed based on the SNI header to the destination without terminating
+#      the TLS connection
+
+# convenient variable for downstream gateway files
+
+# control plane name
+_icpm_name_: "{{ istio_control_plane_main_meta['name'] }}"
+_icpm_namespace_: "{{ istio_control_plane_main_meta['namespace'] }}"
+
+# output RELATIVE dir where the manifest will be outputed.
+_icpm_in_gwy_outdir: |-
+  {{ (_icpm_name_, _icpm_namespace_, 'in-gateways') | path_join }}
+
+# istio-management task requires this!!
+control_plane_main_istio_gateways_params:
+
+  # All Istio Gateways tied to ingress Controllers
+  in-gateways: |-
+    {{ q('vars', *q('varnames', '^_icpm_in_.*_gwy_params')) }}
+
+  # All Istio Gateways tied to egress Controllers
+  out-gateways: |-
+    {{ q('vars', *q('varnames', '^_icpm_out_.*_gwy_params')) }}
+

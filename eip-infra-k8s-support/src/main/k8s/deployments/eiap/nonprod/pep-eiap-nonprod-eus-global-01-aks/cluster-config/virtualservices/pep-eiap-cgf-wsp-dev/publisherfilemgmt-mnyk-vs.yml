@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: publisherfilemgmt-mnyk-vs
+  namespace: pep-eiap-cgf-wsp-dev
+  labels:
+      app: publisherfilemgmt
+spec:
+  hosts:
+  - pep-eiap-cgf-wsp-publisherfilemgmt-dev.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-wsp-dev/pep-eiap-cgf-wsp-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: publisherfilemgmt.pep-eiap-cgf-wsp-dev.svc.cluster.local
+        port:
+          number: 80
+  

@@ -1,0 +1,32 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: all-must-have-owner
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Namespace"]
+    excludedNamespaces:
+      - gatekeeper-system
+      - argocd
+      - default
+      - istio-ingress
+      - istio-system
+      - keda
+      - kube-node-leases
+      - kube-public
+      - kube-system
+      - kubecost
+      - monitoring
+      - pep-pepgenx-elastic-client-01
+      - pep-pepgenx-elastic-askadaa-01
+      - pep-pepgenx-global-devsecops-dev
+      - pep-pepgenx-global-dev
+      - pep-pepgenx-snowdiscovery-nonprod
+  parameters:
+    message: "All namespaces must have an `owner` label that points to your company username"
+    labels:
+      - key: owner
+        allowedRegex: '^(?:[A-Za-z0-9]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$'

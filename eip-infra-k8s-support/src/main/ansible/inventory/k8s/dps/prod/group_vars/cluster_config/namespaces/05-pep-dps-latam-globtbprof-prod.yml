@@ -1,0 +1,40 @@
+---
+ns_pep_dps_latam_globtbprof_prod:
+  
+  name: pep-dps-latam-globtbprof-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: latam-globtbprof
+    sector: latam
+    project: globtbprof
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: b2bpepsiconnectportalpromotionsamericasprod
+    pep-cmdb-app-service-id: "bd02dfcf83311a50282e47747daad305"
+    pep-cmdb-bus-app-id: "618c890597d295182db4f9f11153afbd"
+    pep-environment: "Production"
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-dps-latam-globtbprof-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-dps-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-dps-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['latam_globtbprof'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-dps-latam-globtbprof-prod-sa-token
+    namespace: pep-dps-latam-globtbprof-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-dps-latam-globtbprof-prod-sa"

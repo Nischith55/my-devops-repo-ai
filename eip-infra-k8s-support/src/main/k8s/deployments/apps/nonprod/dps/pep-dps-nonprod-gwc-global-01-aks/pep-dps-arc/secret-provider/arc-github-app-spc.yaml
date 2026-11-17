@@ -1,0 +1,41 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: arc-github-app-spc
+  namespace: pep-dps-global-devsecops-dev
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "false"
+    clientID: 4c6f80d7-9879-4a62-894e-bff36dd579c0
+    keyvaultName: pe1001-eiap-infra-01-kv
+    tenantId: 42cc3295-cd0e-449c-b98e-5ce5b560c1d3
+    objects: |
+      array:
+        - |
+          objectName: dps-nonprod-arc-github-app-id
+          objectType: secret
+          objectAlias: github_app_id
+        - |
+          objectName: dps-nonprod-arc-github-app-installation-id
+          objectType: secret
+          objectAlias: github_app_installation_id
+        - |
+          objectName: dps-nonprod-arc-github-app-private-key
+          objectType: secret
+          objectAlias: github_app_private_key
+          # Stored base64-encoded because the Key Vault portal UI collapses the
+          # PEM's newlines into spaces on paste. The driver decodes before
+          # writing the mounted file, so the synced Secret holds a normal PEM.
+          objectEncoding: base64
+  secretObjects:
+  - secretName: arc-github-app
+    type: Opaque
+    data:
+    - key: github_app_id
+      objectName: github_app_id
+    - key: github_app_installation_id
+      objectName: github_app_installation_id
+    - key: github_app_private_key
+      objectName: github_app_private_key

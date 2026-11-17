@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    field.cattle.io/projectId: p-vpbql
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-pfna-flna-gtmgrotwo-dev
+    pep-cmdb-app-service-id: 2ccdc6bc1bfb5410e30e315f034bcb1f
+    pep-cmdb-bus-app-id: 23ee8cfddb3e8c10c2b5f381399619f9
+    pep-environment: Development
+    project: gtmgrotwo
+    sector: flna
+    servicename_aks: zoneforecastmodelprod
+    team: flna-gtmgrotwo
+  name: pep-pfna-flna-gtmgrotwo-dev

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-infratools-cgf-appdynamic-dev-sa
+  namespace: pep-infratools-cgf-appdynamic-dev

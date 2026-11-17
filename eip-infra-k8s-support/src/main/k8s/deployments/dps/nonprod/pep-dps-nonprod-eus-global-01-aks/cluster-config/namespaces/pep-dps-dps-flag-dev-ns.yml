@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-dps-dps-flag-dev
+  labels:
+    env-nonprod: "true"
+    project: flag
+    sector: dps
+    team: dps-flag
+    istio-injection: enabled
+    crosscharge_aks: direct
+    servicename_aks: fritolay-ag-website-dps
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    pep-cmdb-bus-app-id: 89579d9147185a548dc84ce4116d43f1
+    pep-cmdb-app-service-id: d281b11e-66c3-4a8d-a8dd-f1d6a3543dba
+    pep-environment: Development
+    

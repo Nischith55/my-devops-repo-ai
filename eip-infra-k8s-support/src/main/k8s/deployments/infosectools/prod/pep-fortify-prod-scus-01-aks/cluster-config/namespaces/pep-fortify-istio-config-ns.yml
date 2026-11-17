@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: disabled
+    kubernetes.io/metadata.name: pep-fortify-istio-config
+    servicename_aks: fortify
+  name: pep-fortify-istio-config

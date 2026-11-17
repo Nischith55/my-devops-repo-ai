@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-finaltest1-srikala-qa
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for pep-finaltest1-srikala-qa 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_DevOps/_git/pep-finaltest1-srikala-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-eiap-test-srikalari3qa-qa
+  - name: pep-eiap-nonprod-eus-sbox-03-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: pep-finaltest1-srikala-qa-admin
+    description: Admin privileges to pep-finaltest1-srikala-qa
+    policies:
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-admin, applications, *, appruntime-dev/*, allow
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-admin, repositories, *, appruntime-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-finaltest1-srikala-qa-user
+    description: Read-only privileges to pep-finaltest1-srikala-qa
+    policies:
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-user, applications, get, appruntime-dev/*, allow
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-user, applications, sync, appruntime-dev/*, allow
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-user, repositories, get, appruntime-dev/*, allow
+    - p, proj:pep-finaltest1-srikala-qa:pep-finaltest1-srikala-qa-user, *, delete, *, deny
+    groups:
+    - "Team.Support.EIAP.READ" ## modify the group here as per the user input
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: multiregiontrunk-july62026multimarketday2test-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for multiregiontrunk-july62026multimarketday2test-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/multiregiontrunk-july62026multimarketday2test-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm 
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-devx-test-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: multiregiontrunk-july62026multimarketday2test-preprod-admin
+    description: Admin privileges to multiregiontrunk-july62026multimarketday2test-preprod
+    policies:
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-admin, applications, *, multiregiontrunk-july62026multimarketday2test-preprod/*, allow
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-admin, repositories, *, multiregiontrunk-july62026multimarketday2test-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.CGF.NonProd.devops"
+
+  - name: multiregiontrunk-july62026multimarketday2test-preprod-user
+    description: Read-only privileges to multiregiontrunk-july62026multimarketday2test-preprod
+    policies:
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-user, applications, get, multiregiontrunk-july62026multimarketday2test-preprod/*, allow
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-user, applications, sync, multiregiontrunk-july62026multimarketday2test-preprod/*, allow
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-user, repositories, get, multiregiontrunk-july62026multimarketday2test-preprod/*, allow
+    - p, proj:multiregiontrunk-july62026multimarketday2test-preprod:multiregiontrunk-july62026multimarketday2test-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

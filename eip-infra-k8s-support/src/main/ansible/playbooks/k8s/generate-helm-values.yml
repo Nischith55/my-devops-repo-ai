@@ -1,0 +1,33 @@
+---
+- name: Generate helm values
+  hosts: localhost 
+  connection: local
+  collections:
+    - community.kubernetes
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+  tasks: 
+  - name: set variable
+    set_fact:
+      cluster_name: "{{ vars['cluster_name'] }}"
+      namespace: "{{ vars['namespace'] }}"
+      script_dir: "{{ lookup('env', 'script_dir') }}"
+      configmap_input: "{{ vars['configmap_input'] }}"
+
+  - name: get all deployments 
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Deployment
+      namespace: "{{ namespace }}"
+    register: deployments_list
+
+  - name: Generate Helm values 
+    include_role: 
+      name: k8s_support/generate-helm-values
+    with_items: "{{ deployments_list.resources }}"
+    loop_control: 
+      loop_var: outer_item
+    when: deployments_list.resources is defined and (deployments_list.resources | length > 0)

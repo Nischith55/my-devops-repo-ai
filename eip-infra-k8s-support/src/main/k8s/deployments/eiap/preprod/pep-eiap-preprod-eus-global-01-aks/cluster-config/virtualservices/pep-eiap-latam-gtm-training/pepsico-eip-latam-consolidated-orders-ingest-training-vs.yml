@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-eip-latam-consolidated-orders-ingest
+  name: pepsico-eip-latam-consolidated-orders-ingest-training-vs
+  namespace: pep-eiap-latam-gtm-training
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-training/pep-eiap-latam-gtm-training-cv-gw
+  hosts:
+  - pepsico-eip-latam-consolidated-orders-ingest-training.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/consolidatedOrders
+    route:
+    - destination:
+        host: pepsico-eip-latam-consolidated-orders-ingest.pep-eiap-latam-gtm-training.svc.cluster.local
+        port:
+          number: 80

@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 83279947-bc68-44d1-9bcc-1bcb74bc8ca7
+  name: pep-eiap-cgf-eugenie-qa-sa
+  namespace: pep-eiap-cgf-eugenie-qa

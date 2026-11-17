@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1  
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pep-eip-ict-bucketizedorderforecast-ob-ingest-hpa  # name of hpa object
+  namespace: pep-eiap-global-eip-preprod  # namespace where the hpa is created
+spec:
+  maxReplicas: 3 # define max replica count
+  minReplicas: 1  # define min replica count
+  scaleTargetRef:  # define the resource on which HPA should be applied
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pep-eip-ict-bucketizedorderforecast-ob-ingest   # hpa is applied on this deployment
+  targetCPUUtilizationPercentage: 80 # target CPU utilization

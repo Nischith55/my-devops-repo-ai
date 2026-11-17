@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-hnanhws-qa-cv-cdn-vs
+  namespace: pep-cmp-cmp-hnanhws-qa
+spec:
+  hosts:
+    - wcuwrzs.qa.mypepsico.com
+  gateways:
+  - "pep-cmp-cmp-hnanhws-qa/pep-cmp-cmp-hnanhws-qa-cv-gw"
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: "/"
+    route:
+    - destination:
+        host:  "pep-cmp-cmp-hnanhws-qa-cv-webdeploy.pep-cmp-cmp-hnanhws-qa.svc.cluster.local"
+        port:
+          number: 80

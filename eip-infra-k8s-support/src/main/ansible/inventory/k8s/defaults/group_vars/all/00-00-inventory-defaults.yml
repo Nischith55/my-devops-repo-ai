@@ -1,0 +1,8 @@
+---
+# ##
+# Global variables that encapsulates settings reflecting the organization of
+# this project.
+# ##
+
+env: "{{ env_ovrd }}"
+dept: "{{ dept_ovrd | default('eiap') }}"

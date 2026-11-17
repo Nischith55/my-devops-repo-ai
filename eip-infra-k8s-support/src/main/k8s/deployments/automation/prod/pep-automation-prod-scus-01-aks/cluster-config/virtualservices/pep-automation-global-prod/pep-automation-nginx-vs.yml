@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-automation-nginx-vs
+  namespace: pep-automation-global-prod
+spec:
+  gateways:
+  - pep-automation-global-prod/pep-automation-global-prod-cv-gw
+  hosts:
+  - pep-automation-nginx.automation.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-automation-nginx.pep-automation-global-prod.svc.cluster.local
+        port: 
+          number: 8080

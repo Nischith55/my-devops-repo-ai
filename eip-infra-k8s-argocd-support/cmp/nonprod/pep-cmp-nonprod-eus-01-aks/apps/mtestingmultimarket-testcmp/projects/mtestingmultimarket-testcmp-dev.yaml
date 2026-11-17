@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mtestingmultimarket-testcmp-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for mtestingmultimarket-testcmp-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/mtestingmultimarket-testcmp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: mtestingmultimarket-testcmp-dev-admin
+    description: Admin privileges to mtestingmultimarket-testcmp-dev
+    policies:
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-admin, applications, *, mtestingmultimarket-testcmp-dev/*, allow
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-admin, repositories, *, mtestingmultimarket-testcmp-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: mtestingmultimarket-testcmp-dev-user
+    description: Read-only privileges to mtestingmultimarket-testcmp-dev
+    policies:
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-user, applications, get, mtestingmultimarket-testcmp-dev/*, allow
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-user, applications, sync, mtestingmultimarket-testcmp-dev/*, allow
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-user, repositories, get, mtestingmultimarket-testcmp-dev/*, allow
+    - p, proj:mtestingmultimarket-testcmp-dev:mtestingmultimarket-testcmp-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

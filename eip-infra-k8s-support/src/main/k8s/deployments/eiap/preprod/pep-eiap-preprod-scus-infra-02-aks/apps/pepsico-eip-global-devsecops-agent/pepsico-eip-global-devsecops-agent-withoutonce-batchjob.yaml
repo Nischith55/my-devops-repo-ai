@@ -1,0 +1,59 @@
+#######################################################################################################
+#        KUBERNETES JOB TEMPLATE that creates batch Job which registers Azure devops agent 
+#        and shut downs the pod once the Job is completed
+#######################################################################################################
+
+# Placeholders enclosed inside double braces {{PLACEHOLDERS}} - Replace this with actual values during implementation
+
+# Job Resource
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dummy
+  namespace: pep-eiap-global-devsecops-preprod     # Kubernetes Namespace in which the deployment will be perfomed. Example: pep-eip-latam-akv-dev-ns
+spec:
+  completions: 1  # Number of fixed completion count
+  parallelism: 1  # Number of Parallel Jobs
+  template:
+    metadata:
+      annotations:
+        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    spec:
+      imagePullSecrets:
+      - name: pep-eiap-svc-global-devsecops-sp-regcred # Secret name created earlier
+      containers:
+      - name: pepsico-eip-global-devsecops-agent
+        image: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20230315.16           # Image Name including the absolute path of the Azure Container Registry
+        imagePullPolicy: IfNotPresent
+        resources:               # Resource limits for the pod
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "16Gi"
+            cpu: "8000m"
+        envFrom:
+        - secretRef:
+            name: pep-eiap-svc-global-devsecops-azdevops
+        volumeMounts:
+        - mountPath: "/mnt/azure"
+          name: volume
+      serviceAccountName: pep-eiap-buildagent
+      nodeSelector:        # Agent pool restriction
+        balance-group: BuildAgentPools
+      tolerations:
+      - key: "BuildAgentPool"
+        operator: "Exists"
+        effect: "NoSchedule"
+      restartPolicy: "OnFailure"
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops
+      - name: acr-secret
+        secret:
+          secretName: pep-eiap-svc-global-devsecops-acr-creds
+          items:
+          - key: .dockerconfigjson
+            path: config.json

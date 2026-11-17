@@ -1,0 +1,41 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sHorizontalPodAutoscaler",
+  "metadata": {
+    "annotations": {
+      "meta.helm.sh/release-name": "opa-phase2-policies-eiap-nonprod-src-main-k8s-o-21527",
+      "meta.helm.sh/release-namespace": "default",
+      "objectset.rio.cattle.io/id": "default-opa-phase2-policies-eiap-nonprod-src-main-k8s-o-21527"
+    },
+    "labels": {
+      "app.kubernetes.io/managed-by": "Helm",
+      "objectset.rio.cattle.io/hash": "c6ed5601351526833025f87dd27bf66e4640af8d"
+    },
+    "name": "horizontal-pod-autoscaler"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "kinds": [
+        {
+          "apiGroups": [
+            "autoscaling"
+          ],
+          "kinds": [
+            "HorizontalPodAutoscaler"
+          ]
+        }
+      ]
+    },
+    "parameters": {
+      "enforceScaleTargetRef": true,
+      "minimumReplicaSpread": 1,
+      "ranges": [
+        {
+          "max_replicas": 6,
+          "min_replicas": 3
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  name: download_config
+  inputs:
+    secureFile: 'config'
+
+# - task: Bash@3
+#   displayName: 'Copy config file'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       echo $HOME
+#       mkdir $HOME/.kube
+#       ls -ltr $(config.secureFilePath)
+#       cp $(config.secureFilePath) $HOME/.kube/config
+#       ls -ltr $HOME/.kube/
+# - task: Bash@3
+#   displayName: 'create .kube directory'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       mkdir $HOME/.kube
+
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: config
+    TargetFolder: '$(HOME)/.kube'
+
+
+# - task: Ansible@0
+#   displayName: "kubeconfig file creation"
+#   name: "kubeconfigcreation"
+#   inputs:
+#     ansibleInterface: 'agentMachine'
+#     playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/kubeconfig-file-creation.yml'
+#     args: '-e ''{ "cluster": "${{ parameters.cluster }}", "namespace": "${{ parameters.namespace }}", "HOME": "$(HOME)" }'' -vv'
+#     #args: '-e ''{ "cluster": "${{ parameters.cluster }}"}'' -vv'
+#   env:
+#     ANSIBLE_HOST_KEY_CHECKING: False
+#     ANSIBLE_LOCALHOST_WARNING: False
+
+- task: Bash@3
+  displayName: "kubeconfig file creation"
+  inputs:
+    targetType: 'inline'
+    script: |
+      ansible-playbook -e '{"cluster": "${{ parameters.cluster }}", "namespace": "${{ parameters.namespace }}", "HOME": "$(HOME)" }' "$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/kubeconfig-file-creation.yml" -v
+  env:
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_LOCALHOST_WARNING: False
+
+
+- task: Bash@3
+  name: "encode"
+  displayName: 'convertb64'
+  inputs:
+    targetType: 'inline'
+    script: |
+      file_content=`base64 /tmp/${{ parameters.cluster }}-user-ip.kcfg -w 0`
+      echo $file_content
+      echo "##vso[task.setvariable variable=outputresult;isoutput=true]$file_content"

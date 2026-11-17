@@ -1,0 +1,28 @@
+---
+# Generated -- please do not edit manually
+# Ansible managed: modified on 2021-03-24 22:12:39
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: default
+  annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+
+# a) need for dynamic provision
+provisioner: disk.csi.azure.com
+
+reclaimPolicy: Delete
+
+volumeBindingMode: WaitForFirstConsumer
+
+allowVolumeExpansion: True
+
+
+# c) need for dynamic provision
+parameters:
+  cachingmode: ReadOnly
+  kind: Managed
+  resourceGroup: pep-eiap-preprod-eus-k8s-01-rg
+  skuname: Standard_LRS
+  zoned: 'true'
+

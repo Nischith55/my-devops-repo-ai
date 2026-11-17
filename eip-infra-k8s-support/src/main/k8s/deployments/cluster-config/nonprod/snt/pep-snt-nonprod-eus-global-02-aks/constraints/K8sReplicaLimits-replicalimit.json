@@ -1,0 +1,38 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sReplicaLimits",
+  "metadata": {
+    "name": "replicalimit"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [],
+      "kinds": [
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "kinds": [
+            "Deployment"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "ranges": [
+        {
+          "max_replicas": 10,
+          "min_replicas": 0
+        }
+      ]
+    }
+  }
+}

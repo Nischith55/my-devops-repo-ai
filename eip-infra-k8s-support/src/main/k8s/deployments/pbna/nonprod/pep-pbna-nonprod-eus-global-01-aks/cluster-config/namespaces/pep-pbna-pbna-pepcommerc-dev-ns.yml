@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-pbna-pbna-pepcommerc-dev
+    project: pepcommerc
+    sector: pbna
+    servicename_aks: pepcommerceochglobalna
+    team: pbna-pepcommerc
+  name: pep-pbna-pbna-pepcommerc-dev

@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":"2021-05-25T18:13:37Z","labels":{"app":"istiod","install.operator.istio.io/owning-resource":"control-plane-main","install.operator.istio.io/owning-resource-namespace":"istio-system","istio":"pilot","istio.io/rev":"default","operator.istio.io/component":"Pilot","operator.istio.io/managed":"Reconcile","operator.istio.io/version":"1.7.4","release":"istio"},"managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app":{},"f:install.operator.istio.io/owning-resource":{},"f:install.operator.istio.io/owning-resource-namespace":{},"f:istio":{},"f:istio.io/rev":{},"f:operator.istio.io/component":{},"f:operator.istio.io/managed":{},"f:operator.istio.io/version":{},"f:release":{}}},"f:spec":{"f:ports":{".":{},"k:{\"port\":15010,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}},"k:{\"port\":15012,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}},"k:{\"port\":15014,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}},"k:{\"port\":443,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}},"k:{\"port\":853,\"protocol\":\"TCP\"}":{".":{},"f:name":{},"f:port":{},"f:protocol":{},"f:targetPort":{}}},"f:selector":{".":{},"f:app":{},"f:istio":{}},"f:sessionAffinity":{},"f:type":{}}},"manager":"operator","operation":"Update","time":"2021-05-25T18:13:37Z"}],"name":"istiod","namespace":"istio-system","resourceVersion":"13640584","uid":"af59451c-0dae-4d25-94b3-bd6331ce74f0"},"spec":{"clusterIP":"10.46.156.173","clusterIPs":["10.46.156.173"],"ports":[{"name":"grpc-xds","port":15010,"protocol":"TCP","targetPort":15010},{"name":"https-dns","port":15012,"protocol":"TCP","targetPort":15012},{"name":"https-webhook","port":443,"protocol":"TCP","targetPort":15017},{"name":"http-monitoring","port":15014,"protocol":"TCP","targetPort":15014},{"name":"dns-tls","port":853,"protocol":"TCP","targetPort":15053}],"selector":{"app":"istiod","istio.io/rev":"1-8-6"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}
+  creationTimestamp: "2021-05-25T18:13:37Z"
+  labels:
+    app: istiod
+    install.operator.istio.io/owning-resource: control-plane-main
+    install.operator.istio.io/owning-resource-namespace: istio-system
+    istio: pilot
+    istio.io/rev: default
+    operator.istio.io/component: Pilot
+    operator.istio.io/managed: Reconcile
+    operator.istio.io/version: 1.7.4
+    release: istio
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations: {}
+        f:labels:
+          .: {}
+          f:app: {}
+          f:install.operator.istio.io/owning-resource: {}
+          f:install.operator.istio.io/owning-resource-namespace: {}
+          f:istio: {}
+          f:istio.io/rev: {}
+          f:operator.istio.io/component: {}
+          f:operator.istio.io/managed: {}
+          f:operator.istio.io/version: {}
+          f:release: {}
+      f:spec:
+        f:ports:
+          .: {}
+          k:{"port":443,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+          k:{"port":853,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+          k:{"port":15010,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+          k:{"port":15012,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+          k:{"port":15014,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: operator
+    operation: Update
+    time: "2021-05-25T18:13:37Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+      f:spec:
+        f:selector:
+          f:istio.io/rev: {}
+    manager: kubectl-client-side-apply
+    operation: Update
+    time: "2022-01-22T02:59:04Z"
+  name: istiod
+  namespace: istio-system
+  resourceVersion: "93836603"
+  uid: af59451c-0dae-4d25-94b3-bd6331ce74f0
+spec:
+  clusterIP: 10.46.156.173
+  clusterIPs:
+  - 10.46.156.173
+  ports:
+  - name: grpc-xds
+    port: 15010
+    protocol: TCP
+    targetPort: 15010
+  - name: https-dns
+    port: 15012
+    protocol: TCP
+    targetPort: 15012
+  - name: https-webhook
+    port: 443
+    protocol: TCP
+    targetPort: 15017
+  - name: http-monitoring
+    port: 15014
+    protocol: TCP
+    targetPort: 15014
+  - name: dns-tls
+    port: 853
+    protocol: TCP
+    targetPort: 15053
+  selector:
+    app: istiod
+    istio.io/rev: 1-10-3
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

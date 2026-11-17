@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pep-eiap-pfna-vctpyservices-vs
+  namespace: pep-eiap-pfna-vct-preprod
+spec:
+  gateways:
+  - pep-eiap-pfna-vct-preprod/pep-eiap-pfna-vct-preprod-cv-gw
+  hosts:
+  - vctpyservices.global.gw01.aks01.eus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: vctpyservices.pep-eiap-pfna-vct-preprod.svc.cluster.local
+        port:
+          number: 80

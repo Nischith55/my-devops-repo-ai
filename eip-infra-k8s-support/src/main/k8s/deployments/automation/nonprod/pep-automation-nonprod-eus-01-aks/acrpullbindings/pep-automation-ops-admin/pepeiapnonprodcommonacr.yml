@@ -1,0 +1,9 @@
+---
+apiVersion: msi-acrpull.microsoft.com/v1beta1
+kind: AcrPullBinding
+metadata:
+  name: pepeiapnonprodcommonacr
+  namespace: pep-automation-ops-admin
+spec:
+  acrServer: pepeiapnonprodcommonacr.azurecr.io
+  managedIdentityResourceID: /subscriptions/34030b4b-d34e-4290-bd1b-a6945f95d9aa/resourceGroups/pep-automation-nonprod-eus-01-aks-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/pep-automation-nonprod-eus-01-aks-agentpool

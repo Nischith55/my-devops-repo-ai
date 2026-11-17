@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: 0ded8c2ac3b98e1014d2981f050131be
+    pep-cmdb-bus-app-id: 618c890597d295182db4f9f11153afbd
+    pep-environment: Development
+    project: pepconnind
+    sector: europe
+    servicename_aks: pepsiconnectb2bportalnon-prod
+    team: europe-pepconnind
+  name: pep-dps-europe-pepconnind-dev

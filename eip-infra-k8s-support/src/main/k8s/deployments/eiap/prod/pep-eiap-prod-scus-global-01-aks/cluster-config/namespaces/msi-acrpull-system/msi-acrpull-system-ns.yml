@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: msi-acrpull-system
+  labels:
+    istio-injection: disabled
+    team: eiap-admins

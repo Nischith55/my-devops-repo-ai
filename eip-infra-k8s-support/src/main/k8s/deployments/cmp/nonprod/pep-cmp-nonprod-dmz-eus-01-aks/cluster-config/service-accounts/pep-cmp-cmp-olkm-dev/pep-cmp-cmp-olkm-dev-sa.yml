@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 6edfda84-fca3-4d12-b5a3-5dbc20003d87
+  name: pep-cmp-cmp-olkm-dev-sa
+  namespace: pep-cmp-cmp-olkm-dev

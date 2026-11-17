@@ -1,0 +1,27 @@
+#jinja2: lstrip_blocks: "True"
+{#
+  Template to create istio Gateway Object
+    params_tmpl:
+      name:
+      namespace:
+      k8s:
+        spec:
+          selector:
+          servers:
+  IMPORTANT:
+    ansible_managed will FORCE regeneration Every Time
+    {{ ansible_managed }}
+#}
+{% set _p = params_tmpl %}
+{% set _pk8s = _p['k8s'] %}
+{% set _pk8s_s = _pk8s['spec'] %}
+---
+# Generated -- please do not edit manually
+# {{ ansible_managed }}
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ _p['name'] }}
+  namespace: {{ _p['namespace'] }}
+spec:
+  {{ _pk8s_s | to_nice_yaml(indent=2) | trim | indent(2) }}

@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: {}
+  name: pep-snt-cgf-fmcs-prod-sa
+  namespace: pep-snt-cgf-fmcs-prod

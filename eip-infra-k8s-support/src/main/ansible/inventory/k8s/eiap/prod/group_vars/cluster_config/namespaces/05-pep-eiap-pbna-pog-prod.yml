@@ -1,0 +1,37 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PBNA POG
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_pbna_pog_prod:
+  
+  name: pep-eiap-pbna-pog-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-pog
+    sector: pbna
+    project: pog
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_pog'] }}"
+
+  # service accounts for this namespace
+  service_accounts:
+
+    # no specific role as of now
+    - name: pep-eiap-pbna-pog-prod-sa

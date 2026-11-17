@@ -1,0 +1,279 @@
+admissionEventsInvolvedNamespace: false
+audit:
+  affinity: {}
+  disableCertRotation: true
+  dnsPolicy: ClusterFirst
+  extraRules: []
+  healthPort: 9090
+  hostNetwork: false
+  livenessTimeout: 1
+  metricsPort: 8888
+  nodeSelector: {}
+  podSecurityContext:
+    fsGroup: 999
+    supplementalGroups:
+      - 999
+  priorityClassName: system-cluster-critical
+  readinessTimeout: 1
+  resources:
+    limits:
+      memory: 4Gi
+      cpu: 4
+    requests:
+      cpu: 100m
+      memory: 512Mi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 999
+    runAsNonRoot: true
+    runAsUser: 1000
+  tolerations: []
+  writeToRAMDisk: false
+auditChunkSize: 500
+auditEventsInvolvedNamespace: false
+auditFromCache: true
+auditInterval: 3600
+auditMatchKindOnly: false
+constraintViolationsLimit: 10000
+controllerManager:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: gatekeeper.sh/operation
+                  operator: In
+                  values:
+                    - webhook
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+  clientCertName: ''
+  disableCertRotation: false
+  dnsPolicy: ClusterFirst
+  exemptNamespacePrefixes: []
+  exemptNamespaces: []
+  extraRules: []
+  healthPort: 9090
+  hostNetwork: false
+  livenessTimeout: 1
+  metricsPort: 8888
+  networkPolicy:
+    enabled: false
+    ingress: {}
+  nodeSelector: {}
+  podSecurityContext:
+    fsGroup: 999
+    supplementalGroups:
+      - 999
+  port: 8443
+  priorityClassName: system-cluster-critical
+  readinessTimeout: 1
+  resources:
+    limits:
+      memory: 4Gi
+      cpu: 4
+    requests:
+      cpu: 100m
+      memory: 512Mi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 999
+    runAsNonRoot: true
+    runAsUser: 1000
+  tlsMinVersion: 1.3
+  tolerations: []
+  topologySpreadConstraints: []
+crds:
+  affinity: {}
+  nodeSelector:
+    kubernetes.io/os: linux
+  resources: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+  tolerations: []
+disableMutation: false
+disableValidatingWebhook: false
+disabledBuiltins:
+  - '{http.send}'
+emitAdmissionEvents: false
+emitAuditEvents: false
+enableDeleteOperations: false
+enableExternalData: true
+enableGeneratorResourceExpansion: false
+enableRuntimeDefaultSeccompProfile: true
+enableTLSHealthcheck: false
+externalCertInjection:
+  enabled: false
+  secretName: gatekeeper-webhook-server-cert
+global:
+  cattle:
+    psp:
+      enabled: false
+    clusterId: c-4g4mm
+    systemProjectId: p-jwtvp
+    url: https://rancher.eus.prod.azure.intra.pepsico.com
+  kubectl:
+    repository: rancher/kubectl
+    tag: v1.20.2
+images:
+  gatekeeper:
+    repository: rancher/mirrored-openpolicyagent-gatekeeper
+    tag: v3.12.0
+  gatekeepercrd:
+    repository: rancher/mirrored-openpolicyagent-gatekeeper-crds
+    tag: v3.12.0
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+logDenies: false
+logLevel: INFO
+logMutations: false
+maxServingThreads: -1
+metricsBackends:
+  - prometheus
+mutatingWebhookAnnotations: {}
+mutatingWebhookCustomRules: {}
+mutatingWebhookExemptNamespacesLabels: {}
+mutatingWebhookFailurePolicy: Ignore
+mutatingWebhookName: gatekeeper-mutating-webhook-configuration
+mutatingWebhookObjectSelector: {}
+mutatingWebhookReinvocationPolicy: Never
+mutatingWebhookTimeoutSeconds: 5
+mutationAnnotations: false
+pdb:
+  controllerManager:
+    minAvailable: 1
+podAnnotations: {}
+podCountLimit: '100'
+podLabels: {}
+postInstall:
+  affinity: {}
+  labelNamespace:
+    enabled: true
+    extraAnnotations: {}
+    extraNamespaces: []
+    extraRules: []
+    image:
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+      repository: rancher/mirrored-openpolicyagent-gatekeeper-crds
+      tag: v3.12.0
+    podSecurity:
+      - pod-security.kubernetes.io/audit=restricted
+      - pod-security.kubernetes.io/audit-version=latest
+      - pod-security.kubernetes.io/warn=restricted
+      - pod-security.kubernetes.io/warn-version=latest
+      - pod-security.kubernetes.io/enforce=restricted
+      - pod-security.kubernetes.io/enforce-version=v1.24
+  nodeSelector:
+    kubernetes.io/os: linux
+  probeWebhook:
+    enabled: true
+    httpTimeout: 2
+    image:
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+      repository: rancher/mirrored-curlimages-curl
+      tag: 7.83.1
+    insecureHTTPS: false
+    waitTimeout: 60
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 999
+    runAsNonRoot: true
+    runAsUser: 1000
+  tolerations: []
+postUpgrade:
+  affinity: {}
+  labelNamespace:
+    enabled: false
+    extraAnnotations: {}
+    extraNamespaces: []
+    image:
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+      repository: rancher/kubectl
+      tag: v1.20.2
+    podSecurity:
+      - pod-security.kubernetes.io/audit=restricted
+      - pod-security.kubernetes.io/audit-version=latest
+      - pod-security.kubernetes.io/warn=restricted
+      - pod-security.kubernetes.io/warn-version=latest
+      - pod-security.kubernetes.io/enforce=restricted
+      - pod-security.kubernetes.io/enforce-version=v1.24
+  nodeSelector:
+    kubernetes.io/os: linux
+  resources: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 999
+    runAsNonRoot: true
+    runAsUser: 1000
+  tolerations: []
+preInstall:
+  crdRepository:
+    image:
+      repository: null
+      tag: v3.12.0
+preUninstall:
+  affinity: {}
+  deleteWebhookConfigurations:
+    enabled: false
+    extraRules: []
+    image:
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+      repository: rancher/mirrored-openpolicyagent-gatekeeper-crds
+      tag: v3.12.0
+  nodeSelector: {}
+  resources: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 999
+    runAsNonRoot: true
+    runAsUser: 1000
+  tolerations: []
+rbac:
+  create: true
+replicas: 3
+resourceQuota: true
+secretAnnotations: {}
+service: {}
+upgradeCRDs:
+  enabled: true
+  extraRules: []
+validatingWebhookAnnotations: {}
+validatingWebhookCheckIgnoreFailurePolicy: Ignore
+validatingWebhookCustomRules: {}
+validatingWebhookExemptNamespacesLabels: {}
+validatingWebhookFailurePolicy: Ignore
+validatingWebhookName: gatekeeper-validating-webhook-configuration
+validatingWebhookObjectSelector: {}
+validatingWebhookTimeoutSeconds: 5

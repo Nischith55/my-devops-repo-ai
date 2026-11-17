@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    pep-cmdb-app-service-id: ef27acf4878e9e505ac531573cbb35f8
+    pep-cmdb-bus-app-id: ba4502cc97b52d504bb8326e6253af48
+    pep-environment: QA
+    project: schwmit
+    sector: flna
+    servicename_aks: scwarehouseintegratornon-prod
+    team: flna-schwmit
+  name: pep-pfna-flna-schwmit-qa

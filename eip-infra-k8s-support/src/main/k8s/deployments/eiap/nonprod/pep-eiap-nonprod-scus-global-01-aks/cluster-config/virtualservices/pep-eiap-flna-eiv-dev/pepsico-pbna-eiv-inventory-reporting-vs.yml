@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pepsico-pbna-eiv-inventory-reporting
+  name: pepsico-pbna-eiv-inventory-reporting-vs
+  namespace: pep-eiap-flna-eiv-dev
+spec:
+  gateways:
+  - pep-eiap-flna-eiv-dev/pep-eiap-flna-eiv-dev-cv-gw
+  hosts:
+  - pbna-eiv-inventory-reporting.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /pbna/eiv/v1
+    route:
+    - destination:
+        host: pepsico-pbna-eiv-inventory-reporting.pep-eiap-flna-eiv-dev.svc.cluster.local
+        port:
+          number: 80

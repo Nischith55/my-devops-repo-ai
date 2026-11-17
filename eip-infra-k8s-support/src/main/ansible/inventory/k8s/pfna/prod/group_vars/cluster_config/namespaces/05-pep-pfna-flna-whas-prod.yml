@@ -1,0 +1,37 @@
+---
+ns_pep_pfna_flna_whas_prod:
+  
+  name: pep-pfna-flna-whas-prod
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: flna-whas
+    sector: flna
+    project: whas
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: ics-inventorycontrolsystemprod
+    istio.io/rev: prod-stable
+    environment: prod
+    env-prod: "true"
+
+  service_accounts:
+    - name: pep-pfna-flna-whas-prod-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pfna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pfna-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['flna_whas'] }}"
+      roleref:
+         "{{ k8s_role_ref['appsupprt_rb'] }}"
+  secrets: 
+    name: pep-pfna-flna-whas-prod-sa-token
+    namespace: pep-pfna-flna-whas-prod
+    annotations:
+      kubernetes.io/service-account.name : "pep-pfna-flna-whas-prod-sa"

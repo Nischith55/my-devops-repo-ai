@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dsd-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for dsd-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/dsd-argocd-configs
+  - pepdpsnonprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-cgf-dsd-dev
+  - name: pep-dps-nonprod-eus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: dsd-dev-admin
+    description: Admin privileges to dsd-dev
+    policies:
+    - p, proj:dsd-dev:dsd-dev-admin, applications, *, dsd-dev/*, allow
+    - p, proj:dsd-dev:dsd-dev-admin, applications, get, argocd/*, allow
+    - p, proj:dsd-dev:dsd-dev-admin, repositories, *, dsd-dev/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: dsd-dev-user
+    description: Read-only privileges to dsd-dev
+    policies:
+    - p, proj:dsd-dev:dsd-dev-user, applications, get, dsd-dev/*, allow
+    - p, proj:dsd-dev:dsd-dev-user, applications, sync, dsd-dev/*, allow
+    - p, proj:dsd-dev:dsd-dev-user, repositories, get, dsd-dev/*, allow
+    - p, proj:dsd-dev:dsd-dev-user, applications, action/apps/Deployment/restart, dsd-dev/*, allow
+    groups:
+    - "Team.App.DPS.DSD.nonprod.admin"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

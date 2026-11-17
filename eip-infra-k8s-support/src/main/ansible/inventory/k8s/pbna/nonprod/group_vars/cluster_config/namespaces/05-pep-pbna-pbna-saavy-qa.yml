@@ -1,0 +1,37 @@
+---
+ns_pep_pbna_pbna_saavy_qa:
+  
+  name: pep-pbna-pbna-saavy-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-saavy
+    sector: pbna
+    project: saavy
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: savvypbnanonprod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-pbna-pbna-saavy-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-pbna-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-pbna-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_saavy'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-pbna-pbna-saavy-qa-sa-token
+    namespace: pep-pbna-pbna-saavy-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-pbna-pbna-saavy-qa-sa"

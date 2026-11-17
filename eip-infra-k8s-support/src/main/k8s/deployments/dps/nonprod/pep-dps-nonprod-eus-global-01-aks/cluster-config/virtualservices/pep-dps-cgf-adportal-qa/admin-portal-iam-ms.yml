@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: admin-portal-iam-ms
+    app.kubernetes.io/instance: admin-portal-iam-ms-qa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: 1.16.3
+    helm.sh/chart: platform-chart-0.1.2
+  name: admin-portal-iam-ms
+  namespace: pep-dps-cgf-adportal-qa
+spec:
+  gateways:
+  - pep-dps-cgf-adportal-qa/pep-dps-cgf-adportal-qa-cv-gw
+  hosts:
+  - admin-portal-iam-ms-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: admin-portal-iam-ms.pep-dps-cgf-adportal-qa.svc.cluster.local
+        port:
+          number: 8080

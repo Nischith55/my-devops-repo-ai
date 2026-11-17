@@ -1,0 +1,17 @@
+---
+# ##
+# IMPORTANT:
+#   - do NOT add service accounts to the 'subjects' list
+#   - it is automatically handled -- see the 20-cluster-role-bindings.yml
+# ##
+
+pep-eiap-devsecops-cd-crb:
+  name: pep-eiap-devsecops-cd-crb
+  kind: ClusterRoleBinding
+  role: pep-eiap-devsecops-cd-clusterrole
+  role_kind: ClusterRole
+  
+  subjects:
+
+    ## Add reference for PROD DevSecOps service principal
+    - "{{ k8s_sup_subjects['prod_devsecops_spn'] }}"

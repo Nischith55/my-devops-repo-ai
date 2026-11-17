@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: pepsico-cgf-devx-cloud-governance-ui-qa:networking.istio.io/VirtualService:pep-eiap-cgf-devx-qa/pepsico-cgf-devx-cloud-governance-ui
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"pepsico-cgf-devx-cloud-governance-ui-qa:networking.istio.io/VirtualService:pep-eiap-cgf-devx-qa/pepsico-cgf-devx-cloud-governance-ui"},"labels":{"app":"pepsico-cgf-devx-cloud-governance-ui","app.kubernetes.io/instance":"pepsico-cgf-devx-cloud-governance-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","environment":"qa","helm.sh/chart":"platform-chart-1.2.0"},"name":"pepsico-cgf-devx-cloud-governance-ui","namespace":"pep-eiap-cgf-devx-qa"},"spec":{"gateways":["pep-eiap-cgf-devx-qa/pep-eiap-cgf-devx-qa-cv-gw"],"hosts":["pepsico-cgf-devx-cloud-governance-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pepsico-cgf-devx-cloud-governance-ui.pep-eiap-cgf-devx-qa.svc.cluster.local","port":{"number":80}}}]}]}}
+
+'
+    labels:
+        app: pepsico-cgf-devx-cloud-governance-ui
+        app.kubernetes.io/instance: pepsico-cgf-devx-cloud-governance-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        environment: qa
+        helm.sh/chart: platform-chart-1.2.0
+    name: pepsico-cgf-devx-cloud-governance-ui
+    namespace: pep-eiap-cgf-devx-qa
+spec:
+    gateways:
+    - pep-eiap-cgf-devx-qa/pep-eiap-cgf-devx-qa-cv-gw
+    hosts:
+    - pepsico-cgf-devx-cloud-governance-ui-qa.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pepsico-cgf-devx-cloud-governance-ui.pep-eiap-cgf-devx-qa.svc.cluster.local
+                port:
+                    number: 80

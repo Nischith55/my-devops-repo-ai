@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-cmp-certad13-dev-cv-web-vs
+  namespace: pep-cmp-cmp-certad13-dev
+  labels:
+    app: pep-cmp-cmp-certad13-dev-cv-web
+spec:
+  hosts:
+    - fdvhje9.dev.mypepsico.com
+    - pep-cmp-cmp-certad13-dev-cv.cmp.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-cmp-certad13-dev/pep-cmp-cmp-certad13-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-cmp-cmp-certad13-dev-cv-web.pep-cmp-cmp-certad13-dev.svc.cluster.local
+        port:
+          number: 80

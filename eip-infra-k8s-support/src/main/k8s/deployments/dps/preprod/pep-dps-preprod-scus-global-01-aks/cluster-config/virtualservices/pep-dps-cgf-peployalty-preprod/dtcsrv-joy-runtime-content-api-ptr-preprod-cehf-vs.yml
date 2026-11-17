@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-runtime-content-api-ptr-preprod-cehf-vs
+  namespace: pep-dps-cgf-peployalty-preprod
+  labels:
+      app: dtcsrv-joy-runtime-content-api-ptr-preprod
+spec:
+  hosts:
+  - pep-joy-dtcruntimecontentapiptr-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-cgf-peployalty-preprod/pep-dps-cgf-peployalty-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-runtime-content-api-ptr-preprod.pep-dps-cgf-peployalty-preprod.svc.cluster.local
+        port:
+          number: 80
+  

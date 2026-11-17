@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-cgf-scaop-dev
+    pep-cmdb-app-service-id: 617fc90d83756d14ef899630ceaad353
+    pep-cmdb-bus-app-id: ed7f890d83756d14ef899630ceaad3db
+    pep-environment: Development
+    project: scaop
+    sector: cgf
+    servicename_aks: supplychainautomationservicesfororderprocessing
+    team: cgf-scaop
+  name: pep-eiap-cgf-scaop-dev

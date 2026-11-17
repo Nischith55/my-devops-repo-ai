@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    business-group: CTO
+    cluster-name: pep-apigee-preprod-sea-01-aks
+    costcenter: PR00002831
+    crosscharge_aks: direct
+    environment: preprod
+    hcode: H009288
+    istio-injection: disabled
+    kubernetes.io/metadata.name: apigee
+    namespace: apigee
+    pep-cmdb-app-service: APIGEE-API-GATEWAY-SEA-PREPROD
+    program: API-Marketplace
+    region: SEA
+    servicename_aks: apigee
+  name: apigee

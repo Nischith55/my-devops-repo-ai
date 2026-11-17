@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pepsico-pgt-och-hhnx-route-location-list-ingest-vs
+  namespace: pep-eiap-flna-pgt-dev
+spec:
+  gateways:
+  - pep-eiap-flna-pgt-dev/pep-eiap-flna-pgt-dev-cv-gw
+  hosts:
+  - pepsico-pgt-och-hhnx-route-location-list-ingest.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: pepsico-pgt-och-hhnx-route-location-list-ingest.pep-eiap-flna-pgt-dev.svc.cluster.local

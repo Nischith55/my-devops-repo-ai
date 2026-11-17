@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mtesting9009-testtemp-mtesting9009-testtemp-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for mtesting9009-testtemp-mtesting9009-testtemp-preprod 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/mtesting9009-testtemp-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: eiap-ops-admin
+  roles:
+  - name: mtesting9009-testtemp-mtesting9009-testtemp-preprod-admin
+    description: Admin privileges to mtesting9009-testtemp-mtesting9009-testtemp-preprod
+    policies:
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-admin, applications, *, mtesting9009-testtemp-mtesting9009-testtemp-preprod/*, allow
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-admin, repositories, *, mtesting9009-testtemp-mtesting9009-testtemp-preprod/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: mtesting9009-testtemp-mtesting9009-testtemp-preprod-user
+    description: Read-only privileges to mtesting9009-testtemp-mtesting9009-testtemp-preprod
+    policies:
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-user, applications, get, mtesting9009-testtemp-mtesting9009-testtemp-preprod/*, allow
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-user, applications, sync, mtesting9009-testtemp-mtesting9009-testtemp-preprod/*, allow
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-user, repositories, get, mtesting9009-testtemp-mtesting9009-testtemp-preprod/*, allow
+    - p, proj:mtesting9009-testtemp-mtesting9009-testtemp-preprod:mtesting9009-testtemp-mtesting9009-testtemp-preprod-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

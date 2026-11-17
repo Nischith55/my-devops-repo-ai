@@ -1,0 +1,13 @@
+
+global:
+  spec:
+    destination:
+      clusterName: pep-eiap-nonprod-eus-global-02-aks
+
+argoCDApplications:
+  nginx-pep-eiap-nonprod-eus-global-02-aks:  
+    enabled: true
+    autoSync: true
+    helm: false    
+    recursive: false
+    path: src/main/k8s/deployments/apps/nonprod/eiap/pep-eiap-nonprod-eus-global-02-aks/pep-eiap-global-dev_NGINX

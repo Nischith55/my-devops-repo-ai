@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-pbna-mahtesting-dev-cv-web-vs
+  namespace: pep-eiap-pbna-mahtesting-dev
+  labels:
+    app: pep-eiap-pbna-mahtesting-dev-cv-web
+spec:
+  hosts:
+    - app54.dev.mypepsico.com
+    - pep-eiap-pbna-mahtesting-dev-cv.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-mahtesting-dev/pep-eiap-pbna-mahtesting-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-pbna-mahtesting-dev-cv-web.pep-eiap-pbna-mahtesting-dev.svc.cluster.local
+        port:
+          number: 80

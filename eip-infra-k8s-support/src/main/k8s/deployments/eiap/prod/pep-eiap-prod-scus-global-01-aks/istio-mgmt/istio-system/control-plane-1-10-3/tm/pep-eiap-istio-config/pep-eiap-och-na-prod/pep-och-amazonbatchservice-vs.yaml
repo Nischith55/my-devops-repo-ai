@@ -1,0 +1,44 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-och-amazonbatchservice-vs
+  namespace: pep-eiap-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-och-amazonbatchservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/job
+    route:
+    - destination:
+        host: pep-och-amazonbatchservice.pep-eiap-och-na-prod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://pep-och-amazonflnamop-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact:  https://pep-och-ui.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+      - exact: https://pepcommerce-ordermanagement.na.pepsico.com
+
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - PATCH
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - vendorCode
+      - purchaseOrder
+      - content-type
+      exposeHeaders:
+      - x-total-count
+      - x-source

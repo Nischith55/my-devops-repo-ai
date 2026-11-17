@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-eiap-cgf-btb-app-ui-vs","namespace":"pep-eiap-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["btbstg.global.gw01.aks01.scus.prod.azure.intra.pepsico.com","sodastreamprofessional.pepsico.com"],"http":[{"corsPolicy":{"allowCredentials":true,"allowHeaders":["Authorization","Content-Type","Access-Control-Allow-Origin","Timeout","x-functions-key","Access-Control-Allow-Headers"],"allowMethods":["GET","PUT","POST","DELETE","OPTIONS"],"allowOrigins":[{"exact":"https://api-na.mypepsico.com"},{"exact":"https://sodastreamprofessional.pepsico.com"}],"exposeHeaders":["x-total-count","x-source","Content-Disposition"]},"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"pep-eiap-cgf-btb-app-ui.pep-eiap-cgf-btb-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-eiap-cgf-btb-app-ui
+  name: pep-eiap-cgf-btb-app-ui-vs
+  namespace: pep-eiap-cgf-btb-prod
+spec:
+  gateways:
+  - pep-eiap-cgf-btb-prod/pep-eiap-cgf-btb-prod-cv-gw
+  hosts:
+  - btbstg.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - sodastreamprofessional.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - Timeout
+      - x-functions-key
+      - Access-Control-Allow-Headers
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+      allowOrigins:
+      - exact: https://api-na.mypepsico.com
+      - exact: https://sodastreamprofessional.pepsico.com
+      exposeHeaders:
+      - x-total-count
+      - x-source
+      - Content-Disposition
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-eiap-cgf-btb-app-ui.pep-eiap-cgf-btb-prod.svc.cluster.local
+        port:
+          number: 80

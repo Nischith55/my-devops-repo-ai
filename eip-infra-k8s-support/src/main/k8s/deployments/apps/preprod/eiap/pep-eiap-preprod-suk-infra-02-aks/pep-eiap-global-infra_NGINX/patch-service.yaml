@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pep-eiap-nginx-2-0-0
+  name: pep-eiap-nginx-2-0-0
+  namespace: pep-eiap-global-infra
+spec:
+  ports:
+  - name: http-8080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pep-eiap-nginx-2-0-0
+  type: ClusterIP

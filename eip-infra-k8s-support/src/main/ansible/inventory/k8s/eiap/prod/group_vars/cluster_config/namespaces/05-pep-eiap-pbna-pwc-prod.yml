@@ -1,0 +1,33 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PBNA PWC
+# IMPORTANT:
+#  - change environment and add or remove flag env-{prod, qa etc}
+
+ns_pep_eiap_pbna_pwc_prod:
+  
+  name: pep-eiap-pbna-pwc-prod
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-pwc
+    sector: pbna
+    project: pwc
+    istio-injection: enabled
+    environment: prod
+    env-prod: "true"
+
+  role_bindings:
+
+    # appsupport role
+    - name: pep-eiap-appsupport-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_difac'] }}"
+
+

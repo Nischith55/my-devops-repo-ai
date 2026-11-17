@@ -1,0 +1,43 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-platform
+    spec:
+      description: Namespace creation project for falcon-prod
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT2/InfoSec_Falcon_Upgradation/_git/pep-falcon-aisp-aks-argocd-configs
+      destinations:
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: falcon-system
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: falcon-kac
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: ''
+      clusterResourceWhitelist:
+      - group: ""
+        kind: Namespace
+      namespaceResourceWhitelist:
+      - group: ""
+        kind: Namespace
+      roles:
+      - name: falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces-admin
+        description: Admin privileges to falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces
+        policies:
+        - p, proj:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces-admin, applications, *, falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces-user
+        description: Read-only privileges to falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces
+        policies:
+        - p, proj:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces-user, applications, get, falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces/*, allow
+        - p, proj:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces:falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces-user, applications, sync, falcon-prod-pep-pfna-cit-prod-scus-pcaf-01-aks-namespaces/*, allow
+        groups:
+        - "Team.App.AZURE.FalconADO.GSE.corppvt"
+        - "Team.Support.EIAP.READ"

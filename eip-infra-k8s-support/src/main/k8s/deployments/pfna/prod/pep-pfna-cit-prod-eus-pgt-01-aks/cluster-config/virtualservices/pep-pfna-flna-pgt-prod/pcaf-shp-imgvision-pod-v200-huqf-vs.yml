@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pcaf-shp-imgvision-pod-v200-huqf-vs
+  namespace: pep-pfna-flna-pgt-prod
+  labels:
+      app: pcaf-shp-imgvision-pod-v200
+spec:
+  hosts:
+  - pcaf-shp-imgvision-pod-v200.pfnapgt.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-flna-pgt-prod/pep-pfna-flna-pgt-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-shp-imgvision-pod-v200.pep-pfna-flna-pgt-prod.svc.cluster.local
+        port:
+          number: 80
+  

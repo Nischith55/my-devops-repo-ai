@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-whse-ges-autoscheduler-wcs-rose-client-api
+  name: pep-pfna-whse-ges-autoscheduler-wcs-rose-client-api-vs
+  namespace: pep-pfna-flna-whasqa-qa
+spec:
+  gateways:
+  - pep-pfna-flna-whasqa-qa/pep-pfna-flna-whasqa-qa-cv-gw
+  hosts:
+  - pep-pfna-whse-ges-autoscheduler-wcs-rose-client-api-qa.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /whse/v1/autoscheduler-approvedplan-api
+    route:
+    - destination:
+        host: pep-pfna-whse-ges-autoscheduler-wcs-rose-client-api.pep-pfna-flna-whasqa-qa.svc.cluster.local
+        port:
+          number: 8080

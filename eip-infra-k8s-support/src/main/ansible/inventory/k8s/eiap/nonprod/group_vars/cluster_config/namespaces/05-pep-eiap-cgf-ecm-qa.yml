@@ -1,0 +1,40 @@
+---
+ns_pep_eiap_cgf_ecm_qa:
+  
+  name: pep-eiap-cgf-ecm-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: cgf-ecm
+    sector: cgf
+    project: ecm
+    crosscharge_aks: direct
+    istio-injection: enabled
+    servicename_aks: edocsnon-prod
+    pep-cmdb-app-service-id: "285e51f44766151052293238436d43bd"
+    pep-cmdb-bus-app-id: "50be48f9db3e8c10c2b5f38139961943"
+    pep-environment: "QA"
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-cgf-ecm-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['cgf_ecm'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-cgf-ecm-qa-sa-token
+    namespace: pep-eiap-cgf-ecm-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-cgf-ecm-qa-sa"

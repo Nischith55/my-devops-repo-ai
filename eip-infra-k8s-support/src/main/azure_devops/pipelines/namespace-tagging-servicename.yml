@@ -1,0 +1,240 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+
+parameters:
+  - name: cluster_name
+    displayName: Cluster Name
+    type: string
+  - name: env
+    displayName: Environment
+    type: string
+    values:
+      - nonprod
+      - preprod
+      - prod
+  - name: Functional_Area
+    displayName: Functional_Area
+    type: string
+    values:
+      - eiap
+      - edap
+      - pfna
+      - snt
+      - cmp
+      - dps
+      - infratools
+      - infosectools
+      - pbna
+      - apigee
+      - dps
+  - name: Region
+    displayName: Region
+    type: string
+    values:
+      - scus
+      - eus
+      - gwc
+      - suk
+      - sea
+      - ae
+variables:
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - group: repo_access_token
+  - group: pep-k8s-db-endpoints
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: pep-pfna-cit-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'pfna'))}}:
+      value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'dps'), eq(parameters.Region, 'sea'))}}:
+      value: pep-dps-prod-sea-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.Functional_Area, 'dps'), eq(parameters.Region, 'suk'))}}:
+      value: pep-dps-prod-suk-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), eq(parameters.Functional_Area, 'dps'), eq(parameters.Region, 'gwc'))}}:
+      value: pep-dps-nonprod-gwc-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: target_branch
+    value: master
+  - name: source_branch
+    value: develop
+
+stages:
+- stage: Tag_Namespaces
+  displayName: Tag namespaces
+  jobs:
+  - job: gather_inputs
+    displayName: Gather Inputs 
+    pool:
+      name: "pep-eiap-prod-scus-infra-02-aks-agents"
+    steps:
+      - task: CmdLine@2
+        displayName: python_configuration
+        inputs:
+          script: |
+            mkdir -p ~/venv
+            mkdir -p ~/venv/python38-ansible211
+            source ~/venv/python38-ansible211/bin/activate
+            python3.8 -m pip install requests openpyxl pandas pyyaml
+
+      - task: PythonScript@0
+        displayName: getting excell data
+        inputs:
+          scriptSource: 'filePath'
+          scriptPath: '$(system.defaultWorkingDirectory)/src/main/azure_devops/scripts/get_servicename.py'
+          arguments: "$(svcautoPersonalAccessToken) ${{ parameters.cluster_name }} ${{ parameters.env }} ${{ parameters.Functional_Area }} ${{ parameters.Region }}"
+          pythonInterpreter: '/usr/bin/python3'
+      
+      - task: Bash@3
+        name: set_var 
+        displayName: set var
+        inputs:
+          targetType: 'inline'
+          script: |
+            input_json=$(cat "input.json")
+            echo "##vso[task.setvariable variable=input_json;isOutput=true]$input_json"
+
+  - job: Tag_Namespaces
+    displayName: Tag_Namespaces
+    dependsOn: gather_inputs
+    variables:
+      input_json: $[ dependencies.gather_inputs.outputs['set_var.input_json'] ]
+    pool: $(agent_pool)
+    steps:
+      - template: templates/set_config_namespace_tagging.yml
+        parameters:
+          cluster: ${{ parameters.cluster_name }}
+          env: ${{ variables.env_convert }}
+      
+      - task: CmdLine@2
+        inputs:
+          script: |
+            # . /opt/venv/python38-ansible211/bin/activate
+            pip3 install ruamel.yaml
+            ansible-playbook --version
+            pip install ansible[Azure]
+            pip install futures
+            pip show pyyaml
+            pip3 install openshift
+
+      - task: Bash@3
+        displayName: 'kubectl'
+        inputs:
+          targetType: 'inline'
+          script: |
+            # . /opt/venv/python38-ansible211/bin/activate
+            ansible-galaxy collection install kubernetes.core -p ~/.ansible/collections/
+            ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+            ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+            
+      - task: Ansible@0
+        displayName: 'Tag Namespace'
+        name: tag_namespace
+        continueOnError: true
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/namespace-tagging-servicename.yml'
+          args: '-e ''{ "env": "${{ parameters.env }}", "department": "${{ parameters.Functional_Area }}", "cluster_name": "${{ parameters.cluster_name }}" }'' -v'
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_LOCALHOST_WARNING: False
+          script_dir: $(system.defaultWorkingDirectory)
+          input_json: $(input_json)
+          AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+          AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+
+      - task: Bash@3
+        displayName: 'git_push'
+        name: "git_push"
+        inputs:
+          targetType: 'inline'
+          script: | 
+            git branch
+            git checkout -b $(Build.SourceBranchName)
+            git add .
+            git commit -m "Added namespace manifests for $(Build.DefinitionName) and build id $(Build.BuildId)"
+            git pull 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+            git config --global user.email "svceiapautomation@pepsico.com"
+            git config --global user.name "svceiapautomation"
+            git status | grep 'nothing to commit, working tree clean' &> /dev/null
+            outpval=`echo $?`
+            echo $outpval
+            if [ $outpval -eq 0 ];then
+              echo 'Nothing to commit'
+              echo "##vso[task.setvariable variable=output;isOutput=true]nothing_to_commit"
+            else
+              git add .
+              git commit -m "Added namespace manifests for $(Build.DefinitionName) and build id $(Build.BuildId)"
+              while ! git push 'https://$(svcuser_automation):$(svcautoPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName); do sleep 7; done
+              echo "##vso[task.setvariable variable=output;isOutput=true]things_to_commit"
+            fi
+      
+      - pwsh: |
+          $env:AZURE_DEVOPS_EXT_PAT =  "$(svcautoPersonalAccessToken)"  
+          az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+          $pr_response=az repos pr list --creator svceiapautomation --status active | ConvertFrom-Json
+          Write-host $pr_response
+          if ($pr_response.count -gt 0)
+
+          {
+
+              Write-Host “PR exists”
+              Return
+
+          }
+          else
+          {
+              Write-Host “There is no PR”
+              az repos pr create --project $(System.TeamProject) --repository $(Build.Repository.Name) --target-branch $(target_branch) --source-branch $(source_branch) --reviewers $(reviewer1_pr) --title "PR request $(Build.BuildNumber)" | ConvertFrom-Json
+              Return
+          }
+        condition: and(succeeded(), eq(variables['git_push.output'], 'things_to_commit'))
+        displayName: 'PR Request'
+
+# - stage: without_tag
+#   displayName: without_tag
+#   jobs:
+#   - job: get_ns
+#     displayName: get ns without tags 
+#     pool: $(agent_pool)
+#     steps:
+#       - template: templates/set_config_namespace_tagging.yml
+#         parameters:
+#           cluster: ${{ parameters.cluster_name }}
+#           env: ${{ variables.env_convert }}
+      
+#       - task: CmdLine@2
+#         inputs:
+#           script: |
+#             echo "printing namespaces without servicename_aks tag. "
+#             for ns in `kubectl get namespaces -o jsonpath="{.items[*].metadata.name}"`;
+#             do
+#               if [ -z "$(kubectl get namespace $ns -o json | grep servicename_aks)" ]; then
+#                 echo $ns
+#               fi
+#             done 
+#         env:
+#           AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+#           AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)
+               
+      

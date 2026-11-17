@@ -1,0 +1,53 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: swaggerhub-dev-customdomain-vs
+  namespace: pep-infratools-cgf-swaggerhub-dev
+spec:
+  gateways:
+  - pep-infratools-cgf-swaggerhub-dev/pep-infratools-cgf-swaggerhub-dev-cv-gw
+  hosts:
+  - swaggerhub.dev.mypepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /ws
+    route:
+    - destination:
+        host: swaggerhub-notifications.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /virts/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api/
+    route:
+    - destination:
+        host: haproxy.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: swaggerhub-frontend.pep-infratools-cgf-swaggerhub-dev.svc.cluster.local
+        port:
+          number: 80

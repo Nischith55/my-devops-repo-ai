@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 9f968d9c-47c6-4ba7-9465-2c62de140308
+  name: pep-cmp-cmp-ghytrfi-dev-sa
+  namespace: pep-cmp-cmp-ghytrfi-dev

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-eiap-ops-controllerrepo
+  name: pcaf-eiap-ops-controllerrepo-vs
+  namespace: pep-pfna-flna-pcaf-prod
+spec:
+  gateways:
+  - pep-pfna-flna-pcaf-prod/pep-pfna-flna-pcaf-prod-cv-gw
+  hosts:
+  - pcaf-eiap-ops-controllerrepo.pfnapcaf.gw01.aks01.eus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-eiap-ops-controllerrepo.pep-pfna-flna-pcaf-prod.svc.cluster.local
+        port:
+          number: 80

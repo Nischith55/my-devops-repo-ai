@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        argocd.argoproj.io/tracking-id: ctx-e2e-cbv-ui-dev:networking.istio.io/VirtualService:pep-dps-globalsnt-ctxcbv-dev/ctx-e2e-cbv-ui-vs
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"ctx-e2e-cbv-ui-dev:networking.istio.io/VirtualService:pep-dps-globalsnt-ctxcbv-dev/ctx-e2e-cbv-ui-vs"},"labels":{"app":"ctx-e2e-cbv-ui","app.kubernetes.io/instance":"ctx-e2e-cbv-ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"ctx-e2e-cbv-ui-vs","namespace":"pep-dps-globalsnt-ctxcbv-dev"},"spec":{"gateways":["pep-dps-globalsnt-ctxcbv-dev/pep-dps-globalsnt-ctxcbv-dev-cv-gw"],"hosts":["ctx-e2e-cbv-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"ctx-e2e-cbv-ui.pep-dps-globalsnt-ctxcbv-dev.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: ctx-e2e-cbv-ui
+        app.kubernetes.io/instance: ctx-e2e-cbv-ui
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: ctx-e2e-cbv-ui-vs
+    namespace: pep-dps-globalsnt-ctxcbv-dev
+spec:
+    gateways:
+    - pep-dps-globalsnt-ctxcbv-dev/pep-dps-globalsnt-ctxcbv-dev-cv-gw
+    hosts:
+    - ctx-e2e-cbv-ui.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - costcompass.dev.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: ctx-e2e-cbv-ui.pep-dps-globalsnt-ctxcbv-dev.svc.cluster.local
+                port:
+                    number: 8080

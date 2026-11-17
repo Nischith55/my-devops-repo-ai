@@ -1,0 +1,29 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-pfna-elastic-client-heartbeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - nodes
+  - namespaces
+  - pods
+  - services
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - update
+  - list
+  - watch

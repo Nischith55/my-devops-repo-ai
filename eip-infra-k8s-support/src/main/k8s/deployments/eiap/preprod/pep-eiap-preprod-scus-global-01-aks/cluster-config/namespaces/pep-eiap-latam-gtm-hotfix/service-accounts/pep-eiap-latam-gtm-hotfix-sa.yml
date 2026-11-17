@@ -1,0 +1,8 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pep-eiap-latam-gtm-hotfix-sa
+  namespace: pep-eiap-latam-gtm-hotfix

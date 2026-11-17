@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: latam-test-tfliteoc-pipe-vs
+  namespace: pep-eiap-global-iai-dev
+spec:
+  gateways:
+  - pep-eiap-global-iai-dev/pep-eiap-global-iai-dev-cv-gw
+  hosts:
+  - latam-test-tfliteoc-pipe.global.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /model-objectclassification
+    route:
+    - destination:
+        host: latam-test-tfliteoc-pipe.pep-eiap-global-iai-dev.svc.cluster.local
+        port:
+          number: 8000

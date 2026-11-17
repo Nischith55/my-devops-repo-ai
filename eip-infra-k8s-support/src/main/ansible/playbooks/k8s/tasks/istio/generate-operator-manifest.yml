@@ -1,0 +1,60 @@
+---
+# ##
+# Generate istio operator for deployment
+# 
+# INPUT:
+#   params_istio_op:
+#     kube_context:
+#     iop_params:
+#       manifest_path:
+# ##
+
+- name: GENERATOR_OPERATOR_BLOCK
+  block:
+
+    - name: ISTIOCTL_OPERATOR_DUMP
+      include_role:
+        name: k8s_support/istioctl
+        tasks_from: execute
+      vars:
+        #mute
+        print_resp: false
+        kube_context: "{{ __kube_context }}"
+        istioctl_action: operator
+        istioctl_action_args: " dump {{ __istio_args }}"
+
+    - name: WRITE_ISTIO_OPERATOR_MANIFEST_BLOCK
+      block:
+
+        - name: MKDIRS
+          include_tasks:
+            file: tasks/core/mkdirs.yml
+          vars:
+            params_mkdirs:
+              path: "{{ __manifest_path }}"
+
+        - name: WRITE_ISTIO_OPERATOR_MANIFEST {{ __manifest_path }}
+          copy:
+            content: "{{ istioctl_exec_result.stdout }}"
+            dest: "{{ __manifest_path }}"
+            mode: "u=rw,g=r,o=r"
+
+        - name: WRITE_ISTIO_OPERATOR_KUSTOMIZATION_YML {{ __kust_path }}
+          copy:
+            content: "{{ __piop_p['kustomization_yml'] }}"
+            dest: "{{ __kust_path }}"
+            mode: "u=rw,g=r,o=r"
+
+      # option to skip
+      when: (not (skip_generate | default('false') | bool))
+      # just in case
+      delegate_to: localhost
+
+  vars:
+    __piop: "{{ params_istio_op }}"
+    __kube_context: "{{ __piop['kube_context'] }}"
+    __kube_config: "{{ __piop['kube_config'] | default('', True) }}"
+    __piop_p: "{{ __piop['iop_params'] }}"
+    __istio_args: "{{ __piop_p['cmd_args'] }}"
+    __manifest_path: "{{ __piop_p['manifest_path'] }}"
+    __kust_path: "{{ __piop_p['kustomization_path'] }}"

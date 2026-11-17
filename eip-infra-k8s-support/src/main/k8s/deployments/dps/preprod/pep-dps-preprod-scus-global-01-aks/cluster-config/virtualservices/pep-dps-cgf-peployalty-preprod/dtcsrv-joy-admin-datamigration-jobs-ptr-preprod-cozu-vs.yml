@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: dtcsrv-joy-admin-datamigration-jobs-ptr-preprod-cozu-vs
+  namespace: pep-dps-cgf-peployalty-preprod
+  labels:
+      app: dtcsrv-joy-admin-datamigration-jobs-ptr-preprod
+spec:
+  hosts:
+  - pep-joy-runtimeengineauthapikaz-preprod.dps.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-dps-cgf-peployalty-preprod/pep-dps-cgf-peployalty-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: dtcsrv-joy-admin-datamigration-jobs-ptr-preprod.pep-dps-cgf-peployalty-preprod.svc.cluster.local
+        port:
+          number: 80
+  

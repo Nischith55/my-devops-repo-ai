@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-retail-360-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-retail-360-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/pepsico-retail-360-argocd-configs
+  - pepnonprodsntacr.azurecr.io/helm
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: pep-snt-cgf-retaildev-dev
+  - server: https://kubernetes.default.svc
+    namespace: pep-snt-ops-admin
+  roles:
+  - name: pepsico-retail-360-dev-admin
+    description: Admin privileges to pepsico-retail-360-dev
+    policies:
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-admin, applications, *, pepsico-retail-360-dev/*, allow
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-admin, repositories, *, pepsico-retail-360-dev/*, allow
+    groups:
+    - "Team.Support.ST.AdminPortal.AppSupport"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-retail-360-dev-user
+    description: Read-only privileges to pepsico-retail-360-dev
+    policies:
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-user, applications, get, pepsico-retail-360-dev/*, allow
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-user, applications, sync, pepsico-retail-360-dev/*, allow
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-user, repositories, get, pepsico-retail-360-dev/*, allow
+    - p, proj:pepsico-retail-360-dev:pepsico-retail-360-dev-user, applications, action/apps/Deployment/restart, pepsico-retail-360-dev/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,122 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../2.14.6
+
+patches:
+- path: patch_nodepool_tolerations.yaml
+  target:
+    kind: Deployment
+
+- path: patch_nodepool_tolerations.yaml
+  target:
+    kind: StatefulSet
+- path: patch_argocd_redis.yaml
+  target:
+    kind: Deployment
+    name: argocd-redis-ha-haproxy
+
+- path: patch_CR_pod_exec.yaml
+  target:
+    kind: ClusterRole
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-dex-server-network-policy
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-redis-ha-server-network-policy
+
+- path: patch_delete_networkpolicy.yaml
+  target: 
+    kind: NetworkPolicy   
+    name: argocd-redis-ha-proxy-network-policy
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: argocd-notifications-secret
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: argocd-secret
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-cm
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-cmd-params-cm
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-notifications-cm
+
+- patch: |-
+    $patch: delete
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-rbac-cm
+
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: argocd-server
+    spec:
+      template:
+        spec:
+          initContainers:
+            - name: extension-metrics
+              image: quay.io/argoprojlabs/argocd-extension-installer:v0.0.1
+              env:
+              - name: EXTENSION_URL
+                value: https://github.com/argoproj-labs/rollout-extension/releases/download/v0.3.4/extension.tar
+              volumeMounts:
+                - name: extensions
+                  mountPath: /tmp/extensions/
+              securityContext:
+                runAsUser: 1337
+                allowPrivilegeEscalation: false
+  target:
+    kind: Deployment
+    name: argocd-server
+
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: argocd-server
+    spec:
+      template:
+        spec:
+          containers:
+            - name: argocd-server
+              volumeMounts:
+                - name: extensions
+                  mountPath: /tmp/extensions/
+          volumes:
+            - name: extensions
+              emptyDir: {}
+  target:
+    kind: Deployment
+    name: argocd-server

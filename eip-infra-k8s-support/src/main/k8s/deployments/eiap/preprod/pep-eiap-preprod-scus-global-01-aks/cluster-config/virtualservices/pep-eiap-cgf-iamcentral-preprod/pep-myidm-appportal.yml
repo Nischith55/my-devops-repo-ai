@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        meta.helm.sh/release-name: pep-myidm-appportal
+        meta.helm.sh/release-namespace: pep-eiap-cgf-iamcentral-preprod
+    labels:
+        app: pep-myidm-appportal
+        app.kubernetes.io/instance: pep-myidm-appportal
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: '20250410.6'
+        environment: preprod
+        helm.sh/chart: platform-chart-1.0.2
+    name: pep-myidm-appportal
+    namespace: pep-eiap-cgf-iamcentral-preprod
+spec:
+    gateways:
+    - pep-eiap-cgf-iamcentral-preprod/pep-eiap-cgf-iamcentral-preprod-cv-gw
+    hosts:
+    - pep-myidm-appportal-preprod.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+    - iamcentral-api.ite.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: pep-myidm-appportal.pep-eiap-cgf-iamcentral-preprod.svc.cluster.local
+                port:
+                    number: 8080

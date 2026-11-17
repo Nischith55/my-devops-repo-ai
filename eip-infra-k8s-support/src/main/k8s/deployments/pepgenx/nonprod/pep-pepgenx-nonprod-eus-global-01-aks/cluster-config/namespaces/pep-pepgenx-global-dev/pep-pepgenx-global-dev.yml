@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pepgenx-global-dev
+  labels:
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    project: infra
+    sector: pepgenx
+    team: global-pepgenx
+    crosscharge_aks: crosscharge
+    servicename_aks: sharedaks-platform

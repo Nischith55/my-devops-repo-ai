@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    kubernetes.io/metadata.name: pep-eiap-global-idt-dev
+    kustomize.toolkit.fluxcd.io/name: cluster-config
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+    pep-cmdb-app-service-id: 8bf83e8c1ba5fb8864eb8597dc4bcb4b
+    pep-cmdb-bus-app-id: dfbe083ddb3e8c10c2b5f38139961991
+    pep-environment: Development
+    project: idt
+    sector: global
+    servicename_aks: idt
+    team: global-idt
+  name: pep-eiap-global-idt-dev

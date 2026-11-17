@@ -1,0 +1,8 @@
+# ansible language and runtime plus curated community packages
+ansible==4.9.0
+# ansible-core (note ansible package will automatically add this)
+#NOT needed ansible-core==2.11.6
+sh==1.14.2
+# NOTE: ansible packages six module internally
+six==1.16.0
+jmespath==0.10.0

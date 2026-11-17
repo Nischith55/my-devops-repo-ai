@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-isalesteru-qa-front
+  name: pep-isalesteru-qa-front-vs
+  namespace: pep-eiap-europe-isalesteru-qa
+spec:
+  gateways:
+  - pep-eiap-europe-isalesteru-qa/pep-eiap-europe-isalesteru-qa-cv-gw
+  hosts:
+  - pep-isalesteru-qa-front.global.gw01.aks01.gwc.nonprod.azure.intra.pepsico.com
+  - mem-isales3pd.ite.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-isalesteru-qa-front.pep-eiap-europe-isalesteru-qa.svc.cluster.local
+        port:
+          number: 5006

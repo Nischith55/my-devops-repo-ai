@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pfna-flna-mfgproplus-assignments-api
+  name: pep-pfna-flna-mfgproplus-assignments-api
+  namespace: pep-pfna-pfna-mfgpropl-qa
+spec:
+  gateways:
+  - pep-pfna-pfna-mfgpropl-qa/pep-pfna-pfna-mfgpropl-qa-cv-gw
+  hosts:
+  - pep-pfna-pfna-mfgpropl-qa-cv.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - corsPolicy:
+      allowCredentials: null
+      allowHeaders:
+      - '*'
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      - HEAD
+      - PATCH
+      allowOrigins:
+      - regex: .*
+    match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /shiftplanner/api/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: pep-pfna-flna-mfgproplus-assignments-api.pep-pfna-pfna-mfgpropl-qa.svc.cluster.local
+        port:
+          number: 8080

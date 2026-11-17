@@ -1,0 +1,42 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: pep-pfna-och-service-prod
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for pep-pfna-och-service-prod   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/eCommerce_D2C_PFNA/_git/pep-pcaf-och-argocd-configs
+      - pepeiapprodcommonacr.azurecr.io/helm
+      destinations:
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-pcaf-prod
+      - name: pep-pfna-cit-prod-scus-pcaf-01-aks
+        namespace: pep-pfna-ops-admin
+      roles:
+      - name: pep-pfna-och-service-prod-admin
+        description: Admin privileges to pep-pfna-och-service-prod
+        policies:
+        - p, proj:pep-pfna-och-service-prod:pep-pfna-och-service-prod-admin, applications, *, pep-pfna-och-service-prod/*, allow
+        - p, proj:pep-pfna-och-service-prod:pep-pfna-och-service-prod-admin, repositories, *, pep-pfna-och-service-prod/*, allow
+        groups:
+        - "Team.Support.PFNA.RG.AKS.PROD.Admin"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: pep-pfna-och-service-prod-user
+        description: Read-only privileges to pep-pfna-och-service-prod
+        policies:
+        - p, proj:pep-pfna-och-service-prod:pep-pfna-och-service-prod-user, applications, get, pep-pfna-och-service-prod/*, allow
+        - p, proj:pep-pfna-och-service-prod:pep-pfna-och-service-prod-user, applications, sync, pep-pfna-och-service-prod/*, allow
+        - p, proj:pep-pfna-och-service-prod:pep-pfna-och-service-prod-user, repositories, get, pep-pfna-och-service-prod/*, allow
+         # This line will be replaced by the pipeline script
+        groups:
+        - "Team.Support.PFNA.BEDEV"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.PFNA.RG.AKS.PROD.Reader"
+        - "Team.Support.PFNA.RG.AKS.PROD.Contributor"
+    

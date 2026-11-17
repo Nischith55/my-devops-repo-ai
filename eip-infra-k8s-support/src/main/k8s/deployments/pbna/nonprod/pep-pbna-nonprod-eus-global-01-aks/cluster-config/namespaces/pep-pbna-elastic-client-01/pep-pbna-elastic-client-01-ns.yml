@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-pbna-elastic-client-01
+  labels:
+    istio-injection: enabled
+    eck-managed: 'false'

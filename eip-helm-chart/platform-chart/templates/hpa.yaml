@@ -1,0 +1,52 @@
+{{- if and (.Values.autoscalingEnabled) (or .Values.global.deployment.enabled .Values.global.rollout.enabled .Values.global.statefulset.enabled)}}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "platform-chart.fullname" . }}-hpa
+  namespace: {{ .Values.global.namespace }}
+  {{- with .Values.global.labels }}
+  labels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    {{- include "platform-chart.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+{{- if and (.Values.global.rollout.enabled) (not .Values.global.deployment.enabled) (not .Values.global.statefulset.enabled) }}  
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: {{ include "platform-chart.fullname" . }}
+{{- end }}
+{{- if and (not .Values.global.rollout.enabled) (.Values.global.deployment.enabled) (not .Values.global.statefulset.enabled) }}  
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "platform-chart.fullname" . }}
+{{- end }}
+{{- if .Values.global.statefulset.enabled }}  
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "platform-chart.fullname" . }}
+{{- end }}
+  minReplicas: {{ .Values.hpaConfigMinReplicas }}
+  maxReplicas: {{ .Values.hpaConfigMaxReplicas }}
+  metrics:
+  {{- if .Values.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.targetMemoryUtilizationPercentage }}
+    {{- end }} 
+  {{- if .Values.hpaBehavior }}
+  behavior: 
+    {{- toYaml .Values.hpaBehavior | nindent 4 }}
+  {{- end }}
+{{- end }}

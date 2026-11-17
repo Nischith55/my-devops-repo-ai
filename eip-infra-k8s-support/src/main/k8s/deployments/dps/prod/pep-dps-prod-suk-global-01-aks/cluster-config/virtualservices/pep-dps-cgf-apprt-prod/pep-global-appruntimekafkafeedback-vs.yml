@@ -1,0 +1,25 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"pep-global-appruntimekafkafeedback-vs","namespace":"pep-dps-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["pep-global-appruntimekafkafeedback.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/apprt-kaffbk"}}],"route":[{"destination":{"host":"pep-global-appruntimekafkafeedback.pep-dps-cgf-apprt-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: pep-global-appruntimekafkafeedback
+  name: pep-global-appruntimekafkafeedback-vs
+  namespace: pep-dps-cgf-apprt-prod
+spec:
+  gateways:
+  - pep-dps-cgf-apprt-prod/pep-dps-cgf-apprt-prod-cv-gw
+  hosts:
+  - pep-global-appruntimekafkafeedback.dps.gw01.aks01.suk.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /apprt-kaffbk
+    route:
+    - destination:
+        host: pep-global-appruntimekafkafeedback.pep-dps-cgf-apprt-prod.svc.cluster.local
+        port:
+          number: 80

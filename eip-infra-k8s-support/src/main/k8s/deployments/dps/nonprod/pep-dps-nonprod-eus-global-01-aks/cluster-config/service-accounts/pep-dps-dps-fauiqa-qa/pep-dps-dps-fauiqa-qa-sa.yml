@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: d9795e08-be48-483e-9dec-19a7e4ee248b
+  name: pep-dps-dps-fauiqa-qa-sa
+  namespace: pep-dps-dps-fauiqa-qa

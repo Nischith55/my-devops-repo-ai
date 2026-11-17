@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multiregiontrunk-july62026multimarketday2test-preprod-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:    
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/multiregiontrunk-july62026multimarketday2test-argocd-configs
+    targetRevision: develop 
+  - repoURL: pepdpsprodacr.azurecr.io/helm 
+    targetRevision: "0.2.5"
+    chart: argocd-app-bootstrapper 
+    helm:
+      releaseName: multiregiontrunk-july62026multimarketday2test-preprod
+      valueFiles:
+      - $values/preprod/pep-dps-preprod-scus-global-01-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          env: preprod
+          helm:  
+            enabled: false       
+            repo: pepdpsprodacr.azurecr.io/helm 
+            chart: umbrellachart
+            revision: 2.2.2 
+            values: 
+              platform-chart:
+                destination: 
+                  jobImage: pepeiapprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+                  jobNS: pep-dps-ops-admin 
+                  jobServiceAccount: gw-update-sa
+          spec:
+            project: multiregiontrunk-july62026multimarketday2test-preprod 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/multiregiontrunk-july62026multimarketday2test-argocd-configs 
+              repoName: multiregiontrunk-july62026multimarketday2test-argocd-configs # appruntime-argocd-configs
+              targetRevision: develop
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications:  
+              notifyEmail: Dl@pepsico.com

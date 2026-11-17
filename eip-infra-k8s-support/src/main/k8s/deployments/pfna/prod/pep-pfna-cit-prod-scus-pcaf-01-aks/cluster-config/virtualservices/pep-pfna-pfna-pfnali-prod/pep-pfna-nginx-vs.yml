@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata: 
+  labels:
+    app: pep-pcaf-thingy-consumption-api-pt
+  name: pep-pcaf-thingy-consumption-api-pt-vs
+  namespace: pep-pfna-pfna-pfnali-prod
+spec:
+  gateways:
+  - pep-pfna-pfna-pfnali-prod/pep-pfna-pfna-pfnali-prod-cv-gw
+  hosts:
+  - pep-pcaf-thingy-consumption-api-pt.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-pcaf-thingy-consumption-api-pt.pep-pfna-pfna-pfnali-prod.svc.cluster.local
+        port:
+          number: 80

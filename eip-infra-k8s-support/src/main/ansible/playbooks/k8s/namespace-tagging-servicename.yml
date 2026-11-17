@@ -1,0 +1,34 @@
+---
+- name: Tag Namespace
+  hosts: localhost 
+  connection: local
+  collections:
+    - kubernetes.core
+  environment:
+    K8S_AUTH_KUBECONFIG: ~/.kube/config
+    K8S_AUTH_CONTEXT: "{{ vars['cluster_name'] }}"
+    K8S_AUTH_USERNAME: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    K8S_AUTH_PASSWORD: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AAD_SERVICE_PRINCIPAL_CLIENT_SECRET') }}"
+
+  tasks: 
+    - name: set variable
+      set_fact:
+        cluster_name: "{{ vars['cluster_name'] }}"
+        input_json: "{{ lookup('env', 'input_json') }}"
+        department: "{{ vars['department'] }}"
+        env: "{{ vars['env'] }}"
+        script_dir: "{{ lookup('env', 'script_dir') }}"
+
+    - set_fact: 
+        decoded_json: "{{ input_json | from_json }}"
+    
+    - name: add label to the existing namespaces 
+      include_tasks: namespace-label-servicename.yml
+      vars:
+        script_dir_task: "{{ script_dir }}"
+        department_task: "{{ department }}"
+        env_task: "{{ env }}"
+        cluster_name_task: "{{ cluster_name }}"
+      with_items: "{{ decoded_json.data }}"

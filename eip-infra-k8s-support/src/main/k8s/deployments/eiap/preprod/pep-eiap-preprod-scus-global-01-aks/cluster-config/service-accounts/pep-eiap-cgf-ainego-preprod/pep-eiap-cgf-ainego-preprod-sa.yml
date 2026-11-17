@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 9216b752-8f70-40ec-bb2e-a20d8d1ea48a
+  name: pep-eiap-cgf-ainego-preprod-sa
+  namespace: pep-eiap-cgf-ainego-preprod

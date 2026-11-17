@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pes-sfp-create-service-order-zdne-vs
+  namespace: pep-eiap-pbna-halo-preprod
+  labels:
+      app: pes-sfp-create-service-order
+spec:
+  hosts:
+  - serviceordercreation.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-pbna-halo-preprod/pep-eiap-pbna-halo-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pes-sfp-create-service-order.pep-eiap-pbna-halo-preprod.svc.cluster.local
+        port:
+          number: 80
+    corsPolicy:
+      allowOrigins:
+      - exact: https://apim-pfna.dev.mypepsico.com
+      - exact: https://apim-pfna.qa.mypepsico.com
+      allowMethods:
+      - GET
+      - PUT
+      - POST
+      - DELETE
+      - OPTIONS
+  
+      allowCredentials: true
+      allowHeaders:
+      - Accept
+      - Access-Control-Allow-Credentials
+      - Authorization
+      - Allow
+      - Host
+      - Content-Type
+      - Cookie
+       
+  

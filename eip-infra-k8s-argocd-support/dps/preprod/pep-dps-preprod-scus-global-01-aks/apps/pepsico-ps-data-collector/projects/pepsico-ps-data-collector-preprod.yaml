@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pepsico-ps-data-collector-preprod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for pepsico-ps-data-collector-preprod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/product-success-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-cgf-psd-preprod
+  - name: pep-dps-preprod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: pepsico-ps-data-collector-preprod-admin
+    description: Admin privileges to pepsico-ps-data-collector-preprod
+    policies:
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-admin, applications, *, pepsico-ps-data-collector-preprod/*, allow
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-admin, applications, get, argocd/*, allow
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-admin, repositories, *, pepsico-ps-data-collector-preprod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pepsico-ps-data-collector-preprod-user
+    description: Read-only privileges to pepsico-ps-data-collector-preprod
+    policies:
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-user, applications, get, pepsico-ps-data-collector-preprod/*, allow
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-user, applications, sync, pepsico-ps-data-collector-preprod/*, allow
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-user, repositories, get, pepsico-ps-data-collector-preprod/*, allow
+    - p, proj:pepsico-ps-data-collector-preprod:pepsico-ps-data-collector-preprod-user, applications, action/apps/Deployment/restart, pepsico-ps-data-collector-preprod/*, allow
+    groups:
+    - "Team.App.DPS.DevOps.NonProd"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

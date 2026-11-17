@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pepsico-eip-latam-qreturns-dataservice
+  name: pepsico-eip-latam-qreturns-dataservice-vs
+  namespace: pep-eiap-latam-gtm-prod
+spec:
+  gateways:
+  - pep-eiap-latam-gtm-prod/pep-eiap-latam-gtm-prod-cv-gw
+  hosts:
+  - pepsico-eip-latam-qreturns-dataservice.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pepsico-eip-latam-qreturns-dataservice.pep-eiap-latam-gtm-prod.svc.cluster.local
+        port:
+          number: 80

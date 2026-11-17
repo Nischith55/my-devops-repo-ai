@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: pod-info-dr
+  namespace: test
+spec:
+  host: pod-info.test.svc.cluster.local
+  subsets:
+  - labels:
+      app: pod-info-helm
+    name: testversion
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN

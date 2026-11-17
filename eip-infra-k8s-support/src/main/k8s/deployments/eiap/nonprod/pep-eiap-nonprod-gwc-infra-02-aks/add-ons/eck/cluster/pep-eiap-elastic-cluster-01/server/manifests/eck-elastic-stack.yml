@@ -1,0 +1,1221 @@
+---
+# ##
+# ECK - Operator Orchestration for Core ElasticSearch
+# ##
+# cluster-01 (Main Cluster)
+# ##
+# - Pep CA certs now read from configMap
+# 07/2021:
+# - moved to zoned node pools
+# Conventions:
+# - Abbreviations
+#   es-cluster-01 => esc01
+# ##
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: &cname cluster-01-nonprod-gwc
+  namespace: pep-eiap-elastic-cluster-01
+spec:
+  version: !!str 8.5.2
+  image: &img_init001 docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+
+  # ##
+  # IMPORTANT:
+  # - secureSettings is a mechanism to inject keys into elasticsearch.keystore
+  # - Please check if the settings supports secure otherwise you will crash and
+  #   burn :)
+  # secrets to be exported to elasticsearch.keystore
+  secureSettings:
+    - secretName: pep-eiap-nonprod-gwc-infra-02-aks-xpack-generic
+      entries:
+        - key: xpack.security.authc.realms.ldap.pep_ite_ldap.secure_bind_password
+
+  # HTTP Layer
+  http:
+    tls:
+      certificate:
+        # make sure this is installed in the namespace
+        secretName: &gw01_secret pep-eiap-nonprod-gwc-infra-02-aks-gw01-generic
+    service:
+      spec:
+        selector:
+          elasticsearch.k8s.elastic.co/cluster-name: *cname
+          elasticsearch.k8s.elastic.co/node-master: "false"
+          elasticsearch.k8s.elastic.co/node-data: "false"
+
+  # ##
+  # NodeSets
+  # ##
+  nodeSets:
+
+    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # # Master Node set (new node pool)
+    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    - name: master01-z1
+      count: 1
+      # Most of  elasticsearch.yaml
+      config: &common_master_config
+        node:
+          roles:
+            - master
+
+        # ##
+        # Shared xpack configuration -- using YAML anchors
+        # ##
+        xpack: &common_xpack
+
+          # Enable Stack monitoring
+          monitoring:
+            collection:
+              enabled: true
+            # disable built-in monitoring
+            elasticsearch:
+              collection:
+                enabled: false
+
+          notification:
+            email:
+              account:
+                exchange_account:
+                  profile: outlook
+                  email_defaults:
+                    from: ITEIAPALERTS@pepsico.com
+                  smtp:
+                    host: planrr.corp.pep.pvt
+                    port: 25
+          http:
+            ssl:
+              verification_mode: none
+
+          security:
+
+            authc:
+              token:
+                enabled: true
+
+              realms:
+
+                native:
+                  native1:
+                    order: 0
+                    enabled: true
+
+                saml:
+                  pep_ite_saml:
+                    order: 2
+                    attributes:
+                      principal: nameid
+                      groups: Groups
+                    nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    idp:
+                      entity_id: http://www.okta.com/exk11kjilpoFCn84O0h8
+                      metadata:
+                        path: "https://secure.ite.pepsico.com/app/exk11kjilpoFCn84O0h8/sso/saml/metadata"
+                    sp:
+                      entity_id: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/"
+                      acs: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/api/security/v1/saml"
+                      logout: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/logout"
+
+                ldap:
+                  pep_ite_ldap:
+                    order: 1
+                    enabled: true
+                    metadata:
+                      - uid
+                      - cn
+                    authentication:
+                      # whether to use for authn too
+                      enabled: true
+                    # cache
+                    cache:
+                      ttl: 15m
+                      max_users: 100000
+                    # ssl
+                    ssl:
+                      certificate_authorities:
+                        - /usr/share/elasticsearch/config/pep/etc/certs/PepsiCoCA01.pem
+                        - /usr/share/elasticsearch/config/pep/etc/certs/PepsiCoRootCA.pem
+                      verification_mode: certificate
+                    url:
+                      - "${LDAP_URL_0}"
+                    #: --
+                    #: IMPORTANT
+                    #: - we are using serviece account
+                    #: - bind_dn must be provided
+                    #: - user_search
+                    #: - secure_bind_password (should be in secret)
+                    #: --
+                    bind_dn: ${LDAP_BIND_DN}
+                    user_search:
+                      base_dn: "ou=internal,ou=people,o=pepsico,dc=pep,dc=pvt"
+                      scope: sub_tree
+                      pool:
+                        size: 25
+                    group_search:
+                      base_dn: "ou=groups,ou=EIP_DEV,ou=applications,o=pepsico,dc=pep,dc=pvt"
+                      # pep has directly underneath
+                      scope: one_level
+                      filter: "(&(objectclass=groupOfUniqueNames)(uniqueMember={0}))"
+                    unmapped_groups_as_roles: false
+
+      volumeClaimTemplates: &master_vol_claim_templates
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Gi
+            storageClassName: &elastic_standard_sc elastic-stdssd-zoned
+
+      podTemplate:
+
+        metadata: &pod_tmpl_metadata
+          labels:
+            # need this for stack monitoring (allow autodiscover
+            # metricbeat) [Format: es-<cluster-name>]
+            stack-monitoring.elastic.co/type: es-cluster-01-nonprod-gwc
+          annotations:
+            # need this for stack monitoring
+            co.elastic.logs/enabled: "true"
+            traffic.sidecar.istio.io/includeInboundPorts: "*"
+            traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+            traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+
+        spec:
+
+          # IMPORTANT: should be at pod level
+          securityContext: &common_sec_ctxt
+            runAsUser: 1000
+            fsGroup: 1000
+
+          # Common Node Selector for a ES role type
+          nodeSelector:
+            agentpool: npesm01z1
+
+          # This should be different for each zone
+          tolerations:
+            - key: ESMaster01NodeOnlyZone1
+              operator: Exists
+
+          volumes: &master_volumes
+            - name: config-projected
+              projected:
+                # 0775 -> 509, 0644 -> 420
+                defaultMode: 420
+                sources:
+                # pep-ca-certs-config
+                - configMap:
+                    name: pep-ca-certs-config
+                    optional: false
+                    items:
+                      - key: PepsiCoCA01.pem
+                        # must be relative
+                        path: etc/certs/PepsiCoCA01.pem
+                      - key: PepsiCoRootCA.pem
+                        # must be relative
+                        path: etc/certs/PepsiCoRootCA.pem
+
+          containers: &master_containers
+            - name: elasticsearch
+              imagePullPolicy: IfNotPresent
+
+              resources:
+                limits:
+                  cpu: 1950m
+                  memory: 18Gi
+                requests:
+                  cpu: 1800m
+                  memory: 17Gi
+
+              env: &master_env_all
+
+                - name: ES_JAVA_OPTS
+                  value: -Xms16g -Xmx16g
+
+                - name: LDAP_URL_0
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_url_0
+
+                - name: LDAP_BIND_DN
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_bind_dn
+
+              volumeMounts: &common_vol_mounts
+                - name: config-projected
+                  # IMPORTANT:
+                  # - ES runs as Java Security Context enabled, path must
+                  # be /usr/share/elasticsearch/config/pep and make sure to
+                  # create a sub-dir
+                  # - make sure the init container also runs as elasticsearch
+                  #   context
+                  mountPath: /usr/share/elasticsearch/config/pep
+                  readOnly: true
+
+          initContainers: &master_init_containers
+            - name: elastic-internal-init-filesystem
+              env: *master_env_all
+              volumeMounts: *common_vol_mounts
+
+            - name: elastic-internal-init-keystore
+              env: *master_env_all
+              volumeMounts: *common_vol_mounts
+    # ~~
+    # master zone-2
+    # ~~
+    - name: master02-z2
+      count: 1
+
+      config: *common_master_config
+      volumeClaimTemplates: *master_vol_claim_templates
+      podTemplate:
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          # Common Node Selector for a ES role type
+          nodeSelector:
+            agentpool: npesm1z2
+          # This should be different for each zone
+          tolerations:
+            - key: ESMaster01NodeOnlyZone2
+              operator: Exists
+          initContainers: *master_init_containers
+          volumes: *master_volumes
+          containers: *master_containers
+
+    # ~~
+    # master zone-3
+    # ~~
+    - name: master03-z3
+      count: 1
+
+      config: *common_master_config
+      volumeClaimTemplates: *master_vol_claim_templates
+      podTemplate:
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          # Common Node Selector for a ES role type
+          nodeSelector:
+            agentpool: npesm1z3
+          # This should be different for each zone
+          tolerations:
+            - key: ESMaster01NodeOnlyZone3
+              operator: Exists
+          initContainers: *master_init_containers
+          volumes: *master_volumes
+          containers: *master_containers
+
+    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # # Master Node set (old node pools)
+    # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # # ~~
+    # # master zone-1
+    # # ~~
+    # - name: master1-z1
+    #   count: 1
+    #   # Most of  elasticsearch.yaml
+    #   config: &common_master_config
+    #     node:
+    #       roles:
+    #         - master
+
+    #     # ##
+    #     # Shared xpack configuration -- using YAML anchors
+    #     # ##
+    #     xpack: &common_xpack
+
+    #       # Enable Stack monitoring
+    #       monitoring:
+    #         collection:
+    #           enabled: true
+    #         # disable built-in monitoring
+    #         elasticsearch:
+    #           collection:
+    #             enabled: false
+
+    #       notification:
+    #         email:
+    #           account:
+    #             exchange_account:
+    #               profile: outlook
+    #               email_defaults:
+    #                 from: ITEIAPALERTS@pepsico.com
+    #               smtp:
+    #                 host: planrr.corp.pep.pvt
+    #                 port: 25
+    #       http:
+    #         ssl:
+    #           verification_mode: none
+
+    #       security:
+
+    #         authc:
+    #           token:
+    #             enabled: true
+
+    #           realms:
+
+    #             native:
+    #               native1:
+    #                 order: 0
+    #                 enabled: true
+
+    #             saml:
+    #               pep_ite_saml:
+    #                 order: 2
+    #                 attributes:
+    #                   principal: nameid
+    #                   groups: Groups
+    #                 nameid_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+    #                 idp:
+    #                   entity_id: http://www.okta.com/exk11kjilpoFCn84O0h8
+    #                   metadata:
+    #                     path: "https://secure.ite.pepsico.com/app/exk11kjilpoFCn84O0h8/sso/saml/metadata"
+    #                 sp:
+    #                   entity_id: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/"
+    #                   acs: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/api/security/v1/saml"
+    #                   logout: "https://pep-eiap-kibana-01.infra.gw01.aks02.gwc.nonprod.azure.intra.pepsico.com/logout"
+
+    #             ldap:
+    #               pep_ite_ldap:
+    #                 order: 1
+    #                 enabled: true
+    #                 metadata:
+    #                   - uid
+    #                   - cn
+    #                 authentication:
+    #                   # whether to use for authn too
+    #                   enabled: true
+    #                 # cache
+    #                 cache:
+    #                   ttl: 15m
+    #                   max_users: 100000
+    #                 # ssl
+    #                 ssl:
+    #                   certificate_authorities:
+    #                     - /usr/share/elasticsearch/config/pep/etc/certs/PepsiCoCA01.pem
+    #                     - /usr/share/elasticsearch/config/pep/etc/certs/PepsiCoRootCA.pem
+    #                   verification_mode: certificate
+    #                 url:
+    #                   - "${LDAP_URL_0}"
+    #                 #: --
+    #                 #: IMPORTANT
+    #                 #: - we are using serviece account
+    #                 #: - bind_dn must be provided
+    #                 #: - user_search
+    #                 #: - secure_bind_password (should be in secret)
+    #                 #: --
+    #                 bind_dn: ${LDAP_BIND_DN}
+    #                 user_search:
+    #                   base_dn: "ou=internal,ou=people,o=pepsico,dc=pep,dc=pvt"
+    #                   scope: sub_tree
+    #                   pool:
+    #                     size: 25
+    #                 group_search:
+    #                   base_dn: "ou=groups,ou=EIP_DEV,ou=applications,o=pepsico,dc=pep,dc=pvt"
+    #                   # pep has directly underneath
+    #                   scope: one_level
+    #                   filter: "(&(objectclass=groupOfUniqueNames)(uniqueMember={0}))"
+    #                 unmapped_groups_as_roles: false
+
+    #   volumeClaimTemplates: &master_vol_claim_templates
+    #     - metadata:
+    #         name: elasticsearch-data
+    #       spec:
+    #         accessModes:
+    #         - ReadWriteOnce
+    #         resources:
+    #           requests:
+    #             storage: 50Gi
+    #         storageClassName: &elastic_standard_sc elastic-stdssd-zoned
+
+    #   podTemplate:
+
+    #     metadata: &pod_tmpl_metadata
+    #       labels:
+    #         # need this for stack monitoring (allow autodiscover
+    #         # metricbeat) [Format: es-<cluster-name>]
+    #         stack-monitoring.elastic.co/type: es-cluster-01-nonprod-gwc
+    #       annotations:
+    #         # need this for stack monitoring
+    #         co.elastic.logs/enabled: "true"
+    #         traffic.sidecar.istio.io/includeInboundPorts: "*"
+    #         traffic.sidecar.istio.io/excludeOutboundPorts: "9300"
+    #         traffic.sidecar.istio.io/excludeInboundPorts: "9300"
+
+    #     spec:
+
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: &common_sec_ctxt
+    #         runAsUser: 1000
+    #         fsGroup: 1000
+
+    #       # Common Node Selector for a ES role type
+    #       nodeSelector:
+    #         agentpool: npesm1z1
+
+    #       # This should be different for each zone
+    #       tolerations:
+    #         - key: ESMaster01NodeOnlyZone1
+    #           operator: Exists
+
+    #       volumes: &master_volumes
+    #         - name: config-projected
+    #           projected:
+    #             # 0775 -> 509, 0644 -> 420
+    #             defaultMode: 420
+    #             sources:
+    #             # pep-ca-certs-config
+    #             - configMap:
+    #                 name: pep-ca-certs-config
+    #                 optional: false
+    #                 items:
+    #                   - key: PepsiCoCA01.pem
+    #                     # must be relative
+    #                     path: etc/certs/PepsiCoCA01.pem
+    #                   - key: PepsiCoRootCA.pem
+    #                     # must be relative
+    #                     path: etc/certs/PepsiCoRootCA.pem
+
+    #       containers: &master_containers
+    #         - name: elasticsearch
+    #           imagePullPolicy: IfNotPresent
+
+    #           resources:
+    #             limits:
+    #               cpu: 1950m
+    #               memory: 18Gi
+    #             requests:
+    #               cpu: 1800m
+    #               memory: 17Gi
+
+    #           env: &master_env_all
+
+    #             - name: ES_JAVA_OPTS
+    #               value: -Xms16g -Xmx16g
+
+    #             - name: LDAP_URL_0
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_url_0
+
+    #             - name: LDAP_BIND_DN
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_bind_dn
+
+    #           volumeMounts: &common_vol_mounts
+    #             - name: config-projected
+    #               # IMPORTANT:
+    #               # - ES runs as Java Security Context enabled, path must
+    #               # be /usr/share/elasticsearch/config/pep and make sure to
+    #               # create a sub-dir
+    #               # - make sure the init container also runs as elasticsearch
+    #               #   context
+    #               mountPath: /usr/share/elasticsearch/config/pep
+    #               readOnly: true
+
+    #       initContainers: &master_init_containers
+    #         - name: elastic-internal-init-filesystem
+    #           env: *master_env_all
+    #           volumeMounts: *common_vol_mounts
+
+    #         - name: elastic-internal-init-keystore
+    #           env: *master_env_all
+    #           volumeMounts: *common_vol_mounts
+    # # ~~
+    # # master zone-2
+    # # ~~
+    # - name: master2-z2
+    #   count: 1
+
+    #   config: *common_master_config
+    #   volumeClaimTemplates: *master_vol_claim_templates
+    #   podTemplate:
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       # Common Node Selector for a ES role type
+    #       nodeSelector:
+    #         agentpool: npesm01z2
+    #       # This should be different for each zone
+    #       tolerations:
+    #         - key: ESMaster01NodeOnlyZone2
+    #           operator: Exists
+    #       initContainers: *master_init_containers
+    #       volumes: *master_volumes
+    #       containers: *master_containers
+
+    # # ~~
+    # # master zone-3
+    # # ~~
+    # - name: master3-z3
+    #   count: 1
+
+    #   config: *common_master_config
+    #   volumeClaimTemplates: *master_vol_claim_templates
+    #   podTemplate:
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       # Common Node Selector for a ES role type
+    #       nodeSelector:
+    #         agentpool: npesm01z3
+    #       # This should be different for each zone
+    #       tolerations:
+    #         - key: ESMaster01NodeOnlyZone3
+    #           operator: Exists
+    #       initContainers: *master_init_containers
+    #       volumes: *master_volumes
+    #       containers: *master_containers
+
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    # Data Nodeset (zoned)  New node pool
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    # :::
+    #  data (zone 1)
+    # :::
+    - name: data01-z1
+      count: 1
+      config: &data_config
+        node:
+          roles:
+            - data
+
+        xpack: *common_xpack
+
+      volumeClaimTemplates: &data_vol_claim_templates
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 500Gi
+            storageClassName: &data_storage_class elastic-stdssd-zoned
+
+      podTemplate:
+
+        metadata: *pod_tmpl_metadata
+
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          # Common Node Selector for a ES role type
+          nodeSelector:
+            agentpool: npesd1z1
+          # This should be different for each zone
+          tolerations:
+            - key: ESData01NodeOnlyZone1
+              operator: Exists
+
+          volumes: *master_volumes
+
+          # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+          # that can handle it
+          initContainers: *master_init_containers
+
+          containers: &data_containers
+            - name: elasticsearch
+
+              imagePullPolicy: IfNotPresent
+              resources:
+                limits:
+                  cpu: 7800m
+                  memory: 50Gi
+
+                requests:
+                  cpu: 6500m
+                  memory: 48Gi
+
+              env: &data_env_all
+
+                - name: ES_JAVA_OPTS
+                  value: -Xms31g -Xmx31g
+
+                - name: LDAP_URL_0
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_url_0
+
+                - name: LDAP_BIND_DN
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_bind_dn
+
+              volumeMounts: *common_vol_mounts
+    # :::
+    #  data (zone 2)
+    # :::
+    - name: data02-z2
+      count: 1
+
+      config: *data_config
+
+      volumeClaimTemplates: *data_vol_claim_templates
+
+      podTemplate:
+        # common metdata annotations
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          nodeSelector:
+            # IMPORTANT: change for each zone
+            agentpool: npesd1z2
+          tolerations:
+            - key: ESData01NodeOnlyZone2
+              operator: Exists
+
+          # volumes are same as master
+          volumes: *master_volumes
+
+          # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+          # that can handle it
+          initContainers: *master_init_containers
+
+          containers: *data_containers
+
+    # :::
+    #  data (zone 3)
+    # :::
+    - name: data03-z3
+      count: 1
+
+      config: *data_config
+
+      volumeClaimTemplates: *data_vol_claim_templates
+
+      podTemplate:
+        # common metdata annotations
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          nodeSelector:
+            # IMPORTANT: change for each zone
+            agentpool: npesd1z3
+          tolerations:
+            - key: ESData01NodeOnlyZone3
+              operator: Exists
+
+          # volumes are same as master
+          volumes: *master_volumes
+
+          # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+          # that can handle it
+          initContainers: *master_init_containers
+
+          containers: *data_containers
+
+
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    # Data Nodeset (zoned) - old
+    # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    # :::
+    #  data (zone 1)
+    # :::
+    # - name: data1-z1
+    #   count: 1
+    #   config: &data_config
+    #     node:
+    #       roles:
+    #         - data
+
+    #     xpack: *common_xpack
+
+    #   volumeClaimTemplates: &data_vol_claim_templates
+    #     - metadata:
+    #         name: elasticsearch-data
+    #       spec:
+    #         accessModes:
+    #           - ReadWriteOnce
+    #         resources:
+    #           requests:
+    #             storage: 500Gi
+    #         storageClassName: &data_storage_class elastic-stdssd-zoned
+
+    #   podTemplate:
+
+    #     metadata: *pod_tmpl_metadata
+
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       # Common Node Selector for a ES role type
+    #       nodeSelector:
+    #         agentpool: npesd01z1
+    #       # This should be different for each zone
+    #       tolerations:
+    #         - key: ESData01NodeOnlyZone1
+    #           operator: Exists
+
+    #       volumes: *master_volumes
+
+    #       # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+    #       # that can handle it
+    #       initContainers: *master_init_containers
+
+    #       containers: &data_containers
+    #         - name: elasticsearch
+
+    #           imagePullPolicy: IfNotPresent
+    #           resources:
+    #             limits:
+    #               cpu: 7800m
+    #               memory: 50Gi
+
+    #             requests:
+    #               cpu: 6500m
+    #               memory: 48Gi
+
+    #           env: &data_env_all
+
+    #             - name: ES_JAVA_OPTS
+    #               value: -Xms31g -Xmx31g
+
+    #             - name: LDAP_URL_0
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_url_0
+
+    #             - name: LDAP_BIND_DN
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_bind_dn
+
+    #           volumeMounts: *common_vol_mounts
+    # # :::
+    # #  data (zone 2)
+    # # :::
+    # - name: data2-z2
+    #   count: 1
+
+    #   config: *data_config
+
+    #   volumeClaimTemplates: *data_vol_claim_templates
+
+    #   podTemplate:
+    #     # common metdata annotations
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       nodeSelector:
+    #         # IMPORTANT: change for each zone
+    #         agentpool: npesd01z2
+    #       tolerations:
+    #         - key: ESData01NodeOnlyZone2
+    #           operator: Exists
+
+    #       # volumes are same as master
+    #       volumes: *master_volumes
+
+    #       # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+    #       # that can handle it
+    #       initContainers: *master_init_containers
+
+    #       containers: *data_containers
+
+    # # :::
+    # #  data (zone 3)
+    # # :::
+    # - name: data3-z3
+    #   count: 1
+
+    #   config: *data_config
+
+    #   volumeClaimTemplates: *data_vol_claim_templates
+
+    #   podTemplate:
+    #     # common metdata annotations
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       nodeSelector:
+    #         # IMPORTANT: change for each zone
+    #         agentpool: npesd01z3
+    #       tolerations:
+    #         - key: ESData01NodeOnlyZone3
+    #           operator: Exists
+
+    #       # volumes are same as master
+    #       volumes: *master_volumes
+
+    #       # IMPORTANT: since JAVA_OPTS is shared make sure we have the nodes
+    #       # that can handle it
+    #       initContainers: *master_init_containers
+
+    #       containers: *data_containers
+
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Coordinator Nodes Zoned - New
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    # ++
+    # Coordinator zone-1 (new)
+    # ++
+    - name: coordinator01-z1
+      count: 1
+
+      config: &coordinator_config
+        node:
+          roles: []
+
+        xpack: *common_xpack
+
+      volumeClaimTemplates: &coordinator_vol_claim_templates
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Gi
+            storageClassName: *elastic_standard_sc
+
+      podTemplate:
+        # common metdata annotations
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+
+          nodeSelector:
+            # IMPORTANT: change for each zone
+            agentpool: npesg01z1
+
+          tolerations:
+            - key: ESGeneralPurpose01NodeOnlyZone1
+              operator: Exists
+
+          affinity: &coordinator_affinity
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: elasticsearch.k8s.elastic.co/statefulset-name
+                      operator: In
+                      values:
+                        # make sure to not be co-located with ingest nodes
+                        - cluster-01-nonprod-gwc-es-ingest-z1
+                        - cluster-01-nonprod-gwc-es-ingest-z2
+                        - cluster-01-nonprod-gwc-es-ingest-z3
+                # IMPORTANT:
+                # - antiAffinity for requiredDuringScheduling only
+                #   topologyKey allowed is kubernetes.io/hostname
+                #   IF LimitPodHardAntiAffinityTopology admission
+                #   controller is enabled
+                topologyKey: kubernetes.io/hostname
+
+          # volumes are same as master
+          volumes: *master_volumes
+
+          # we use master init containers (since same)
+          initContainers: *master_init_containers
+
+          containers: &coordinator_containers
+            - name: elasticsearch
+              imagePullPolicy: IfNotPresent
+
+              resources:
+                limits:
+                  cpu: 3100m
+                  memory: 26Gi
+
+                requests:
+                  cpu: 2800m
+                  memory: 25Gi
+
+              env: &coordinator_env_all
+
+                - name: ES_JAVA_OPTS
+                  value: -Xms24g -Xmx24g
+
+                - name: LDAP_URL_0
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_url_0
+
+                - name: LDAP_BIND_DN
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_bind_dn
+
+              volumeMounts: *common_vol_mounts
+
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Coordinator Nodes Zoned - old
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    # # ++
+    # # Coordinator zone-1 (old)
+    # # ++
+    # - name: coordinator1-z1
+    #   count: 1
+
+    #   config: &coordinator_config
+    #     node:
+    #       roles: []
+
+    #     xpack: *common_xpack
+
+    #   volumeClaimTemplates: &coordinator_vol_claim_templates
+    #     - metadata:
+    #         name: elasticsearch-data
+    #       spec:
+    #         accessModes:
+    #           - ReadWriteOnce
+    #         resources:
+    #           requests:
+    #             storage: 50Gi
+    #         storageClassName: *elastic_standard_sc
+
+    #   podTemplate:
+    #     # common metdata annotations
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+
+    #       nodeSelector:
+    #         # IMPORTANT: change for each zone
+    #         agentpool: npesg1z1
+
+    #       tolerations:
+    #         - key: ESGeneralPurpose01NodeOnlyZone1
+    #           operator: Exists
+
+    #       affinity: &coordinator_affinity
+    #         podAntiAffinity:
+    #           requiredDuringSchedulingIgnoredDuringExecution:
+    #           - labelSelector:
+    #               matchExpressions:
+    #                 - key: elasticsearch.k8s.elastic.co/statefulset-name
+    #                   operator: In
+    #                   values:
+    #                     # make sure to not be co-located with ingest nodes
+    #                     - cluster-01-nonprod-gwc-es-ingest-z1
+    #                     - cluster-01-nonprod-gwc-es-ingest-z2
+    #                     - cluster-01-nonprod-gwc-es-ingest-z3
+    #             # IMPORTANT:
+    #             # - antiAffinity for requiredDuringScheduling only
+    #             #   topologyKey allowed is kubernetes.io/hostname
+    #             #   IF LimitPodHardAntiAffinityTopology admission
+    #             #   controller is enabled
+    #             topologyKey: kubernetes.io/hostname
+
+    #       # volumes are same as master
+    #       volumes: *master_volumes
+
+    #       # we use master init containers (since same)
+    #       initContainers: *master_init_containers
+
+    #       containers: &coordinator_containers
+    #         - name: elasticsearch
+    #           imagePullPolicy: IfNotPresent
+
+    #           resources:
+    #             limits:
+    #               cpu: 3100m
+    #               memory: 26Gi
+
+    #             requests:
+    #               cpu: 2800m
+    #               memory: 25Gi
+
+    #           env: &coordinator_env_all
+
+    #             - name: ES_JAVA_OPTS
+    #               value: -Xms24g -Xmx24g
+
+    #             - name: LDAP_URL_0
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_url_0
+
+    #             - name: LDAP_BIND_DN
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_bind_dn
+
+    #           volumeMounts: *common_vol_mounts
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Ingest Nodes Zoned - New
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # ++
+    # Ingest zone-1 (new)
+    # ++
+    - name: ingest01-z1
+      count: 1
+
+      config: &ingest_config
+        node:
+          roles:
+            - ingest
+
+        xpack: *common_xpack
+
+      volumeClaimTemplates: &ingest_vol_claim_templates
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Gi
+            storageClassName: *elastic_standard_sc
+
+      podTemplate:
+        # common metdata annotations
+        metadata: *pod_tmpl_metadata
+        spec:
+          # IMPORTANT: should be at pod level
+          securityContext: *common_sec_ctxt
+          nodeSelector:
+            # IMPORTANT: change for each zone
+            agentpool: npesg01z1
+          tolerations:
+            - key: ESGeneralPurpose01NodeOnlyZone1
+              operator: Exists
+
+          # volumes are same as master
+          volumes: *master_volumes
+
+          # we use master init containers (since same)
+          initContainers: *master_init_containers
+
+          containers: &ingest_containers
+            - name: elasticsearch
+              imagePullPolicy: IfNotPresent
+
+              resources:
+                limits:
+                  #cpu: 1950m
+                  memory: 18Gi
+
+                requests:
+                  #cpu: 1000m
+                  memory: 17Gi
+
+              env: &ingest_env_all
+
+                - name: ES_JAVA_OPTS
+                  value: -Xms16g -Xmx16g
+
+                - name: LDAP_URL_0
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_url_0
+
+                - name: LDAP_BIND_DN
+                  valueFrom:
+                    configMapKeyRef:
+                      name: pep-eiap-xpack-settings
+                      key: ldap_bind_dn
+
+              volumeMounts: *common_vol_mounts
+
+    # # ++
+    # # Ingest zone-1 (old)
+    # # ++
+    # - name: ingest1-z1
+    #   count: 1
+
+    #   config: &ingest_config
+    #     node:
+    #       roles:
+    #         - ingest
+
+    #     xpack: *common_xpack
+
+    #   volumeClaimTemplates: &ingest_vol_claim_templates
+    #     - metadata:
+    #         name: elasticsearch-data
+    #       spec:
+    #         accessModes:
+    #           - ReadWriteOnce
+    #         resources:
+    #           requests:
+    #             storage: 50Gi
+    #         storageClassName: *elastic_standard_sc
+
+    #   podTemplate:
+    #     # common metdata annotations
+    #     metadata: *pod_tmpl_metadata
+    #     spec:
+    #       # IMPORTANT: should be at pod level
+    #       securityContext: *common_sec_ctxt
+    #       nodeSelector:
+    #         # IMPORTANT: change for each zone
+    #         agentpool: npesg1z1
+    #       tolerations:
+    #         - key: ESGeneralPurpose01NodeOnlyZone1
+    #           operator: Exists
+
+    #       # volumes are same as master
+    #       volumes: *master_volumes
+
+    #       # we use master init containers (since same)
+    #       initContainers: *master_init_containers
+
+    #       containers: &ingest_containers
+    #         - name: elasticsearch
+    #           imagePullPolicy: IfNotPresent
+
+    #           resources:
+    #             limits:
+    #               #cpu: 1950m
+    #               memory: 18Gi
+
+    #             requests:
+    #               #cpu: 1000m
+    #               memory: 17Gi
+
+    #           env: &ingest_env_all
+
+    #             - name: ES_JAVA_OPTS
+    #               value: -Xms16g -Xmx16g
+
+    #             - name: LDAP_URL_0
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_url_0
+
+    #             - name: LDAP_BIND_DN
+    #               valueFrom:
+    #                 configMapKeyRef:
+    #                   name: pep-eiap-xpack-settings
+    #                   key: ldap_bind_dn
+
+    #           volumeMounts: *common_vol_mounts

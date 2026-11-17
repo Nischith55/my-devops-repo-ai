@@ -1,0 +1,78 @@
+stages:
+- stage: POD_CPU_MEMORY_USAGE
+  displayName: POD_CPU_MEMORY_USAGE
+  variables:
+  - name: env_convert
+    value: ${{ upper(parameters.env) }}
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-nonprod-eus-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-cit-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna'))}}:
+      value: pep-pfna-cit-prod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'dps'), eq(parameters.Region, 'sea'))}}:
+      value: pep-dps-prod-sea-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'dps'), eq(parameters.Region, 'suk'))}}:
+      value: pep-dps-prod-suk-global-01-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'nonprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'eus'),eq(parameters.Region, 'sea'),eq(parameters.Region, 'ae'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), or(eq(parameters.Region, 'scus'),eq(parameters.Region, 'gwc'),eq(parameters.Region, 'suk'))) }}:
+      value: pep-eiap-prod-eus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-nonprod-eus-infra-02-aks-agents
+  pool:
+    name: $(agent_pool)
+  jobs:
+  - job: POD_CPU_MEMORY_USAGE
+    timeoutInMinutes: 0
+    steps:
+    - template: set_config_namespace_tagging.yml
+      parameters:
+        cluster: ${{ parameters.cluster_name }}
+        env: $(env_convert)
+
+    # - task: UsePythonVersion@0
+    #   inputs:
+    #     versionSpec: '3.10'
+    #   displayName: 'Use Python 3.10'
+    
+    - task: CmdLine@2
+      inputs:
+        script: |
+          pip3 install "google-auth==2.23.4"
+          pip3 install kubernetes==30.1.0
+          pip3 install azure-identity==1.19.0
+          pip3 install ruamel.yaml
+          ansible-playbook --version
+          pip install ansible[Azure]
+          pip install futures
+          pip show pyyaml
+          pip3 install openshift    
+      displayName: 'ansible_pre_requisites'
+      name: 'ansible_pre_requisites'
+    
+    - task: Bash@3
+      name: POD_CPU_MEMORY_USAGE
+      displayName: 'POD_CPU_MEMORY_USAGE'
+      inputs:
+        targetType: 'inline'
+        script: |
+          ansible-playbook --version
+          ansible-galaxy collection install kubernetes.core -p ~/.ansible/collections/
+          ansible-galaxy collection install cloud.common -p ~/.ansible/collections/
+          ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+          ansible-playbook -e '{"job_name": "$(Agent.JobName)", "env": "${{ parameters.env }}", "department": "${{ parameters.department }}", "cluster_name": "${{ parameters.cluster_name }}", "mypath": "$(system.defaultWorkingDirectory)", "region": "${{ parameters.Region }}", "namespaces": "${{ parameters.namespaces }}"}'  src/main/ansible/playbooks/k8s/pod_cpu_memory_usage.yml -v
+      env: 
+        ANSIBLE_HOST_KEY_CHECKING: False
+        ANSIBLE_LOCALHOST_WARNING: False
+        AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

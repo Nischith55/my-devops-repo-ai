@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: receipt-scanning-reward-service-qa-vs
+  namespace: pep-dps-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - receipt-scanning-reward-service-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /receipt-scanning/rewards/generate-rewards
+    route:
+    - destination:
+        host: receipt-scanning-reward-service.pep-dps-cgf-rsrewards-qa.svc.cluster.local
+        port:
+          number: 8085
+          

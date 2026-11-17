@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    env-dev: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    project: cvsmv
+    sector: cgf
+    servicename_aks: cloudmarketplace-cmp-non-prod
+    team: cgf-cvsmv
+  name: pep-eiap-cgf-cvsmv-dev

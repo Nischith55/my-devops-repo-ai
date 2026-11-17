@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-cgf-ctxpp-preprod-cv-web-vs
+  namespace: pep-eiap-cgf-ctxpp-preprod
+  labels:
+    app: pep-eiap-cgf-ctxpp-preprod-cv-web
+spec:
+  hosts:
+    - ctx.preprod.mypepsico.com
+    - pep-eiap-cgf-ctxpp-preprod-cv.global.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-cgf-ctxpp-preprod/pep-eiap-cgf-ctxpp-preprod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-cgf-ctxpp-preprod-cv-web.pep-eiap-cgf-ctxpp-preprod.svc.cluster.local
+        port:
+          number: 80

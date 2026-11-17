@@ -1,0 +1,37 @@
+---
+ns_pep_eiap_europe_dtcjoy_qa:
+  
+  name: pep-eiap-europe-dtcjoy-qa
+  
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: europe-dtcjoy
+    sector: europe
+    project: dtcjoy
+    crosscharge_aks: crosscharge
+    istio-injection: enabled
+    servicename_aks: distributororderportalnon-prod
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-qa: "true"
+
+  service_accounts:
+    - name: pep-eiap-europe-dtcjoy-qa-sa
+      # should really have 1 role but we give it a list
+      role_bindings: 
+        # name of the binding 
+        - name: pep-eiap-springcloudk8s-rb
+          roleref: 
+            "{{ k8s_role_ref['springcloudk8s_rb'] }}"
+
+  role_bindings:
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['europe_dtcjoy'] }}"
+      roleref:
+        "{{ k8s_role_ref['developer_rb'] }}"
+  secrets: 
+    name: pep-eiap-europe-dtcjoy-qa-sa-token
+    namespace: pep-eiap-europe-dtcjoy-qa
+    annotations:
+      kubernetes.io/service-account.name : "pep-eiap-europe-dtcjoy-qa-sa"

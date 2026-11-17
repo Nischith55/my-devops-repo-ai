@@ -1,0 +1,30 @@
+---
+# generated file please do not edit
+# Ansible managed: modified on 2021-03-01 10:20:43
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Adds namespace to all resources.
+namespace: monitoring
+resources:
+  - ../../../../../../add-ons/prometheus/kustomize/server/base
+images:
+  - name: quay.io/prometheus/prometheus
+    newName: quay.io/prometheus/prometheus
+    newTag: v2.22.1
+# All strategic merge patches
+# only filename not full path
+patchesStrategicMerge:
+  - patch-prometheus-configmap.yml
+  - patch-merge-server-statefulset.yml
+# All json6902 patches
+# only filename not full path
+patches:
+  - path: patch-json-server-statefulset.yml
+    target:
+      group: apps
+      kind: StatefulSet
+      name: prometheus
+      namespace: monitoring
+      version: v1
+ 
+ 

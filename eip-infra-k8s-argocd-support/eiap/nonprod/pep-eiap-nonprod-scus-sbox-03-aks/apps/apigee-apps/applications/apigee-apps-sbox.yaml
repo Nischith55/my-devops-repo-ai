@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apigee-sbox-bootstrapper
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: apigee-apps
+  destination:
+    namespace: apigee
+    name: pep-eiap-nonprod-scus-sbox-03-aks
+  syncPolicy:    
+    automated:
+      prune: False
+      selfHeal: true
+      allowEmpty: false
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+    targetRevision: apigee-argocd-config
+  - repoURL: pepeiapprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.6
+    chart: argocd-app-bootstrapper
+#   - repoURL: us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+#     targetRevision: 1.13.1
+#     chart: apigee-operator
+    helm:
+      releaseName: apigee-apps
+      valueFiles:
+      - $values/nonprod/pep-eiap-nonprod-scus-sbox-03-aks/argocd-app-configs.yaml    
+      values: |
+        global:
+          helm:  
+            enabled: false       
+            repo: us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts             
+          spec:
+            project: 'apigee-apps' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIAP_Apigee/_git/eiapapigee
+              repoName: eiapapigee
+              targetRevision: apigee-argocd-config
+            sync:
+              prune: true 
+            notifications:  
+              teamsChannel: argo-notification

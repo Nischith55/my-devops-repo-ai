@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile-devops
+  namespace: pep-eiap-global-devsecops-dev
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefiledevops
+  resources:
+    requests:
+      storage: 100Gi

@@ -1,0 +1,252 @@
+global:
+  fullnameOverride: "pep-eip-pbna-fivestar-ivr-service" 
+  namespace: test 
+  deployment:
+    enabled: false
+  service:
+    enabled: true
+  
+  rollout:
+    enabled: true
+    minReadySeconds: 30
+    progressDeadlineSeconds: 600
+    progressDeadlineAbort: true
+    revisionHistoryLimit: 2
+    rollbackWindowRevisions: 2
+    strategy: canary       
+    canary:      
+      analysis:
+        templates:
+        - templateName: http-requests
+        startingStep: 2
+        args:
+        args: 
+        - name: hostname
+          value: pep-eip-pbna-fivestar-ivr-service.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+      steps:
+      - setWeight: 20
+      - pause: {duration: 10}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {}
+      - experiment:
+          duration: 5m
+          templates:
+          - name: stable
+            specRef: stable
+          - name: canary
+            specRef: canary
+          analyses:
+          - name: stable-analysis
+            templateName: prometheus-analysis
+            args:
+            - name: appname
+              value: pep-eip-pbna-fivestar-ivr-service
+            - name: namespace
+              value: test
+            - name: podhash
+              value: "{{templates.baseline.podTemplateHash}}"
+          - name: canary-analysis
+            templateName: prometheus-analysis
+            args:
+            - name: appname
+              value: pep-eip-pbna-fivestar-ivr-service
+            - name: namespace
+              value: test            
+            - name: podhash
+              value: "{{templates.canary.podTemplateHash}}"        
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+      dynamicStableScale: true
+      trafficRouting:
+        istio:      
+          virtualServices:     
+          - name: pep-eip-pbna-fivestar-ivr-service-vs         
+          destinationRule:
+            name:  pep-eip-pbna-fivestar-ivr-service-dr 
+            canarySubsetName: canary
+            stableSubsetName: stable
+
+platform-chart:  
+  autoscalingEnabled: false
+  hpaConfigMinReplicas: 3
+  hpaConfigMaxReplicas: 6
+  targetCPUUtilizationPercentage: 80 
+  targetMemoryUtilizationPercentage: 20
+  pdbEnabled: false
+  pdbMaxUnavailable: 1
+  pdbSelector:
+    app: pep-eip-pbna-savvy-metrics
+  
+  virtualService: 
+    enabled: true
+    name: pep-eip-pbna-fivestar-ivr-service-vs
+    gateways:
+    - istio-system/istio-in-gateway-01
+    hosts: 
+    - pep-eip-pbna-fivestar-ivr-service.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+    tlsTerminationOnPod: false
+    routes:
+    - prefix: /
+      destinations:
+      - subset: stable
+        destinationService: pep-eip-pbna-fivestar-ivr-service
+        port: 8080    
+        weight: 100
+      - subset: canary
+        destinationService: pep-eip-pbna-fivestar-ivr-service
+        port: 8080
+        weight: 0
+  
+
+  destinationRule:
+    enabled: true
+    sessionAffinity: false
+    subsets:
+    - name: canary
+      labels:        
+        role: canary
+    - name: stable
+      labels:       
+        role: stable 
+
+app-chart:  
+  replicaCount: 5
+  labels:
+    app: pep-eip-pbna-fivestar-ivr-service
+
+  image: 
+    repository: pepeiapnonprodglobalcommonacr.azurecr.io/pep/eip/shared-services/pep-eip-pbna-fivestar-ivr-service
+    tag: "20240116.1"
+    pullPolicy: IfNotPresent
+
+
+  containerPorts:
+  - port: 8080
+    name: "app-port"
+   
+
+  serviceAccount:
+    name: test-sa
+
+  probes:
+    enabled: true
+    liveness:
+      path: /actuator/health/liveness
+      port: app-port
+      initialDelaySeconds: 60
+      periodSeconds: 5
+      timeoutSeconds: 15
+      successThreshold: 1
+      failureThreshold: 1
+    readiness:
+      path: /actuator/health/readiness
+      port: app-port
+      initialDelaySeconds: 60
+      periodSeconds: 5
+      timeoutSeconds: 15
+      successThreshold: 1
+      failureThreshold: 1
+    startup:
+      path: /actuator/health/liveness
+      port: app-port
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 15
+      successThreshold: 1
+      failureThreshold: 30
+
+  envFromSecrets:
+  - name: OAUTH_CLIENT_ID
+    secret: 
+      name: pep-eip-pbna-fivestar-ivr-secret
+      key: eiap.oauth.client-id
+  - name: OAUTH_CLIENT_SECRET
+    secret: 
+      name: pep-eip-pbna-fivestar-ivr-secret
+      key:  eiap.oauth.client-secret
+
+  resources: 
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+
+# configmap creation from file
+  configmapFromFile:
+  # enabled - default value is false, set it to true to create the configmap from file
+    enabled: true   
+    # configmaps to be created 
+    configurations: 
+      # name of the configmap - suffixed with -configmap
+      pep-eip-pbna-fivestar-ivr-service:
+        # config to be assigned to some random text - which is overwritten with contents of the file in the pipeline with --set-file flag
+        config: 'test'
+
+  analysisTemplates:
+    enabled: true
+    templates:
+    - name: prometheus-analysis
+      args:
+      - appname
+      - namespace
+      - podhash
+      metrics:
+      - name: failure-rate        
+        interval: 60s
+        count: 5    
+        successCondition: len(result)==0 || result[0] >=0.95
+        failureLimit: 3
+        provider: prometheus 
+        prometheus:
+          address: https://pep-eiap-prometheus.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com 
+          insecure: true  
+          timeout: 40        
+          query: |
+            sum(rate(istio_requests_total{app="{{args.appname}}",kubernetes_namespace="{{args.namespace}}",rollouts_pod_template_hash="{{args.podhash}}",request_protocol="http",response_code!~"5.*"}[5m]))/ sum(rate(
+              istio_requests_total{app="{{args.appname}}",kubernetes_namespace="{{args.namespace}}",rollouts_pod_template_hash="{{args.podhash}}",request_protocol="http"}[5m]
+            ))
+ 
+    - name: http-requests
+      args:
+      - hostname
+      metrics:
+      - name: http-request  
+        interval: 10s
+        count: 5  
+        provider: job 
+        job:        
+          spec:  
+            ttlSecondsAfterFinished: 240     
+            template:   
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"          
+              spec:
+                containers:
+                - name: load-tester
+                  image: argoproj/load-tester:latest
+                  command: [sh, -xec]
+                  args:
+                  - |
+                    wrk -t1 -c1 -d5 -s report.lua https://{{args.hostname}}/readyz
+                    # jq -e '.errors_ratio <= 0.05' report.json
+                restartPolicy: Never
+            backoffLimit: 0 
+
+### Scheduling section
+
+# node selector to schedule the pod on a specific node
+  nodeSelector: {}
+
+# tolerations to be set on the pod to get scheduled on the node where there are taints
+  tolerations: []
+
+# affinity to be set on the pods to co-schedule with other pods 
+  affinity: {}
+  
+## scheduling section ends ##

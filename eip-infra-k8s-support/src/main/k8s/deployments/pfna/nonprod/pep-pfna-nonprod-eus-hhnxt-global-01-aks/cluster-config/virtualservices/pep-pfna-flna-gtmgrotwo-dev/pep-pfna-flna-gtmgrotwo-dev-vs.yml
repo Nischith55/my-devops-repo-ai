@@ -1,0 +1,103 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: pep-pcaf-api-commonservice-gro-pog
+  name: pep-pfna-flna-gtmgrotwo-dev-vs
+  namespace: pep-pfna-flna-gtmgrotwo-dev
+spec:
+  gateways:
+  - pep-pfna-flna-gtmgrotwo-dev/pep-pfna-flna-gtmgrotwo-dev-cv-gw
+  hosts:
+  - pep-pfna-flna-gtmgrotwo-dev.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/assortment
+    route:
+    - destination:
+        host: pep-pcaf-api-assortmentservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/geography
+    route:
+    - destination:
+        host: pep-pcaf-api-geographyservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/demand
+    route:
+    - destination:
+        host: pep-pcaf-api-demandservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/planogram
+    route:
+    - destination:
+        host: pep-pcaf-api-planogramservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/assortment
+    route:
+    - destination:
+        host: pep-pcaf-api-assortmentservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/cycle
+    route:
+    - destination:
+        host: pep-pcaf-api-cycleservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/management
+    route:
+    - destination:
+        host: pep-pcaf-api-managementservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/space
+    route:
+    - destination:
+        host: pep-pcaf-api-spaceservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/util
+    route:
+    - destination:
+        host: pep-pcaf-api-utilservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/pog/gro/common
+    route:
+    - destination:
+        host: pep-pcaf-api-commonservice-gro-pog.pep-pfna-flna-gtmgrotwo-dev.svc.cluster.local
+        port:
+          number: 80

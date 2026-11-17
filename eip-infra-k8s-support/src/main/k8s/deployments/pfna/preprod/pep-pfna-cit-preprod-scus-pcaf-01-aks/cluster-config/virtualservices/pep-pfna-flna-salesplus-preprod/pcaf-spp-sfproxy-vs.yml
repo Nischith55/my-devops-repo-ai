@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations: {}
+  labels:
+    app: pcaf-spp-sfproxy
+  name: pcaf-spp-sfproxy-vs
+  namespace: pep-pfna-flna-salesplus-preprod
+spec:
+  gateways:
+  - pep-pfna-flna-salesplus-preprod/pep-pfna-flna-salesplus-preprod-cv-gw
+  hosts:
+  - pcaf-spp-sfproxy.pfnapcaf.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pcaf-spp-sfproxy.pep-pfna-flna-salesplus-preprod.svc.cluster.local
+        port:
+          number: 80

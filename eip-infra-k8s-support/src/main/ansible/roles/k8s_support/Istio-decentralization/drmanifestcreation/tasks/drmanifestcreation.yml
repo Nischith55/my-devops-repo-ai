@@ -1,0 +1,54 @@
+
+- name: set destinationrule facts
+  set_fact:
+    drule: "{{ item.metadata.name }}"
+    spec: "{{ item.spec }}"
+    namespace: "{{ item.spec.host.split('.')[1] }}"
+
+- name: block to check namespace existence
+  block:
+  - name: creating the file 
+    copy:
+      dest: "{{ drule }}-dr-temp.yml"
+      content: |
+        ---
+        apiVersion: networking.istio.io/v1beta1
+        kind: DestinationRule
+        metadata: 
+          name: 
+          namespace: 
+        spec: 
+  - name: read the file content  
+    slurp:
+      src: "{{ drule }}-dr-temp.yml"
+    register: yml_file_content
+
+  - name: decode the content 
+    set_fact: 
+      decoded_yml: "{{ yml_file_content.content | b64decode | from_yaml }}"
+
+  - name: update yml file  content 
+    ansible.utils.update_fact: 
+      updates: 
+        - path: decoded_yml.metadata.name
+          value: "{{ drule }}"  
+        - path: decoded_yml.metadata.namespace
+          value: "{{ item.spec.host.split('.')[1] }}"
+        - path: decoded_yml.spec
+          value: "{{ spec }}"
+    register: decoded_yml_temp
+
+  - name: ensures directory exists
+    file:
+      path: "{{ mypath }}/Artifacts/dr-manifests/{{ item.spec.host.split('.')[1] }}"
+      state: directory 
+
+  - name: write the updated one to the file
+    copy:
+      content: "{{ decoded_yml_temp.decoded_yml | to_nice_yaml(indent=2) }}"
+      dest: "{{ mypath }}/Artifacts/dr-manifests/{{ item.spec.host.split('.')[1] }}/{{ drule }}.yml"
+
+  - name: print manifest 
+    debug:
+      var: lookup('ansible.builtin.file', '{{ mypath }}/Artifacts/dr-manifests/{{ item.spec.host.split('.')[1] }}/{{ drule }}.yml')
+  when: namespace in full_ns_list

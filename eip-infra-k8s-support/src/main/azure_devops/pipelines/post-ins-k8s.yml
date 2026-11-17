@@ -1,0 +1,578 @@
+#####II Pipeline
+
+trigger: none
+
+variables:
+  - group: repo_access_token
+  - group: pep-k8s-db-endpoints
+  - group: preprod_nonprod_ansible_azure_secrets
+  - group: prod_ansible_azure_secrets
+  - name: agent_pool
+    ${{ if and(eq(parameters.env, 'nonprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-nonprod-${{ parameters.region }}-hhnxt-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'preprod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-preprod-scus-infra-02-aks-agents
+    ${{ elseif and(eq(parameters.env, 'prod'), eq(parameters.department, 'pfna')) }}:
+      value: pep-pfna-cit-prod-${{ parameters.region }}-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-${{parameters.env}}-eus-infra-02-aks-agents
+  - name: source_branch
+    value: develop
+  - name: target_branch
+    value: master
+  - name: scope
+    value: EIP_DEV_MDPDevUsers
+  - name: secure_file
+    value: config
+  - name: local_agent_pool
+    ${{ if eq(parameters.env, 'prod') }}:
+      value: pep-eiap-prod-scus-infra-02-aks-agents
+      # value: pep-eiap-nonprod-scus-infra-02-aks-agents
+    ${{ else }}:
+      value: pep-eiap-${{parameters.env}}-eus-infra-02-aks-agents
+
+    
+parameters:
+- name: cloudProvider
+  displayName: 'Cloud Provider'
+  type: string
+  default: 'azure'
+  values:
+  - azure
+  - aws
+- name: clustername
+  displayName: Name of the cluster
+  type: string
+- name: department
+  displayName: Name of the department
+  type: string
+- name: env
+  displayName: Name of the environment
+  type: string
+- name: region
+  displayName: Name of the region
+  type: string
+- name: ip
+  displayName: IP address
+  type: string
+- name: primary
+  displayName: PrimaryStatus
+  type: string
+  values: 
+  - true
+  - false
+- name: updateIPOnly
+  displayName: 'Update IP of existing cluster'
+  type: boolean
+  default: false
+- name: prometheus_chart_version
+  displayName: 'Prometheus Chart Version'
+  type: string
+  default: 'prometheus-12.0.1'
+  
+stages:
+  - stage: Publish
+    displayName: 'PublishtoDB'
+    condition: ${{ eq(parameters.updateIPOnly, false) }}
+    pool:
+      name: $(local_agent_pool)
+    jobs:
+    - job: publishjob
+      displayName: 'Publish'
+      steps:
+      - task: Bash@3
+        displayName: publish details to nonprod endpoint
+        inputs:
+          targetType: 'inline'
+          script: |      
+            if [ "${{parameters.cloudProvider}}" == "aws" ]; then
+              ENDPOINT=("$(dev_endpoint_aws)" "$(qa_endpoint_aws)")
+            else
+              ENDPOINT=("$(dev_endpoint)" "$(qa_endpoint)" "$(preprod_endpoint)")
+            fi
+            for i in ${ENDPOINT[@]}
+            do                        
+              resp="$(curl -v -X POST \
+              -H "Content-type:application/x-www-form-urlencoded" \
+              "$(token_url_nonprod)" \
+              -d "grant_type=client_credentials&client_id=$(client_id_nonprod)&client_secret=$(client_secret_nonprod)&scope=$(scope)")"
+              echo "Token is ${resp}"
+              token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")            
+              echo "token = $token"             
+              output_response="$(curl --location --request POST $i \
+                                  --insecure \
+                                  --header 'Content-Type: application/json' \
+                                  --header "Authorization: Bearer $token" \
+                                  --data-raw '{"department":"${{parameters.department}}", "environment":"${{parameters.env}}", "region":"${{parameters.region}}", "clusters":"${{parameters.clustername}}", "primaryStatus":"${{parameters.primary}}"}' )"
+              echo "response = $output_response"
+            done
+      
+      - task: Bash@3
+        displayName: publish details to prod endpoint
+        inputs:
+          targetType: 'inline'
+          script: |      
+            if [ "${{parameters.cloudProvider}}" == "aws" ]; then   
+              ENDPOINT=("$(prod_endpoint_aws)")
+            else
+              ENDPOINT=("$(prod_endpoint)")
+            fi
+            for i in ${ENDPOINT[@]}
+            do                        
+              resp="$(curl -v -X POST \
+              -H "Content-type:application/x-www-form-urlencoded" \
+              "$(token_url_prod)" \
+              -d "grant_type=client_credentials&client_id=$(client_id_prod)&client_secret=$(client_secret_prod)&scope=$(scope)")"
+              echo "Token is ${resp}"
+              token=$(echo ${resp} | sed "s/{.*\"access_token\":\"\([^\"]*\).*}/\1/g")            
+              echo "token = $token"             
+              output_response="$(curl --location --request POST $i \
+                                  --insecure \
+                                  --header 'Content-Type: application/json' \
+                                  --header "Authorization: Bearer $token" \
+                                  --data-raw '{"department":"${{parameters.department}}", "environment":"${{parameters.env}}", "region":"${{parameters.region}}", "clusters":"${{parameters.clustername}}", "primaryStatus":"${{parameters.primary}}"}' )"
+              echo "response = $output_response"
+            done
+
+  - stage: Framework_Changes
+    displayName: Framework
+    condition: and(${{ eq(parameters.updateIPOnly, false) }}, ne('${{ parameters.cloudProvider }}', 'aws'))  # ✅ SKIP if AWS
+    pool: 
+      name: pep-eiap-nonprod-scus-infra-02-aks-agents
+    jobs:
+    - job: confchange
+      displayName: Framework conf changes
+      steps:
+        - task: DownloadSecureFile@1
+          displayName: "Download Secure file"
+          name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+          inputs:
+            secureFile: $(secure_file)
+      
+        - task: CopyFiles@2
+          displayName: "Copyitems"
+          inputs:
+            SourceFolder: $(Agent.TempDirectory)
+            Contents: $(secure_file)
+            TargetFolder: $(system.defaultWorkingDirectory)          
+
+
+        - task: Bash@3
+          displayName: "reading the file before "
+          inputs:
+            targetType: 'inline'
+            script: |        
+              cat $(system.defaultWorkingDirectory)/$(secure_file)
+
+        - task: CmdLine@2
+          inputs:
+            script: |
+              pip install ansible[Azure]
+              pip install futures
+              pip install pathlib 
+              pip install jmespath==0.10.0
+              pip install sh==1.14.2
+              pip install six==1.16.0
+          displayName: 'ansible_pre_requisites'
+          name: 'ansible_pre_requisites'
+
+        - task: Ansible@0
+          displayName: "publishgroupvars"
+          name: "publishgroup"
+          inputs:
+            ansibleInterface: 'agentMachine'
+            playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/grpvars-add-folder.yml'
+            args: '-e ''{ "department": "${{ parameters.department }}", "env": "${{ parameters.env }}", "agent_working_dir": "$(system.defaultWorkingDirectory)" }'' -vv'
+          env:
+            ANSIBLE_HOST_KEY_CHECKING: False
+            ANSIBLE_LOCALHOST_WARNING: False
+          
+        - task: Ansible@0
+          displayName: "publishhostvars"
+          name: "publishfolder"
+          inputs:
+            ansibleInterface: 'agentMachine'
+            playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/hostvars-add-folder.yml'
+            args: '-e ''{ "cluster_name": "${{ parameters.clustername }}", "department": "${{ parameters.department }}", "env": "${{ parameters.env }}", "region": "${{ parameters.region }}", "agent_working_dir": "$(system.defaultWorkingDirectory)" }'' -vv'
+          env:
+            ANSIBLE_HOST_KEY_CHECKING: False
+            ANSIBLE_LOCALHOST_WARNING: False   
+
+        #- template: templates/git_push.yml
+        - task: Bash@3
+          name: "git_push"
+          displayName: 'git_push'
+          inputs:
+            targetType: 'inline'
+            script: |
+              git branch
+              git checkout -b $(Build.SourceBranchName)
+              git add .
+              git commit -m "added the generated manifest file"
+              git pull 'https://$(svcuser):$(svcPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+              git config --global user.email "$(svcuser)@pepsico.com"
+              git config --global user.name "$(svcuser)"
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+                echo "##vso[task.setvariable variable=output;isOutput=true]nothing_to_commit"
+              else
+                git add .
+                git commit -m "added the generated manifest file"
+                git push 'https://$(svcuser):$(svcPersonalAccessToken)@$(repo_url)' $(Build.SourceBranchName)
+                echo "##vso[task.setvariable variable=output;isOutput=true]things_to_commit"
+              fi
+                
+        - pwsh: |
+            $env:AZURE_DEVOPS_EXT_PAT =  "$(svcPersonalAccessToken)"  
+            az devops configure --defaults organization=$(System.CollectionUri) project=$(System.TeamProject) --use-git-aliases true
+            $pr_response=az repos pr list --creator svceipazdevops --status active | ConvertFrom-Json
+            Write-host $pr_response
+            if ($pr_response.count -gt 0)
+
+            {
+
+                Write-Host “PR exists”
+                Return
+
+            }
+            else
+            {
+                Write-Host “There is no PR”
+                az repos pr create --project $(System.TeamProject) --repository $(Build.Repository.Name) --target-branch $(target_branch) --source-branch $(source_branch) --reviewers $(reviewer1_pr) --title "PR request $(Build.BuildNumber)" | ConvertFrom-Json
+                Return
+            }
+          condition: and(succeeded(), eq(variables['git_push.output'], 'things_to_commit'))
+          displayName: 'PR Request'
+ 
+
+        - task: Ansible@0
+          displayName: "K8s Clusterconfig"
+          name: "clusterinfo"
+          inputs:
+            ansibleInterface: 'agentMachine'
+            playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/postprovision-cluster-config.yml'
+            args: '-e ''{ "cluster_name": "${{ parameters.clustername }}","ip_address": "${{ parameters.ip }}", "prometheus_chart_version": "${{ parameters.prometheus_chart_version }}", "agent_working_dir": "$(system.defaultWorkingDirectory)"}'' -vv'
+          env:
+            ANSIBLE_HOST_KEY_CHECKING: False
+            ANSIBLE_LOCALHOST_WARNING: False      
+
+
+        - task: Bash@3
+          displayName: "Delete secure file config"
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+          inputs:
+            targetType: 'inline'
+            script: |        
+              name="$(secure_file)"
+              cat $(secure_file)
+              base_url="$(System.CollectionUri)/$(System.TeamProject)/_apis"
+              existing_id="$(curl --fail -s -L -u ":$(svcPersonalAccessToken)" "${base_url}/distributedtask/securefiles?api-version=6.0-preview.1" | jq -r ".value[] | select(.name == \"$name\").id " )"
+              echo "$existing_id"
+              curl --data-raw -v -L -X DELETE -u ":$(svcPersonalAccessToken)" --fail -H "Content-Type: application/octet-stream" "${base_url}/distributedtask/securefiles/$existing_id?api-version=6.0-preview.1"
+
+
+        - powershell: |
+            try{
+                $base64AuthInfo=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f "","$(svcPersonalAccessToken)")))
+                $uploadSecureFileURI="https://dev.azure.com/PepsicoIT/EIP-Infrastructure/_apis/distributedtask/securefiles?api-version=5.0-preview.1&name=$(secure_file)"
+                $headers = @{
+                    Authorization=("Basic {0}" -f $base64AuthInfo)
+                }
+                Invoke-RestMethod -Uri $uploadSecureFileURI -Method Post -ContentType "application/octet-stream" -Headers $headers -InFile "$(system.defaultWorkingDirectory)/$(secure_file)"
+            }
+            catch
+            {
+                write-host -f Red "Error upload client certificate file [$(system.defaultWorkingDirectory)/$(secure_file)
+            ] to AzureDevOps secure file!" $_.Exception.Message
+                throw "Error occors -> $_.Exception.Message"
+            }
+          displayName: 'PowerShell Script'
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+
+        - task: Bash@3
+          displayName: "get_id"
+          name: get_id
+          inputs:
+            targetType: 'inline'
+            script: |
+              sleep 20        
+              name="$(secure_file)"
+              base_url="$(System.CollectionUri)/$(System.TeamProject)/_apis"
+              existing_id="$(curl --fail -s -L -u ":$(svcPersonalAccessToken)" "${base_url}/distributedtask/securefiles?api-version=6.0-preview.1" | jq -r ".value[] | select(.name == \"$name\").id " )"
+              echo "$existing_id"
+              echo "##vso[task.setvariable variable=outputresult;isOutput=true]$existing_id"
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: $(System.DefaultWorkingDirectory)/$(secure_file)
+            artifactName: Conf
+
+
+    - job: set_permission
+      timeoutInMinutes: 60
+      variables:
+        myoutput: $[ dependencies.confchange.outputs['get_id.outputresult'] ]
+      pool: server
+      dependsOn: confchange
+      steps:
+        - task: InvokeRESTAPI@1
+          displayName: 'Invoke REST API: POST'
+          inputs:
+            serviceConnection: 'pipelineaccess'
+            method: 'PATCH'
+            headers: "{'Content-Type':'application/json'}"
+            body: '[{"resource": {"type": "securefile","id": "$(myoutput)","name": "$(secure_file)"},"allPipelines": {"authorized": true}}]'
+
+  - stage: Backup
+    displayName: Backup
+    condition: and(${{ eq(parameters.updateIPOnly, false) }}, ne('${{ parameters.cloudProvider }}', 'aws'))  # ✅ SKIP if AWS
+    pool: 
+      name: pep-eiap-nonprod-scus-infra-02-aks-agents
+    jobs:
+    - job: "configfile_backup"
+      displayName: Config file Backup
+      steps: 
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifact: Conf
+
+        - task: AzureCLI@2
+          displayName: upload latest configfile to storage account
+          inputs:
+            azureSubscription: pep-eiap-nonprod-devsecops-spn
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              az storage blob upload --container-name azure-devops-agent-01-blob --name $(secure_file) --file '$(Pipeline.Workspace)/$(secure_file)' --account-name pe1001devsecops01sa --overwrite
+        
+        - task: Bash@3
+          displayName: "Push config to cmp repo"
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+          inputs:
+            targetType: 'inline'
+            script: |   
+              echo "pushing config file to cmp "
+              mkdir /tmp/git_repo_clone/
+              cd /tmp/git_repo_clone/
+              git clone 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-cmp-k8s-automation' /tmp/git_repo_clone/
+              git checkout development
+              cp $(Pipeline.Workspace)/$(secure_file) /tmp/git_repo_clone/src/main/ansible/playbooks/config
+              git config --global user.email "$(svcuser)@pepsico.com"
+              git config --global user.name "$(svcuser)"
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+              else
+                git add .
+                git commit -m "updated config file with new cluster."
+                git push 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-cmp-k8s-automation' development
+              fi
+        
+        - task: Bash@3
+          displayName: "Push config to kubeconfig repo"
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+          inputs:
+            targetType: 'inline'
+            script: |   
+              echo "pushing config file to Kubeconfig repo."
+              mkdir /tmp/git_repo_clone2/
+              cd /tmp/git_repo_clone2/
+              git clone 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-k8s-kubeconfig-repo' /tmp/git_repo_clone2/
+              git checkout develop
+              cp $(Pipeline.Workspace)/$(secure_file) /tmp/git_repo_clone2/config
+              git config --global user.email "$(svcuser)@pepsico.com"
+              git config --global user.name "$(svcuser)"
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+              else
+                git add .
+                git commit -m "updated config file with new cluster."
+                git push 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-k8s-kubeconfig-repo' develop
+              fi
+  
+  
+  - stage: updateIPOnly
+    displayName: updateIPOnly
+    condition: and(${{ eq(parameters.updateIPOnly, true) }}, ne('${{ parameters.cloudProvider }}', 'aws'))  # ✅ SKIP if AWS
+    pool: 
+      name: pep-eiap-nonprod-scus-infra-02-aks-agents
+    jobs:
+    - job: "update_IP_address"
+      displayName: Update IP Address
+      steps: 
+      - task: DownloadSecureFile@1
+        displayName: "Download Secure file"
+        name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+        inputs:
+          secureFile: $(secure_file)
+
+      - task: CopyFiles@2
+        displayName: "Copyitems"
+        inputs:
+          SourceFolder: $(Agent.TempDirectory)
+          Contents: $(secure_file)
+          TargetFolder: $(system.defaultWorkingDirectory)
+      
+      - task: CmdLine@2
+        inputs:
+          script: |
+            pip install ansible[Azure]
+            pip install futures
+            pip install pathlib 
+            pip install jmespath==0.10.0
+            pip install sh==1.14.2
+            pip install six==1.16.0
+            sleep 5
+            ansible-galaxy collection install ansible.utils -p ~/.ansible/collections/
+        displayName: 'ansible_pre_requisites'
+        name: 'ansible_pre_requisites'
+
+      - task: Ansible@0
+        displayName: "update IP address"
+        name: "update_IP_address"
+        inputs:
+          ansibleInterface: 'agentMachine'
+          playbookPathOnAgentMachine: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/postprovision-update-config-ip.yml'
+          args: '-e ''{ "cluster_name": "${{ parameters.clustername }}","ip_address": "${{ parameters.ip }}", "agent_working_dir": "$(system.defaultWorkingDirectory)"}'' -vv'
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+          ANSIBLE_LOCALHOST_WARNING: False    
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(System.DefaultWorkingDirectory)/$(secure_file)
+          artifactName: config_updated
+
+      - task: Bash@3
+        displayName: "Delete secure file config"
+        condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+        inputs:
+          targetType: 'inline'
+          script: |        
+            name="$(secure_file)"
+            cat $(secure_file)
+            base_url="$(System.CollectionUri)/$(System.TeamProject)/_apis"
+            existing_id="$(curl --fail -s -L -u ":$(svcPersonalAccessToken)" "${base_url}/distributedtask/securefiles?api-version=6.0-preview.1" | jq -r ".value[] | select(.name == \"$name\").id " )"
+            echo "$existing_id"
+            curl --data-raw -v -L -X DELETE -u ":$(svcPersonalAccessToken)" --fail -H "Content-Type: application/octet-stream" "${base_url}/distributedtask/securefiles/$existing_id?api-version=6.0-preview.1"
+
+      - powershell: |
+          try{
+              $base64AuthInfo=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f "","$(svcPersonalAccessToken)")))
+              $uploadSecureFileURI="https://dev.azure.com/PepsicoIT/EIP-Infrastructure/_apis/distributedtask/securefiles?api-version=5.0-preview.1&name=$(secure_file)"
+              $headers = @{
+                  Authorization=("Basic {0}" -f $base64AuthInfo)
+              }
+              Invoke-RestMethod -Uri $uploadSecureFileURI -Method Post -ContentType "application/octet-stream" -Headers $headers -InFile "$(system.defaultWorkingDirectory)/$(secure_file)"
+          }
+          catch
+          {
+              write-host -f Red "Error upload client certificate file [$(system.defaultWorkingDirectory)/$(secure_file)
+          ] to AzureDevOps secure file!" $_.Exception.Message
+              throw "Error occors -> $_.Exception.Message"
+          }
+        displayName: 'PowerShell Script'
+        condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+
+      - task: Bash@3
+        displayName: "get_id"
+        name: get_id
+        inputs:
+          targetType: 'inline'
+          script: |
+            sleep 20        
+            name="$(secure_file)"
+            base_url="$(System.CollectionUri)/$(System.TeamProject)/_apis"
+            existing_id="$(curl --fail -s -L -u ":$(svcPersonalAccessToken)" "${base_url}/distributedtask/securefiles?api-version=6.0-preview.1" | jq -r ".value[] | select(.name == \"$name\").id " )"
+            echo "$existing_id"
+            echo "##vso[task.setvariable variable=outputresult;isOutput=true]$existing_id"
+    
+    - job: set_permission
+      dependsOn: update_IP_address
+      timeoutInMinutes: 60
+      variables:
+        myoutput: $[ dependencies.update_IP_address.outputs['get_id.outputresult'] ]
+      pool: server
+      steps:
+        - task: InvokeRESTAPI@1
+          displayName: 'Invoke REST API: POST'
+          inputs:
+            serviceConnection: 'pipelineaccess'
+            method: 'PATCH'
+            headers: "{'Content-Type':'application/json'}"
+            body: '[{"resource": {"type": "securefile","id": "$(myoutput)","name": "$(secure_file)"},"allPipelines": {"authorized": true}}]'
+
+    - job: "configfile_backup"
+      displayName: Config file Backup
+      dependsOn: set_permission
+      steps: 
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifact: config_updated
+
+        - task: AzureCLI@2
+          displayName: upload latest configfile to storage account
+          inputs:
+            azureSubscription: pep-eiap-nonprod-devsecops-spn
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              az storage blob upload --container-name azure-devops-agent-01-blob --name $(secure_file) --file '$(Pipeline.Workspace)/$(secure_file)' --account-name pe1001devsecops01sa --overwrite
+        
+        - task: Bash@3
+          displayName: "Push config to cmp repo"
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+          inputs:
+            targetType: 'inline'
+            script: |   
+              echo "pushing config file to cmp "
+              mkdir /tmp/git_repo_clone/
+              cd /tmp/git_repo_clone/
+              git clone 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-cmp-k8s-automation' /tmp/git_repo_clone/
+              git checkout development
+              cp $(Pipeline.Workspace)/$(secure_file) /tmp/git_repo_clone/src/main/ansible/playbooks/config
+              git config --global user.email "$(svcuser)@pepsico.com"
+              git config --global user.name "$(svcuser)"
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+              else
+                git add .
+                git commit -m "updated config file with new cluster."
+                git push 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-cmp-k8s-automation' development
+              fi
+        
+        - task: Bash@3
+          displayName: "Push config to kubeconfig repo"
+          condition: or(eq(variables['Build.SourceBranchName'], 'develop'), eq(variables['Build.SourceBranchName'], 'master'))
+          inputs:
+            targetType: 'inline'
+            script: |   
+              echo "pushing config file to Kubeconfig repo."
+              mkdir /tmp/git_repo_clone2/
+              cd /tmp/git_repo_clone2/
+              git clone 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-k8s-kubeconfig-repo' /tmp/git_repo_clone2/
+              git checkout develop
+              cp $(Pipeline.Workspace)/$(secure_file) /tmp/git_repo_clone2/config
+              git config --global user.email "$(svcuser)@pepsico.com"
+              git config --global user.name "$(svcuser)"
+              git status | grep 'nothing to commit, working tree clean' &> /dev/null
+              outpval=`echo $?`
+              echo $outpval
+              if [ $outpval -eq 0 ];then
+                echo 'Nothing to commit'
+              else
+                git add .
+                git commit -m "updated config file with new cluster."
+                git push 'https://$(svcuser):$(svcPersonalAccessToken)@pepsicoit.visualstudio.com/EIP-Infrastructure/_git/eip-k8s-kubeconfig-repo' develop
+              fi

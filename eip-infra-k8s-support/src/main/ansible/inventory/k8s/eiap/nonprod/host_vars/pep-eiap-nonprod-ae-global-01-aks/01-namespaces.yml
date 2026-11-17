@@ -1,0 +1,17 @@
+---
+# What namespaces this cluster is responsible for.
+
+# note: ONLY provide instance_namespace_vars
+
+instance_namespace_vars:
+  - ns_pep_eiap_apac_ochapac_qa
+  - ns_pep_eiap_amesa_nsgflip_dev
+  - ns_pep_eiap_cgf_cep_qa
+  - ns_pep_eiap_cgf_apprt_dev
+  - ns_pep_eiap_cgf_apprt_qa
+  - ns_pep_eiap_apac_gscaf_qa
+  - ns_pep_eiap_apac_gscaf_dev
+  # EIAP admin infra ns
+  - ns_pep_eiap_global_infra_dev
+  #- ns_pep_eiap_global_mdp_dev
+  - ns_pep_eiap_cgf_dop_dev

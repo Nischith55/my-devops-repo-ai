@@ -1,0 +1,83 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sRequiredProbes",
+  "metadata": {
+    "annotations": {
+      "argocd.argoproj.io/tracking-id": "opa-constraints-pep-eiap-nonprod-eus-global-02-aks-dev:constraints.gatekeeper.sh/K8sRequiredProbes:default/must-have-probes"
+    },
+    "name": "must-have-probes"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "istio-operator",
+        "istio-system",
+        "kube-node-lease",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "twistlocknp",
+        "tigera-operator",
+        "cert-manager-system",
+        "reloader",
+        "policy-system",
+        "default",
+        "keda",
+        "local",
+        "gpu-operator",
+        "nim-operator",
+        "pep-eiap-ops-admin",
+        "pep-eiap-global-infra-dev",
+        "pep-eiap-istio-config",
+        "falcon-system",
+        "falcon-kac",
+        "pep-eiap-elastic-client-01",
+        "pep-eiap-elastic-client-02",
+        "pep-eiap-elastic-cluster-01",
+        "pep-eiap-elastic-cluster-02",
+        "pep-eiap-elastic-monitor-01",
+        "pep-eiap-global-devsecops-dev",
+        "pep-eiap-snowdiscovery-nonprod"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": [
+          {
+            "key": "app",
+            "operator": "Exists"
+          }
+        ]
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "probeTypes": [
+        "tcpSocket",
+        "httpGet",
+        "exec"
+      ],
+      "probes": [
+        "readinessProbe"
+      ]
+    }
+  }
+}

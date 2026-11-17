@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: product-success-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app     
+spec:
+  description: Project for product-success-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/product-success-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-sea-global-01-aks
+    namespace: pep-dps-apac-psd-prod
+  - name: pep-dps-prod-sea-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: product-success-prod-admin
+    description: Admin privileges to product-success-prod
+    policies:
+    - p, proj:product-success-prod:product-success-prod-admin, applications, *, product-success-prod/*, allow
+    - p, proj:product-success-prod:product-success-prod-admin, applications, get, argocd/*, allow
+    - p, proj:product-success-prod:product-success-prod-admin, repositories, *, product-success-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: product-success-prod-user
+    description: Read-only privileges to product-success-prod
+    policies:
+    - p, proj:product-success-prod:product-success-prod-user, applications, get, product-success-prod/*, allow
+    - p, proj:product-success-prod:product-success-prod-user, applications, sync, product-success-prod/*, allow
+    - p, proj:product-success-prod:product-success-prod-user, repositories, get, product-success-prod/*, allow
+    groups:
+    - "Team.Support.App.DSS.PSD"
+    - "Team.Support.EIAP.READ"
+    - "Team.Support.CGF.NonProd.devops"

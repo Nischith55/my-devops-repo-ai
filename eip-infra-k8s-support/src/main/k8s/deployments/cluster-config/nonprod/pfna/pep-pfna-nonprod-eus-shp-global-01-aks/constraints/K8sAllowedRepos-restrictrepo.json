@@ -1,0 +1,83 @@
+{
+  "apiVersion": "constraints.gatekeeper.sh/v1beta1",
+  "kind": "K8sAllowedRepos",
+  "metadata": {
+    "name": "restrictrepo"
+  },
+  "spec": {
+    "enforcementAction": "warn",
+    "match": {
+      "excludedNamespaces": [
+        "calico-system",
+        "cattle-fleet-system",
+        "cattle-gatekeeper-system",
+        "cattle-impersonation-system",
+        "cattle-system",
+        "default",
+        "istio-operator",
+        "istio-system",
+        "keda",
+        "kube-node-lease",
+        "observability",
+        "kube-public",
+        "kube-system",
+        "kubecost",
+        "kubernetes-dashboard",
+        "local",
+        "monitoring",
+        "msi-acrpull-system",
+        "observability",
+        "pep-pfna-elastic-client-01",
+        "pep-pfna-istio-config",
+        "pep-pfna-ops-admin",
+        "tigera-operator",
+        "twistlocknp",
+        "cert-manager-system",
+        "reloader",
+        "flux-system",
+        "snyk-monitor",
+        "flagger",
+        "pep-pfna-gremlin"
+      ],
+      "kinds": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "kinds": [
+            "Pod"
+          ]
+        }
+      ],
+      "labelSelector": {
+        "matchExpressions": []
+      },
+      "namespaceSelector": {
+        "matchExpressions": []
+      },
+      "scope": "*"
+    },
+    "parameters": {
+      "repos": [
+        "myartifactory.mypepsico.com/",
+        "artifactory.mypepsico.com/",
+        "artifactory.pepsico.pvt/",
+        "pepeiapnonprodcommonacr.azurecr.io/",
+        "docker.io/istio/",
+        "docker.io/rancher/",
+        "cyberark/",
+        "docker.elastic.co/observability/",
+        "appdynamics/",
+        "docker.io/appdynamics/",
+        "openpolicyagent/",
+        "peppfnanonprodhhnextacr.azurecr.io/",
+        "rancher/",
+        "us-docker.pkg.dev/gloo-mesh/",
+        "wiziopublic.azurecr.io/wiz-app/",
+        "wizio.azurecr.io/",
+        "ghcr.io/chaos-mesh/",
+        "gcr.io/google-containers/"
+      ]
+    }
+  }
+}

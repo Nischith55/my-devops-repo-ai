@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: warehouse-camunda-orchestrator
+  name: warehouse-camunda-orchestrator-service-vs
+  namespace: pep-pfna-flna-whorch-dev
+spec:
+  gateways:
+  - pep-pfna-flna-whorch-dev/pep-pfna-flna-whorch-dev-cv-gw
+  hosts:
+  - warehouse-camunda-orchestrator-service.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: warehouse-camunda-orchestrator-service.pep-pfna-flna-whorch-dev.svc.cluster.local
+        port:
+          number: 8080

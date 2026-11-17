@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: growthbook-api-svc-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - growthbook-api.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  - growthbook-pfna.dev.mypepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: growthbook.pep-pfna-pcaf-dev.svc.cluster.local
+        port: 
+          number: 3100
+    corsPolicy:
+      allowOrigins:      
+      - exact: https://growthbook.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      - exact: https://growthbook-api.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+      allowMethods:
+      - POST
+      - GET
+      - PUT
+      - DELETE
+      - OPTIONS
+      allowCredentials: true
+      allowHeaders:
+      - Authorization
+      - Link
+      - Content-Type
+      - Access-Control-Allow-Origin
+      - x-organization
+      exposeHeaders:
+      - x-total-count      
+

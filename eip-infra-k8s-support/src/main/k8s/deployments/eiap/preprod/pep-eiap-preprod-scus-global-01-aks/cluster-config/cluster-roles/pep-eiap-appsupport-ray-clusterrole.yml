@@ -1,0 +1,35 @@
+---
+# Generated File do not edit manually -- try to regenerate
+# Ansible managed: modified on 2021-04-19 11:27:36
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pep-eiap-appsupport-ray-clusterrole
+rules: 
+- apiGroups:
+  - ''
+  resources:
+  - events
+  - pods  
+  - pods/log
+  - pods/portforward
+  - pods/status
+  - pods/exec
+  verbs:
+  - list
+  - get
+  - watch
+  - delete
+  - create
+- apiGroups:
+  - ray.io
+  resources:
+  - rayjobs
+  - rayservices
+  - rayclusters
+  verbs:
+  - get 
+  - list
+  - watch
+  - delete
+  - create

@@ -1,0 +1,44 @@
+steps:
+- task: PythonScript@0
+  displayName: "Extract Azure KV secrets"
+  name: "GetAzureCreds"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/src/main/azure_devops/scripts/get_azure_kv_secrets.py'
+    arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PROD_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+  env:
+    NONPROD_K8S_SPN: $(pep-eiap-nonprod-onboarding-spn) 
+    PREPROD_K8S_SPN: $(pep-eiap-preprod-onboarding-spn)
+    PROD_K8S_SPN: $(pep-eiap-prod-onboarding-spn)
+
+- task: PythonScript@0
+  displayName: "Set Azure credentials"
+  name: "SetAzureCreds"
+  inputs:
+    scriptSource: 'filePath'
+    scriptPath: '$(system.defaultWorkingDirectory)/src/main/azure_devops/scripts/set_azure_creds.py'
+    arguments: "$(env_convert)_K8S_SPN"
+    #arguments: "_K8S_SPN"
+    pythonInterpreter: '/usr/bin/python3'
+    failOnStderr: true
+
+- task: DownloadSecureFile@1
+  displayName: 'Download config file'
+  name: config
+  inputs:
+    secureFile: 'config'
+
+- task: Bash@3
+  displayName: 'set_context'
+  inputs:
+    targetType: 'inline'
+    script: |
+      mkdir $HOME/.kube
+      cp $(config.secureFilePath) $HOME/.kube/
+      kubectl config use-context ${{ parameters.cluster }}
+      kubectl config current-context
+  env:
+    AAD_SERVICE_PRINCIPAL_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AAD_SERVICE_PRINCIPAL_CLIENT_SECRET: $(AZURE_SECRET)

@@ -1,0 +1,59 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: b2b-pepconnect-uat
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for b2b-pepconnect-uat   
+      sourceRepos:
+      - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/b2b-pepconnect-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-bffckout-qa
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-ops-admin
+
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btblylty-qa
+        server: https://kubernetes.default.svc
+
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btboms-qa
+        server: https://kubernetes.default.svc
+
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btbproduct-qa
+        server: https://kubernetes.default.svc
+
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-latam-btborch-qa
+        server: https://kubernetes.default.svc
+
+      roles:
+      - name: b2b-pepconnect-uat-admin
+        description: Admin privileges to b2b-pepconnect-uat
+        policies:
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-admin, applications, *, b2b-pepconnect-uat/*, allow
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-admin, repositories, *, b2b-pepconnect-uat/*, allow
+        groups:
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+        - "Role.App.B2BArgo.PepsiConnect.Admin"
+
+      - name: b2b-pepconnect-uat-user
+        description: Read-only privileges to b2b-pepconnect-uat
+        policies:
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-user, applications, get, b2b-pepconnect-uat/*, allow
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-user, applications, sync, b2b-pepconnect-uat/*, allow
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-user, repositories, get, b2b-pepconnect-uat/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:b2b-pepconnect-uat:b2b-pepconnect-uat-user, applications, action/apps/Deployment/restart, b2b-pepconnect-uat/*, allow
+        groups:
+        - "Team.Support.LATAM.NonProd.B2BOps"
+        - "Team.Support.EIAP.READ"
+        - "Team.Support.CGF.NonProd.devops"

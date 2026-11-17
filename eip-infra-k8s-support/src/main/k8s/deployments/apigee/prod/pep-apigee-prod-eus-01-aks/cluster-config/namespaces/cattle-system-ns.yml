@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    field.cattle.io/projectId: p-kmxtk
+    kubernetes.io/metadata.name: cattle-system
+    servicename_aks: apigee
+  name: cattle-system

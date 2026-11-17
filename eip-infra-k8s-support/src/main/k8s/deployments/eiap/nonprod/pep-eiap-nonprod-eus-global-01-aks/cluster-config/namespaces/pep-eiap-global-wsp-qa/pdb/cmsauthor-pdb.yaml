@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cmsauthor-pdb
+  namespace: pep-eiap-global-wsp-qa
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cmsauthor

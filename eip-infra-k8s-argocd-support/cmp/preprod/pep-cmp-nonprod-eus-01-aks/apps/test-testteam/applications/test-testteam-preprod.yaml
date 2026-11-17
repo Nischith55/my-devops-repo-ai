@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-testteam-dev-bootstrapper
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: argocd
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-testteam-argocd-configs
+    targetRevision: develop
+  - repoURL: pepeiapnonprodcommonacr.azurecr.io/helm
+    targetRevision: 0.2.6
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: test-testteam-dev
+      valueFiles:
+      - $values/dev/pep-cmp-nonprod-eus-01-aks/argocd-app-configs.yaml
+      values: "global:\n  env: preprod\n  helm:\n    enabled: false\n    repo: pepeiapnonprodcommonacr.azurecr.io/helm\n\
+        \    chart: umbrellachart\n    revision: 2.2.1\n    values:\n      platform-chart:\n\
+        \        destination:\n          jobImage: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1\n\
+        \          jobNS: pep-cmp-ops-admin\n          jobServiceAccount: gw-update-sa\n\
+        \  spec:\n    project: test-testteam-dev\n    source:\n      repoURL: https://dev.azure.com/PepsiCoIT/CTO_DevX/_git/test-testteam-argocd-configs\n\
+        \      repoName: test-testteam-argocd-configs\n      targetRevision: develop\n\
+        \      manifest: helm-values.yaml\n    sync:\n      prune: false\n    notifications:\n\
+        \      notifyEmail: test@pepsico.com\n    destination:\n      clusterName:\
+        \ pep-cmp-nonprod-eus-01-aks\n"

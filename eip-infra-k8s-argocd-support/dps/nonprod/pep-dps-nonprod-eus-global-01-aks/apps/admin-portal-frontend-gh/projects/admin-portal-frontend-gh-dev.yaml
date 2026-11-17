@@ -1,0 +1,41 @@
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: admin-portal-frontend-gh-dev
+      namespace: argocd  
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        argocd.argoproj.io/project-inherit: global-app
+    spec:
+      description: Project for admin-portal-frontend-gh-dev  
+      sourceRepos:
+      - https://github.com/09476547_pepsico/admin-portal-argocd-configs
+      - pepdpsnonprodacr.azurecr.io/helm
+      destinations:
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-cgf-adportal-dev
+      - name: pep-dps-nonprod-eus-global-01-aks
+        namespace: pep-dps-ops-admin
+      roles:
+      - name: admin-portal-frontend-gh-dev-admin
+        description: Admin privileges to admin-portal-frontend-gh-dev
+        policies:
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-admin, applications, *, admin-portal-frontend-gh-dev/*, allow
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-admin, repositories, *, admin-portal-frontend-gh-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+      - name: admin-portal-frontend-gh-dev-user
+        description: Read-only privileges to admin-portal-frontend-gh-dev
+        policies:
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-user, applications, get, admin-portal-frontend-gh-dev/*, allow
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-user, applications, sync, admin-portal-frontend-gh-dev/*, allow
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-user, repositories, get, admin-portal-frontend-gh-dev/*, allow
+         # This line will be replaced by the pipeline script
+        - p, proj:admin-portal-frontend-gh-dev:admin-portal-frontend-gh-dev-user, applications, action/apps/Deployment/restart, admin-portal-frontend-gh-dev/*, allow
+        groups:
+        - "Team.Support.CGF.NonProd.devops"
+        - "Team.Support.EIAP.READ"
+        - "Team.App.DPS.DevOps.NonProd"    

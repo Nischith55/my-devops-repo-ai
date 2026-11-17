@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-proj-test
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: global-proj-test 
+  destination:
+    namespace: test
+    name: pep-eiap-nonprod-eus-sbox-03-aks
+  sources:
+  - ref: values
+    repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-argocd-configs
+    targetRevision: rollouts
+  - repoURL: https://myartifactory.mypepsico.com/artifactory/eiapplatform-helm-prod-virtual
+    targetRevision: 0.1.2
+    chart: argocd-app-bootstrapper
+    helm:
+      releaseName: global-proj-test
+      valueFiles:
+      - $values/apps/dev/argo-app-configs.yaml    
+      values: |
+        global:
+          env: dev
+          helm:
+            enabled: false
+          spec:
+            project: 'global-proj-test' 
+            source: 
+              repoURL: https://dev.azure.com/PepsiCoIT/EIP-Infrastructure/_git/eip-argocd-configs
+              repoName: eip-argocd-configs
+              targetRevision: rollouts
+              manifest: helm-values.yaml
+            sync:
+              prune: false 
+            notifications: 
+              notifyEmail: prasanti.kadiyala@pepsico.com  
+              teamsChannel: myteams
+    

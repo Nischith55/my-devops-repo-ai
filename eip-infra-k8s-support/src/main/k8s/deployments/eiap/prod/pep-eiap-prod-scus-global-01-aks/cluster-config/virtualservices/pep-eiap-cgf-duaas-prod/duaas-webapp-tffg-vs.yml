@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    labels:
+        app: duaas-webapp
+    name: duaas-webapp-tffg-vs
+    namespace: pep-eiap-cgf-duaas-prod
+spec:
+    gateways:
+    - pep-eiap-cgf-duaas-prod/pep-eiap-cgf-duaas-prod-cv-gw
+    hosts:
+    - pep-cgf-webapp.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+    - pepdoculingo.mypepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: duaas-webapp.pep-eiap-cgf-duaas-prod.svc.cluster.local
+                port:
+                    number: 80

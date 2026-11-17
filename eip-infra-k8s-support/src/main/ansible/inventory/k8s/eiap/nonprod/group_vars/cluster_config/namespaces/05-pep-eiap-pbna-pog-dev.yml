@@ -1,0 +1,46 @@
+---
+# ##
+# IMPORTANT:
+#  Variable Name Convention:
+#   - Always start with 'ns_'
+#   - replace '-' with '_' in the namespace name
+# ##
+
+# Namespace PBNA POG
+# IMPORTANT:
+#  - change environment and add or remove flag env-{dev, qa etc}
+
+ns_pep_eiap_pbna_pog_dev:
+  
+  name: pep-eiap-pbna-pog-dev
+
+  # ALL LABEL VALUES MUST BE STRINGS
+  labels:
+    team: pbna-pog
+    sector: pbna
+    project: pog
+    istio.io/rev: nonprod-stable
+    environment: nonprod
+    env-dev: "true"
+
+  role_bindings:
+
+    # developer role
+    - name: pep-eiap-developer-rb
+      subjects:
+        - "{{ k8s_sup_subjects['pbna_pog'] }}"
+        - "{{ k8s_sup_subjects['pbna_pog_sp'] }}"
+
+  # registry secrets
+  registry_secrets:
+
+    - secret_name: "{{ _pbna_pog_spn_name }}"
+      registries: 
+        - pepeiapnonprodpbnapogacr.azurecr.io
+
+  # generic secrets
+
+  generic_secrets:
+    - secret_name: "{{ _pbna_pog_spn_name }}"
+      # Any contents apart from what is in secret        
+

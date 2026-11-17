@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: model-test-app
+  name: pep-eiap-flna-iacoe-model-vs
+  namespace: pep-eiap-flna-iacoe-dev
+spec:
+  gateways:
+  - pep-eiap-flna-iacoe-dev/pep-eiap-flna-iacoe-dev-cv-gw
+  hosts:
+  - pepsico-flna-iacoe-model.global.gw01.aks01.scus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - uri:
+        prefix: /score
+    route:
+    - destination:
+        host: model-test-app-svc.pep-eiap-flna-iacoe-dev.svc.cluster.local
+        port:
+          number: 80

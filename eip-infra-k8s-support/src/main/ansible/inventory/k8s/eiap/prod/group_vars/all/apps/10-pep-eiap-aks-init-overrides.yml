@@ -1,0 +1,25 @@
+---
+# pep-eiap-aks-init: DaemonSet secrets
+# - we need the secrets (ssh key installed)
+
+# section name for ssh keys via ini lookup method
+pep_eiap_aks_init_section_name: pep-eiap-aks-init-prod
+# pep_eiap_aks_init_vol_name: aks-init-secrets-vol
+# pep_eiap_aks_init_vol_mount: /aks-init-secrets
+
+# pep_eiap_aks_init_daemonset_spec_override:
+#   spec:
+#     template:
+#       spec:
+#         volumes:
+#         - name: "{{ pep_eiap_aks_init_vol_name }}"
+#           projected:
+#             defaultMode: 0400
+#             sources:
+#               - secret:
+#                   name: pep-eiap-aks-init-secrets
+#                   items:
+#                     - key: ssh_private_key_0
+#                       # must be relative path
+#                       path: id_rsa_0
+

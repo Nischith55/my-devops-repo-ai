@@ -1,0 +1,365 @@
+# ##
+# metricbeat node level metrics
+# ##
+# ##
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pep-apigee-preprod-scus-01-aks-node-metricbeat-config
+  namespace: pep-apigee-elastic-client-01
+data:
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat environment variables change here
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  K8S_CLUSTER_NAME: pep-apigee-preprod-scus-01-aks
+
+  #TEMPLATE_NAME: metricbeat-aks-cluster
+  #INDEX_PATTERN_PREFIX: mb-aks
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat processor stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  metricbeat-processor.yml: |
+
+    # ---------------------------------------------------------------------
+    # Common Processors across all beats deployment
+    # ---------------------------------------------------------------------
+
+    processors:
+      - add_host_metadata: {}
+      - add_cloud_metadata: {}
+      - add_kubernetes_metadata: {}
+      - add_fields:
+          fields:
+            pep-aks-cluster: pep-apigee-preprod-scus-01-aks  
+    # ~~
+    # Logging
+    # ~~
+    logging:
+      level: INFO
+      metrics:
+        enabled: true
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # metricbeat standard k8s stuff
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  metricbeat.yml: |
+
+    # --------------------
+    # All outputs
+    # --------------------
+    output.logstash:
+      hosts: ["pepwap23142.corp.pep.pvt:5045", "pepwap23143.corp.pep.pvt:5045", "pepwap23144.corp.pep.pvt:5045"]
+      loadbalance: true
+      worker: 3
+
+
+    # --------------------
+    # send metricbeat metrics itself to our monitoring cluster
+    # --------------------
+    monitoring:
+      # TODO: metricbeat daemonset does not allow internal collection. Please
+      #  file a support request with elastic. (this is the error)
+      #  - Exiting: more than one namespace configured accessing config
+      # disabling it for now
+      enabled: false
+      # UNCOMMENT if working.
+      # elasticsearch:
+      #   hosts:
+      #     - ${MONITORING_CLUSTER_URL}
+      #   # IMPORTANT we are re-using the usernae and password
+      #   username: ${MONITORING_CLUSTER_USER}
+      #   password: ${MONITORING_CLUSTER_PASSWORD}
+      #   ssl: *pep_ca_ssl
+      # metrics:
+      #   # default: 10s
+      #   period: 1m
+      # state:
+      #   # default: 1m
+      #   period: 2m
+
+    # --------------------
+    # enabling http endpoint since internal collection is not working
+    # --------------------
+    http:
+      enabled: true
+      host: 0.0.0.0
+      port: 5066
+
+
+    # ---------------------------------------------------------------------
+    # Setup metricbeat configuration (Common K8S stuff)
+    # ---------------------------------------------------------------------
+    metricbeat:
+
+      monitoring:
+        enabled: false
+
+      # ~~
+      # modules
+      # ~~
+
+      modules:
+
+      # +++
+      # 1) System: Node/Host metrics
+      # +++
+      - module: system
+        enabled: true
+        period: 1m
+        metricsets:
+        - cpu
+        - load
+        - memory
+        - network
+        - process
+        - process_summary
+        - uptime
+        - core
+        process:
+          include_top_n:
+            by_cpu: 5
+            by_memory: 5
+        processes:
+        - .*
+
+      # +++
+      # System: FileSystem metrics
+      # +++
+      - module: system
+        period: 1m
+        metricsets:
+        - filesystem
+        - fsstat
+        processors:
+        - drop_event:
+            when:
+              regexp:
+                system:
+                  filesystem:
+                    mount_point: ^/(sys|cgroup|proc|dev|etc|host|lib)($|/)
+
+      # +++
+      # Kubernetes: kubelet (secure port)
+      # +++
+      - module: kubernetes
+        enabled: true
+        # IMPORTANT: when using module directly, it's still host (not node)
+        host: ${NODE_NAME}
+        period: 30s
+        hosts:
+        # change to local host kubelet secure port
+        - https://${NODE_IP}:10250
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        ssl:
+          verification_mode: none
+        metricsets:
+        - container
+        - node
+        - pod
+        - system
+        - volume
+
+      # +++
+      # Kubernetes: kube-proxy
+      # +++
+      # Currently `proxy` metricset is not supported on Openshift,
+      - module: kubernetes
+        enabled: true
+        # IMPORTANT: when using module directly, it's still host (not node)
+        host: ${NODE_NAME}
+        period: 30s
+        metricsets:
+          - proxy
+        hosts:
+          - "${NODE_IP}:10249"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: &app_name pep-apigee-preprod-scus-01-aks-node-metricbeat
+  namespace: pep-apigee-elastic-client-01
+  labels:
+    app.kubernetes.io/name: *app_name
+    app.kubernetes.io/version: &vers 8.5.2
+    app: *app_name
+    # match the  ES server version (beats is not backward compatible)
+    version: *vers
+spec:
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: *app_name
+      app.kubernetes.io/version: *vers
+
+  template:
+
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app_name
+        app.kubernetes.io/version: *vers
+        app: *app_name
+        version: *vers
+        # we need this for stack monitoring via metricbeat collection
+        stack-monitoring.elastic.co/type: metricbeat-node
+      annotations:
+        co.elastic.logs/enabled: "true"
+
+    spec:
+
+      # Run only on linux nodes, not that we have non linux nodes :)
+      nodeSelector:
+        kubernetes.io/os: linux
+      # PEP: DaemonSet we need to run it on EVERY node. so tolerate all
+      # taints
+      tolerations:
+      - operator: Exists
+
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: metricbeat
+      #For Metricbeat hostname issue
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      # some older Beat versions are depending on this settings presence
+      # in k8s context
+      automountServiceAccountToken: true
+      securityContext:
+        runAsUser: 0
+
+      # All volumes
+      volumes:
+
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup
+
+      - name: dockersock
+        hostPath:
+          path: /var/run/docker.sock
+
+      - name: proc
+        hostPath:
+          path: /proc
+
+      # all metricbeat-data will be stored at the node level for Daemonset
+      # so we can restart from where we left off
+      - name: data
+        hostPath:
+          # IMPORTANT: always change this to match the app_name
+          path: /var/lib/pep-apigee-elastic-client-01/pep-apigee-preprod-scus-01-aks-node-metricbeat/metricbeat-data
+          type: DirectoryOrCreate
+
+      # PEP: all in one configMap (using projections)
+      - name: config-projected
+        projected:
+          # 0644 -> 420, 0600 -> 384
+          defaultMode: 384
+          sources:
+          # pep-ca-certs-config
+          - configMap:
+              name: pep-ca-certs-config
+              optional: false
+              items:
+                - key: PepsiCoCA01.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoCA01.pem
+                - key: PepsiCoRootCA.pem
+                  # must be relative
+                  path: etc/certs/PepsiCoRootCA.pem
+          # metricbeat-node-config
+          - configMap:
+              name: &beats_config pep-apigee-preprod-scus-01-aks-node-metricbeat-config
+              optional: false
+              items:
+                - key: metricbeat.yml
+                  # must be relative
+                  path: etc/beat.yml
+                - key: metricbeat-processor.yml
+                  # must be relative
+                  path: etc/beat-processor-config.yml
+
+      # ##
+      # Containers
+      # ##
+      containers:
+      - name: metricbeat
+        image: docker.elastic.co/beats/metricbeat:8.5.2
+        args:
+        - -environment
+        - container
+        # need this for node-level metricbeat
+        - -system.hostfs=/hostfs
+        - -e
+        - -c
+        - /projected/etc/beat-processor-config.yml
+        - -c
+        - /projected/etc/beat.yml
+        # - -d
+        # - "*"
+        # - index-management,processors
+
+        # HACK: since internal collections is not working for daemonset
+        # metricbeat
+        ports:
+        - name: monitoring
+          containerPort: 5066
+          protocol: TCP
+
+        env:
+
+        # All environment variables from beats-shared-env-config
+
+        # - name: MONITORING_CLUSTER_URL
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: *beats_config
+        #       key: MONITORING_CLUSTER_URL
+
+        # - name: MONITORING_CLUSTER_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: *shared_sec
+        #       # re-use
+        #       key: BEATS_INGEST_USER_01
+
+        # - name: MONITORING_CLUSTER_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       # re-use
+        #       name: *shared_sec
+        #       key: BEATS_INGEST_PASSWORD_01
+
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        # ~~
+        # VolumeMounts
+        volumeMounts:
+        # ~~
+
+        # PEP:
+        - name: config-projected
+          # where it is mounted
+          mountPath: /projected
+          readOnly: true
+
+        - name: cgroup
+          mountPath: /hostfs/sys/fs/cgroup
+
+        - name: dockersock
+          mountPath: /var/run/docker.sock
+
+        - name: proc
+          mountPath: /hostfs/proc
+
+        - name: data
+          mountPath: /usr/share/metricbeat/data
+

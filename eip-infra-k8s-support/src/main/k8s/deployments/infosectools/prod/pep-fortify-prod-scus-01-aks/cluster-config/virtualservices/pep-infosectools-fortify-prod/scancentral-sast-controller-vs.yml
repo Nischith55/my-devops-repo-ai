@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |-
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"scancentral-sast-controller-vs","namespace":"pep-fortify-istio-config"},"spec":{"gateways":["istio-system/istio-in-gateway-01"],"hosts":["scancentral-sast-controller.fortify.gw01.aks01.scus.prod.azure.intra.pepsico.com","csc.pepasm.net"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"scancentral-sast-controller.pep-infosectools-fortify-prod.svc.cluster.local","port":{"number":80}}}]}]}}
+  labels:
+    app: undefined
+  name: scancentral-sast-controller-vs
+  namespace: pep-infosectools-fortify-prod
+spec:
+  gateways:
+  - pep-infosectools-fortify-prod/pep-infosectools-fortify-prod-cv-gw
+  hosts:
+  - scancentral-sast-controller.fortify.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  - csc.pepasm.net
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: scancentral-sast-controller.pep-infosectools-fortify-prod.svc.cluster.local
+        port:
+          number: 80

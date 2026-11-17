@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: crosscharge
+    field.cattle.io/projectId: p-7hq7g
+    kubernetes.io/metadata.name: default
+    servicename_aks: sharedaks
+  name: default

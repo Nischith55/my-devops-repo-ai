@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pep-pbna-nginx
+  namespace: pep-pbna-infra-preprod
+spec:
+  template:
+    spec:
+      containers:
+      - image: pepeiapprodcommonacr.azurecr.io/pep/eiap/infra/utils/admin-utils/eiap-nginx:20241113.2
+        name: pep-pbna-nginx
+        env: 
+        - name: FAIL_LINK
+          value: "https://google.com"

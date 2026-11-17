@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: flna-pgt-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for flna-pgt-dev   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/EIAP_Projects/_git/flna-pgt-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-flna-flnawhse-dev
+  - name: pep-eiap-nonprod-eus-global-02-aks
+    namespace: pep-eiap-ops-admin
+  roles:
+  - name: flna-pgt-dev-admin
+    description: Admin privileges to flna-pgt-dev
+    policies:
+    - p, proj:flna-pgt-dev:flna-pgt-dev-admin, applications, *, flna-pgt-dev/*, allow
+    - p, proj:flna-pgt-dev:flna-pgt-dev-admin, repositories, *, flna-pgt-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: flna-pgt-dev-user
+    description: Read-only privileges to flna-pgt-dev
+    policies:
+    - p, proj:flna-pgt-dev:flna-pgt-dev-user, applications, get, flna-pgt-dev/*, allow
+    - p, proj:flna-pgt-dev:flna-pgt-dev-user, applications, sync, flna-pgt-dev/*, allow
+    - p, proj:flna-pgt-dev:flna-pgt-dev-user, repositories, get, flna-pgt-dev/*, allow
+    - p, proj:flna-pgt-dev:flna-pgt-dev-user, applications, action/apps/Deployment/restart, flna-pgt-dev/*, allow
+    groups:
+    - "Team.Support.EUPGTKnowledgeAsst.Admins"
+    - "Team.Support.EIAP.READ"

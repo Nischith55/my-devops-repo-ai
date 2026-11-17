@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-myidm-appportal-kpsa-vs
+  namespace: pep-eiap-cgf-iamcentral-qa
+  labels:
+      app: pep-myidm-appportal
+spec:
+  hosts:
+  - pep-myidm-appportal.eiap.gw01.aks02.eus.nonprod.azure.intra.pepsico.com
+  - iamcentral-api.qa.mypepsico.com
+  gateways:
+  - pep-eiap-cgf-iamcentral-qa/pep-eiap-cgf-iamcentral-qa-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-myidm-appportal.pep-eiap-cgf-iamcentral-qa.svc.cluster.local
+        port:
+          number: 8080
+  

@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vct-dsd-directsubscription-vs
+  namespace: pep-snt-istio-config
+spec:
+  gateways:
+    - istio-system/istio-in-gateway-01
+  hosts:
+  - vct-dsd-directsubscription.snt.gw01.aks01.scus.preprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /vct-dsd-directsubscription
+    route:
+    - destination:
+        host:  vct-dsd-directsubscription.pep-snt-cgf-walmart-preprod.svc.cluster.local
+        port:
+          number: 80

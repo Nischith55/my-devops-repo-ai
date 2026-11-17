@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: locinsights-synergy-connect-webapp-imyb-vs
+  namespace: pep-pfna-pfna-pfnali-prod
+  labels:
+      app: locinsights-synergy-connect-webapp
+spec:
+  hosts:
+  - locinsights-synergy-connect-webapp.pfnapcaf.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-pfna-pfna-pfnali-prod/pep-pfna-pfna-pfnali-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: locinsights-synergy-connect-webapp.pep-pfna-pfna-pfnali-prod.svc.cluster.local
+        port:
+          number: 8080
+  

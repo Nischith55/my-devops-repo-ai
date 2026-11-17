@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    annotations:
+        kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"labels":{"app":"r360-frontend","app.kubernetes.io/instance":"r360-frontend-qa","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/version":"1.16.3","helm.sh/chart":"platform-chart-1.0.2"},"name":"r360-frontend","namespace":"pep-dps-cgf-retailqa-qa"},"spec":{"gateways":["pep-dps-cgf-retailqa-qa/pep-dps-cgf-retailqa-qa-cv-gw"],"hosts":["r360-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com","aiq.qa.pepsico.com"],"http":[{"match":[{"ignoreUriCase":true,"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"r360-frontend.pep-dps-cgf-retailqa-qa.svc.cluster.local","port":{"number":8080}}}]}]}}
+
+'
+    labels:
+        app: r360-frontend
+        app.kubernetes.io/instance: r360-frontend-qa
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: 1.16.3
+        helm.sh/chart: platform-chart-1.0.2
+    name: r360-frontend
+    namespace: pep-dps-cgf-retailqa-qa
+spec:
+    gateways:
+    - pep-dps-cgf-retailqa-qa/pep-dps-cgf-retailqa-qa-cv-gw
+    hosts:
+    - r360-ui-qa.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - aiq.qa.pepsico.com
+    http:
+    -   match:
+        -   ignoreUriCase: true
+            uri:
+                prefix: /
+        route:
+        -   destination:
+                host: r360-frontend.pep-dps-cgf-retailqa-qa.svc.cluster.local
+                port:
+                    number: 8080

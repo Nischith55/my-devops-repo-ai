@@ -1,0 +1,147 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-in-gateway-01
+  namespace: istio-system
+spec:
+  selector:
+    istio: pep-pfna-ingress-gw01
+  servers:
+  # - hosts:
+  #   - addcut.prd.intra.pepsico.com
+  #   name: istio-in-gateway-01-passthrough-https-443
+  #   port:
+  #     name: https-addcut-443
+  #     number: 443
+  #     protocol: https
+  #   tls:
+  #     cipherSuites:
+  #     - AES128-GCM-SHA256
+  #     - AES256-GCM-SHA384
+  #     - ECDHE-ECDSA-AES128-SHA
+  #     - ECDHE-ECDSA-AES256-SHA
+  #     - ECDHE-ECDSA-AES128-GCM-SHA256
+  #     - ECDHE-ECDSA-AES256-GCM-SHA384
+  #     - ECDHE-RSA-AES128-GCM-SHA256
+  #     - ECDHE-RSA-AES256-GCM-SHA384
+  #     maxProtocolVersion: TLSV1_3
+  #     minProtocolVersion: TLSV1_2    
+  #     mode: PASSTHROUGH
+  - hosts:
+    - "*.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com"
+    name: istio-in-gateway-01-wildcard-https-443
+    port:
+      name: https-wc-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-pfna-sch-prod-scus-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - addcut.prd.intra.pepsico.com
+    - api.addcut.prd.intra.pepsico.com
+    - addcut.mypepsico.com
+    - iwms.mypepsico.com
+    - "*.pfna.sch.gw01.aks01.scus.prod.azure.intra.pepsico.com"
+    name: istio-in-gateway-01-wildcard-http-80
+    port:
+      name: http-wc-80
+      number: 80
+      protocol: http
+    tls:
+      httpsRedirect: true
+  - hosts:
+     - addcut.prd.intra.pepsico.com
+    name: istio-in-gateway-01-addcut-https-443
+    port:
+      name: https-addcut-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-prod-scus-sch-01-addcut-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE    
+  - hosts:
+     - api.addcut.prd.intra.pepsico.com
+    name: istio-in-gateway-01-addcutapi-https-443
+    port:
+      name: https-addcutapi-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-prod-scus-sch-01-addcut-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE        
+  - hosts:
+     - addcut.mypepsico.com
+    name: istio-in-gateway-01-addcutmypepsico-https-443
+    port:
+      name: https-addcutmypepsico-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-prod-scus-addcut-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE            
+  - hosts:
+     - iwms.mypepsico.com
+    name: istio-in-gateway-01-iwms-https-443
+    port:
+      name: https-iwms-443
+      number: 443
+      protocol: https
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-sch-prod-scus-iwms-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE

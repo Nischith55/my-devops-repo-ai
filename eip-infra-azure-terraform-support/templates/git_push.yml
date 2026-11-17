@@ -1,0 +1,26 @@
+# jobs:
+# - job: gitpush
+#   displayName: gitpush
+  steps:
+  - task: Bash@3
+    displayName: 'Git push repository'
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "git push started"
+        git clone 'https://$(svcPersonalAccessToken)@$(infra_terraform_repo_url)'
+        git checkout $(Build.SourceBranchName)
+        git config --global user.email "svceipazdevops@pepsico.com"
+        git config --global user.name "svceipazdevops"
+        git status
+        git branch
+        git add .
+        git commit -m "Updated tfvars files"
+        git config --global push.autoSetupRemote true
+        git config receive.denyNonFastForwards false
+        git pull 'https://$(svcPersonalAccessToken)@$(infra_terraform_repo_url)' $(Build.SourceBranchName) -f
+        git push 'https://$(svcPersonalAccessToken)@$(infra_terraform_repo_url)' HEAD:$(Build.SourceBranchName)
+        rm -rf /home/vsts/work/_temp
+        rm -rf $(agent.tempDirectory)/*sh
+        rm -rf /opt/gh/vstsagent/_work/_temp/*sh
+        rm -rf /azp/agent/_work/_temp/*sh

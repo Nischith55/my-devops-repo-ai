@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pep-pfna-pcaf-webapps-services-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app
+spec:
+  description: Project for pep-pfna-pcaf-webapps-services-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Commercial_IT/_git/pep-pfna-pcaf-webapps-services-argocd-configs
+  - pepeiapprodcommonacr.azurecr.io/helm
+  destinations:
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: pep-pfna-pgt-prod
+  - name: pep-pfna-cit-prod-scus-pgt-01-aks
+    namespace: pep-pfna-ops-admin
+  roles:
+  - name: pep-pfna-pcaf-webapps-services-prod-admin
+    description: Admin privileges to pep-pfna-pcaf-webapps-services-prod
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-prod:pep-pfna-pcaf-webapps-services-prod-admin, applications, *, pep-pfna-pcaf-webapps-services-prod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-prod:pep-pfna-pcaf-webapps-services-prod-admin, repositories, *, pep-pfna-pcaf-webapps-services-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: pep-pfna-pcaf-webapps-services-prod-user
+    description: Read-only privileges to pep-pfna-pcaf-webapps-services-prod
+    policies:
+    - p, proj:pep-pfna-pcaf-webapps-services-prod:pep-pfna-pcaf-webapps-services-prod-user, applications, get, pep-pfna-pcaf-webapps-services-prod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-prod:pep-pfna-pcaf-webapps-services-prod-user, applications, sync, pep-pfna-pcaf-webapps-services-prod/*, allow
+    - p, proj:pep-pfna-pcaf-webapps-services-prod:pep-pfna-pcaf-webapps-services-prod-user, repositories, get, pep-pfna-pcaf-webapps-services-prod/*, allow
+     # This line will be replaced by the pipeline script
+
+    groups:
+    - "Team.Support.PFNA.BEDEV"
+    - "Team.Support.EIAP.READ"

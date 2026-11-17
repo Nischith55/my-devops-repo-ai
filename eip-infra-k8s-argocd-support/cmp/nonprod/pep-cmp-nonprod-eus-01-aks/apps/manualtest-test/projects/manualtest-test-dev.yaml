@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: manualtest-test-dev
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project for manualtest-test-dev 
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/manualtest-test-argocd-configs
+  - pepeiapnonprodcommonacr.azurecr.io/helm 
+  destinations:
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-cmp-cmp11-dev
+  - name: pep-cmp-nonprod-eus-01-aks
+    namespace: pep-cmp-ops-admin
+  roles:
+  - name: manualtest-test-dev-admin
+    description: Admin privileges to manualtest-test-dev
+    policies:
+    - p, proj:manualtest-test-dev:manualtest-test-dev-admin, applications, *, manualtest-test-dev/*, allow
+    - p, proj:manualtest-test-dev:manualtest-test-dev-admin, repositories, *, manualtest-test-dev/*, allow
+    groups:
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+  - name: manualtest-test-dev-user
+    description: Read-only privileges to manualtest-test-dev
+    policies:
+    - p, proj:manualtest-test-dev:manualtest-test-dev-user, applications, get, manualtest-test-dev/*, allow
+    - p, proj:manualtest-test-dev:manualtest-test-dev-user, applications, sync, manualtest-test-dev/*, allow
+    - p, proj:manualtest-test-dev:manualtest-test-dev-user, repositories, get, manualtest-test-dev/*, allow
+    - p, proj:manualtest-test-dev:manualtest-test-dev-user, *, delete, *, deny
+    groups:
+    - "Team.Support.CGF.NonProd.devX"
+    - "Team.Support.EIAP.READ"

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    istio.io/rev: prod-stable
+    project: peacock
+    sector: cgf
+    servicename_aks: dpsdsdvisibilityappservice
+    team: cgf-peacock
+  name: pep-dps-cgf-peacock-prod

@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app: undefined
+  name: pfna-supply-chain-locations-vs
+  namespace: pep-pfna-flna-scopt-dev
+spec:
+  gateways:
+  - pep-pfna-flna-scopt-dev/pep-pfna-flna-scopt-dev-cv-gw
+  hosts:
+  - pfna-supply-chain-locations.pfna.sch.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /api/v1/
+    route:
+    - destination:
+        host: pfna-supply-chain-locations.pep-pfna-flna-scopt-dev.svc.cluster.local
+        port:
+          number: 80

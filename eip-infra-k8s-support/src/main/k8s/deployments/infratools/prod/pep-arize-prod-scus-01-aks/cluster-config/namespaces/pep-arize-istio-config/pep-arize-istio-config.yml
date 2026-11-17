@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-arize-istio-config
+  labels:
+    istio-injection: disabled

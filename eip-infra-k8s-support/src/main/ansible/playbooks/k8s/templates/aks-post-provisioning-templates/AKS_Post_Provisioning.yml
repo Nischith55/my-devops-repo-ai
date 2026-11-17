@@ -1,0 +1,402 @@
+jobs:
+- job: AKS_Post_Provisioning
+  displayName: 'Post Provisioning'  
+  steps:
+  - task: PythonScript@0
+    displayName: "Extract Azure KV secrets"
+    name: "GetAzureCreds"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/templates/scripts-aks-post-provisioning/get_spn.py'
+      arguments: "NONPROD_K8S_SPN:PREPROD_K8S_SPN:PREPROD_NETWORK_SPN:NONPROD_NETWORK_SPN:NONPROD_PAAS_SPN:PREPROD_PAAS_SPN:PROD_NETWORK_SPN:PROD_PAAS_SPN:PROD_K8S_SPN"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+    env:
+      PREPROD_NETWORK_SPN: $(pep-eiap-preprod-network-sp) 
+      NONPROD_NETWORK_SPN: $(pep-eiap-nonprod-network-sp)
+      PROD_NETWORK_SPN: $(pep-eiap-prod-network-sp)
+      NONPROD_PAAS_SPN: $(pep-eiap-nonprod-paas-sp)
+      PREPROD_PAAS_SPN: $(pep-eiap-preprod-paas-sp)
+      PROD_PAAS_SPN: $(pep-eiap-prod-paas-sp)
+      PREPROD_K8S_SPN: $(pep-eiap-preprod-k8s-sp)
+      NONPROD_K8S_SPN: $(pep-eiap-nonprod-k8s-sp)
+      PROD_K8S_SPN: $(pep-eiap-prod-k8s-sp)
+
+  - task: PythonScript@0
+    displayName: "Set Service Principal"
+    name: "SetServicePrincipal"
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: '$(system.defaultWorkingDirectory)/src/main/ansible/playbooks/k8s/templates/scripts-aks-post-provisioning/set_config_spn.py'
+      arguments: "${{ parameters.service_principal }}"
+      pythonInterpreter: '/usr/bin/python3'
+      failOnStderr: true
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      artifact: 'kubeconfig-admin-user'
+      path: $(Agent.BuildDirectory)
+    displayName: 'Download Kubeconfig Artifact'
+    
+  - task: CopyFiles@2
+    displayName: "CopyKubeconfig"
+    inputs:
+      SourceFolder: $(Agent.BuildDirectory)
+      Contents: kubeconfig-admin.kcfg
+      TargetFolder: $(HOME)
+
+  - task: Bash@3
+    displayName: 'set context'
+    inputs:
+      targetType: 'inline'
+      script: |
+        mkdir $HOME/.kube
+        cp $(Agent.BuildDirectory)/kubeconfig-admin.kcfg $HOME/.kube/
+        mv $HOME/.kube/kubeconfig-admin.kcfg $HOME/.kube/config  
+      
+  - task: Bash@3
+    displayName: extract resourceId of agent pool MI
+    inputs:
+      targetType: 'inline'
+      script: |
+        set -e
+        cd $(system.defaultWorkingDirectory)
+        echo "testing $(CLIENTID)"
+        echo "testing1 $(CLIENTSECRET)"
+        az login --service-principal -u $(CLIENTID) -p $(CLIENTSECRET) --tenant $(TENANTID)
+        if [[ "${{parameters.Functional_Area}}" == "pfna" ]] || [[ "${{parameters.Functional_Area}}" == "snt" ]] || [[ "${{parameters.Functional_Area}}" == "infratools" ]] || [[ "${{parameters.Functional_Area}}" == "infosectools" ]] || [[ "${{parameters.Functional_Area}}" == "cmp" ]] || [[ "${{parameters.Functional_Area}}" == "pbna" ]] || [[ "${{parameters.Functional_Area}}" == "dps" ]] || [[ "${{parameters.Functional_Area}}" == "automation" ]] || [[ "${{parameters.Functional_Area}}" == "cgf" ]] || [[ "${{parameters.Functional_Area}}" == "aisp" ]] || [[ "${{parameters.Functional_Area}}" == "pepgenx" ]]; then
+            az account set --subscription $(subscription_id_others)
+            echo "subscription set to subscription_id_others"
+        elif ([[ "${{parameters.Region}}" == "suk" ]] || [[ "${{parameters.Region}}" == "ae" ]] || [[ "${{parameters.Region}}" == "gwc" ]]) && ([[ "${{parameters.env}}" == "nonprod" ]] || [[ "${{parameters.env}}" == "preprod" ]]); then
+            az account set --subscription $(subscription_id_other_regions)
+            echo "subscription set to subscription_id_other_regions"       
+        else
+            az account set --subscription $(SUBSCRIPTION)  
+            echo "subscription set to KV subscription"
+        fi
+        myoutput=`az aks show -n ${{parameters.resource_name}} -g ${{parameters.ResourceGroupName}} --query "identityProfile.kubeletidentity.resourceId"`
+        result=$myoutput
+        export RES=$result
+        echo "AZURE $RES"
+        echo "##vso[task.setvariable variable=RESID]${RES}"
+        echo $RESID
+        cluster_details=`az aks show -n ${{parameters.resource_name}} -g ${{parameters.ResourceGroupName}} --query '[tags.crosscharge_aks]' --output tsv`
+        if [[ "$cluster_details" == "None" ]]; then 
+          echo "crosscharge_aks tag is not present on the cluster."
+          exit 1
+        else 
+          echo $cluster_details 
+          echo "##vso[task.setvariable variable=crosscharge_aks]$cluster_details"
+        fi 
+        
+  - task: Ansible@0
+    displayName: "creating variable files"
+    name: "creating_files"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-files.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser)", "repo_urls": "$(repo_url)" , "pat": "$(svcPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}", "infrans": "${{ parameters.infrans }}", "resourcegroupname": "${{ parameters.ResourceGroupName }}", "k8s_sp": "${{ parameters.k8s_sp }}", "devsecops_cd": "${{ parameters.devsecops_cd }}", "cmp": "${{ parameters.cmp }}", "eiap_k8s_admin": "${{ parameters.eiap_k8s_admin }}", "eiap_admin": "${{ parameters.eiap_admins }}", "wildcard" : "${{ parameters.filename }}" , "resourceid": $(RESID), "acrpullbindingname": "${{ parameters.acrpullbindingName }}", "premiumstorageaccounts": "${{ parameters.premiumstorageaccounts }}", "storageaccount": "${{ parameters.storageAccount }}", "istioversion": "${{ parameters.istioversion }}", "region": "${{ parameters.Region }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+
+
+
+  - task: CopyFiles@2
+    displayName: copyvariablefiles
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: |
+        variable.yml
+        builtinstorageclass.yml
+        genericstorageclass.yml
+        genericstorageclasses.yml
+        namespace.yml
+        readme.txt
+        clusterroles.yml
+        clusterrolebinding.yml
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      flattenFolders: false
+      
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: varfile'
+    inputs:
+      ArtifactName: 'varf'
+
+  - task: Bash@3
+    displayName: create temp directory for var files
+    inputs:
+      targetType: 'inline'
+      workingDirectory: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning'
+      script: |
+        echo "Current directory: $(pwd)"
+        mkdir vars
+        echo "src directory contents"
+        ls
+    
+  - task: DownloadPipelineArtifact@2
+    displayName: 'download var files to tmp dir '
+    inputs:
+      artifactName: 'varf'
+      downloadPath: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/vars'
+
+  - task: Bash@3
+    displayName: pre-requisites
+    inputs:
+      targetType: 'inline'
+      script: |
+        set -e
+        ansible --version
+        pip3 install --upgrade ansible
+        ansible --version
+        pip3 install ruamel.yaml
+        pip3 install openshift
+        pip3 install kubernetes
+        pip3 install pyyaml
+        pip3 show pyyaml
+        pip3 show openshift
+        pip3 show kubernetes
+        pip3 install pyOpenSSL
+        ansible --version
+        ansible-galaxy collection install community.kubernetes -p ~/.ansible/collections
+        ansible-galaxy collection install cloud.common -p ~/.ansible/collections
+        ansible-galaxy collection install lvrfrc87.git_acp
+
+#_____________________________________________________________________________________________________________________________________________________________________________________________
+
+  - task: DownloadSecureFile@1
+    displayName: 'Download_aks_init_secret'
+    inputs:
+      secureFile: 'aks-init-secret.j2'
+
+  - task: CopyFiles@2
+    displayName: "Copy init secret download"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: aks-init-secret.j2
+      TargetFolder: $(HOME)
+    
+
+  - task: Bash@3
+    displayName: 'init-secret-copy'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cp $(Agent.TempDirectory)/aks-init-secret.j2 $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/create_aks_init/templates/        
+        cd $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/create_aks_init/templates
+
+#___________________________________________________________________________________________________________________________________________________________
+
+  - task: DownloadSecureFile@1
+    displayName: 'download_configmap_for_aksinit'
+    inputs:
+      secureFile: 'aks-init-configs.j2'
+
+  - task: CopyFiles@2
+    displayName: "init-config-download"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: aks-init-configs.j2
+      TargetFolder: $(HOME)
+    
+
+  - task: Bash@3
+    displayName: 'init-config-copy'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cp $(Agent.TempDirectory)/aks-init-configs.j2 $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/create_aks_init/templates/        
+        cd $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/create_aks_init/templates
+    
+#________________________________________________________________________________________________
+
+
+  - task: DownloadSecureFile@1
+    displayName: 'download-ca-cert-configmap-for-ElasticClient'
+    inputs:
+      secureFile: 'ca-cert-configmap.j2'
+
+  - task: CopyFiles@2
+    displayName: "download-ca-cert"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: ca-cert-configmap.j2
+      TargetFolder: $(HOME)
+    
+
+  - task: Bash@3
+    displayName: 'ca-certcopy'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cp $(Agent.TempDirectory)/ca-cert-configmap.j2 $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/add-ons/templates/
+        cd $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/add-ons/templates/
+
+#_------------------------------------------------------------------------------------------------------------------------------------------
+
+  - task: DownloadSecureFile@1
+    displayName: 'download_certificate_file'
+    inputs:
+      secureFile: '${{parameters.filename}}'
+
+  - task: CopyFiles@2
+    displayName: "download tls certificate"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      Contents: ${{parameters.filename}}
+      TargetFolder: $(HOME)
+    
+
+  - task: Bash@3
+    displayName: 'copy-tls-certificate'
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(system.defaultWorkingDirectory)/src/main/ansible/roles/k8s_support/add-ons/templates/
+        mkdir pfx
+        cp $(Agent.TempDirectory)/${{parameters.filename}} /tmp/
+##--------------------------------------------------------
+  - task: HelmInstaller@1
+    displayName: Helm install
+    inputs: 
+      helmVersionToInstall: 3.18.4
+#----------------------------------------------------
+
+  - task: Ansible@0
+    displayName: "Creating Directories"
+    name: "creating_directory"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-directory-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+
+
+#  #-----------------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating Namespaces"
+    name: "creating_namespaces"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-namespaces-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "crosscharge_aks": "$(crosscharge_aks)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+
+# ##-------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating Cluster Roles"
+    name: "creating_clusterroles"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-cr-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+# # ##----------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating ClusterRole Bindings"
+    name: "creating_clusterrole_binding"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-crb-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+# ##-------------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating ACR pullbinding"
+    name: "acrpull_binding"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-acr-pullbindings-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+# ##---------------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating AKS Init"
+    name: "aks_Init"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/create-aks-init-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+#----------------------------------------------------------------------
+  - task: Ansible@0
+    displayName: "Creating addons"
+    name: "addons"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/add-on-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gpuversion": "${{ parameters.gpuversion }}", "gpuOperator": "${{ parameters.gpuOperator }}", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)","acrpullbindingname": "${{ parameters.acrpullbindingName }}", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "productkey": "$(productkey)", "region": "${{ parameters.Region }}", "wp": "$(secure_access_key_kc)", "secret": "$(secretpwd)", "filename": "${{parameters.filename}}", "resourcename": "${{ parameters.resource_name }}", "istioversion": "${{ parameters.istioversion }}", "elastichost": "${{ parameters.elastichost }}", "elastic_public_ip": "${{ parameters.elastic_public_ip}}", "snow_discovery_pwd": "${{ parameters.snow_discovery_pwd }}", "schedule_time": "${{parameters.schedule_time}}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+# ##------------------------------------------------------------------------
+
+  - task: Ansible@0
+    displayName: "Creating storage classes"
+    condition: eq('${{ parameters.StorageClasses }}', 'true')
+    name: "storag_classes"
+    inputs:
+      ansibleInterface: 'agentMachine'
+      playbookPathOnAgentMachine: '$(Build.SourcesDirectory)/src/main/ansible/playbooks/k8s/aks-post-provisioning/storage-classes-roles.yml'
+      failOnStderr: false
+      args: '-e ''{ "source_directory": "$(system.defaultWorkingDirectory)", "gitbranch": "${{ parameters.currentbranch }}", "svcuser": "$(svcuser_automation)", "repo_urls": "$(repo_url)" , "pat": "$(svcautoPersonalAccessToken)", "env": "${{ parameters.env }}", "functionalarea": "${{ parameters.Functional_Area }}", "resourcename": "${{ parameters.resource_name }}", "region": "${{ parameters.Region }}" }'' -v'
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: False
+      ANSIBLE_LOCALHOST_WARNING: False
+      ANSIBLE_ROLES_PATH: $(Build.SourcesDirectory)/src/main/ansible/roles/k8s_support
+      K8S_AUTH_KUBECONFIG: ~/.kube/config
+      K8S_AUTH_CONTEXT: "{{ parameters.resource_name }}"
+
+
+  - task: Bash@3
+    displayName: 'PR to develop branch'
+    inputs:
+      targetType: 'inline'
+      script: |
+        export AZURE_DEVOPS_EXT_PAT=$(svcautoPersonalAccessToken)
+        pip3 install azure-devops   
+        az repos pr create --organization https://dev.azure.com/PepsiCoIT/ --project EIP-Infrastructure --repository eip-infra-k8s-support --source-branch $(Build.SourceBranchName) --target-branch develop --title "Merge Request after Post-Provisioning" --description "Mandatory Pull Request to be Approved/Completed to keep the develop branch updated !! "
+
+

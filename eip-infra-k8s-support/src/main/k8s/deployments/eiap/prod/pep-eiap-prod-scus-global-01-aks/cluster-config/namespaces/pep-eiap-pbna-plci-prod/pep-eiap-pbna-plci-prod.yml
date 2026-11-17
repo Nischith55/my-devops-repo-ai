@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pep-eiap-pbna-plci-prod
+  labels:
+    env-prod: 'true'
+    environment: prod
+    istio-injection: enabled
+    project: plci
+    sector: pbna
+    team: pbna-plci

@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-latam-cepmx-prod-cv-web-vs
+  namespace: pep-eiap-latam-cepmx-prod
+  labels:
+    app: pep-eiap-latam-cepmx-prod-cv-web
+spec:
+  hosts:
+    - web-cep-mx-backup.pepsico.com
+    - pep-eiap-latam-cepmx-prod-cv.global.gw01.aks01.scus.prod.azure.intra.pepsico.com
+  gateways:
+  - pep-eiap-latam-cepmx-prod/pep-eiap-latam-cepmx-prod-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host:  pep-eiap-latam-cepmx-prod-cv-web.pep-eiap-latam-cepmx-prod.svc.cluster.local
+        port:
+          number: 80

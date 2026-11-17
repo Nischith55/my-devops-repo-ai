@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gds-prod
+  namespace: argocd  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/project-inherit: global-app    
+spec:
+  description: Project for gds-prod   
+  sourceRepos:
+  - https://dev.azure.com/PepsiCoIT/Global_Data_Project/_git/gds-argocd-configs
+  - pepdpsprodacr.azurecr.io/helm
+  destinations:
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-cgf-peacock-prod
+  - name: pep-dps-prod-scus-global-01-aks
+    namespace: pep-dps-ops-admin
+  roles:
+  - name: gds-prod-admin
+    description: Admin privileges to gds-prod
+    policies:
+    - p, proj:gds-prod:gds-prod-admin, applications, *, gds-prod/*, allow
+    - p, proj:gds-prod:gds-prod-admin, applications, get, argocd/*, allow
+    - p, proj:gds-prod:gds-prod-admin, repositories, *, gds-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.DevSecOps.Developer"
+
+  - name: gds-prod-user
+    description: Read-only privileges to gds-prod
+    policies:
+    - p, proj:gds-prod:gds-prod-user, applications, get, gds-prod/*, allow
+    - p, proj:gds-prod:gds-prod-user, applications, sync, gds-prod/*, allow
+    - p, proj:gds-prod:gds-prod-user, repositories, get, gds-prod/*, allow
+    groups:
+    - "Team.Support.CGF.NonProd.devops"
+    - "Team.Support.EIAP.GLOBAL.CMP.Read"
+    - "Team.Support.EIAP.READ"

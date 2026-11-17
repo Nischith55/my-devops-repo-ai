@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    crosscharge_aks: direct
+    env-qa: 'true'
+    environment: nonprod
+    istio-injection: enabled
+    istio.io/rev: nonprod-stable
+    kubernetes.io/metadata.name: pep-latam-cgf-test-qa
+    project: test
+    sector: cgf
+    servicename_aks: operation-bridge
+    team: cgf-test
+  name: pep-latam-cgf-test-qa

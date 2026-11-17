@@ -1,0 +1,143 @@
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: pep-dps-cgf-cct-dev-cv-gw
+  namespace: pep-dps-cgf-cct-dev
+spec:
+  selector:
+    istio: pep-dps-ingress-gw01
+  servers:
+  - hosts:
+    - dummy-passthrough-pep-dps-cgf-cct-dev.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-dev-cv-gw-tls-443
+    port:
+      name: https-pep-dps-cgf-cct-dev-cv-gw-tls-443
+      number: 443
+      protocol: HTTPS
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: PASSTHROUGH
+  - hosts:
+    - dummy-pep-dps-cgf-cct-dev-443.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-backend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-bff.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-extdataproc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-executions.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-comm-tool-eventfilter.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-dev-cv-gw-https-443
+    port:
+      name: https-pep-dps-cgf-cct-dev-cv-gw-443
+      number: 443
+      protocol: HTTPS
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - dummy-pep-dps-cgf-cct-dev-80.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-backend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-frontend.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-bff.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-extdataproc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-executions.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-comm-tool-eventfilter.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-dev-cv-gw-1-https-443
+    port:
+      name: https-pep-dps-cgf-cct-dev-cv-gw-1-443
+      number: 443
+      protocol: HTTPS
+    tls:
+      cipherSuites:
+      - AES128-GCM-SHA256
+      - AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-SHA
+      - ECDHE-ECDSA-AES256-SHA
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      credentialName: pep-dps-nonprod-eus-global-01-aks-gw01-tls
+      maxProtocolVersion: TLSV1_3
+      minProtocolVersion: TLSV1_2
+      mode: SIMPLE
+  - hosts:
+    - journey-optimizer.dev.mypepsico.com
+    - customer-communication-tool-bff.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-businesses.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-creationproperties.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-cctsettings.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-dpaparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-eventfilter.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-generalparams.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-journeys.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-materializedviews.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-writenotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - pep-dps-cgf-cct-frontend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-sendnotifications.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-executions.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor-api-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor-executor-consumer-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor-event-consumer-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor-ingestion-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-backend-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - journey-optimizer-processor-schedulers-dev.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-temporal-service.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-externaldataprocessor.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-comm-tool-externaldataprocessor.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    - customer-communication-tool-extdataproc.dps.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+    name: pep-dps-cgf-cct-dev-cv-gw-http-80
+    port:
+      name: http-pep-dps-cgf-cct-dev-cv-gw-80
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+

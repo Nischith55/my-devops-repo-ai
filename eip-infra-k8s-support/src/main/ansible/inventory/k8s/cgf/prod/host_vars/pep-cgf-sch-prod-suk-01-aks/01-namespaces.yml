@@ -1,0 +1,10 @@
+####### BEGIN Added recently --pep-cgf-sch-prod-suk-01-aks######
+---
+# What namespaces this cluster is responsible for
+# note: ONLY provide instance_namespace_vars 
+instance_namespace_vars:
+  - ns_pep_cgf_cgf_tctsa_prod
+  - ns_pep_cgf_cgf_test12_prod
+  - ns_pep_cgf_test_test_prod
+  - ns_pep_cgf_cgf_schservice_prod
+####### END Added recently --pep-cgf-sch-prod-suk-01-aks######

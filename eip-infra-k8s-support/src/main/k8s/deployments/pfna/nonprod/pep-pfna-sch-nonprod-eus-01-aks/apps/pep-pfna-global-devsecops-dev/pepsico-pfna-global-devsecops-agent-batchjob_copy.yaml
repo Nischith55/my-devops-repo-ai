@@ -1,0 +1,51 @@
+#######################################################################################################
+#        KUBERNETES JOB TEMPLATE that creates batch Job which registers Azure devops agent 
+#        and shut downs the pod once the Job is completed
+#######################################################################################################
+
+# Placeholders enclosed inside double braces {{PLACEHOLDERS}} - Replace this with actual values during implementation
+
+# Job Resource
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: pepsico-pfna-global-devsecops-agent-batchjob-
+  namespace: pep-pfna-global-devsecops-dev     # Kubernetes Namespace in which the deployment will be perfomed. Example: pep-pfna-latam-akv-dev-ns
+spec:
+  completions: 1  # Number of fixed completion count
+  parallelism: 1  # Number of Parallel Jobs
+  template:
+    spec:
+      imagePullSecrets: 
+      - name: pep-pfna-svc-global-devsecops-acr-creds
+      containers:
+      - name: pepsico-pfna-global-devsecops-agent
+        image: pepeiapnonprodcommonacr.azurecr.io/pep/eip/infra/azurepipeline/devopsagent:20240222.1
+           # Image Name including the absolute path of the Azure Container Registry
+        imagePullPolicy: IfNotPresent
+        resources:               # Resource limits for the pod
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "16Gi"
+            cpu: "8000m"
+        envFrom:
+        - secretRef:
+            name: pep-pfna-svc-global-devsecops-azdevops
+        volumeMounts:
+        - mountPath: "/mnt/azure"
+          name: volume
+      serviceAccountName: pep-pfna-buildagent
+      nodeSelector:        # Agent pool restriction
+        balance-group: FoundationonebuildagentZonedpools
+      tolerations:
+      - key: "Foundationonebuildagentpool"
+        operator: "Exists"
+        effect: "NoSchedule"
+      restartPolicy: "OnFailure"
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: pvc-azurefile-devops

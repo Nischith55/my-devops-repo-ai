@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c3f133f2-2504-4faa-ad32-e03f6d8fba50
+  name: pep-dps-dps-nf-qa-sa
+  namespace: pep-dps-dps-nf-qa

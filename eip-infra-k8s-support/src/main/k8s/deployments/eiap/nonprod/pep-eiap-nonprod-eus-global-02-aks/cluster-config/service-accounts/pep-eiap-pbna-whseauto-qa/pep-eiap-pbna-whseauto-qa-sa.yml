@@ -1,0 +1,9 @@
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 14bee9c0-91c7-4713-a47d-4fc2c036c9c5
+  name: pep-eiap-pbna-whseauto-qa-sa
+  namespace: pep-eiap-pbna-whseauto-qa

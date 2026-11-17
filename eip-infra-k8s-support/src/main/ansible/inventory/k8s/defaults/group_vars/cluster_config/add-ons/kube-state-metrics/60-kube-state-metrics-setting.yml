@@ -1,0 +1,48 @@
+---
+# ##
+# ABBREVIATION:
+# - ksm -> kube_state_metrics
+# ##
+kube_state_metrics_app_name: kube-state-metrics
+
+# NOTE: changing the namespace
+kube_state_metrics_namespace: monitoring
+
+#: GLOBAL - used in many add-ons
+kube_state_metrics_url: |-
+  {{ 'kube-state-metrics' + '.' + kube_state_metrics_namespace + ':8080' }}
+
+# NOTE: this is the source namespace in default base manifests
+kube_state_metrics_src_namespace: kube-system
+
+# ##
+# All directories
+# ##
+# This can be configure various components directory paths.
+ksm_deploy_app_root_dir: |-
+  {{ (add_ons_deploy_base_dir, kube_state_metrics_app_name) | path_join }}
+# base source root directory for any files or kustomize sources
+# note: we use add-ons as base directory
+ksm_source_app_root_dir: |-
+  {{ (k8s_add_ons_base_dir, kube_state_metrics_app_name) | path_join }}
+
+# ##
+# Final app setting
+# IMPORTANT: follow the varname convention
+#  '^(add_on_|app_)' + (app_name | replace('-', '_')) + '_setting$'
+# ##
+add_on_kube_state_metrics_setting:
+
+  #app_name
+  name: "{{ kube_state_metrics_app_name }}"
+
+  # #########################################################
+  # All components supporting the app
+  # #########################################################
+
+  # collect everything that starts with app prefix or app abbrv prefix and 
+  # ends with _component_setting
+  components: |-
+    {{
+      q('vars', *q('varnames', '^ksm_.+_component_setting$'))
+    }}

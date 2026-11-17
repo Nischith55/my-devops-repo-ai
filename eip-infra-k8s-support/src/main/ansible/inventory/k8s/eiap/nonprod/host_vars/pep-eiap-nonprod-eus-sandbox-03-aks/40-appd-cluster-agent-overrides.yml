@@ -1,0 +1,11 @@
+---
+# ##
+# Overrides for appd cluster agent.
+# SPECIFICATION:
+#   - appd_ca_host_cfg:
+#       nsToInstrumentRegex: [Required] ['|' seperated string NO spaces]
+# ##
+
+
+appd_ca_host_cfg:
+  nsToInstrumentRegex: pep-eiap-ops-admin|pep-eiap-global-infra-dev

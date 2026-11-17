@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-cmp-test-namespace18-dev-cv-web-dm100-vs
+  namespace: pep-cmp-test-namespace18-dev
+  labels:
+      app: pep-cmp-test-namespace18-dev-cv-web
+spec:
+  hosts:
+  - pep-cmp-test-namespace18-dev-cv-web-dm11-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+  - pep-cmp-test-namespace18-dev-cv-web-dm12-dev.sbox.gw01.aks03.eus.nonprod.azure.intra.pepsico.com
+  gateways:
+  - pep-cmp-test-namespace18-dev/pep-cmp-test-namespace18-dev-cv-gw
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        prefix: /
+    route:
+    - destination:
+        host: pep-cmp-test-namespace18-dev-cv-web.pep-cmp-test-namespace18-dev.svc.cluster.local
+        port:
+          number: 80
+  

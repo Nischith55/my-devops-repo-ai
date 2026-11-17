@@ -1,0 +1,69 @@
+--- 
+
+- debug:
+    msg: "{{ inner_item.pod_name }}, {{ inner_item.container_name }}, {{ inner_item.cpu_limit }}, {{ inner_item.memory_limit }}, {{ inner_item.namespace }}"
+
+- name: Convert CPU limit to millicores
+  set_fact:
+    cpu_millicores: >-
+      {{
+        (inner_item.cpu_limit | regex_replace('m$', '') | float) *
+        (1 if inner_item.cpu_limit.endswith('m') else 1000)
+      }}
+
+- name: Convert memory limit to Mi
+  set_fact:
+    memory_in_mi: >-
+      {{
+        (inner_item.memory_limit | regex_replace('Gi$', '') | float) * 1024
+        if inner_item.memory_limit.endswith('Gi') else
+        (inner_item.memory_limit | regex_replace('Mi$', '') | float) * 1
+        if inner_item.memory_limit.endswith('Mi') else
+        (inner_item.memory_limit | regex_replace('Ki$', '') | float) * 0.0009765625
+        if inner_item.memory_limit.endswith('Ki') else
+        (inner_item.memory_limit | regex_replace('M$', '') | float) * 0.953674
+        if inner_item.memory_limit.endswith('M') else
+        (inner_item.memory_limit | regex_replace('G$', '') | float) * 1024
+        if inner_item.memory_limit.endswith('G') else item.memory_limit
+      }}
+
+- name: Get CPU and memory usage
+  command: kubectl top pod {{ inner_item.pod_name }} -n {{ inner_item.namespace }} --containers
+  register: top_output
+
+- name: Parse CPU and memory usage
+  set_fact:
+    container_usage: >-
+      {{
+        top_output.stdout_lines | select("search", inner_item.container_name) | map("split") | list | first
+      }}
+
+- name: Set CPU and memory usage 
+  set_fact:
+    cpu_usage: "{{ container_usage[2] | regex_replace('m$', '') | float }}"
+    memory_usage: "{{ container_usage[3] | regex_replace('Mi$', '') | float }}"
+
+- name: Calculate CPU usage percentage
+  set_fact:
+    cpu_usage_percentage: "{{ (cpu_usage / cpu_millicores | float) * 100 }}"
+
+- name: Calculate memory usage percentage
+  set_fact:
+    memory_usage_percentage: "{{ (memory_usage / memory_in_mi | float) * 100 }}"
+
+- name: Append pod data to Pod metrics list 
+  set_fact: 
+    pod_metrics: >-
+      {{
+        pod_metrics + [{
+          'namespace': inner_item.namespace,
+          'pod_name': inner_item.pod_name,
+          'container_name': inner_item.container_name,
+          'cpu_usage': cpu_usage,
+          'memory_usage': memory_usage,
+          'cpu_limit': cpu_millicores,
+          'memory_limit': memory_in_mi,
+          'cpu_usage_percentage': cpu_usage_percentage,
+          'memory_usage_percentage': memory_usage_percentage
+        }]
+      }}

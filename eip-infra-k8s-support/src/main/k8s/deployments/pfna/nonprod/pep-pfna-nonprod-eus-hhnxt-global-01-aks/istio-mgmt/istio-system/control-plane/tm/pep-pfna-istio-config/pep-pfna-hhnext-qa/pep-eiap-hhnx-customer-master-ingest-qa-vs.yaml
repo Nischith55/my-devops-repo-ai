@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: pep-eiap-hhnx-customer-master-ingest-qa-vs
+  namespace: pep-pfna-istio-config
+spec:
+  gateways:
+  - istio-system/istio-in-gateway-01
+  hosts:
+  - pep-eiap-hhnx-customer-master-ingest-qa.pfna.gw01.aks01.eus.nonprod.azure.intra.pepsico.com
+  http:
+  - match:
+    - ignoreUriCase: true
+      uri:
+        exact: /api/v1/customer/ingest
+      method:
+        exact: POST
+    - ignoreUriCase: true
+      uri:
+        prefix: /swagger-ui
+      method:
+        exact: GET
+    - ignoreUriCase: true
+      uri:
+        prefix: /v3/api-docs/swagger-config
+      method:
+        exact: GET
+    - ignoreUriCase: true
+      uri:
+        prefix: /api-final.yml
+      method:
+        exact: GET
+    headers:
+      request:
+        remove:
+          - "Content-Type"
+        add:
+          Content-Type: "application/json"
+    route:
+    - destination:
+        host: pep-eiap-hhnx-customer-master-ingest.pep-pfna-hhnext-qa.svc.cluster.local
+        port:
+          number: 80
+    timeout: 3m
+    retries:
+      attempts: 2
+      perTryTimeout: 55s
+      retryOn: gateway-error,connect-failure,refused-stream

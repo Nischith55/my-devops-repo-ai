@@ -1,0 +1,32 @@
+cluster_vnet_snet_resource_group_name   = "pep-network-nonprod-snt-eus-01-rg"
+cluster_vnet_name                       = "pep-paas-nonprod-snt-01-eus-vnet"
+cluster_snet_name                       = "pep-aks-global-02-subnet"
+managed_identity_name                   = "pep-snt-nonprod-eus-global-02-aks-01-mi"
+managed_identity_resource_group_name    = "pep-snt-nonprod-eus-k8s-01-rg"
+cluster_resource_group_name             = "pep-snt-nonprod-eus-k8s-01-rg"
+resource_name_to_create                 = "pep-snt-nonprod-eus-global-02-aks"
+cluster_location                        = "eastus"
+active_directory_admin_group_object_ids = ["367dfb5d-8aed-4dcf-9366-6024024bfb94"]
+private_dns_zone_id                     = "/subscriptions/463c7676-c9ae-45e7-98c7-cd83065a4fb1/resourceGroups/pep-network-privatednszone-01-rg/providers/Microsoft.Network/privateDnsZones/privatelink.eastus.azmk8s.io"
+kubernetes_version                      = "1.34.7"
+default_node_pool_resource_group        = "pep-snt-nonprod-eus-global-02-aks-rg"
+cluster_tags = {
+  CreateData      = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-03-20T15:01:36\", \"ExecuteHost\": \"pepsico-eip-global-devsecops-agent-batchjob-ldst9-s4pwl\", \"build\": \"1500188\"}"
+  ModifiedData    = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-06-23T12:26:20\", \"ExecuteHost\": \"pepsico-eip-global-devsecops-agent-batchjob-v8zcv-rzkcq\", \"build\": \"1782679\"}"
+  department      = "snt"
+  description     = "Global 02 AKS Cluster"
+  environment     = "nonprod"
+  financialTag    = "H-######"
+  serviceName     = "dps-sharedaks"
+  spn             = "pep-eiap-nonprod-k8s-sp"
+  crosscharge_aks = "direct"
+}
+default_node_pool_tags = {
+  ModifiedData = "{\"User\": \"neipd999\", \"TimeStamp\": \"2023-06-23T12:40:01\", \"ExecuteHost\": \"pepsico-eip-global-devsecops-agent-batchjob-xpgxd-mzm5w\", \"build\": \"1782788\"}"
+  department   = "snt"
+  description  = "Global 02 AKS Cluster"
+  environment  = "nonprod"
+  financialTag = "H-######"
+  serviceName  = "snt"
+  spn          = "pep-eiap-nonprod-k8s-sp"
+}
