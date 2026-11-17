@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  backend:
+    image: python:3.11-slim
+    container_name: genai-backend
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - '8000:8000'
+
+  frontend:
+    image: python:3.11-slim
+    container_name: genai-frontend
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - API_BASE_URL=http://backend:8000
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             streamlit run frontend/app.py --server.address=0.0.0.0 --server.port=8501"
+    ports:
+      - '8501:8501'
+    depends_on:
+      - backend
+
+  # Optional: enable this service only when Docker + GPU is available.
+  # If you're new, keep MOCK_MODE=true first and add vLLM later.
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: genai-vllm
+    profiles: ['gpu']
+    command:
+      - --model
+      - TinyLlama/TinyLlama-1.1B-Chat-v1.0
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8001'
+    ports:
+      - '8001:8001'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

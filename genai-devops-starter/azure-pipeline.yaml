@@ -1,0 +1,218 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - qa
+      - release/*
+
+parameters:
+  - name: deployOnly
+    displayName: deployOnly
+    type: boolean
+    default: false
+
+  - name: ImageTag
+    displayName: ImageTag
+    type: string
+    default: $(Build.BuildNumber)
+
+variables:
+  - name: isDevBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/dev')]
+  - name: isQaBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/qa')]
+  - name: isReleaseBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')]
+
+  # Expected from Variable Group or pipeline variables
+  - name: PVC_MOUNT
+    value: /mnt/azure
+  - name: KANIKO_NAMESPACE
+    value: pep-eiap-global-devsecops-dev
+  - name: ACR_LOGIN_SERVER
+    value: pepeiapnonprodglobalcommonacr.azurecr.io
+  - name: IMAGE_REPO
+    value: pep/eip/genai-devops-starter
+  - name: MANIFEST_REPO_URL
+    value: pepsicoit.visualstudio.com/Potato_Sourcing_Matrix_automation_PSMa/_git/potato-sourcing-argocd-configs
+  - name: MANIFEST_REPO_NAME
+    value: potato-sourcing-argocd-configs
+  - name: MANIFEST_BRANCH
+    value: develop
+  - name: NONPROD_CLUSTER
+    value: pep-eiap-nonprod-eus-global-01-aks
+  - name: PROD_CLUSTER
+    value: pep-eiap-prod-scus-global-01-aks
+
+stages:
+  - stage: CI_Build
+    condition: eq('${{ parameters.deployOnly }}', false)
+    jobs:
+      - job: Build_Test_Image
+        pool:
+          name: $(eus-shared-pool)
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.11'
+
+          - task: Bash@3
+            displayName: Install dependencies and run tests
+            inputs:
+              targetType: inline
+              script: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+                pytest -q
+
+          - task: Bash@3
+            displayName: Build image and push using Kaniko
+            inputs:
+              targetType: inline
+              script: |
+                set -euo pipefail
+                WORKDIR=$(PVC_MOUNT)/$(Build.DefinitionName)-$(Build.BuildNumber)
+                IMAGE_DEST='$(ACR_LOGIN_SERVER)/$(IMAGE_REPO):$(Build.BuildNumber)'
+
+                mkdir -p "$WORKDIR"
+                cp -r * "$WORKDIR"
+                cp kaniko/backend-kaniko-job.yaml "$WORKDIR/job_template_kaniko.yaml"
+
+                sed -i.bak "s~REPLACE_WITH_REGISTRY~$(ACR_LOGIN_SERVER)~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~claimName: genai-source-pvc~claimName: pvc-azurefile-devops~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~secretName: regcred~secretName: pep-eiap-svc-global-devsecops-acr-creds~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~name: kaniko-build-backend~name: kaniko-build-backend-$(Build.BuildId)~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~--context=/workspace~--context=/artifacts/$(Build.DefinitionName)-$(Build.BuildNumber)~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~--dockerfile=/workspace/Dockerfile.backend~--dockerfile=/artifacts/$(Build.DefinitionName)-$(Build.BuildNumber)/Dockerfile~g" "$WORKDIR/job_template_kaniko.yaml"
+                sed -i.bak "s~--destination=REPLACE_WITH_REGISTRY/genai-backend:latest~--destination=$IMAGE_DEST~g" "$WORKDIR/job_template_kaniko.yaml"
+
+                JOB_NAME=$(kubectl create -f "$WORKDIR/job_template_kaniko.yaml" -n $(KANIKO_NAMESPACE) | sed 's| created||')
+                echo "$JOB_NAME"
+
+                kubectl wait --for=condition=complete --timeout=25m "$JOB_NAME" -n $(KANIKO_NAMESPACE) &
+                completion_pid=$!
+                kubectl wait --for=condition=failed --timeout=25m "$JOB_NAME" -n $(KANIKO_NAMESPACE) && exit 1 &
+                failure_pid=$!
+
+                wait -n $completion_pid $failure_pid
+                exit_code=$?
+                kubectl logs "$JOB_NAME" -n $(KANIKO_NAMESPACE) -f || true
+                kubectl delete "$JOB_NAME" -n $(KANIKO_NAMESPACE) || true
+                rm -rf "$WORKDIR"
+                exit $exit_code
+
+  - stage: dev
+    dependsOn: CI_Build
+    condition: or(and(eq('${{ parameters.deployOnly }}', true), eq(variables.isDevBranch, true)), and(eq(variables.isDevBranch, true), succeeded('CI_Build')))
+    variables:
+      env: dev
+      clusterName: $(NONPROD_CLUSTER)
+      deploymentFile: helm-values.yaml
+    jobs:
+      - job: Update_Manifest_Dev
+        pool:
+          name: $(eus-shared-pool)
+        steps:
+          - task: Bash@3
+            displayName: Update ArgoCD values tag (dev)
+            inputs:
+              targetType: inline
+              script: |
+                set -euo pipefail
+                if [ -z "${ImageTag}" ]; then
+                  tag=$(Build.BuildNumber)
+                else
+                  tag='${{ parameters.ImageTag }}'
+                fi
+
+                git clone "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)" --branch $(MANIFEST_BRANCH)
+                cd $(MANIFEST_REPO_NAME)
+
+                FILE_PATH="$(env)/$(clusterName)/$(Build.Repository.Name)/$(deploymentFile)"
+                test -f "$FILE_PATH"
+
+                git checkout -b "$(Build.Repository.Name)/$(Build.BuildNumber)-dev"
+                current_tag=$(grep 'tag:' "$FILE_PATH" | tail -n1 | awk '{ print $2 }' | tr -d '"')
+                sed -i "s/tag: \"$current_tag\"/tag: \"$tag\"/g" "$FILE_PATH"
+
+                git config --global user.email "$(svcuser)@pepsico.com"
+                git config --global user.name "$(svcuser)"
+                git add "$FILE_PATH"
+                git commit -m "Update $(Build.Repository.Name) dev tag to $tag"
+                git push "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)"
+
+  - stage: qa
+    dependsOn: CI_Build
+    condition: or(and(eq('${{ parameters.deployOnly }}', true), eq(variables.isQaBranch, true)), and(eq(variables.isQaBranch, true), succeeded('CI_Build')))
+    variables:
+      env: qa
+      clusterName: $(NONPROD_CLUSTER)
+      deploymentFile: helm-values.yaml
+    jobs:
+      - job: Update_Manifest_Qa
+        pool:
+          name: $(eus-shared-pool)
+        steps:
+          - task: Bash@3
+            displayName: Update ArgoCD values tag (qa)
+            inputs:
+              targetType: inline
+              script: |
+                set -euo pipefail
+                if [ -z "${ImageTag}" ]; then
+                  tag=$(Build.BuildNumber)
+                else
+                  tag='${{ parameters.ImageTag }}'
+                fi
+
+                git clone "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)" --branch $(MANIFEST_BRANCH)
+                cd $(MANIFEST_REPO_NAME)
+
+                FILE_PATH="$(env)/$(clusterName)/$(Build.Repository.Name)/$(deploymentFile)"
+                test -f "$FILE_PATH"
+
+                git checkout -b "$(Build.Repository.Name)/$(Build.BuildNumber)-qa"
+                current_tag=$(grep 'tag:' "$FILE_PATH" | tail -n1 | awk '{ print $2 }' | tr -d '"')
+                sed -i "s/tag: \"$current_tag\"/tag: \"$tag\"/g" "$FILE_PATH"
+
+                git config --global user.email "$(svcuser)@pepsico.com"
+                git config --global user.name "$(svcuser)"
+                git add "$FILE_PATH"
+                git commit -m "Update $(Build.Repository.Name) qa tag to $tag"
+                git push "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)"
+
+  - stage: prod
+    dependsOn: CI_Build
+    condition: and(eq(variables.isReleaseBranch, true), succeeded('CI_Build'))
+    variables:
+      env: prod
+      clusterName: $(PROD_CLUSTER)
+      deploymentFile: helm-values.yaml
+    jobs:
+      - job: Update_Manifest_Prod
+        pool:
+          name: $(scus-prod-pool)
+        steps:
+          - task: Bash@3
+            displayName: Update ArgoCD values tag (prod)
+            inputs:
+              targetType: inline
+              script: |
+                set -euo pipefail
+                tag=$(Build.BuildNumber)
+
+                git clone "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)" --branch $(MANIFEST_BRANCH)
+                cd $(MANIFEST_REPO_NAME)
+
+                FILE_PATH="$(env)/$(clusterName)/$(Build.Repository.Name)/$(deploymentFile)"
+                test -f "$FILE_PATH"
+
+                git checkout -b "$(Build.Repository.Name)/$(Build.BuildNumber)-prod"
+                current_tag=$(grep 'tag:' "$FILE_PATH" | tail -n1 | awk '{ print $2 }' | tr -d '"')
+                sed -i "s/tag: \"$current_tag\"/tag: \"$tag\"/g" "$FILE_PATH"
+
+                git config --global user.email "$(svcuser)@pepsico.com"
+                git config --global user.name "$(svcuser)"
+                git add "$FILE_PATH"
+                git commit -m "Update $(Build.Repository.Name) prod tag to $tag"
+                git push "https://$(svcuser):$(svcPersonalAccessToken)@$(MANIFEST_REPO_URL)"

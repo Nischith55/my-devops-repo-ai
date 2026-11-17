@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-build-frontend
+  namespace: kaniko
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:latest
+          args:
+            - "--dockerfile=/workspace/Dockerfile.frontend"
+            - "--context=/workspace"
+            - "--destination=REPLACE_WITH_REGISTRY/genai-frontend:latest"
+            - "--cache=true"
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: genai-source-pvc
+        - name: kaniko-secret
+          secret:
+            secretName: regcred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
